@@ -1,0 +1,36 @@
+{
+	"sEcho": "{v:transaction()}",
+	"iTotalRecords": "{numberOfContents}",
+	"iTotalDisplayRecords": "{numberOfContents}",
+	"iNumberOfRecords": "{contents->f:count()}",
+	"aaData": [
+<f:for each="{contents}" as="content" key="number" iteration="iterator">
+{
+
+	<v:grid.row object="{content}" />,
+
+	"__buttons":
+
+		<v:format.json>
+			<a href="{v:link.edit(object: '{content}')}" data-uid="{content.uid}" class="btn-edit">
+				<v:sprite name="actions-document-open" /></a>
+			<f:link.action action="delete" arguments="{content : content.uid, format: 'json'}"
+				class="btn-delete" additionalAttributes="{data-uid: '{content.uid}'}">
+				<v:sprite name="actions-edit-delete" />
+			</f:link.action>
+		</v:format.json>,
+
+	"__checkbox":
+		<v:format.json>
+			<v:table.checkbox index="{number}" object="{content}" />
+		</v:format.json>,
+	"__number":
+		<v:format.json>
+			<v:table.rowNumber index="{number}" offset="{pager.offset}" />
+		</v:format.json>
+
+	}<f:if condition="{iterator.isLast}"><f:then></f:then><f:else>,</f:else></f:if>
+</f:for>
+	]
+}
+{namespace v=TYPO3\CMS\Vidi\ViewHelpers}

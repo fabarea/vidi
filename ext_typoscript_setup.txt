@@ -1,0 +1,73 @@
+config.tx_extbase {
+	persistence{
+		classes {
+			TYPO3\CMS\Vidi\Domain\Model\Category {
+				mapping {
+					tableName = sys_category
+					recordType = TYPO3\CMS\Vidi\Domain\Model\Category
+					columns {
+						#title.mapOnProperty = title
+						#path.mapOnProperty = path
+						#base.mapOnProperty = isAbsolutePath
+					}
+				}
+			}
+			TYPO3\CMS\Vidi\Domain\Model\BackendUserGroup {
+                mapping {
+                    tableName = be_groups
+                    recordType = TYPO3\CMS\Vidi\Domain\Model\BackendUserGroup
+                }
+            }
+			TYPO3\CMS\Vidi\Domain\Model\FrontendUserGroup {
+                mapping {
+                    tableName = fe_groups
+                    recordType = TYPO3\CMS\Vidi\Domain\Model\FrontendUserGroup
+                }
+            }
+		}
+	}
+	view {
+		widget {
+			TYPO3\CMS\Vidi\ViewHelpers\Widget\CarouselViewHelper {
+				templateRootPath = EXT:vidi/Resources/Private/Templates
+			}
+		}
+	}
+}
+
+ # Plugin configuration
+plugin.tx_vidi {
+	settings {
+		 # maximum number of items to display per page
+		pageBrowser {
+			itemsPerPage = 10
+		}
+
+		 # Editor FE Usergroup uid
+		editorUsergroupUid = {$plugin.tx_vidi.settings.editorUsergroupUid}
+	}
+	view {
+		templateRootPath = {$plugin.tx_vidi.view.templateRootPath}
+		partialRootPath = {$plugin.tx_vidi.view.partialRootPath}
+		layoutRootPath = {$plugin.tx_vidi.view.layoutRootPath}
+		defaultPid = auto
+	}
+	# This is an example how to modify the translation
+	_LOCAL_LANG {
+		default {
+			someUnusedKey = foo
+		}
+	}
+}
+
+ # Module configuration
+module.tx_vidi {
+	settings < plugin.tx_vidi.settings
+	view < plugin.tx_vidi.view
+	view {
+		templateRootPath = {$module.tx_vidi.view.templateRootPath}
+		partialRootPath = {$module.tx_vidi.view.partialRootPath}
+		layoutRootPath = {$module.tx_vidi.view.layoutRootPath}
+	}
+}
+

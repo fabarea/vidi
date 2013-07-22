@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2012-10-17T17:55:17Z"
+	      product-name="local lang">
+		<header/>
+		<body>
+			<trans-unit id="tx_vidi">
+				<source>Vidi</source>
+			</trans-unit>
+			<trans-unit id="publish-dates">
+				<source>Publish Dates</source>
+			</trans-unit>
+			<trans-unit id="message-deleted">
+				<source>Record "{0}" has been deleted</source>
+			</trans-unit>
+			<trans-unit id="message-mass-deleted-singular">
+				<source>{0} item deleted</source>
+			</trans-unit>
+			<trans-unit id="message-mass-deleted-plural">
+				<source>{0} items deleted</source>
+			</trans-unit>
+			<trans-unit id="confirm-delete">
+				<source>Are you sure to delete "{0}"?</source>
+			</trans-unit>
+			<trans-unit id="confirm-mass-delete-singular">
+				<source>Are you sure you want to delete {0} item?</source>
+			</trans-unit>
+			<trans-unit id="confirm-mass-delete-plural">
+				<source>Are you sure you want to delete {0} items?</source>
+			</trans-unit>
+			<trans-unit id="message-updated">
+				<source>Record "{0}" updated with success</source>
+			</trans-unit>
+			<trans-unit id="message-created">
+				<source>Record "{0}" created with success</source>
+			</trans-unit>
+			<trans-unit id="message-error">
+				<source>Transaction did not succeed</source>
+			</trans-unit>
+			<trans-unit id="save">
+				<source>Save</source>
+			</trans-unit>
+			<trans-unit id="close">
+				<source>Close</source>
+			</trans-unit>
+			<trans-unit id="new">
+				<source>New record</source>
+			</trans-unit>
+			<trans-unit id="edit">
+				<source>Edit</source>
+			</trans-unit>
+			<trans-unit id="duplicate">
+				<source>Duplicate</source>
+			</trans-unit>
+			<trans-unit id="delete">
+				<source>Delete</source>
+			</trans-unit>
+			<trans-unit id="deleting">
+				<source>Deleting...</source>
+			</trans-unit>
+			<trans-unit id="number">
+				<source>#</source>
+			</trans-unit>
+			<trans-unit id="search">
+				<source>Search...</source>
+			</trans-unit>
+			<trans-unit id="cancel">
+				<source>Cancel</source>
+			</trans-unit>
+			<trans-unit id="are-you-sure">
+				<source>Are you sure?</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

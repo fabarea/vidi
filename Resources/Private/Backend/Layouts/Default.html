@@ -1,0 +1,56 @@
+<em:be.container pageTitle="Vidi" enableJumpToUrl="false" enableClickMenu="false" loadPrototype="false"
+                 loadScriptaculous="false" loadExtJs="false" loadExtJsTheme="true"
+                 addCssFiles="{
+		0:'{f:uri.resource(path:\'StyleSheet/bootstrap.css\')}',
+		1:'{f:uri.resource(path:\'StyleSheet/bootstrap-responsive.css\')}',
+		2:'{f:uri.resource(path:\'StyleSheet/vidi.css\')}',
+		3:'{f:uri.resource(path:\'StyleSheet/bootstrap-datatables.css\')}',
+		5:'{f:uri.resource(path:\'StyleSheet/JQueryUi/jquery-ui-1.10.1.custom.min.css\')}'
+	}"
+                 addJsFiles="{
+		0:'{f:uri.resource(path:\'JavaScript/JQuery/jquery-1.9.1.min.js\')}'
+		}">
+
+
+	<script type="text/javascript">
+
+		// Declare namespace
+		window.Vidi = {};
+
+		// "Live" variables
+		Vidi._labels = {
+			"foo": ''
+		};
+
+		Vidi._columns = [];
+		{m:grid.column.configuration()}
+
+		// Just initialize variable with empty value.
+		Vidi.icons = {}
+	</script>
+
+	<f:render section="main"/>
+
+	<m:js name="JQuery/jquery.dataTables.min.js"/>
+	<m:js name="JQuery/jquery.form.js"/>
+	<m:js name="JQuery/jquery.dataTables.bootstrap.js"/>
+
+	<m:js name="Bootstrap/bootstrap.min.js"/>
+	<m:js name="Bootstrap/bootbox.min.js"/>
+	<m:js name="Bootstrap/bootstrapx-clickover.js"/>
+
+	<m:js name="Uri/Uri.min.js"/>
+
+	<m:js name="Vidi.js"/>
+	<m:js name="Encoder.js"/>
+	<m:js name="Vidi.Panel.js"/>
+	<m:js name="Vidi.Table.js"/>
+	<m:js name="Vidi.Action.js"/>
+	<m:js name="Vidi.Session.js"/>
+	<m:js name="Vidi.FlashMessage.js"/>
+	<m:js name="Vidi.Label.js"/>
+
+</em:be.container>
+{namespace em=TYPO3\CMS\Extensionmanager\ViewHelpers}
+{namespace m=TYPO3\CMS\Vidi\ViewHelpers}
+
