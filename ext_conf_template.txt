@@ -1,0 +1,3 @@
+# cat=basic//; type=string; label= Data types to show: Comma list of data types to be shown in the BE.
+data_types= fe_users, fe_groups
+
