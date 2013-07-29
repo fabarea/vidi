@@ -25,7 +25,7 @@ namespace TYPO3\CMS\Vidi\Exception;
  ***************************************************************/
 
 /**
- * Handle Exception for missing media object
+ * Handle Exception for missing key in array
  */
 class InvalidKeyInArrayException extends \Exception {
 

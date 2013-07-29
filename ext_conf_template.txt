@@ -1,3 +1,5 @@
 # cat=basic//; type=string; label= Data types to show: Comma list of data types to be shown in the BE.
 data_types= fe_users, fe_groups
 
+# cat=basic//; type=string; label= Default pid: Set default pid of records (temporary configuration before implementing something more powerful)
+default_pid = 1

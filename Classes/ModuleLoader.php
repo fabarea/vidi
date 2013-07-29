@@ -39,6 +39,11 @@ class ModuleLoader {
 	/**
 	 * @var string
 	 */
+	protected $defaultPid;
+
+	/**
+	 * @var string
+	 */
 	protected $mainModule = 'user';
 
 	/**
@@ -76,7 +81,7 @@ class ModuleLoader {
 	/**
 	 * @param string $dataType
 	 */
-	public function __construct($dataType) {
+	public function __construct($dataType = '') {
 		$this->dataType = $dataType;
 	}
 
@@ -94,6 +99,7 @@ class ModuleLoader {
 
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode] = array();
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode]['dataType'] = $this->dataType;
+		$GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode]['defaultPid'] = $this->defaultPid;
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode]['additionalJavaScriptFiles'] = $this->additionalJavaScriptFiles;
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode]['additionalStyleSheetFiles'] = $this->additionalStyleSheetFiles;
 
@@ -111,6 +117,35 @@ class ModuleLoader {
 				'labels' => $this->moduleLanguageFile,
 			)
 		);
+	}
+
+	/**
+	 * Return a configuraiton key or the entire module configuration array if not key is given.
+	 *
+	 * @param string $key
+	 * @throws Exception\InvalidKeyInArrayException
+	 * @return mixed
+	 */
+	public function getModuleConfiguration($key = '') {
+		$moduleCode = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('M');
+
+		// module code must exist
+		if (empty($GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode])) {
+			$message = sprintf('Invalid or not existing module code "%s"', $moduleCode);
+			throw new \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException($message, 1375092053);
+		}
+
+		$result = $GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode];
+
+		if (!empty($key)) {
+			// key must exist
+			if (empty($result[$key])) {
+				$message = sprintf('Invalid key configuration "%s"', $key);
+				throw new \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException($message, 1375092054);
+			}
+			$result = $result[$key];
+		}
+		return $result;
 	}
 
 	/**
@@ -196,6 +231,44 @@ class ModuleLoader {
 		foreach ($files as $file) {
 			$this->additionalStyleSheetFiles[] = $file;
 		}
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDataType() {
+		if (empty($this->dataType)) {
+			$this->dataType = $this->getModuleConfiguration('dataType');
+		}
+		return $this->dataType;
+	}
+
+	/**
+	 * @param string $dataType
+	 * @return $this
+	 */
+	public function setDataType($dataType) {
+		$this->dataType = $dataType;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDefaultPid() {
+		if (empty($this->defaultPid)) {
+			$this->defaultPid = $this->getModuleConfiguration('defaultPid');
+		}
+		return $this->defaultPid;
+	}
+
+	/**
+	 * @param string $defaultPid
+	 * @return $this
+	 */
+	public function setDefaultPid($defaultPid) {
+		$this->defaultPid = $defaultPid;
 		return $this;
 	}
 }

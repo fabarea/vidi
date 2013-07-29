@@ -26,13 +26,6 @@ config.tx_extbase {
             }
 		}
 	}
-	view {
-		widget {
-			TYPO3\CMS\Vidi\ViewHelpers\Widget\CarouselViewHelper {
-				templateRootPath = EXT:vidi/Resources/Private/Templates
-			}
-		}
-	}
 }
 
  # Plugin configuration

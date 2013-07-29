@@ -24,27 +24,28 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Link;
 ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
- * Render an edit link given an object.
+ * Render a create link given a data type.
  */
-class EditViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class CreateViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 
 	/**
-	 * Render an edit link given an object.
+	 * Render a create link given a data type.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
 	 * @return string
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object) {
+	public function render() {
 
-		/** @var \TYPO3\CMS\Vidi\ModuleConfiguration $moduleConfiguration */
-		$moduleConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleConfiguration');
+		/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
+		$moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
 
-		return sprintf('alt_doc.php?returnUrl=mod.php?M=%s&edit[%s][%s]=edit',
+		$defaultPid = $moduleLoader->getDefaultPid();
+		return sprintf('alt_doc.php?returnUrl=mod.php?M=%s&edit[%s][%s]=new',
 			GeneralUtility::_GP('M'),
-			$moduleConfiguration->getDataType(),
-			$object->getUid()
+			$moduleLoader->getDataType(),
+			empty($defaultPid) ? 0 : $defaultPid
 		);
 	}
 }
