@@ -33,6 +33,10 @@ label {
 	font-size: 11px;
 }
 
+.container-fluid {
+	padding-right: 14px !important;
+}
+
 @media (max-width: 979px) and (min-width: 768px) {
 	html,
 	body {
@@ -55,7 +59,7 @@ label {
 
 	.container-fluid {
 		padding-left: 20px !important;
-		padding-right: 20px !important;
+		padding-right: 10px !important;
 	}
 }
 
@@ -63,9 +67,15 @@ table {
 	background-color: #FFF;
 }
 
-.navbar-typo3 {
+.navbar-typo3-top {
 	background-color: #585858;
-	height: 49px;
+	height: 27px;
+	color: #fff;
+}
+
+.navbar-typo3-bottom {
+	background-color: #DADADA;
+	height: 22px;
 	color: #fff;
 }
 

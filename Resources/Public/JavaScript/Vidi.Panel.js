@@ -55,7 +55,7 @@ Vidi.Panel = {
 	 */
 	togglePanel: function () {
 		// Expand / Collapse widgets
-		$(['container-main-top', 'container-main-sub', 'navbar-main', 'navbar-sub']).each(function (index, value) {
+		$(['container-main-top', 'container-main-sub', 'navbar-sub']).each(function (index, value) {
 			$('#' + value).toggle();
 		});
 
