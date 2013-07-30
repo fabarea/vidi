@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Grid;
+namespace TYPO3\CMS\Vidi\GridRenderer;
 /***************************************************************
  *  Copyright notice
  *
@@ -26,7 +26,7 @@ namespace TYPO3\CMS\Vidi\Grid;
 /**
  * Class rendering the preview of a media in the grid
  */
-class Preview implements \TYPO3\CMS\Vidi\Grid\GridRendererInterface {
+class Preview implements \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface {
 
 	/**
 	 * @var \TYPO3\CMS\Vidi\Service\ThumbnailService
@@ -39,7 +39,7 @@ class Preview implements \TYPO3\CMS\Vidi\Grid\GridRendererInterface {
 	protected $metadataViewHelper;
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Grid\Preview
+	 * @return \TYPO3\CMS\Vidi\GridRenderer\Preview
 	 */
 	public function __construct() {
 		$this->thumbnailService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Service\ThumbnailService');

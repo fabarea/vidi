@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Grid;
+namespace TYPO3\CMS\Vidi\GridRenderer;
 /***************************************************************
  *  Copyright notice
  *
@@ -26,7 +26,7 @@ namespace TYPO3\CMS\Vidi\Grid;
 /**
  * Class rendering usage for the Grid.
  */
-class Usage implements \TYPO3\CMS\Vidi\Grid\GridRendererInterface {
+class Usage implements \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface {
 
 	/**
 	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
@@ -34,7 +34,7 @@ class Usage implements \TYPO3\CMS\Vidi\Grid\GridRendererInterface {
 	protected $databaseHandler;
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Grid\Usage
+	 * @return \TYPO3\CMS\Vidi\GridRenderer\Usage
 	 */
 	public function __construct() {
 		$this->databaseHandler = $GLOBALS['TYPO3_DB'];

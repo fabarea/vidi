@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Grid;
+namespace TYPO3\CMS\Vidi\GridRenderer;
 /***************************************************************
  *  Copyright notice
  *

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Grid;
+namespace TYPO3\CMS\Vidi\GridRenderer;
 
 /***************************************************************
  *  Copyright notice
@@ -26,17 +26,17 @@ namespace TYPO3\CMS\Vidi\Grid;
  ***************************************************************/
 
 /**
- * Test case for class \TYPO3\CMS\Vidi\Grid\Visibility.
+ * Test case for class \TYPO3\CMS\Vidi\GridRenderer\Visibility.
  */
 class VisibilityTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Grid\Visibility
+	 * @var \TYPO3\CMS\Vidi\GridRenderer\Visibility
 	 */
 	private $fixture;
 
 	public function setUp() {
-		$this->fixture = new \TYPO3\CMS\Vidi\Grid\Visibility();
+		$this->fixture = new \TYPO3\CMS\Vidi\GridRenderer\Visibility();
 	}
 
 	public function tearDown() {

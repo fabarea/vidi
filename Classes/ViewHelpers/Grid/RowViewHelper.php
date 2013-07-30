@@ -59,7 +59,7 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 				if ($tcaGridService->hasRenderer($fieldName)) {
 					$renderer = $tcaGridService->getRenderer($fieldName);
 
-					/** @var $rendererObject \TYPO3\CMS\Vidi\Grid\GridRendererInterface */
+					/** @var $rendererObject \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface */
 					$rendererObject = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($renderer);
 					$value = $rendererObject->render($object);
 				}

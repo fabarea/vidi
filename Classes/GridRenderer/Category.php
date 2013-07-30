@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Grid;
+namespace TYPO3\CMS\Vidi\GridRenderer;
 /***************************************************************
  *  Copyright notice
  *
@@ -26,7 +26,7 @@ namespace TYPO3\CMS\Vidi\Grid;
 /**
  * Class rendering category for the Grid.
  */
-class Category implements \TYPO3\CMS\Vidi\Grid\GridRendererInterface {
+class Category implements \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface {
 
 	/**
 	 * Render category for the Grid.

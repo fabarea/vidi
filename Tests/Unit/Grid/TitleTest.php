@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Grid;
+namespace TYPO3\CMS\Vidi\GridRenderer;
 
 /***************************************************************
  *  Copyright notice
@@ -26,17 +26,17 @@ namespace TYPO3\CMS\Vidi\Grid;
  ***************************************************************/
 
 /**
- * Test case for class \TYPO3\CMS\Vidi\Grid\Title.
+ * Test case for class \TYPO3\CMS\Vidi\GridRenderer\Title.
  */
 class TitleTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Grid\Title
+	 * @var \TYPO3\CMS\Vidi\GridRenderer\Title
 	 */
 	private $fixture;
 
 	public function setUp() {
-		$this->fixture = new \TYPO3\CMS\Vidi\Grid\Title();
+		$this->fixture = new \TYPO3\CMS\Vidi\GridRenderer\Title();
 	}
 
 	public function tearDown() {

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Grid;
+namespace TYPO3\CMS\Vidi\GridRenderer;
 /***************************************************************
  *  Copyright notice
  *
@@ -24,28 +24,19 @@ namespace TYPO3\CMS\Vidi\Grid;
  ***************************************************************/
 
 /**
- * Class rendering visibility for the Grid.
+ * Class rendering status for the Grid.
  */
-class Visibility implements \TYPO3\CMS\Vidi\Grid\GridRendererInterface {
+class Status implements \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface {
 
 	/**
-	 * Render visibility for the Grid.
+	 * Render status for the Grid.
 	 *
 	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $asset
 	 * @return string
 	 */
 	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $asset = NULL) {
-		$template = '<img src="%s" alt="%s" title="%s"/>';
-		$icon = sprintf(
-			\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('media') . 'Resources/Public/Icons/hidden_%s.png' ,
-			$asset->getProperty('hidden')
-		);
-		$imageTag = sprintf($template,
-			$icon,
-			$asset->getProperty('hidden') == 0 ? 'visible' : 'hidden',
-			$asset->getProperty('hidden') == 0 ? 'visible' : 'hidden'
-		);
-		return $imageTag;
+		$fieldService = \TYPO3\CMS\Vidi\Utility\TcaField::getService();
+		return $fieldService->getLabelForItem('status', $asset->getStatus());
 	}
 }
 ?>
