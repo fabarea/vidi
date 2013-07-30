@@ -49,7 +49,6 @@ class BaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 		$searchTerm = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sSearch');
 		if (strlen($searchTerm) > 0) {
 			$matcher->setSearchTerm($searchTerm);
-			$matcher->addCategory($searchTerm);
 		}
 
 		return $matcher;
