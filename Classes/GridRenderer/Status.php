@@ -35,7 +35,7 @@ class Status implements \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface {
 	 * @return string
 	 */
 	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $asset = NULL) {
-		$fieldService = \TYPO3\CMS\Vidi\Utility\TcaField::getService();
+		$fieldService = \TYPO3\CMS\Vidi\Tca\ServiceFactory::getFieldService();
 		return $fieldService->getLabelForItem('status', $asset->getStatus());
 	}
 }

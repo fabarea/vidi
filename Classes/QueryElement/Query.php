@@ -301,7 +301,7 @@ EOF;
 			$fields = explode(',', $this->tcaTableService->getSearchableFields());
 
 			foreach ($fields as $field) {
-				$fieldType = \TYPO3\CMS\Vidi\Utility\TcaField::getService()->getFieldType($field);
+				$fieldType = $this->tcaFieldService->getFieldType($field);
 				if ($fieldType == 'text' OR $fieldType == 'input') {
 					$searchParts[] = sprintf('%s LIKE "%%%s%%"', $field, $searchTerm);
 				}

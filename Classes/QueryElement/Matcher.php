@@ -47,11 +47,6 @@ class Matcher {
 	protected $matches = array();
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Tca\FieldService
-	 */
-	protected $tcaFieldService;
-
-	/**
 	 * Constructs a new Matcher
 	 *
 	 * @param array $matches associative array($field => $value)
