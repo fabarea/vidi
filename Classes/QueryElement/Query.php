@@ -106,9 +106,9 @@ class Query {
 	 * Constructor
 	 */
 	public function __construct() {
-		/** @var \TYPO3\CMS\Vidi\ModuleConfiguration $moduleConfiguration */
-		$moduleConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleConfiguration');
-		$this->tableName = $moduleConfiguration->getDataType();
+		/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
+		$moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
+		$this->tableName = $moduleLoader->getDataType();
 
 		$this->databaseHandle = $GLOBALS['TYPO3_DB'];
 		$this->tcaFieldService = \TYPO3\CMS\Vidi\Tca\ServiceFactory::getFieldService();

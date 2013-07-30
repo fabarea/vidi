@@ -94,5 +94,30 @@ class ModuleLoaderTest extends \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCase {
 			array('moduleLanguageFile', 'LLL:EXT:vidi/Resources/Private/Language/locallang_module.xlf'),
 		);
 	}
+
+	/**
+	 * @test
+	 */
+	public function getModuleConfigurationReturnsArrayWithSomeKeys() {
+		$moduleLoader = new \TYPO3\CMS\Vidi\ModuleLoader($this->dataType);
+		$moduleLoader->register();
+		$GLOBALS['_GET']['M'] = $this->moduleCode;
+
+		$moduleConfiguration = $moduleLoader->getModuleConfiguration();
+		$keys = array('dataType', 'additionalJavaScriptFiles', 'additionalStyleSheetFiles');
+		foreach ($keys as $key) {
+			$this->assertArrayHasKey($key, $moduleConfiguration);
+		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function getModuleConfigurationWithParameterDataTypeReturnsDataType() {
+		$moduleLoader = new \TYPO3\CMS\Vidi\ModuleLoader($this->dataType);
+		$moduleLoader->register();
+		$GLOBALS['_GET']['M'] = $this->moduleCode;
+		$this->assertEquals($this->dataType, $moduleLoader->getModuleConfiguration('dataType'));
+	}
 }
 ?>

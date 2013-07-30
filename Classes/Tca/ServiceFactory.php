@@ -50,9 +50,9 @@ class ServiceFactory implements \TYPO3\CMS\Core\SingletonInterface {
 	 */
 	static public function getService($tableName = '', $serviceType) {
 		if (TYPO3_MODE == 'BE' && empty($tableName)) {
-			/** @var \TYPO3\CMS\Vidi\ModuleConfiguration $moduleConfiguration */
-			$moduleConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleConfiguration');
-			$tableName = $moduleConfiguration->getDataType();
+			/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
+			$moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
+			$tableName = $moduleLoader->getDataType();
 		}
 
 		if (empty(self::$instanceStorage[$tableName][$serviceType])) {
