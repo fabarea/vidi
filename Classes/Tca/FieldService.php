@@ -234,5 +234,12 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 		$configuration = $this->getConfiguration($fieldName);
 		return $this->hasRelation($fieldName) && isset($configuration['MM']);
 	}
+
+	/**
+	 * @return array
+	 */
+	public function getTca() {
+		return $this->tca;
+	}
 }
 ?>

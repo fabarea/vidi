@@ -44,7 +44,7 @@ class ContentController extends \TYPO3\CMS\Vidi\Controller\BaseController {
 	 * @throws \TYPO3\CMS\Media\Exception\StorageNotOnlineException
 	 */
 	public function initializeAction() {
-		$this->pageRenderer->addInlineLanguageLabelFile('EXT:media/Resources/Private/Language/locallang.xlf');
+		$this->pageRenderer->addInlineLanguageLabelFile('EXT:vidi/Resources/Private/Language/locallang.xlf');
 	}
 
 	/**
@@ -102,7 +102,7 @@ class ContentController extends \TYPO3\CMS\Vidi\Controller\BaseController {
 		$contentObject = $this->contentRepository->findByUid($content['uid']);
 		$result['status'] = TRUE;
 		$result['action'] = 'update';
-		$result['asset'] = array(
+		$result['object'] = array(
 			'uid' => $contentObject->getUid(),
 			'title' => $contentObject->getTitle(),
 		);
@@ -120,13 +120,15 @@ class ContentController extends \TYPO3\CMS\Vidi\Controller\BaseController {
 	 * @return string
 	 */
 	public function deleteAction($content) {
+		$labelField = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService()->getLabelField();
+		$getter = 'get' . ucfirst($labelField);
 		$contentObject = $this->contentRepository->findByUid($content);
 		$result['status'] = $this->contentRepository->remove($contentObject);
 		$result['action'] = 'delete';
 		if ($result['status']) {
-			$result['asset'] = array(
+			$result['object'] = array(
 				'uid' => $contentObject->getUid(),
-				'title' => $contentObject->getTitle(),
+				$labelField => $contentObject->$getter(),
 			);
 		}
 

@@ -109,7 +109,7 @@ class ModuleLoader {
 			$subModuleName,
 			$this->position, // Position
 			array(
-				'Content' => 'list, listRow',
+				'Content' => 'list, listRow, delete',
 			),
 			array(
 				'access' => 'user,group',

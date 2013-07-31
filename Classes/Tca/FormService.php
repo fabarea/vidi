@@ -114,5 +114,12 @@ class FormService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 		}
 		return $structure;
 	}
+
+	/**
+	 * @return array
+	 */
+	public function getTca() {
+		return $this->tca;
+	}
 }
 ?>

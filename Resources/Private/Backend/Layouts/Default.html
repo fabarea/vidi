@@ -19,6 +19,9 @@
 
 		// "Live" variables
 		Vidi.dataType = '{v:moduleLoader(property: "dataType")}';
+		Vidi.tca = {}; // Fluid would be confuse with another syntax.
+		Vidi.tca.table = {};
+		Vidi.tca.table.label = '{v:tca.table(key: "label")}';
 
 		Vidi._columns = [];
 		{v:grid.column.configuration()}

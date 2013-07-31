@@ -191,5 +191,12 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 		$field = $this->getField($fieldName);
 		return empty($field['label']) ? FALSE : TRUE;
 	}
+
+	/**
+	 * @return array
+	 */
+	public function getTca() {
+		return $this->tca;
+	}
 }
 ?>

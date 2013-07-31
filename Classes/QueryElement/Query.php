@@ -231,7 +231,7 @@ class Query {
 					if (!is_numeric($item)) {
 						$escapedValue = $this->databaseHandle->escapeStrForLike($item, $tcaConfiguration['foreign_table']);
 						$_clause = sprintf('%s LIKE "%%%s%%"',
-							\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($tcaConfiguration['foreign_table'])->getLabel(),
+							\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($tcaConfiguration['foreign_table'])->getLabelField(),
 							$escapedValue
 						);
 

@@ -50,5 +50,12 @@ class PaletteService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 		$this->tableName = $tableName;
 		// @todo
 	}
+
+	/**
+	 * @return array
+	 */
+	public function getTca() {
+		return $this->tca;
+	}
 }
 ?>

@@ -214,8 +214,16 @@ class ContentRepository extends \TYPO3\CMS\Core\Resource\FileRepository {
 		$result = FALSE;
 		if ($content) {
 
-			// Mark the record as deleted
-			$result = $this->databaseHandle->exec_UPDATEquery('sys_file', 'uid = ' . $content->getUid(), array('deleted' => 1));
+			/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
+			$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\ModuleLoader');
+			$deletedField = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService()->getDeleteField();
+
+			if ($deletedField) {
+				// Mark the record as deleted
+				$result = $this->databaseHandle->exec_UPDATEquery($moduleLoader->getDataType(), 'uid = ' . $content->getUid(), array($deletedField => 1));
+			} else {
+				$result = $this->databaseHandle->exec_DELETEquery($moduleLoader->getDataType(), 'uid = ' . $content->getUid());
+			}
 		}
 		return $result;
 	}

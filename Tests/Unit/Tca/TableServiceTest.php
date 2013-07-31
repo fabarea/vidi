@@ -49,7 +49,7 @@ class TableServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function getLabelReturnNameAsValue() {
-		$this->assertEquals('name', $this->fixture->getLabel());
+		$this->assertEquals('name', $this->fixture->getLabelField());
 	}
 
 	/**
