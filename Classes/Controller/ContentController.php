@@ -53,7 +53,7 @@ class ContentController extends \TYPO3\CMS\Vidi\Controller\BaseController {
 	 * @return void
 	 */
 	public function listAction() {
-		$this->view->assign('columns', \TYPO3\CMS\Vidi\Tca\ServiceFactory::getGridService()->getFields());
+		$this->view->assign('columns', \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->getFields());
 	}
 
 	/**

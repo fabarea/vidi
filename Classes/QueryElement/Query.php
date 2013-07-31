@@ -111,8 +111,8 @@ class Query {
 		$this->tableName = $moduleLoader->getDataType();
 
 		$this->databaseHandle = $GLOBALS['TYPO3_DB'];
-		$this->tcaFieldService = \TYPO3\CMS\Vidi\Tca\ServiceFactory::getFieldService();
-		$this->tcaTableService = \TYPO3\CMS\Vidi\Tca\ServiceFactory::getTableService();
+		$this->tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
+		$this->tcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService();
 	}
 
 	/**
@@ -231,7 +231,7 @@ class Query {
 					if (!is_numeric($item)) {
 						$escapedValue = $this->databaseHandle->escapeStrForLike($item, $tcaConfiguration['foreign_table']);
 						$_clause = sprintf('%s LIKE "%%%s%%"',
-							\TYPO3\CMS\Vidi\Tca\ServiceFactory::getTableService($tcaConfiguration['foreign_table'])->getLabel(),
+							\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($tcaConfiguration['foreign_table'])->getLabel(),
 							$escapedValue
 						);
 

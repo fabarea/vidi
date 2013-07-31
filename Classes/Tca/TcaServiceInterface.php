@@ -27,7 +27,7 @@ namespace TYPO3\CMS\Vidi\Tca;
 /**
  * An interface to handle TCA service
  */
-interface ServiceInterface {
+interface TcaServiceInterface {
 
 }
 ?>

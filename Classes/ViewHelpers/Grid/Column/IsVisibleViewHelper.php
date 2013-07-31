@@ -34,7 +34,7 @@ class IsVisibleViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewH
 	 * @return boolean
 	 */
 	public function render($fieldName) {
-		return \TYPO3\CMS\Vidi\Tca\ServiceFactory::getGridService()->isVisible($fieldName);
+		return \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->isVisible($fieldName);
 	}
 
 }

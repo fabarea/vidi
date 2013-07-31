@@ -27,7 +27,7 @@ namespace TYPO3\CMS\Vidi\Tca;
 /**
  * A class to handle TCA field configuration
  */
-class FieldService implements \TYPO3\CMS\Vidi\Tca\ServiceInterface {
+class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 
 	/**
 	 * @var array

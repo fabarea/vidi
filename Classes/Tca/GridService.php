@@ -27,7 +27,7 @@ namespace TYPO3\CMS\Vidi\Tca;
 /**
  * A class to handle TCA grid configuration
  */
-class GridService implements \TYPO3\CMS\Vidi\Tca\ServiceInterface {
+class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 
 	/**
 	 * @var array
@@ -77,8 +77,8 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\ServiceInterface {
 		if ($this->hasLabel($fieldName)) {
 			$field = $this->getField($fieldName);
 			$result = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($field['label'], '');
-		} elseif (\TYPO3\CMS\Vidi\Tca\ServiceFactory::getFieldService($this->tableName)->hasLabel($fieldName)) {
-			$result = \TYPO3\CMS\Vidi\Tca\ServiceFactory::getFieldService($this->tableName)->getLabel($fieldName);
+		} elseif (\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($this->tableName)->hasLabel($fieldName)) {
+			$result = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($this->tableName)->getLabel($fieldName);
 		}
 		return $result;
 	}

@@ -26,12 +26,12 @@ namespace TYPO3\CMS\Vidi\Tca;
  ***************************************************************/
 
 /**
- * Test case for class \TYPO3\CMS\Vidi\Tca\ServiceFactory.
+ * Test case for class \TYPO3\CMS\Vidi\Tca\TcaServiceFactory.
  */
-class ServiceFactoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
+class TcaServiceFactoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Tca\ServiceFactory
+	 * @var \TYPO3\CMS\Vidi\Tca\TcaServiceFactory
 	 */
 	private $fixture;
 
@@ -47,7 +47,7 @@ class ServiceFactoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	public function instantiateVariousFieldServicesForTableSysFile() {
 		$tableName = 'sys_file';
 		foreach (array('field', 'table', 'grid', 'form') as $serviceType) {
-			$fieldService = \TYPO3\CMS\Vidi\Tca\ServiceFactory::getService($tableName, $serviceType);
+			$fieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, $serviceType);
 			$instanceName = sprintf('\TYPO3\CMS\Vidi\Tca\%sService', $serviceType);
 			$this->assertTrue($fieldService instanceof $instanceName);
 		}
@@ -59,9 +59,9 @@ class ServiceFactoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	public function instantiateVariousFieldServicesAndCheckWhetherTheClassInstanceIsStored() {
 		$tableName = 'sys_file';
 		foreach (array('field', 'table', 'grid') as $serviceType) {
-			\TYPO3\CMS\Vidi\Tca\ServiceFactory::getService($tableName, $serviceType);
+			\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, $serviceType);
 			$instanceName = sprintf('\TYPO3\CMS\Vidi\Tca\%sService', $serviceType);
-			$storage = \TYPO3\CMS\Vidi\Tca\ServiceFactory::getInstanceStorage();
+			$storage = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getInstanceStorage();
 			$this->assertTrue($storage[$tableName][$serviceType] instanceof $instanceName);
 		}
 	}
@@ -72,7 +72,7 @@ class ServiceFactoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	public function instantiateTableServicesForTableSysFile() {
 		$tableName = 'sys_file';
 		$serviceType = 'table';
-		$fieldService = \TYPO3\CMS\Vidi\Tca\ServiceFactory::getService($tableName, $serviceType);
+		$fieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, $serviceType);
 		$instanceName = sprintf('\TYPO3\CMS\Vidi\Tca\%sService', $serviceType);
 		$this->assertTrue($fieldService instanceof $instanceName);
 	}
@@ -83,7 +83,7 @@ class ServiceFactoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	public function instantiateGridServicesForTableSysFile() {
 		$tableName = 'sys_file';
 		$serviceType = 'grid';
-		$fieldService = \TYPO3\CMS\Vidi\Tca\ServiceFactory::getService($tableName, $serviceType);
+		$fieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, $serviceType);
 		$instanceName = sprintf('\TYPO3\CMS\Vidi\Tca\%sService', $serviceType);
 		$this->assertTrue($fieldService instanceof $instanceName);
 	}
@@ -94,7 +94,7 @@ class ServiceFactoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	public function instantiateFieldServicesForTableSysFile() {
 		$tableName = 'sys_file';
 		$serviceType = 'field';
-		$fieldService = \TYPO3\CMS\Vidi\Tca\ServiceFactory::getService($tableName, $serviceType);
+		$fieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, $serviceType);
 		$instanceName = sprintf('\TYPO3\CMS\Vidi\Tca\%sService', $serviceType);
 		$this->assertTrue($fieldService instanceof $instanceName);
 	}
@@ -105,7 +105,7 @@ class ServiceFactoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	public function instantiateFormServicesForTableSysFile() {
 		$tableName = 'sys_file';
 		$serviceType = 'form';
-		$fieldService = \TYPO3\CMS\Vidi\Tca\ServiceFactory::getService($tableName, $serviceType);
+		$fieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, $serviceType);
 		$instanceName = sprintf('\TYPO3\CMS\Vidi\Tca\%sService', $serviceType);
 		$this->assertTrue($fieldService instanceof $instanceName);
 	}

@@ -34,7 +34,7 @@ class IsNotSystemViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 	 * @return boolean
 	 */
 	public function render($fieldName) {
-		return \TYPO3\CMS\Vidi\Tca\ServiceFactory::getGridService()->isNotSystem($fieldName);
+		return \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->isNotSystem($fieldName);
 	}
 
 }

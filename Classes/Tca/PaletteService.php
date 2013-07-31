@@ -27,7 +27,7 @@ namespace TYPO3\CMS\Vidi\Tca;
 /**
  * A class to handle TCA grid configuration
  */
-class PaletteService implements \TYPO3\CMS\Vidi\Tca\ServiceInterface {
+class PaletteService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 
 	/**
 	 * @var array

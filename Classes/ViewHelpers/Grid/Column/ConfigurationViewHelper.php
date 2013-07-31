@@ -36,11 +36,11 @@ class ConfigurationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractV
 	public function render() {
 		$output = '';
 
-		foreach(\TYPO3\CMS\Vidi\Tca\ServiceFactory::getGridService()->getFields() as $fieldName => $configuration) {
+		foreach(\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->getFields() as $fieldName => $configuration) {
 			$output .= sprintf('Vidi._columns.push({ "mData": "%s", "bSortable": %s, "bVisible": %s, "sWidth": "%s" });' . PHP_EOL,
 				$fieldName,
-				\TYPO3\CMS\Vidi\Tca\ServiceFactory::getGridService()->isSortable($fieldName) ? 'true' : 'false',
-				\TYPO3\CMS\Vidi\Tca\ServiceFactory::getGridService()->isVisible($fieldName) ? 'true' : 'false',
+				\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->isSortable($fieldName) ? 'true' : 'false',
+				\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->isVisible($fieldName) ? 'true' : 'false',
 				empty($configuration['width']) ? 'auto' : $configuration['width']
 			);
 		}

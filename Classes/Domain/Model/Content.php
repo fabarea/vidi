@@ -51,7 +51,7 @@ class Content {
 		$this->uid = empty($contentData['uid']) ? NULL : $contentData['uid'];
 
 		/** @var \TYPO3\CMS\Vidi\Tca\GridService $gridTcaService */
-		$gridTcaService = \TYPO3\CMS\Vidi\Tca\ServiceFactory::getGridService();
+		$gridTcaService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService();
 
 		// Get column to be displayed
 		foreach ($gridTcaService->getFieldList() as $field) {

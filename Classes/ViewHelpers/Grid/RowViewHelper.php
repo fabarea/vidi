@@ -36,7 +36,7 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 	 */
 	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object) {
 
-		$tcaGridService = \TYPO3\CMS\Vidi\Tca\ServiceFactory::getGridService();
+		$tcaGridService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService();
 
 		// Initialize returned array
 		$output = array();

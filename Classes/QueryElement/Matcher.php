@@ -53,7 +53,7 @@ class Matcher {
 	 * @return \TYPO3\CMS\Vidi\QueryElement\Matcher
 	 */
 	public function __construct($matches = array()) {
-		$this->tcaService = \TYPO3\CMS\Vidi\Tca\ServiceFactory::getFieldService();
+		$this->tcaService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
 		$this->matches = $matches;
 	}
 

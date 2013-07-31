@@ -67,7 +67,7 @@ class BaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
 		// Retrieve a possible id of the column from the request
 		$columnPosition = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('iSortCol_0');
 		if ($columnPosition > 0) {
-			$field = \TYPO3\CMS\Vidi\Tca\ServiceFactory::getGridService()->getFieldNameByPosition($columnPosition);
+			$field = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->getFieldNameByPosition($columnPosition);
 
 			$direction = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sSortDir_0');
 			$order = array(

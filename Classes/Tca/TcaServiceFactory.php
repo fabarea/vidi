@@ -27,7 +27,7 @@ namespace TYPO3\CMS\Vidi\Tca;
 /**
  * A class to handle TCA ctrl.
  */
-class ServiceFactory implements \TYPO3\CMS\Core\SingletonInterface {
+class TcaServiceFactory implements \TYPO3\CMS\Core\SingletonInterface {
 
 	const TYPE_TABLE = 'table';
 	const TYPE_FIELD = 'field';
@@ -46,7 +46,7 @@ class ServiceFactory implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @throws \TYPO3\CMS\Vidi\Exception\NotExistingClassException
 	 * @param string $tableName
 	 * @param string $serviceType of the TCA. Typical values are: field, table, grid
-	 * @return \TYPO3\CMS\Vidi\Tca\ServiceInterface
+	 * @return \TYPO3\CMS\Vidi\Tca\TcaServiceInterface
 	 */
 	static public function getService($tableName = '', $serviceType) {
 		if (TYPO3_MODE == 'BE' && empty($tableName)) {
@@ -76,7 +76,7 @@ class ServiceFactory implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @return \TYPO3\CMS\Vidi\Tca\FieldService
 	 */
 	static public function getFieldService($tableName = '') {
-		return \TYPO3\CMS\Vidi\Tca\ServiceFactory::getService($tableName, \TYPO3\CMS\Vidi\Tca\ServiceFactory::TYPE_FIELD);
+		return \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::TYPE_FIELD);
 	}
 
 	/**
@@ -87,7 +87,7 @@ class ServiceFactory implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @return \TYPO3\CMS\Vidi\Tca\GridService
 	 */
 	static public function getGridService($tableName = '') {
-		return \TYPO3\CMS\Vidi\Tca\ServiceFactory::getService($tableName, \TYPO3\CMS\Vidi\Tca\ServiceFactory::TYPE_GRID);
+		return \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::TYPE_GRID);
 	}
 
 	/**
@@ -98,7 +98,7 @@ class ServiceFactory implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @return \TYPO3\CMS\Vidi\Tca\TableService
 	 */
 	static public function getTableService($tableName = '') {
-		return \TYPO3\CMS\Vidi\Tca\ServiceFactory::getService($tableName, \TYPO3\CMS\Vidi\Tca\ServiceFactory::TYPE_TABLE);
+		return \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::TYPE_TABLE);
 	}
 
 	/**

@@ -35,7 +35,7 @@ class TitleViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelpe
 	 * @return string
 	 */
 	public function render($column) {
-		return \TYPO3\CMS\Vidi\Tca\ServiceFactory::getGridService()->getLabel($column);
+		return \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->getLabel($column);
 	}
 
 }

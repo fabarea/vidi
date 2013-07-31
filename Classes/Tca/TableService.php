@@ -27,7 +27,7 @@ namespace TYPO3\CMS\Vidi\Tca;
 /**
  * A class to handle TCA ctrl.
  */
-class TableService implements \TYPO3\CMS\Vidi\Tca\ServiceInterface {
+class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 
 	/**
 	 * @var array
