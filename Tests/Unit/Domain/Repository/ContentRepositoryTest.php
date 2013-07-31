@@ -4,7 +4,7 @@ namespace TYPO3\CMS\Vidi\Domain\Repository;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Fabien Udriot <fabien.udriot@typo3.org> Media development team <typo3-project-media@lists.typo3.org>
+ *  (c) 2013 Fabien Udriot <fabien.udriot@typo3.org>
  *
  *  All rights reserved
  *
