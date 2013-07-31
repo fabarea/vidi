@@ -17,13 +17,17 @@ Vidi.Table = {
 		/**
 		 * Table initial options.
 		 *
-		 * Internal note: properties of Datatables have prefix: m, b, s, i, o, a, fn etc...
+		 * Internal reminder: properties of Datatables have prefix: m, b, s, i, o, a, fn etc...
 		 * this corresponds to the variable type e.g. mixed, boolean, string, integer, object, array, function
 		 */
 		return {
-			// @todo implement a cross state saving
-			'bStateSave': false,
-			'iCookieDuration': 43200, // 12 hours
+			'bStateSave': true,
+			'fnStateSave': function (oSettings, oData) {
+				sessionStorage.setItem('DataTables_' + Vidi.dataType, JSON.stringify(oData));
+			},
+			'fnStateLoad': function (oSettings) {
+				return JSON.parse(sessionStorage.getItem('DataTables_' + Vidi.dataType));
+			},
 			'bProcessing': true,
 			'bServerSide': true,
 			'sAjaxSource': "mod.php",
