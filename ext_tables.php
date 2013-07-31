@@ -4,10 +4,10 @@ if (!defined('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
+// Check from Vidi configuration what default module should be loaded.
 // Make sure the class exists to avoid a Runtime Error
 if (class_exists('TYPO3\CMS\Vidi\ModuleLoader')) {
 
-	// Fetch configuration from Vidi module
 
 	/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
 	$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
