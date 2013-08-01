@@ -8,7 +8,6 @@ if (!defined('TYPO3_MODE')) {
 // Make sure the class exists to avoid a Runtime Error
 if (class_exists('TYPO3\CMS\Vidi\ModuleLoader')) {
 
-
 	/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
 	$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
 

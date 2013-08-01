@@ -27,12 +27,8 @@ namespace TYPO3\CMS\Vidi\Tca;
 /**
  * A class to handle TCA ctrl.
  */
-class TcaServiceFactory implements \TYPO3\CMS\Core\SingletonInterface {
-
-	const TYPE_TABLE = 'table';
-	const TYPE_FIELD = 'field';
-	const TYPE_GRID = 'grid';
-	const TYPE_FORM = 'form';
+class TcaServiceFactory implements \TYPO3\CMS\Core\SingletonInterface,
+	\TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 
 	/**
 	 * @var array
@@ -76,7 +72,7 @@ class TcaServiceFactory implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @return \TYPO3\CMS\Vidi\Tca\FieldService
 	 */
 	static public function getFieldService($tableName = '') {
-		return \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::TYPE_FIELD);
+		return \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, self::TYPE_FIELD);
 	}
 
 	/**
@@ -87,7 +83,7 @@ class TcaServiceFactory implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @return \TYPO3\CMS\Vidi\Tca\GridService
 	 */
 	static public function getGridService($tableName = '') {
-		return \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::TYPE_GRID);
+		return \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, self::TYPE_GRID);
 	}
 
 	/**
@@ -98,7 +94,7 @@ class TcaServiceFactory implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @return \TYPO3\CMS\Vidi\Tca\TableService
 	 */
 	static public function getTableService($tableName = '') {
-		return \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::TYPE_TABLE);
+		return \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, self::TYPE_TABLE);
 	}
 
 	/**

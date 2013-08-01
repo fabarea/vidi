@@ -29,5 +29,12 @@ namespace TYPO3\CMS\Vidi\Tca;
  */
 interface TcaServiceInterface {
 
+	const TYPE_TABLE = 'table';
+
+	const TYPE_FIELD = 'field';
+
+	const TYPE_GRID = 'grid';
+
+	const TYPE_FORM = 'form';
 }
 ?>
