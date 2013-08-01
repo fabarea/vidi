@@ -6,7 +6,7 @@ if (!defined('TYPO3_MODE')) {
 
 // Check from Vidi configuration what default module should be loaded.
 // Make sure the class exists to avoid a Runtime Error
-if (class_exists('TYPO3\CMS\Vidi\ModuleLoader')) {
+if (TYPO3_MODE == 'BE' && class_exists('TYPO3\CMS\Vidi\ModuleLoader')) {
 
 	/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
 	$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');

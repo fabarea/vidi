@@ -44,6 +44,11 @@ class ModuleLoader {
 	/**
 	 * @var string
 	 */
+	protected $access = 'user,group';
+
+	/**
+	 * @var string
+	 */
 	protected $mainModule = 'user';
 
 	/**
@@ -103,16 +108,17 @@ class ModuleLoader {
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode]['additionalJavaScriptFiles'] = $this->additionalJavaScriptFiles;
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode]['additionalStyleSheetFiles'] = $this->additionalStyleSheetFiles;
 
+		// @todo improve for loading main module after 6.2 http://forge.typo3.org/issues/49643
 		ExtensionUtility::registerModule(
 			'vidi',
-			$this->mainModule, // Make media module a submodule of 'user'
+			$this->mainModule,
 			$subModuleName,
-			$this->position, // Position
+			$this->position,
 			array(
 				'Content' => 'list, listRow, delete',
 			),
 			array(
-				'access' => 'user,group',
+				'access' => $this->access, // @todo property
 				'icon' => $this->icon,
 				'labels' => $this->moduleLanguageFile,
 			)
@@ -269,6 +275,22 @@ class ModuleLoader {
 	 */
 	public function setDefaultPid($defaultPid) {
 		$this->defaultPid = $defaultPid;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getAccess() {
+		return $this->access;
+	}
+
+	/**
+	 * @param string $access
+	 * @return $this
+	 */
+	public function setAccess($access) {
+		$this->access = $access;
 		return $this;
 	}
 }
