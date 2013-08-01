@@ -22,9 +22,9 @@ http://typo3.org/extensions/repository/view/vidi
 Development version:
 https://github.com/fudriot/vidi.git
 
-<pre>
-git clone https://github.com/fudriot/vidi.git
-</pre>
+::
+
+	git clone https://github.com/fudriot/vidi.git
 
 Flash news about latest development are also announced on
 <http://twitter.com/fudriot>
@@ -49,9 +49,9 @@ How to load a BE module for a custom data type?
 
 Loading a BE module for a custom data type can be summed up with:
 
-# Configure the module loader
-# Define an icon
-# Define a language file where to find the label of the fields. Make sure the file contains also the BE module name as example:
+#. Configure the module loader
+#. Define an icon
+#. Define a language file where to find the label of the fields. Make sure the file contains also the BE module name as example:
 
 ::
 
@@ -86,16 +86,15 @@ To load a custom BE module in the BE, the Module loader should be used as follow
 	}
 
 
-Module Loader API was inspired by the first draft made by `Steffen Ritter`_.
+Module Loader API was designed upon the work / ideas of `Steffen Ritter`_ .
 
+.. _Steffen Ritter: http://forge.typo3.org/users/446
 
-.. _Steffen Ritter:http://forge.typo3.org/users/446
-
-Grid TCA configuration
+Grid TCA
 -------------------------------
 
-A grid is a list view of records typical of a Backend module. TCA was extended to describe how a grid and its
-columns should be rendered and must be the same for your custom data type. Example::
+A Grid is a list view typically used within Backend modules. TCA was extended to describe how a grid and its
+columns should be rendered. Take inspiration of the example below for your own data type::
 
 	'grid' => array(
 		'columns' => array(
@@ -133,27 +132,154 @@ columns should be rendered and must be the same for your custom data type. Examp
 	),
 
 
-Columns
----------
+Grid TCA configuration
+------------------------------
 
-What attribute can be composed within array cell "columns"?
+Key and values that can be used in TCA Grid
 
-* sortable - default TRUE - whether the column is sortable or not.
-* visible - default TRUE - whether the column is visible by default or hidden. There is a column picker on the GUI side controlling column visibility.
-* renderer - default NULL - a class name to pass implementing
-* label - default NULL - an optional label overriding the default label of the field - i.e. the label from TCA['tableName']['columns']['fieldName']['label']
-* wrap - default NULL - a possible wrapping of the content. Useful in case the content of the cell should be styled in a special manner.
-* width - default NULL - a possible width of the column
+.. ...............................................................
+.. ...............................................................
+.. container:: table-row
+
+Key
+	**sortable**
+
+Datatype
+	boolean
+
+Description
+	Whether the column is sortable or not.
+
+Default
+	TRUE
+
+
+.. ...............................................................
+.. ...............................................................
+.. container:: table-row
+
+Key
+	**visible**
+
+Datatype
+	boolean
+
+Description
+	Whether the column is visible by default or hidden. If the column is not visible by default
+	it can be displayed with the column picker (upper right button in the BE module)
+
+Default
+	TRUE
+
+.. ...............................................................
+.. ...............................................................
+.. container:: table-row
+
+Key
+	**renderer**
+
+Datatype
+	string
+
+Description
+	A class name implementing Grid Renderer Interface
+
+Default
+	NULL
+
+.. ...............................................................
+.. ...............................................................
+.. container:: table-row
+
+Key
+	**label**
+
+Datatype
+	string
+
+Description
+	An optional label overriding the default label of the field - i.e. the label from TCA['tableName']['columns']['fieldName']['label']
+
+Default
+	NULL
+
+
+.. ...............................................................
+.. ...............................................................
+.. container:: table-row
+
+Key
+	**wrap**
+
+Datatype
+	string
+
+Description
+	A possible wrapping of the content. Useful in case the content of the cell should be styled in a special manner.
+
+Default
+	NULL
+
+.. ...............................................................
+.. ...............................................................
+.. container:: table-row
+
+Key
+	**width**
+
+Datatype
+	int
+
+Description
+	A possible width of the column
+
+Default
+	NULL
 
 System columns
 -----------------
 
-There a few columns that are considered as "system" which means they don't correspond to a field but must be display to control the     GUI. By convention, theses columns are prefixed
-with a double underscore e.g "__":
+There a few columns that are considered as "system" which means they don't correspond to a property of an object
+but are display to control the record. By convention, theses columns are prefixed with a double underscore e.g "__":
 
-* __number: display a row number
-* __checkbox: display a check box
-* __buttons: display "edit", "deleted", ... buttons to control the row
+
+.. ...............................................................
+.. ...............................................................
+.. container:: table-row
+
+Key
+	**__number**
+
+Description
+	Display a row number
+
+.. ...............................................................
+.. ...............................................................
+.. container:: table-row
+
+Key
+	**__checkbox**
+
+Description
+	Display a check box
+
+.. ...............................................................
+.. ...............................................................
+.. container:: table-row
+
+Key
+	**__buttons**
+
+Description
+	Display "edit", "deleted", ... buttons to control the row
+
+
+Grid Renderer
+------------------
+
+To render a custom column a class implementing Grid Renderer Interface must be given to the Grid TCA.
+
+@todo write more...
 
 
 TCA Service API
@@ -171,25 +297,44 @@ The API is meant to be generic and can be re-use for every record type within TY
 
 Instantiate a TCA service related to **fields**::
 
-	$tableName = 'sys_file';
-	$serviceType = 'field';
+	$tableName = 'tx_domain_model_foo';
+	$serviceType = \TYPO3\CMS\Vidi\Tca\TcaServiceInterface::TYPE_FIELD;
 
 	/** @var $fieldService \TYPO3\CMS\Media\Tca\FieldService */
-	$fieldService = \TYPO3\CMS\Media\Tca\ServiceFactory::getService($tableName, $serviceType);
+	$fieldService = \TYPO3\CMS\Media\Tca\TcaServiceFactory::getService($tableName, $serviceType);
 
-	// Refer to internal methods of the class.
+	// Get all fields data type 'tx_domain_model_foo';
+	// For more examples, refer to internal methods of the class.
 	$fieldService->getFields();
 
 Instantiate a TCA service related to **table**::
 
-	$tableName = 'sys_file';
-	$serviceType = 'table';
+	$tableName = 'tx_domain_model_foo';
+	$serviceType = \TYPO3\CMS\Vidi\Tca\TcaServiceInterface::TYPE_TABLE;
 
 	/** @var $tableService \TYPO3\CMS\Media\Tca\TableService */
-	$tableService = \TYPO3\CMS\Media\Tca\ServiceFactory::getService($tableName, $serviceType);
+	$tableService = \TYPO3\CMS\Media\Tca\TcaServiceFactory::getService($tableName, $serviceType);
 
-	// Refer to internal methods of the class.
-	$tableService->getLabel();
+	// Get the label field of data type 'tx_domain_model_foo';
+	// For more examples, refer to internal methods of the class.
+	$tableService->getLabelField();
 
-The same would apply for the other part: form and grid.
+Instantiate a TCA service related to **form**::
 
+	$tableName = 'tx_domain_model_foo';
+	$serviceType = \TYPO3\CMS\Vidi\Tca\TcaServiceInterface::TYPE_FORM;
+
+	/** @var $tableService \TYPO3\CMS\Media\Tca\TableService */
+	$tableService = \TYPO3\CMS\Media\Tca\TcaServiceFactory::getService($tableName, $serviceType);
+
+	// Refer to internal methods of the class...
+
+Instantiate a TCA service related to **grid**::
+
+	$tableName = 'tx_domain_model_foo';
+	$serviceType = \TYPO3\CMS\Vidi\Tca\TcaServiceInterface::TYPE_GRID;
+
+	/** @var $tableService \TYPO3\CMS\Media\Tca\TableService */
+	$tableService = \TYPO3\CMS\Media\Tca\TcaServiceFactory::getService($tableName, $serviceType);
+
+	// Refer to internal methods of the class...
