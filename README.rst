@@ -304,7 +304,7 @@ Instantiate a TCA service related to **fields**::
 	$fieldService = \TYPO3\CMS\Media\Tca\TcaServiceFactory::getService($tableName, $serviceType);
 
 	// Get all fields data type 'tx_domain_model_foo';
-	// For more examples, refer to internal methods of the class.
+	// For more examples, refer to internal methods of the service.
 	$fieldService->getFields();
 
 Instantiate a TCA service related to **table**::
@@ -316,7 +316,7 @@ Instantiate a TCA service related to **table**::
 	$tableService = \TYPO3\CMS\Media\Tca\TcaServiceFactory::getService($tableName, $serviceType);
 
 	// Get the label field of data type 'tx_domain_model_foo';
-	// For more examples, refer to internal methods of the class.
+	// For more examples, refer to internal methods of the service.
 	$tableService->getLabelField();
 
 Instantiate a TCA service related to **form**::
@@ -327,7 +327,7 @@ Instantiate a TCA service related to **form**::
 	/** @var $tableService \TYPO3\CMS\Media\Tca\TableService */
 	$tableService = \TYPO3\CMS\Media\Tca\TcaServiceFactory::getService($tableName, $serviceType);
 
-	// Refer to internal methods of the class...
+	// Refer to internal methods of the service...
 
 Instantiate a TCA service related to **grid**::
 
@@ -337,4 +337,4 @@ Instantiate a TCA service related to **grid**::
 	/** @var $tableService \TYPO3\CMS\Media\Tca\TableService */
 	$tableService = \TYPO3\CMS\Media\Tca\TcaServiceFactory::getService($tableName, $serviceType);
 
-	// Refer to internal methods of the class...
+	// Refer to internal methods of the service...
