@@ -25,6 +25,7 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
 
 /**
  * Class rendering status for the Grid.
+ * @todo remove me! Renderer stolen from EXT:media.
  */
 class Status implements \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface {
 

@@ -25,6 +25,7 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
 
 /**
  * Class rendering usage for the Grid.
+ * @todo remove me! Renderer stolen from EXT:media.
  */
 class Usage implements \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface {
 
