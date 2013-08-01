@@ -73,7 +73,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return string
 	 */
 	public function getDeleteField() {
-		$result = null;
+		$result = NULL;
 		if (!empty($this->tca['delete'])) {
 			$result = $this->tca['delete'];
 		}
@@ -86,7 +86,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return string
 	 */
 	public function getLanguageField() {
-		$result = null;
+		$result = NULL;
 		if (!empty($this->tca['languageField'])) {
 			$result = $this->tca['languageField'];
 		}

@@ -189,8 +189,23 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return array
 	 */
 	public function getField($fieldName) {
-		return $this->tca['columns'][$fieldName];
+		$result = NULL;
+		if ($this->hasField($fieldName)) {
+			$result = $this->tca['columns'][$fieldName];
+		}
+		return $result;
 	}
+
+	/**
+	 * Tell whether the field exists or not.
+	 *
+	 * @param string $fieldName the name of the field
+	 * @return array
+	 */
+	public function hasField($fieldName) {
+		return isset($this->tca['columns'][$fieldName]);
+	}
+
 
 	/**
 	 * Returns whether the field has relation (one to many, many to many)
@@ -239,7 +254,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return array
 	 */
 	public function getTca() {
-		return $this->tca;
+		return $this->tca['columns'];
 	}
 }
 ?>

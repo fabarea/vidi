@@ -31,21 +31,34 @@ class Visibility implements \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface {
 	/**
 	 * Render visibility for the Grid.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $asset
+	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
 	 * @return string
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $asset = NULL) {
-		$template = '<img src="%s" alt="%s" title="%s"/>';
-		$icon = sprintf(
-			\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('media') . 'Resources/Public/Icons/hidden_%s.png' ,
-			$asset->getProperty('hidden')
-		);
-		$imageTag = sprintf($template,
-			$icon,
-			$asset->getProperty('hidden') == 0 ? 'visible' : 'hidden',
-			$asset->getProperty('hidden') == 0 ? 'visible' : 'hidden'
-		);
-		return $imageTag;
+	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $content = NULL) {
+
+		$result = 'No hidden field for this data type';
+		$getter = $this->formatGetter();
+
+		if ($getter) {
+			$spriteName = $content->$getter() ? 'actions-edit-unhide' : 'actions-edit-hide';
+			$result = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($spriteName);
+		}
+		return $result;
+	}
+
+	/**
+	 * Return a getter for the hidden field
+	 *
+	 * @return string
+	 */
+	protected function formatGetter() {
+		$result = NULL;
+		if (\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService()->hasField('hidden')) {
+			$result = 'getHidden';
+		} elseif (\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService()->hasField('disable')) {
+			$result = 'getDisable';
+		}
+		return $result;
 	}
 }
 ?>

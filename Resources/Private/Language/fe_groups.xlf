@@ -18,6 +18,9 @@
 			<trans-unit id="title">
 				<source>Group title</source>
 			</trans-unit>
+			<trans-unit id="visibility_abbreviation">
+				<source>Vis.</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
