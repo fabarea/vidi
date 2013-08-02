@@ -135,7 +135,7 @@ class ModuleLoader {
 	public function getModuleConfiguration($key = '') {
 		$moduleCode = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('M');
 
-		// module code must exist
+		// Module code must exist
 		if (empty($GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode])) {
 			$message = sprintf('Invalid or not existing module code "%s"', $moduleCode);
 			throw new \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException($message, 1375092053);

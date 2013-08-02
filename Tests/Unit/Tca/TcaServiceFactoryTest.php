@@ -44,8 +44,8 @@ class TcaServiceFactoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function instantiateVariousFieldServicesForTableSysFile() {
-		$tableName = 'sys_file';
+	public function instantiateVariousFieldServicesForTableFeUsers() {
+		$tableName = 'fe_users';
 		foreach (array('field', 'table', 'grid', 'form') as $serviceType) {
 			$fieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, $serviceType);
 			$instanceName = sprintf('\TYPO3\CMS\Vidi\Tca\%sService', $serviceType);
@@ -57,7 +57,7 @@ class TcaServiceFactoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function instantiateVariousFieldServicesAndCheckWhetherTheClassInstanceIsStored() {
-		$tableName = 'sys_file';
+		$tableName = 'fe_users';
 		foreach (array('field', 'table', 'grid') as $serviceType) {
 			\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, $serviceType);
 			$instanceName = sprintf('\TYPO3\CMS\Vidi\Tca\%sService', $serviceType);
@@ -69,8 +69,8 @@ class TcaServiceFactoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function instantiateTableServicesForTableSysFile() {
-		$tableName = 'sys_file';
+	public function instantiateTableServicesForTableFeUsers() {
+		$tableName = 'fe_users';
 		$serviceType = 'table';
 		$fieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, $serviceType);
 		$instanceName = sprintf('\TYPO3\CMS\Vidi\Tca\%sService', $serviceType);
@@ -80,8 +80,8 @@ class TcaServiceFactoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function instantiateGridServicesForTableSysFile() {
-		$tableName = 'sys_file';
+	public function instantiateGridServicesForTableFeUsers() {
+		$tableName = 'fe_users';
 		$serviceType = 'grid';
 		$fieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, $serviceType);
 		$instanceName = sprintf('\TYPO3\CMS\Vidi\Tca\%sService', $serviceType);
@@ -91,8 +91,8 @@ class TcaServiceFactoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function instantiateFieldServicesForTableSysFile() {
-		$tableName = 'sys_file';
+	public function instantiateFieldServicesForTableFeUsers() {
+		$tableName = 'fe_users';
 		$serviceType = 'field';
 		$fieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, $serviceType);
 		$instanceName = sprintf('\TYPO3\CMS\Vidi\Tca\%sService', $serviceType);
@@ -102,8 +102,8 @@ class TcaServiceFactoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function instantiateFormServicesForTableSysFile() {
-		$tableName = 'sys_file';
+	public function instantiateFormServicesForTableFeUsers() {
+		$tableName = 'fe_users';
 		$serviceType = 'form';
 		$fieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getService($tableName, $serviceType);
 		$instanceName = sprintf('\TYPO3\CMS\Vidi\Tca\%sService', $serviceType);

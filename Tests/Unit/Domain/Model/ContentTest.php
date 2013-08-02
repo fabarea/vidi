@@ -38,12 +38,12 @@ class ContentTest extends \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCase {
 	/**
 	 * @var string
 	 */
-	private $dataType = 'fe_groups';
+	private $dataType = 'fe_users';
 
 	/**
 	 * @var string
 	 */
-	private $moduleCode = 'user_VidiTxFooM1';
+	private $moduleCode = 'user_VidiFeUsersM1';
 
 	public function setUp() {
 		$moduleLoader = new \TYPO3\CMS\Vidi\ModuleLoader($this->dataType);
@@ -54,17 +54,7 @@ class ContentTest extends \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCase {
 	}
 
 	public function tearDown() {
-		unset($this->fixture);
-	}
-
-	/**
-	 * @test
-	 */
-	public function setARandomPropertyAndCheckTheValueIsTheSame() {
-		$property = uniqid();
-		$value = uniqid();
-		$this->fixture->setProperty($property, $value);
-		$this->assertSame($value, $this->fixture->getProperty($property));
+		unset($this->fixture, $GLOBALS['_GET']['M']);
 	}
 
 	/**
@@ -83,7 +73,7 @@ class ContentTest extends \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCase {
 	 */
 	public function propertyProvider() {
 		return array(
-			array('title', 'foo'),
+			array('username', 'foo'),
 		);
 	}
 }

@@ -173,9 +173,9 @@ class Query {
 //			$clause .= sprintf(' AND uid IN (SELECT uid_local FROM sys_file_begroups_mm WHERE uid_foreign IN(%s))', $user->user['usergroup']);
 //		}
 
-		if (TYPO3_MODE === 'BE' && $this->ignoreEnableFields) {
+		if (TYPO3_MODE === 'BE' && $this->ignoreEnableFields !== TRUE) {
 			$clause .= \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields($this->tableName);
-		} elseif (TYPO3_MODE === 'FE' && $this->ignoreEnableFields != TRUE) {
+		} elseif (TYPO3_MODE === 'FE' && $this->ignoreEnableFields !== TRUE) {
 			$clause .= $GLOBALS['TSFE']->sys_page->enableFields($this->tableName);
 		}
 

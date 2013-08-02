@@ -36,7 +36,7 @@ class FormServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	private $fixture;
 
 	public function setUp() {
-		$tableName = 'sys_file';
+		$tableName = 'fe_users';
 		$serviceType = 'form';
 		$this->fixture = new \TYPO3\CMS\Vidi\Tca\FormService($tableName, $serviceType);
 	}
@@ -55,26 +55,10 @@ class FormServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
 	/**
 	 * @test
-	 */
-	public function fieldStructureContainsTheDefaultTabAndIsBiggerThanOneByDefault() {
-		$actual = $this->fixture->getFieldStructure(2);
-		$this->assertArrayHasKey('LLL:EXT:cms/locallang_ttc.xml:palette.general', $actual);
-		$this->assertTrue(count($actual) !== 1);
-	}
-
-	/**
-	 * @test
 	 * @expectedException \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
 	 */
 	public function raiseExceptionIfTypeDoesNotExist() {
 		$this->fixture->getFields(uniqid('foo'));
-	}
-
-	/**
-	 * @test
-	 */
-	public function fieldsInFormMustBeEqualWithTypeEqualOne() {
-		$this->assertEquals($this->fixture->getFields(), $this->fixture->getFields(1));
 	}
 
 }

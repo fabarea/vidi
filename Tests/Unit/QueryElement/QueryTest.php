@@ -35,12 +35,26 @@ class QueryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 */
 	private $fixture;
 
+	/**
+	 * @var string
+	 */
+	private $dataType = 'fe_users';
+
+	/**
+	 * @var string
+	 */
+	private $moduleCode = 'user_VidiFeUsersM1';
+
 	public function setUp() {
+		$moduleLoader = new \TYPO3\CMS\Vidi\ModuleLoader($this->dataType);
+		$moduleLoader->register();
+		$GLOBALS['_GET']['M'] = $this->moduleCode;
 		$this->fixture = new \TYPO3\CMS\Vidi\QueryElement\Query();
+		$this->fixture->setDataType($this->dataType);
 	}
 
 	public function tearDown() {
-		unset($this->fixture);
+		unset($this->fixture, $GLOBALS['_GET']['M']);
 	}
 
 	/**
@@ -66,17 +80,17 @@ class QueryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function methodGetReturnsDefaultSql() {
-		$this->assertContains('SELECT * FROM sys_file WHERE deleted = 0', $this->fixture->getQuery());
+		$this->assertContains('SELECT * FROM fe_users WHERE 1=1', $this->fixture->getQuery());
 	}
 
 	/**
 	 * @test
 	 */
 	public function methodGetReturnsEnableFieldsInSqlQuery() {
-		$actual = $this->fixture->setIgnoreEnableFields(TRUE)->getQuery();
-		$this->assertContains('sys_file.hidden', $actual);
-		$this->assertContains('sys_file.starttime', $actual);
-		$this->assertContains('sys_file.endtime', $actual);
+		$actual = $this->fixture->setIgnoreEnableFields(FALSE)->getQuery();
+		$this->assertContains('fe_users.disable', $actual);
+		$this->assertContains('fe_users.starttime', $actual);
+		$this->assertContains('fe_users.endtime', $actual);
 	}
 
 	/**
@@ -113,7 +127,6 @@ class QueryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 			array('offset', rand(0,100)),
 			array('limit', rand(0,100)),
 			array('order', new \TYPO3\CMS\Vidi\QueryElement\Order()),
-			array('matcher', new \TYPO3\CMS\Vidi\QueryElement\Matcher()),
 			array('rawResult', uniqid()),
 			array('objectType', uniqid()),
 			array('ignoreEnableFields', TRUE),

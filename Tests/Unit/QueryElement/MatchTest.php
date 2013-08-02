@@ -35,12 +35,25 @@ class MatchTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 */
 	private $fixture;
 
+	/**
+	 * @var string
+	 */
+	private $dataType = 'fe_users';
+
+	/**
+	 * @var string
+	 */
+	private $moduleCode = 'user_VidiFeUsersM1';
+
 	public function setUp() {
+		$moduleLoader = new \TYPO3\CMS\Vidi\ModuleLoader($this->dataType);
+		$moduleLoader->register();
+		$GLOBALS['_GET']['M'] = $this->moduleCode;
 		$this->fixture = new \TYPO3\CMS\Vidi\QueryElement\Matcher();
 	}
 
 	public function tearDown() {
-		unset($this->fixture);
+		unset($this->fixture, $GLOBALS['_GET']['M']);
 	}
 
 	/**

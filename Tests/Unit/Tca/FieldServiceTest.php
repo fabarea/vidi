@@ -36,7 +36,7 @@ class FieldServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	private $fixture;
 
 	public function setUp() {
-		$tableName = 'sys_file';
+		$tableName = 'fe_users';
 		$serviceType = 'field';
 		$this->fixture = new \TYPO3\CMS\Vidi\Tca\FieldService($tableName, $serviceType);
 	}
@@ -51,7 +51,7 @@ class FieldServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	public function fieldsIncludesATitleFieldInTableSysFile() {
 		$actual = $this->fixture->getFields();
 		$this->assertTrue(is_array($actual));
-		$this->assertArrayHasKey('title', $actual);
+		$this->assertArrayHasKey('username', $actual);
 	}
 
 	/**
@@ -60,14 +60,6 @@ class FieldServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	public function fieldTypeReturnsInputForFieldTitleInTableSysFile() {
 		$actual = $this->fixture->getFieldType('title');
 		$this->assertEquals('input', $actual);
-	}
-
-	/**
-	 * @test
-	 */
-	public function fieldTypeReturnsDateForFieldModificationDateInTableSysFile() {
-		$actual = $this->fixture->getFieldType('modification_date');
-		$this->assertEquals('date', $actual);
 	}
 
 	/**
@@ -90,31 +82,14 @@ class FieldServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function fieldNameMustBeRequiredByDefault() {
-		$this->assertTrue($this->fixture->isRequired('name'));
+		$this->assertTrue($this->fixture->isRequired('username'));
 	}
 
 	/**
 	 * @test
 	 */
 	public function fieldTitleMustNotBeRequiredByDefault() {
-		$this->assertFalse($this->fixture->isRequired('title'));
-	}
-
-	/**
-	 * @test
-	 */
-	public function getLabelForFieldStatusAndItemValueOneMustReturnOK() {
-		$expected = 'Ok';
-		$actual = $this->fixture->getLabelForItem('status', 1);
-		$this->assertSame($expected, $actual);
-	}
-
-	/**
-	 * @test
-	 */
-	public function getIconForFieldStatusAndItemValueOneMustReturnOK() {
-		$actual = $this->fixture->getIconForItem('status', 1);
-		$this->assertContains('status_1', $actual);
+		$this->assertFalse($this->fixture->isRequired('email'));
 	}
 
 	/**
@@ -133,9 +108,8 @@ class FieldServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 */
 	public function fieldProvider() {
 		return array(
-			array('name', FALSE, FALSE, FALSE),
-			array('categories', TRUE, FALSE, TRUE),
-			array('fe_groups', TRUE, FALSE, TRUE),
+			array('username', FALSE, FALSE, FALSE),
+			#array('usergroup', TRUE, FALSE, TRUE),
 		);
 	}
 

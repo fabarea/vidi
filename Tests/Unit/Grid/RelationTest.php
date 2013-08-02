@@ -26,29 +26,41 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
  ***************************************************************/
 
 /**
- * Test case for class \TYPO3\CMS\Vidi\GridRenderer\Usage.
+ * Test case for class \TYPO3\CMS\Vidi\GridRenderer\Category.
  */
-class UsageTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
+class CategoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\GridRenderer\Usage
+	 * @var \TYPO3\CMS\Vidi\GridRenderer\Relation
 	 */
 	private $fixture;
 
+	/**
+	 * @var string
+	 */
+	private $dataType = 'fe_users';
+
+	/**
+	 * @var string
+	 */
+	private $moduleCode = 'user_VidiFeUsersM1';
+
 	public function setUp() {
-		$this->fixture = new \TYPO3\CMS\Vidi\GridRenderer\Usage();
+		$moduleLoader = new \TYPO3\CMS\Vidi\ModuleLoader($this->dataType);
+		$moduleLoader->register();
+		$GLOBALS['_GET']['M'] = $this->moduleCode;
+		$this->fixture = new \TYPO3\CMS\Vidi\GridRenderer\Relation();
 	}
 
 	public function tearDown() {
-		unset($this->fixture);
+		unset($this->fixture, $GLOBALS['_GET']['M']);
 	}
 
 	/**
 	 * @test
 	 */
-	public function renderAssetWithNoUsageReturnsEmpty() {
+	public function renderAssetWithNoCategoryReturnsEmpty() {
 		$asset = new \TYPO3\CMS\Vidi\Domain\Model\Content();
-		$asset->setIndexIfNotIndexed(FALSE);
 		$actual = $this->fixture->render($asset);
 		$this->assertEmpty($actual);
 	}

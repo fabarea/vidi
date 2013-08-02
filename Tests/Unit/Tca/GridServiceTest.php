@@ -36,7 +36,7 @@ class GridServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	private $fixture;
 
 	public function setUp() {
-		$tableName = 'sys_file';
+		$tableName = 'fe_users';
 		$serviceType = 'grid';
 		$this->fixture = new \TYPO3\CMS\Vidi\Tca\GridService($tableName, $serviceType);
 	}
@@ -49,7 +49,7 @@ class GridServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function getLabelReturnNameAsValue() {
-		$this->assertEquals('Filename', $this->fixture->getLabel('name'));
+		$this->assertEquals('Name', $this->fixture->getLabel('name'));
 	}
 
 	/**
@@ -60,7 +60,7 @@ class GridServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
 		$this->assertTrue(is_array($actual));
 		$this->assertNotEmpty($actual);
-		$this->assertTrue(in_array('title', $actual));
+		$this->assertTrue(in_array('username', $actual));
 	}
 
 	/**
@@ -75,8 +75,8 @@ class GridServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function getConfigurationForColumnTitle() {
-		$actual = $this->fixture->getField('title');
+	public function getConfigurationForColumnUsername() {
+		$actual = $this->fixture->getField('username');
 		$this->assertTrue(is_array($actual));
 		$this->assertTrue(count($actual) > 0);
 	}
@@ -84,8 +84,8 @@ class GridServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function columnTitleIsNotInternal() {
-		$this->assertFalse($this->fixture->isSystem('title'));
+	public function columnUsernameIsNotInternal() {
+		$this->assertFalse($this->fixture->isSystem('username'));
 	}
 
 	/**
@@ -98,22 +98,8 @@ class GridServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function labelOfColumnTitleShouldBeTitleByDefault() {
-		$this->assertEquals('Title', $this->fixture->getLabel('title'));
-	}
-
-	/**
-	 * @test
-	 */
-	public function labelOfColumnTstampShouldReturnsUpdatedAsValue() {
-		$this->assertEquals('Updated', $this->fixture->getLabel('tstamp'));
-	}
-
-	/**
-	 * @test
-	 */
-	public function labelOfColumnTstampHasALabel() {
-		$this->assertTrue($this->fixture->hasLabel('tstamp'));
+	public function labelOfColumnUsernameShouldBeUsernameByDefault() {
+		$this->assertEquals('Username', $this->fixture->getLabel('username'));
 	}
 
 	/**
@@ -126,8 +112,8 @@ class GridServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function columnTitleShouldBeSortableByDefault() {
-		$this->assertTrue($this->fixture->isSortable('title'));
+	public function columnUsernameShouldBeSortableByDefault() {
+		$this->assertTrue($this->fixture->isSortable('username'));
 	}
 
 	/**
@@ -140,22 +126,8 @@ class GridServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function columnTitleShouldBeVisibleByDefault() {
-		$this->assertTrue($this->fixture->isVisible('title'));
-	}
-
-	/**
-	 * @test
-	 */
-	public function columnTstampShouldBeNotVisibleByDefault() {
-		$this->assertFalse($this->fixture->isVisible('tstamp'));
-	}
-
-	/**
-	 * @test
-	 */
-	public function columnNameHasARenderer() {
-		$this->assertTrue($this->fixture->hasRenderer('fileinfo'));
+	public function columnUsernameShouldBeVisibleByDefault() {
+		$this->assertTrue($this->fixture->isVisible('username'));
 	}
 
 	/**
@@ -163,14 +135,6 @@ class GridServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 */
 	public function columnFooHasNoRenderer() {
 		$this->assertFalse($this->fixture->hasRenderer(uniqid('foo')));
-	}
-
-	/**
-	 * @test
-	 */
-	public function getTheRendererOfColumnName() {
-		$expected = 'TYPO3\CMS\Vidi\GridRenderer\Preview';
-		$this->assertEquals($expected, $this->fixture->getRenderer('fileinfo'));
 	}
 
 	/**

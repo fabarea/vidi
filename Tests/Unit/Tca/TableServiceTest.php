@@ -36,7 +36,7 @@ class TableServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	private $fixture;
 
 	public function setUp() {
-		$tableName = 'sys_file';
+		$tableName = 'fe_users';
 		$serviceType = 'table';
 		$this->fixture = new \TYPO3\CMS\Vidi\Tca\TableService($tableName, $serviceType);
 	}
@@ -49,7 +49,7 @@ class TableServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function getLabelReturnNameAsValue() {
-		$this->assertEquals('name', $this->fixture->getLabelField());
+		$this->assertEquals('username', $this->fixture->getLabelField());
 	}
 
 	/**
@@ -57,7 +57,7 @@ class TableServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 */
 	public function getSearchableFieldsIsNotEmptyByDefaultForTableSysFile() {
 		$actual = $this->fixture->getSearchableFields();
-		$this->assertTrue(!empty($actual));
+		$this->assertNotEmpty($actual);
 	}
 
 }
