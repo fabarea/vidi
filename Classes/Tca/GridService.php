@@ -62,7 +62,7 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 *
 	 * @return array
 	 */
-	public function getFieldList() {
+	public function getFieldNames() {
 		return array_keys($this->tca['columns']);
 	}
 

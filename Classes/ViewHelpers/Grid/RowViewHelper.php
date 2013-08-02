@@ -48,26 +48,19 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 			if ($tcaGridService->isNotSystem($fieldName)) {
 
 				// Fetch value
-				$getter = 'get' . ucfirst($fieldName);
-				$value = $object->$getter();
-
 				if ($tcaGridService->hasRenderer($fieldName)) {
 					$renderer = $tcaGridService->getRenderer($fieldName);
 
 					/** @var $rendererObject \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface */
 					$rendererObject = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($renderer);
-					$value = $rendererObject->render($object);
+					$value = $rendererObject->render($object, $fieldName, $configuration);
+				} else {
+					$getter = 'get' . ucfirst($fieldName);
+					$value = $object->$getter();
 				}
 
-				if (!empty($configuration['format'])) {
-					$formatter = sprintf('TYPO3\CMS\Vidi\Formatter\%s::format', ucfirst($configuration['format']));
-					$value = call_user_func($formatter, $value);
-				}
-
-				if (!empty($configuration['wrap'])) {
-					$parts = explode('|', $configuration['wrap']);
-					$value = implode($value, $parts);
-				}
+				$value = $this->format($value, $configuration);
+				$value = $this->wrap($value, $configuration);
 				$output[$fieldName] = $value;
 			}
 		}
@@ -76,6 +69,36 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 
 		// remove curly bracket before and after since content is encapsulate with other content.
 		return substr($output, 1, -1);
+	}
+
+	/**
+	 * Possible value formatting.
+	 *
+	 * @param string $value
+	 * @param array $configuration
+	 * @return mixed
+	 */
+	protected function format($value, array $configuration) {
+		if (!empty($configuration['format'])) {
+			$formatter = sprintf('TYPO3\CMS\Vidi\Formatter\%s::format', ucfirst($configuration['format']));
+			$value = call_user_func($formatter, $value);
+		}
+		return $value;
+	}
+
+	/**
+	 * Possible value wrapping.
+	 *
+	 * @param string $value
+	 * @param array $configuration
+	 * @return mixed
+	 */
+	protected function wrap($value, array $configuration) {
+		if (!empty($configuration['wrap'])) {
+			$parts = explode('|', $configuration['wrap']);
+			$value = implode($value, $parts);
+		}
+		return $value;
 	}
 }
 

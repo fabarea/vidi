@@ -64,6 +64,15 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
+	 * Returns an array containing column names.
+	 *
+	 * @return array
+	 */
+	public function getFieldNames() {
+		return array_keys($this->tca['columns']);
+	}
+
+	/**
 	 * Returns the configuration for a $field
 	 *
 	 * @param string $fieldName
@@ -206,6 +215,16 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 		return isset($this->tca['columns'][$fieldName]);
 	}
 
+	/**
+	 * Returns the relation type
+	 *
+	 * @param string $fieldName the name of the field
+	 * @return string
+	 */
+	public function relationDataType($fieldName) {
+		$configuration = $this->getConfiguration($fieldName);
+		return $configuration['foreign_table'];
+	}
 
 	/**
 	 * Returns whether the field has relation (one to many, many to many)
@@ -236,7 +255,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 */
 	public function hasRelationOneToMany($fieldName) {
 		$configuration = $this->getConfiguration($fieldName);
-		return $this->hasRelation($fieldName) && !isset($configuration['MM']);
+		return $this->hasRelation($fieldName) && !isset($configuration['MM']) && $configuration['maxitems'] == 1;
 	}
 
 	/**
@@ -248,6 +267,17 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	public function hasRelationManyToMany($fieldName) {
 		$configuration = $this->getConfiguration($fieldName);
 		return $this->hasRelation($fieldName) && isset($configuration['MM']);
+	}
+
+	/**
+	 * Returns whether the field has many to many relation using comma separated values (legacy).
+	 *
+	 * @param string $fieldName the name of the field
+	 * @return bool
+	 */
+	public function hasRelationWithCommaSeparatedValues($fieldName) {
+		$configuration = $this->getConfiguration($fieldName);
+		return $this->hasRelation($fieldName) && !isset($configuration['MM']) && $configuration['maxitems'] > 1;
 	}
 
 	/**

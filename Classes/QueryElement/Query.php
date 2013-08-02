@@ -106,10 +106,6 @@ class Query {
 	 * Constructor
 	 */
 	public function __construct() {
-		/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
-		$moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
-		$this->tableName = $moduleLoader->getDataType();
-
 		$this->databaseHandle = $GLOBALS['TYPO3_DB'];
 		$this->tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
 		$this->tcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService();
@@ -336,15 +332,14 @@ EOF;
 		while ($row = $this->databaseHandle->sql_fetch_assoc($resource)) {
 
 			// Get record overlay if needed
-			// @todo check if it is relevant to keep
-//			if (TYPO3_MODE == 'FE' && $GLOBALS['TSFE']->sys_language_uid > 0) {
-//
-//				$overlay = \TYPO3\CMS\Vidi\Utility\Overlays::getOverlayRecords($this->tableName, array($row['uid']), $GLOBALS['TSFE']->sys_language_uid);
-//				if (!empty($overlay[$row['uid']])) {
-//					$key = key($overlay[$row['uid']]);
-//					$row = $overlay[$row['uid']][$key];
-//				}
-//			}
+			if (TYPO3_MODE == 'FE' && $GLOBALS['TSFE']->sys_language_uid > 0) {
+
+				$overlay = \TYPO3\CMS\Vidi\Utility\Overlays::getOverlayRecords($this->tableName, array($row['uid']), $GLOBALS['TSFE']->sys_language_uid);
+				if (!empty($overlay[$row['uid']])) {
+					$key = key($overlay[$row['uid']]);
+					$row = $overlay[$row['uid']][$key];
+				}
+			}
 
 			if (!$this->rawResult) {
 				$row = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->objectType, $row);
@@ -490,6 +485,22 @@ EOF;
 	 */
 	public function setIgnoreEnableFields($ignoreEnableFields) {
 		$this->ignoreEnableFields = $ignoreEnableFields;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDataType() {
+		return $this->tableName;
+	}
+
+	/**
+	 * @param string $dataType
+	 * @return $this
+	 */
+	public function setDataType($dataType) {
+		$this->tableName = $dataType;
 		return $this;
 	}
 }

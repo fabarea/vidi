@@ -55,8 +55,8 @@ class GridServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function getFieldListReturnsNotEmpty() {
-		$actual = $this->fixture->getFieldList();
+	public function getFieldNamesReturnsNotEmpty() {
+		$actual = $this->fixture->getFieldNames();
 
 		$this->assertTrue(is_array($actual));
 		$this->assertNotEmpty($actual);

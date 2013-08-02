@@ -37,6 +37,13 @@ class ConfigurationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractV
 		$output = '';
 
 		foreach(\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->getFields() as $fieldName => $configuration) {
+
+			// Early failure if field does not exist.
+			if (!$this->isAllowed($fieldName)) {
+				$message = sprintf('Property "%s" does not exist!', $fieldName);
+				throw new \TYPO3\CMS\Vidi\Exception\NotExistingFieldException($message, 1375369594);
+			}
+
 			$output .= sprintf('Vidi._columns.push({ "mData": "%s", "bSortable": %s, "bVisible": %s, "sWidth": "%s" });' . PHP_EOL,
 				$fieldName,
 				\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->isSortable($fieldName) ? 'true' : 'false',
@@ -46,6 +53,24 @@ class ConfigurationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractV
 		}
 
 		return $output;
+	}
+
+	/**
+	 * Tell whether the field looks ok to be displayed within the Grid
+	 *
+	 * @param string $fieldName
+	 * @return boolean
+	 */
+	protected function isAllowed($fieldName){
+
+		$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
+		$tcaGridService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService();
+
+		$result = FALSE;
+		if ($tcaFieldService->hasField($fieldName) || $tcaGridService->isSystem($fieldName) || $fieldName === 'uid') {
+			$result = TRUE;
+		}
+		return $result;
 	}
 
 }

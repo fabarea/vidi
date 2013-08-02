@@ -1,5 +1,6 @@
 <?php
-namespace TYPO3\CMS\Vidi\GridRenderer;
+namespace TYPO3\CMS\Vidi\Exception;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -24,31 +25,10 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
  ***************************************************************/
 
 /**
- * Class rendering category for the Grid.
+ * Handle Exception for not existing field
  */
-class Category implements \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface {
+class NotExistingFieldException extends \Exception {
 
-	/**
-	 * Render category for the Grid.
-	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $asset
-	 * @return string
-	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $asset = NULL) {
-
-		$result = '';
-		// We are force to convert to array to be sure of the result.
-		// Method "isValid" from QueryResult can not be used here.
-		$categories = $asset->getCategories()->toArray();
-		if (!empty($categories)) {
-			$template = '<li style="list-style: disc">%s</li>';
-			/** @var $category \TYPO3\CMS\Extbase\Domain\Model\Category */
-			foreach ($asset->getCategories() as $category) {
-				$result .= sprintf($template, $category->getTitle());
-			}
-			$result = sprintf('<ul>%s</ul>', $result);
-		}
-		return $result;
-	}
 }
+
 ?>

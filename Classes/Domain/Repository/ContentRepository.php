@@ -42,20 +42,10 @@ class ContentRepository extends \TYPO3\CMS\Core\Resource\FileRepository {
 	protected $rawResult = FALSE;
 
 	/**
+	 * The data type to be returned, e.g fe_users, fe_groups, tt_content, etc...
 	 * @var string
 	 */
-	protected $objectType = 'TYPO3\CMS\Vidi\Domain\Model\Content';
-
-	/**
-	 * @var array
-	 */
-	protected $objectTypes = array(
-		\TYPO3\CMS\Core\Resource\File::FILETYPE_TEXT => 'TYPO3\CMS\Vidi\Domain\Model\Text',
-		\TYPO3\CMS\Core\Resource\File::FILETYPE_IMAGE => 'TYPO3\CMS\Vidi\Domain\Model\Image',
-		\TYPO3\CMS\Core\Resource\File::FILETYPE_AUDIO => 'TYPO3\CMS\Vidi\Domain\Model\Audio',
-		\TYPO3\CMS\Core\Resource\File::FILETYPE_VIDEO => 'TYPO3\CMS\Vidi\Domain\Model\Video',
-		\TYPO3\CMS\Core\Resource\File::FILETYPE_APPLICATION => 'TYPO3\CMS\Vidi\Domain\Model\Application',
-	);
+	protected $dataType;
 
 	/**
 	 * @var \TYPO3\CMS\Extbase\Object\ObjectManager
@@ -66,6 +56,11 @@ class ContentRepository extends \TYPO3\CMS\Core\Resource\FileRepository {
 	 * Constructor
 	 */
 	public function __construct() {
+
+		/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
+		$moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
+		$this->dataType = $moduleLoader->getDataType();
+
 		$this->databaseHandle = $GLOBALS['TYPO3_DB'];
 		$this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
 	}
@@ -134,7 +129,7 @@ class ContentRepository extends \TYPO3\CMS\Core\Resource\FileRepository {
 
 		$query = $this->createQuery();
 		return $query->setRawResult($this->rawResult)
-			->setObjectType($this->objectType)
+			->setDataType($this->dataType)
 			->execute();
 	}
 
@@ -147,12 +142,11 @@ class ContentRepository extends \TYPO3\CMS\Core\Resource\FileRepository {
 	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content The matching object
 	 */
 	public function findByUid($uid) {
-
 		$matcher = $this->createMatch()->addMatch('uid', $uid);
 
 		$query = $this->createQuery();
 		$result = $query->setRawResult($this->rawResult)
-			->setObjectType($this->objectType)
+			->setDataType($this->dataType)
 			->setMatcher($matcher)
 			->execute();
 
@@ -163,7 +157,26 @@ class ContentRepository extends \TYPO3\CMS\Core\Resource\FileRepository {
 	}
 
 	/**
-	 * Finds all Assets given specified matches.
+	 * Finds all Contents given specified matches.
+	 *
+	 * @param string $propertyName
+	 * @param array $values
+	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content[]
+	 */
+	public function findIn($propertyName, array $values) {
+		$result = array();
+		$find = 'findBy' . ucfirst($propertyName);
+		// @todo improve me when implementing $query->matching($query->in('uid', $values))
+		foreach ($values as $value) {
+			if (strlen($value) > 0) {
+				$result[] = $this->$find($value);
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 * Finds all Contents given specified matches.
 	 *
 	 * @param \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher
 	 * @param \TYPO3\CMS\Vidi\QueryElement\Order $order The order
@@ -189,12 +202,12 @@ class ContentRepository extends \TYPO3\CMS\Core\Resource\FileRepository {
 
 		return $query
 			->setRawResult($this->rawResult)
-			->setObjectType($this->objectType)
+			->setDataType($this->dataType)
 			->execute();
 	}
 
 	/**
-	 * Count all Assets given specified matches.
+	 * Count all Contents given specified matches.
 	 *
 	 * @param \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher
 	 * @return int
@@ -239,14 +252,11 @@ class ContentRepository extends \TYPO3\CMS\Core\Resource\FileRepository {
 	 */
 	public function __call($methodName, $arguments) {
 		if (substr($methodName, 0, 6) === 'findBy' && strlen($methodName) > 7) {
-			$propertyName = strtolower(substr(substr($methodName, 6), 0, 1)) . substr(substr($methodName, 6), 1);
-			$result = $this->processMagicCall($propertyName, $arguments[0]);
+			$result = $this->processMagicCall();
 		} elseif (substr($methodName, 0, 9) === 'findOneBy' && strlen($methodName) > 10) {
-			$propertyName = strtolower(substr(substr($methodName, 9), 0, 1)) . substr(substr($methodName, 9), 1);
-			$result = $this->processMagicCall($propertyName, $arguments[0], 'one');
+			$result = $this->processMagicCall('one');
 		} elseif (substr($methodName, 0, 7) === 'countBy' && strlen($methodName) > 8) {
-			$propertyName = strtolower(substr(substr($methodName, 7), 0, 1)) . substr(substr($methodName, 7), 1);
-			$result = $this->processMagicCall($propertyName, $arguments[0], 'count');
+			$result = $this->processMagicCall('count');
 		} else {
 			throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException('The method "' . $methodName . '" is not supported by the repository.', 1360838010);
 		}
@@ -282,7 +292,7 @@ class ContentRepository extends \TYPO3\CMS\Core\Resource\FileRepository {
 
 	/**
 	 * @param boolean $rawResult
-	 * @return \TYPO3\CMS\Vidi\Domain\Repository\AssetRepository
+	 * @return \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository
 	 */
 	public function setRawResult($rawResult) {
 		$this->rawResult = $rawResult;
@@ -292,55 +302,30 @@ class ContentRepository extends \TYPO3\CMS\Core\Resource\FileRepository {
 	/**
 	 * @return string
 	 */
-	public function getObjectType() {
-		return $this->objectType;
+	public function getDataType() {
+		return $this->dataType;
 	}
 
 	/**
-	 * @param string $objectType
-	 * @return \TYPO3\CMS\Vidi\Domain\Repository\AssetRepository
+	 * @param string $dataType
+	 * @return \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository
 	 */
-	public function setObjectType($objectType) {
-		$this->objectType = $objectType;
+	public function setDataType($dataType) {
+		$this->dataType = $dataType;
 		return $this;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getObjectTypes() {
-		return $this->objectTypes;
-	}
-
-	/**
-	 * @param array $objectTypes
-	 */
-	public function setObjectTypes($objectTypes) {
-		$this->objectTypes = $objectTypes;
 	}
 
 	/**
 	 * Handle the magic call by properly creating a Query object and returning its result.
 	 *
-	 * @param string $field
-	 * @param string $value
 	 * @param string $flag
 	 * @return array
 	 */
-	protected function processMagicCall($field, $value, $flag = '') {
-
-		$matcher = $this->createMatch()->addMatch($field, $value);
-
-		// Add "automatic" file type restriction if method get called from child repository.
-		$fileType = $this->getFileType($this->objectType);
-		if ($fileType > 0) {
-			$matcher->addMatch('type', $fileType);
-		}
+	protected function processMagicCall($flag = '') {
 
 		$query = $this->createQuery();
 		$query->setRawResult($this->rawResult)
-			->setObjectType($this->objectType)
-			->setMatcher($matcher);
+			->setDataType($this->dataType);
 
 		if ($flag == 'count') {
 			$result = $query->count();
@@ -349,17 +334,6 @@ class ContentRepository extends \TYPO3\CMS\Core\Resource\FileRepository {
 		}
 
 		return $flag == 'one' && !empty($result) ? reset($result) : $result;
-	}
-
-	/**
-	 * Return the file type according to the object name
-	 *
-	 * @param string $objectType
-	 * @return int
-	 */
-	protected function getFileType($objectType) {
-		$key = array_search($objectType, $this->objectTypes);
-		return $key === FALSE ? 0 : $key;
 	}
 }
 

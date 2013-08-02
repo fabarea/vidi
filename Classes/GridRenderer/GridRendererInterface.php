@@ -31,10 +31,10 @@ interface GridRendererInterface {
 	/**
 	 * Render a media in someway.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $asset
+	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
 	 * @return string
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $asset = NULL);
+	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $content = NULL);
 
 }
 ?>

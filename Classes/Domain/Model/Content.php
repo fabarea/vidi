@@ -27,7 +27,7 @@ namespace TYPO3\CMS\Vidi\Domain\Model;
 /**
  * Content representation.
  */
-class Content {
+class Content implements \ArrayAccess {
 
 	/**
 	 * @var int
@@ -50,17 +50,17 @@ class Content {
 
 		$this->uid = empty($contentData['uid']) ? NULL : $contentData['uid'];
 
-		/** @var \TYPO3\CMS\Vidi\Tca\GridService $gridTcaService */
-		$gridTcaService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService();
+		/** @var \TYPO3\CMS\Vidi\Tca\FieldService $fieldTcaService */
+		$fieldTcaService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
 
 		// Get column to be displayed
-		foreach ($gridTcaService->getFieldList() as $field) {
+		foreach ($fieldTcaService->getFieldNames() as $field) {
 			if (isset($contentData[$field])) {
 				$this->$field = $contentData[$field];
 			}
 		}
 
-		// Not in Extbase context...
+		// Not automatically inherited like in Extbase context...
 		$this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
 	}
 
@@ -96,7 +96,34 @@ class Content {
 	public function __call($methodName, $arguments) {
 		if (substr($methodName, 0, 3) === 'get' && strlen($methodName) > 4) {
 			$propertyName = strtolower(substr(substr($methodName, 3), 0, 1)) . substr(substr($methodName, 3), 1);
-			$result = $this->$propertyName;
+
+			/** @var \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository $contentRepository */
+			$contentRepository = $this->objectManager->get('TYPO3\CMS\Vidi\Domain\Repository\ContentRepository');
+
+			// Return content according relation type.
+			$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
+			if ($tcaFieldService->hasRelationWithCommaSeparatedValues($propertyName)) {
+
+				$values = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->$propertyName);
+				$dataType = $tcaFieldService->relationDataType($propertyName);
+
+				$result = $contentRepository->setDataType($dataType)
+					->findIn('uid', $values);
+
+			} elseif ($tcaFieldService->hasRelationManyToMany($propertyName)) {
+				// @todo implement me
+				#$dataType = $tcaFieldService->relationDataType($propertyName);
+				#$result = $contentRepository->setDataType($dataType)
+				#	->findRelations($propertyName);
+			} elseif ($tcaFieldService->hasRelationOneToMany($propertyName)) {
+				// @todo implement me
+				#$dataType = $tcaFieldService->relationDataType($propertyName);
+				#$result = $contentRepository->setDataType($dataType)
+				#	->findRelation($propertyName);
+			} else {
+				$result = $this->$propertyName;
+			}
+
 		} elseif (substr($methodName, 0, 3) === 'set' && strlen($methodName) > 4 && isset($arguments[0])) {
 			$propertyName = strtolower(substr(substr($methodName, 3), 0, 1)) . substr(substr($methodName, 3), 1);
 			$this->$propertyName = $arguments[0];
@@ -110,6 +137,52 @@ class Content {
 	 */
 	public function getUid() {
 		return $this->uid;
+	}
+
+	/**
+	 * Whether a offset exists
+	 *
+	 * @link http://php.net/manual/en/arrayaccess.offsetexists.php
+	 * @param mixed $offset
+	 * @return boolean true on success or false on failure.
+	 */
+	public function offsetExists($offset) {
+		return isset($this->$offset);
+	}
+
+	/**
+	 * Offset to retrieve
+	 * @link http://php.net/manual/en/arrayaccess.offsetget.php
+	 *
+	 * @param mixed $offset
+	 * @return mixed Can return all value types.
+	 */
+	public function offsetGet($offset) {
+		$getter = 'get' . ucfirst($offset);
+		return $this->$getter();
+	}
+
+	/**
+	 * Offset to set
+	 *
+	 * @link http://php.net/manual/en/arrayaccess.offsetset.php
+	 * @param mixed $offset
+	 * @param mixed $value
+	 * @return void
+	 */
+	public function offsetSet($offset, $value) {
+		$this->$offset = $value;
+	}
+
+	/**
+	 * Offset to unset
+	 *
+	 * @link http://php.net/manual/en/arrayaccess.offsetunset.php
+	 * @param mixed $offset
+	 * @return void
+	 */
+	public function offsetUnset($offset) {
+		unset($this->$offset);
 	}
 }
 ?>
