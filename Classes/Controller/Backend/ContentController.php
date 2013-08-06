@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Controller;
+namespace TYPO3\CMS\Vidi\Controller\Backend;
 /***************************************************************
  *  Copyright notice
  *
