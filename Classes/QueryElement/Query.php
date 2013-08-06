@@ -342,7 +342,7 @@ EOF;
 			}
 
 			if (!$this->rawResult) {
-				$row = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->objectType, $row);
+				$row = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->objectType, $this->tableName, $row);
 			}
 			$items[] = $row;
 		}

@@ -25,9 +25,9 @@ namespace TYPO3\CMS\Vidi\Domain\Repository;
  ***************************************************************/
 
 /**
- * Repository for accessing Asset
+ * Repository for accessing Content
  */
-class ContentRepository extends \TYPO3\CMS\Core\Resource\FileRepository {
+class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInterface, \TYPO3\CMS\Core\SingletonInterface {
 
 	/**
 	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
@@ -66,58 +66,23 @@ class ContentRepository extends \TYPO3\CMS\Core\Resource\FileRepository {
 	}
 
 	/**
-	 * Update an content with new information
+	 * Update a content with new information
 	 *
 	 * @throws \TYPO3\CMS\Vidi\Exception\MissingUidException
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content|array $content file information
+	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
 	 * @return void
 	 */
-	public function updateAsset($content) {
-		if (is_object($content)) {
-			/** @var $contentObject \TYPO3\CMS\Vidi\Domain\Model\Content */
-			$contentObject = $content;
-			$content = $contentObject->toArray();
-		}
-
-		if (empty($content['uid'])) {
+	public function update($content) {
+		if ($content->getUid() <= 0) {
 			throw new \TYPO3\CMS\Vidi\Exception\MissingUidException('Missing Uid', 1351605542);
 		}
 
-		if (is_array($content['categories'])) {
-			$content['categories'] = implode(',', $content['categories']);
-		} else {
-			unset($content['categories']);
-		}
-
-		$data['sys_file'][$content['uid']] = $content;
+		$data[$content->getDataType()][$content->getUid()] = $content->toArray();
 
 		/** @var $tce \TYPO3\CMS\Core\DataHandling\DataHandler */
 		$tce = $this->objectManager->get('TYPO3\CMS\Core\DataHandling\DataHandler');
 		$tce->start($data, array());
 		$tce->process_datamap();
-	}
-
-	/**
-	 * Add a new Asset into the repository.
-	 *
-	 * @param array $content file information
-	 * @return int
-	 */
-	public function addAsset($content = array()) {
-
-		if (empty($content['pid'])) {
-			$content['pid'] = '0';
-		}
-		$key = 'NEW' . rand(100000, 999999);
-		$data['sys_file'][$key] = $content;
-
-		/** @var $tce \TYPO3\CMS\Core\DataHandling\DataHandler */
-		$tce = $this->objectManager->get('TYPO3\CMS\Core\DataHandling\DataHandler');
-		#$tce->stripslashes_values = 0; #@todo useful setting?
-		$tce->start($data, array());
-		$tce->process_datamap();
-
-		return empty($tce->substNEWwithIDs[$key]) ? 0 : $tce->substNEWwithIDs[$key];
 	}
 
 	/**
@@ -136,24 +101,12 @@ class ContentRepository extends \TYPO3\CMS\Core\Resource\FileRepository {
 	/**
 	 * Finds an object matching the given identifier.
 	 *
-	 * @throws \RuntimeException
-	 * @throws \InvalidArgumentException
 	 * @param int $uid The identifier of the object to find
 	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content The matching object
+	 * @api
 	 */
 	public function findByUid($uid) {
-		$matcher = $this->createMatch()->addMatch('uid', $uid);
-
-		$query = $this->createQuery();
-		$result = $query->setRawResult($this->rawResult)
-			->setDataType($this->dataType)
-			->setMatcher($matcher)
-			->execute();
-
-		if (is_array($result)) {
-			$result = reset($result);
-		}
-		return $result;
+		return $this->findByIdentifier($uid);
 	}
 
 	/**
@@ -227,16 +180,15 @@ class ContentRepository extends \TYPO3\CMS\Core\Resource\FileRepository {
 		$result = FALSE;
 		if ($content) {
 
-			/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
-			$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\ModuleLoader');
-			$deletedField = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService()->getDeleteField();
+			$data = array();
+			$cmd[$content->getDataType()][$content->getUid()]['deleted'] = 1;
 
-			if ($deletedField) {
-				// Mark the record as deleted
-				$result = $this->databaseHandle->exec_UPDATEquery($moduleLoader->getDataType(), 'uid = ' . $content->getUid(), array($deletedField => 1));
-			} else {
-				$result = $this->databaseHandle->exec_DELETEquery($moduleLoader->getDataType(), 'uid = ' . $content->getUid());
-			}
+			/** @var $tce \TYPO3\CMS\Core\DataHandling\DataHandler */
+			$tce = $this->objectManager->get('TYPO3\CMS\Core\DataHandling\DataHandler');
+			$tce->start($data, $cmd);
+			$tce->process_datamap();
+			$tce->process_cmdmap();
+			$result = TRUE;
 		}
 		return $result;
 	}
@@ -334,6 +286,88 @@ class ContentRepository extends \TYPO3\CMS\Core\Resource\FileRepository {
 		}
 
 		return $flag == 'one' && !empty($result) ? reset($result) : $result;
+	}
+
+	/**
+	 * Adds an object to this repository.
+	 *
+	 * @param object $object The object to add
+	 * @return void
+	 * @api
+	 */
+	public function add($object) {
+		throw new \BadMethodCallException('Repository does not support the add() method.', 1375805599);
+	}
+
+	/**
+	 * Returns the total number objects of this repository.
+	 *
+	 * @return integer The object count
+	 * @api
+	 */
+	public function countAll() {
+		// TODO: Implement countAll() method.
+	}
+
+	/**
+	 * Removes all objects of this repository as if remove() was called for
+	 * all of them.
+	 *
+	 * @return void
+	 * @api
+	 */
+	public function removeAll() {
+		// TODO: Implement removeAll() method.
+	}
+
+	/**
+	 * Finds an object matching the given identifier.
+	 *
+	 * @param mixed $identifier The identifier of the object to find
+	 * @return object The matching object if found, otherwise NULL
+	 * @api
+	 */
+	public function findByIdentifier($identifier) {
+
+		$matcher = $this->createMatch()->addMatch('uid', $identifier);
+
+		$query = $this->createQuery();
+		$result = $query->setRawResult($this->rawResult)
+			->setDataType($this->dataType)
+			->setMatcher($matcher)
+			->execute();
+
+		if (is_array($result)) {
+			$result = reset($result);
+		}
+		return $result;
+	}
+
+	/**
+	 * Sets the property names to order the result by per default.
+	 * Expected like this:
+	 * array(
+	 * 'foo' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING,
+	 * 'bar' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING
+	 * )
+	 *
+	 * @param array $defaultOrderings The property names to order by
+	 * @return void
+	 * @api
+	 */
+	public function setDefaultOrderings(array $defaultOrderings) {
+		throw new \BadMethodCallException('Repository does not support the setDefaultOrderings() method.', 1375805598);
+	}
+
+	/**
+	 * Sets the default query settings to be used in this repository
+	 *
+	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $defaultQuerySettings The query settings to be used by default
+	 * @return void
+	 * @api
+	 */
+	public function setDefaultQuerySettings(\TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $defaultQuerySettings) {
+		throw new \BadMethodCallException('Repository does not support the setDefaultQuerySettings() method.', 1375805597);
 	}
 }
 

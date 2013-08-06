@@ -35,19 +35,25 @@ class Content implements \ArrayAccess {
 	protected $uid;
 
 	/**
+	 * @var string
+	 */
+	protected $dataType;
+
+	/**
 	 * @var \TYPO3\CMS\Extbase\Object\ObjectManager
 	 */
 	protected $objectManager;
 
 	/**
-	 * Constructor for a Media object.
+	 * Constructor for a Content object.
 	 *
+	 * @param string $dataType will basically correspond to a table name, e.g fe_users, tt_content, ...
 	 * @param array $contentData
-	 * @param \TYPO3\CMS\Core\Resource\ResourceStorage $storage
 	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content
 	 */
-	public function __construct(array $contentData = array(), $storage = NULL) {
+	public function __construct($dataType, array $contentData = array()) {
 
+		$this->dataType = $dataType;
 		$this->uid = empty($contentData['uid']) ? NULL : $contentData['uid'];
 
 		/** @var \TYPO3\CMS\Vidi\Tca\FieldService $fieldTcaService */
@@ -82,6 +88,7 @@ class Content implements \ArrayAccess {
 	 */
 	public function __set($property, $value) {
 		$this->$property = $value;
+		return $this;
 	}
 
 	/**
@@ -140,6 +147,13 @@ class Content implements \ArrayAccess {
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getDataType() {
+		return $this->dataType;
+	}
+
+	/**
 	 * Whether a offset exists
 	 *
 	 * @link http://php.net/manual/en/arrayaccess.offsetexists.php
@@ -183,6 +197,17 @@ class Content implements \ArrayAccess {
 	 */
 	public function offsetUnset($offset) {
 		unset($this->$offset);
+	}
+
+	/**
+	 * Convert this to array
+	 *
+	 * @return array
+	 */
+	public function toArray() {
+		$result['uid'] = $this->uid;
+		$properties = json_decode(json_encode($this), true);
+		return array_merge($result, $properties);
 	}
 }
 ?>
