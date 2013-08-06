@@ -180,12 +180,12 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 		$result = FALSE;
 		if ($content) {
 
-			$data = array();
-			$cmd[$content->getDataType()][$content->getUid()]['deleted'] = 1;
+			// Build command
+			$cmd[$content->getDataType()][$content->getUid()]['delete'] = 1;
 
 			/** @var $tce \TYPO3\CMS\Core\DataHandling\DataHandler */
 			$tce = $this->objectManager->get('TYPO3\CMS\Core\DataHandling\DataHandler');
-			$tce->start($data, $cmd);
+			$tce->start(array(), $cmd);
 			$tce->process_datamap();
 			$tce->process_cmdmap();
 			$result = TRUE;

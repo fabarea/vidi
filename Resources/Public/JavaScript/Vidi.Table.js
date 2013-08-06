@@ -23,10 +23,10 @@ Vidi.Table = {
 		return {
 			'bStateSave': true,
 			'fnStateSave': function (oSettings, oData) {
-				sessionStorage.setItem('DataTables_' + Vidi.dataType, JSON.stringify(oData));
+				sessionStorage.setItem('DataTables_' + Vidi.module.dataType, JSON.stringify(oData));
 			},
 			'fnStateLoad': function (oSettings) {
-				return JSON.parse(sessionStorage.getItem('DataTables_' + Vidi.dataType));
+				return JSON.parse(sessionStorage.getItem('DataTables_' + Vidi.module.dataType));
 			},
 			'bProcessing': true,
 			'bServerSide': true,

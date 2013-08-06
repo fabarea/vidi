@@ -1,13 +1,13 @@
-<em:be.container pageTitle="Vidi" enableJumpToUrl="false" enableClickMenu="false" loadPrototype="false"
+<v:be.container pageTitle="Vidi" enableJumpToUrl="false" enableClickMenu="false" loadPrototype="false"
                  loadScriptaculous="false" loadExtJs="false" loadExtJsTheme="true"
-                 addCssFiles="{
+                 includeCssFiles="{
 		0:'{f:uri.resource(path:\'StyleSheet/bootstrap.css\')}',
 		1:'{f:uri.resource(path:\'StyleSheet/bootstrap-responsive.css\')}',
 		2:'{f:uri.resource(path:\'StyleSheet/vidi.css\')}',
 		3:'{f:uri.resource(path:\'StyleSheet/bootstrap-datatables.css\')}',
 		5:'{f:uri.resource(path:\'StyleSheet/JQueryUi/jquery-ui-1.10.1.custom.min.css\')}'
 	}"
-                 addJsFiles="{
+                 includeJsFiles="{
 		0:'{f:uri.resource(path:\'JavaScript/JQuery/jquery-1.9.1.min.js\')}'
 		}">
 
@@ -17,11 +17,13 @@
 		// Declare namespace
 		window.Vidi = {};
 
-		// "Live" variables
-		Vidi.dataType = '{v:moduleLoader(property: "dataType")}';
-		Vidi.tca = {}; // Fluid would be confuse with another syntax.
-		Vidi.tca.table = {};
-		Vidi.tca.table.label = '{v:tca.table(key: "label")}';
+		// "Live" variables taking into consideration Fluid parign which would be confused with a different syntax.
+		Vidi.module = {};
+		Vidi.module.dataType = '{v:moduleLoader(property: "dataType")}';
+		Vidi.module.parameterPrefix = '{v:parameterPrefix()}';
+		Vidi.module.tca = {};
+		Vidi.module.tca.ctrl = {};
+		Vidi.module.tca.ctrl.label = '{v:tca.table(key: "label")}';
 
 		Vidi._columns = [];
 		{v:grid.column.configuration()}
@@ -41,9 +43,10 @@
 	<v:js name="Bootstrap/bootstrapx-clickover.js"/>
 
 	<v:js name="Uri/Uri.min.js"/>
+	<v:js name="String.js"/>
+	<v:js name="Encoder.js"/>
 
 	<v:js name="Vidi.js"/>
-	<v:js name="Encoder.js"/>
 	<v:js name="Vidi.Panel.js"/>
 	<v:js name="Vidi.Table.js"/>
 	<v:js name="Vidi.Action.js"/>
@@ -51,7 +54,6 @@
 	<v:js name="Vidi.FlashMessage.js"/>
 	<v:js name="Vidi.Label.js"/>
 
-</em:be.container>
-{namespace em=TYPO3\CMS\Extensionmanager\ViewHelpers}
+</v:be.container>
 {namespace v=TYPO3\CMS\Vidi\ViewHelpers}
 

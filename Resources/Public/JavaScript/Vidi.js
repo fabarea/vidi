@@ -51,7 +51,7 @@ $(document).ready(function () {
 			.each(function (index) {
 				uid = $(this).data('uid');
 				checkboxes.push(uid);
-				url += '&tx_vidi_user_mediam1[contents][' + index + ']=' + uid;
+				url += '&{0}[contents][{1}]={2}'.format(Vidi.module.parameterPrefix, index, uid);
 			});
 
 

@@ -92,7 +92,7 @@ Vidi.Action = {
 
 								// Reload data table
 								Vidi.table.fnDeleteRow(Vidi.table.fnGetPosition(row));
-								var message = Vidi.format('message-deleted', data.object[Vidi.tca.table.label]);
+								var message = Vidi.format('message-deleted', data.object[Vidi.module.tca.ctrl.label]);
 								Vidi.FlashMessage.add(message, 'success');
 							}
 						);
