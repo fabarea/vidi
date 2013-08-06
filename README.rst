@@ -1,4 +1,3 @@
-========================
 Vidi for TYPO3 CMS
 ========================
 
@@ -7,29 +6,26 @@ designed for listing all kind of records along with advanced filtering capabilit
 
 Veni, vidi, vici!
 
-.. image:: https://raw.github.com/fudriot/vidi/master/Documentation/List-01.png
+.. image:: https://raw.github.com/TYPO3-extensions/vidi/master/Documentation/List-01.png
 
 Project info and releases
-=============================
+-----------------------------------
 
-
-What are the recommended releases?
-------------------------------------------------
-
-Stable version:
+Stable version (not yet released):
 http://typo3.org/extensions/repository/view/vidi
 
 Development version:
-https://github.com/fudriot/vidi.git
+https://git.typo3.org/TYPO3CMS/Extensions/vidi.git
 
 ::
 
-	git clone https://github.com/fudriot/vidi.git
+	git clone git://git.typo3.org/TYPO3CMS/Extensions/vidi.git
+
+Github mirror:
+https://github.com/TYPO3-extensions/vidi
 
 Flash news about latest development are also announced on
-<http://twitter.com/fudriot>
-
-The home page of the project is at http://forge.typo3.org/projects/extension-list/
+http://twitter.com/fudriot
 
 
 Installation
@@ -37,7 +33,7 @@ Installation
 
 Download the source code either from the `Git repository`_ to get the master or from the TER for the stable releases. Install the extension as normal in the Extension Manager.
 
-.. _Git repository: https://github.com/fudriot/vidi.git
+.. _Git repository: https://git.typo3.org/TYPO3CMS/Extensions/vidi.git
 
 Configuration
 =================

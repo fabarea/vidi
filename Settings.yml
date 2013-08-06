@@ -1,0 +1,14 @@
+# This is the project specific Settings.yml file.
+# Place Sphinx specific build information here.
+# Settings given here will replace the settings of 'conf.py'.
+
+---
+conf.py:
+  copyright: 2013 to now
+  project: Versatile and Interactive Display
+  version: 0.1
+  release: 0.1.0
+
+  #render README.rst, not Documentation/Index.rst
+  master_doc: README
+...
