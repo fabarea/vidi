@@ -144,12 +144,13 @@ class ModuleLoader {
 		$result = $GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode];
 
 		if (!empty($key)) {
-			// key must exist
-			if (empty($result[$key])) {
+			if (isset($result[$key])) {
+				$result = $result[$key];
+			} else {
+				// key must exist
 				$message = sprintf('Invalid key configuration "%s"', $key);
 				throw new \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException($message, 1375092054);
 			}
-			$result = $result[$key];
 		}
 		return $result;
 	}

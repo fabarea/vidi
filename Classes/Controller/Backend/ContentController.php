@@ -41,7 +41,7 @@ class ContentController extends \TYPO3\CMS\Vidi\Controller\BaseController {
 	protected $pageRenderer;
 
 	/**
-	 * @throws \TYPO3\CMS\Media\Exception\StorageNotOnlineException
+	 * Initialize every action.
 	 */
 	public function initializeAction() {
 		$this->pageRenderer->addInlineLanguageLabelFile('EXT:vidi/Resources/Private/Language/locallang.xlf');
@@ -91,14 +91,12 @@ class ContentController extends \TYPO3\CMS\Vidi\Controller\BaseController {
 	}
 
 	/**
-	 * Action update media.
-	 *
 	 * @param array $content
 	 * @return void
 	 * @dontvalidate $content
 	 */
 	public function updateAction(array $content) {
-		$this->contentRepository->updateAsset($content);
+		$this->contentRepository->update($content);
 		$contentObject = $this->contentRepository->findByUid($content['uid']);
 		$result['status'] = TRUE;
 		$result['action'] = 'update';
@@ -113,7 +111,7 @@ class ContentController extends \TYPO3\CMS\Vidi\Controller\BaseController {
 	}
 
 	/**
-	 * Delete a row given a media uid.
+	 * Delete a row given an object uid.
 	 * This action is expected to have a parameter format = json
 	 *
 	 * @param int $content
@@ -138,7 +136,7 @@ class ContentController extends \TYPO3\CMS\Vidi\Controller\BaseController {
 	}
 
 	/**
-	 * Mass delete a media
+	 * Mass delete objects
 	 * This action is expected to have a parameter format = json
 	 *
 	 * @param array $contents

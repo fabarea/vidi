@@ -40,6 +40,29 @@ Configuration
 
 Configuration is mainly provided in the Extension Manager and is pretty much self-explanatory. Check possible options there.
 
+TSconfig
+------------
+
+A pid (page id) is necessary to be defined when creating a new record for the need of TCEmain_.
+This is not true for all records as some of them can be on the root level and consequently have a pid 0.
+However most requires a pid value greater than 0. In a first place, a global pid can be configured in the Extension Manager
+which is taken as fallback value. Besides, User TSconfig can also be set which will configure a custom pid for each data type enabling to
+be fine grained::
+
+	# Short syntax for data type "tx_domain_model_foo":
+	tx_vidi.dataType.tx_domain_model_foo.storagePid = 33
+
+	# Extended syntax for data type "tx_domain_model_foo":
+	tx_vidi {
+		dataType {
+			fe_users {
+				storagePid = 33
+			}
+		}
+	}
+
+.. _TCEmain: http://docs.typo3.org/TYPO3/CoreApiReference/ApiOverview/Typo3CoreEngine/UsingTcemain/Index.html
+
 How to load a BE module for a custom data type?
 ===================================================
 

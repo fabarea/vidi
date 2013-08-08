@@ -60,11 +60,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return string
 	 */
 	public function getLabelField() {
-		$result = '';
-		if (! empty($this->tca['label'])) {
-			$result = $this->tca['label'];
-		}
-		return $result;
+		return $this->get('label');
 	}
 
 	/**
@@ -73,11 +69,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return string
 	 */
 	public function getDeleteField() {
-		$result = NULL;
-		if (!empty($this->tca['delete'])) {
-			$result = $this->tca['delete'];
-		}
-		return $result;
+		return $this->get('delete');
 	}
 
 	/**
@@ -86,20 +78,30 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return string
 	 */
 	public function getLanguageField() {
-		$result = NULL;
-		if (!empty($this->tca['languageField'])) {
-			$result = $this->tca['languageField'];
-		}
-		return $result;
+		return $this->get('languageField');
 	}
 
 	/**
-	 * Returns the searchable fields
+	 * Returns the searchable fields.
 	 *
 	 * @return string
 	 */
 	public function getSearchableFields() {
-		return $this->tca['searchFields'];
+		return $this->get('searchFields');
+	}
+
+	/**
+	 * Return configuration value given a key.
+	 *
+	 * @param string $key
+	 * @return string
+	 */
+	public function get($key) {
+		$result = NULL;
+		if (isset($this->tca[$key])) {
+			$result = $this->tca[$key];
+		}
+		return $result;
 	}
 
 	/**

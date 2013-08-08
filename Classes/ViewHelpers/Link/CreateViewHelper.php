@@ -30,6 +30,23 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class CreateViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
+	/**
+	 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected $backendUser;
+
+	/**
+	 * @var \TYPO3\CMS\Vidi\ModuleLoader
+	 */
+	protected $moduleLoader;
+
+	/**
+	 * Initialize View Helper
+	 */
+	public function initialize() {
+		$this->backendUser = $GLOBALS['BE_USER'];
+		$this->moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
+	}
 
 	/**
 	 * Render a create link given a data type.
@@ -37,16 +54,34 @@ class CreateViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelp
 	 * @return string
 	 */
 	public function render() {
-
-		/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
-		$moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
-
-		$defaultPid = $moduleLoader->getDefaultPid();
 		return sprintf('alt_doc.php?returnUrl=mod.php?M=%s&edit[%s][%s]=new',
 			GeneralUtility::_GP('M'),
-			$moduleLoader->getDataType(),
-			empty($defaultPid) ? 0 : $defaultPid
+			$this->moduleLoader->getDataType(),
+			$this->getPid()
 		);
+	}
+
+	/**
+	 * Return the default pid configuration.
+	 *
+	 * @return int
+	 */
+	public function getPid() {
+		$isRootLevel = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService()->get('rootLevel');
+		if ($isRootLevel) {
+			$pid = 0;
+		} else {
+			// Get configuration from User TSconfig if any
+			$tsConfigPath = sprintf('tx_vidi.dataType.%s.storagePid', $this->moduleLoader->getDataType());
+			$result = $this->backendUser->getTSConfig($tsConfigPath);
+			$pid = $result['value'];
+
+			// Get pid from Module Loader
+			if (NULL === $pid) {
+				$pid = $this->moduleLoader->getDefaultPid();
+			}
+		}
+		return $pid;
 	}
 }
 ?>
