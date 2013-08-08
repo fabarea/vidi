@@ -166,7 +166,8 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * @return int
 	 */
 	public function countBy(\TYPO3\CMS\Vidi\QueryElement\Matcher $matcher) {
-		$query = $this->createQuery();
+		$query = $this->createQuery()
+			->setDataType($this->dataType);
 		return $query->setMatcher($matcher)->count();
 	}
 
