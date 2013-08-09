@@ -18,9 +18,19 @@ $tca = array(
 				'visible' => TRUE,
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_groups.xlf:title',
 			),
+			'tstamp' => array(
+				'visible' => FALSE,
+				'format' => 'date',
+				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_groups.xlf:tstamp',
+			),
+			'crdate' => array(
+				'visible' => FALSE,
+				'format' => 'date',
+				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_groups.xlf:crdate',
+			),
 			'hidden' => array(
 				'renderer' => 'TYPO3\CMS\Vidi\GridRenderer\Visibility',
-				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:visibility_abbreviation',
+				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_groups.xlf:visibility_abbreviation',
 				'width' => '3%',
 			),
 			'__buttons' => array(

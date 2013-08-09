@@ -55,8 +55,7 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 					$rendererObject = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($renderer);
 					$value = $rendererObject->render($object, $fieldName, $configuration);
 				} else {
-					$getter = 'get' . ucfirst($fieldName);
-					$value = $object->$getter();
+					$value = $object[$fieldName]; // AccessArray object
 				}
 
 				$value = $this->format($value, $configuration);

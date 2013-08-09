@@ -63,11 +63,12 @@ class ConfigurationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractV
 	 */
 	protected function isAllowed($fieldName){
 
+		$tcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService();
 		$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
 		$tcaGridService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService();
 
 		$result = FALSE;
-		if ($tcaFieldService->hasField($fieldName) || $tcaGridService->isSystem($fieldName) || $fieldName === 'uid') {
+		if ($tcaFieldService->hasField($fieldName) || $tcaGridService->isSystem($fieldName) || $tcaTableService->isSystem($fieldName)) {
 			$result = TRUE;
 		}
 		return $result;

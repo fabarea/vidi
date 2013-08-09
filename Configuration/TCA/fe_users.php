@@ -31,6 +31,16 @@ $tca = array(
 				'renderer' => 'TYPO3\CMS\Vidi\GridRenderer\Relation',
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:usergroup',
 			),
+			'tstamp' => array(
+				'visible' => FALSE,
+				'format' => 'date',
+				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:tstamp',
+			),
+			'crdate' => array(
+				'visible' => FALSE,
+				'format' => 'date',
+				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:crdate',
+			),
 			'disable' => array(
 				'renderer' => 'TYPO3\CMS\Vidi\GridRenderer\Visibility',
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:visibility_abbreviation',

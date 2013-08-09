@@ -73,6 +73,24 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
+	 * Get the modification time stamp field.
+	 *
+	 * @return string
+	 */
+	public function getTimeModificationField() {
+		return $this->get('tstamp');
+	}
+
+	/**
+	 * Get the creation time stamp field.
+	 *
+	 * @return string
+	 */
+	public function getTimeCreationField() {
+		return $this->get('crdate');
+	}
+
+	/**
 	 * Get the language field for the table.
 	 *
 	 * @return string
@@ -88,6 +106,17 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 */
 	public function getSearchableFields() {
 		return $this->get('searchFields');
+	}
+
+	/**
+	 * Tells whether the field is considered as system, e.g. uid, crdate, tstamp, etc...
+	 *
+	 * @param string $fieldName
+	 * @return bool
+	 */
+	public function isSystem($fieldName) {
+		$systemFields = array('uid', 'tstamp', 'crdate', 'sys_language_uid');
+		return in_array($fieldName, $systemFields);
 	}
 
 	/**

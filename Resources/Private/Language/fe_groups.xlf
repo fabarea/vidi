@@ -18,6 +18,12 @@
 			<trans-unit id="title">
 				<source>Group title</source>
 			</trans-unit>
+			<trans-unit id="tstamp">
+				<source>Modification date</source>
+			</trans-unit>
+			<trans-unit id="crdate">
+				<source>Creation date</source>
+			</trans-unit>
 			<trans-unit id="visibility_abbreviation">
 				<source>Vis.</source>
 			</trans-unit>

@@ -58,9 +58,23 @@ class Content implements \ArrayAccess {
 
 		/** @var \TYPO3\CMS\Vidi\Tca\FieldService $fieldTcaService */
 		$fieldTcaService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
+		$fields = $fieldTcaService->getFieldNames();
+
+		/** @var \TYPO3\CMS\Vidi\Tca\TableService $tableTcaService */
+		$tableTcaService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService();
+
+		// Create time stamp field
+		if ($tableTcaService->getTimeCreationField()) {
+			$fields[] = $tableTcaService->getTimeCreationField();
+		}
+
+		// Update time stamp field
+		if ($tableTcaService->getTimeModificationField()) {
+			$fields[] = $tableTcaService->getTimeModificationField();
+		}
 
 		// Get column to be displayed
-		foreach ($fieldTcaService->getFieldNames() as $field) {
+		foreach ($fields as $field) {
 			if (isset($contentData[$field])) {
 				$this->$field = $contentData[$field];
 			}
