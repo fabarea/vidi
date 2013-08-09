@@ -35,7 +35,106 @@ class FieldServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 */
 	private $fixture;
 
+	/**
+	 * @var string
+	 */
+	private $dataType = 'fe_users';
+
+	/**
+	 * @var string
+	 */
+	private $moduleCode = 'user_VidiFeUsersM1';
+
 	public function setUp() {
+
+		$moduleLoader = new \TYPO3\CMS\Vidi\ModuleLoader($this->dataType);
+		$moduleLoader->register();
+		$GLOBALS['_GET']['M'] = $this->moduleCode;
+
+		// @todo implement Unit Tests for relation. Below example of TCA.
+		#################
+		# opposite many
+		# one-to-many
+		$TCA['tx_foo_domain_model_book'] = array(
+			'columns' => array(
+				'access_codes' => array(
+					'config' => array(
+						'type' => 'inline',
+						'foreign_table' => 'tx_foo_domain_model_accesscode',
+						'foreign_field' => 'book',
+						'maxitems' => 9999,
+					),
+				),
+			),
+		);
+
+		# opposite one
+		# many-to-one
+		$TCA['tx_foo_domain_model_accesscode'] = array(
+			'columns' => array(
+				'book' => array(
+					'config' => array(
+						'type' => 'select',
+						'foreign_table' => 'tx_foo_domain_model_book',
+						'foreign_field' => 'access_codes',
+						'minitems' => 1,
+						'maxitems' => 1,
+					),
+				),
+			),
+		);
+
+		#################
+		# Many to many
+		$TCA['tx_foo_domain_model_book'] = array(
+			'columns' => array(
+				'tx_myext_locations' => array(
+					'config' => array(
+						'type' => 'select',
+						'foreign_table' => 'tx_foo_domain_categories',
+						'MM_opposite_field' => 'usage_mm',
+						'MM' => 'tx_foo_domain_categories_mm',
+						'MM_match_fields' => array(
+							'tablenames' => 'pages'
+						),
+						'size' => 5,
+						'maxitems' => 100
+					)
+				)
+			),
+		);
+
+		$TCA['tx_foo_domain_categories'] = array(
+			'columns' => array(
+				'usage_mm' => array(
+					'config' => array(
+						'type' => 'group',
+						'internal_type' => 'db',
+						'allowed' => 'pages,tt_news',
+						'prepend_tname' => 1,
+						'size' => 5,
+						'maxitems' => 100,
+						'MM' => 'tx_foo_domain_categories_mm'
+					)
+				)
+			),
+		);
+
+		#################
+		# Legacy MM relation
+		$TCA['tx_foo_domain_model_book'] = array(
+			'columns' => array(
+				'fe_groups' => array(
+					'config' => array(
+						'type' => 'inline',
+						'foreign_table' => 'tx_foo_domain_model_accesscode',
+						'foreign_field' => 'book',
+						'maxitems' => 9999,
+					),
+				),
+			),
+		);
+
 		$tableName = 'fe_users';
 		$serviceType = 'field';
 		$this->fixture = new \TYPO3\CMS\Vidi\Tca\FieldService($tableName, $serviceType);
@@ -100,7 +199,9 @@ class FieldServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 		$this->assertEquals($hasRelation, $this->fixture->hasRelation($fieldName));
 		$this->assertNotEquals($hasRelation, $this->fixture->hasNoRelation($fieldName));
 		$this->assertEquals($hasRelationOneToMany, $this->fixture->hasRelationOneToMany($fieldName));
+		$this->assertEquals($hasRelationOneToMany, $this->fixture->hasRelationManyToOne($fieldName));
 		$this->assertEquals($hasRelationManyToMany, $this->fixture->hasRelationManyToMany($fieldName));
+		$this->assertEquals($hasRelationOneToMany, $this->fixture->hasRelationOneToOne($fieldName));
 	}
 
 	/**
@@ -108,7 +209,7 @@ class FieldServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 */
 	public function fieldProvider() {
 		return array(
-			array('username', FALSE, FALSE, FALSE),
+			array('username', FALSE, FALSE, FALSE, FALSE, FALSE),
 			#array('usergroup', TRUE, FALSE, TRUE),
 		);
 	}

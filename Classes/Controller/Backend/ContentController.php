@@ -29,12 +29,6 @@ namespace TYPO3\CMS\Vidi\Controller\Backend;
 class ContentController extends \TYPO3\CMS\Vidi\Controller\BaseController {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository
-	 * @inject
-	 */
-	protected $contentRepository;
-
-	/**
 	 * @var \TYPO3\CMS\Core\Page\PageRenderer
 	 * @inject
 	 */
@@ -75,9 +69,12 @@ class ContentController extends \TYPO3\CMS\Vidi\Controller\BaseController {
 		$orderObject = $this->createOrderObject();
 		$pagerObject = $this->createPagerObject();
 
+		// Fetch the adequate repository
+		$contentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance();
+
 		// Query the repository
-		$contents = $this->contentRepository->findBy($matcherObject, $orderObject, $pagerObject->getLimit(), $pagerObject->getOffset());
-		$numberOfContents = $this->contentRepository->countBy($matcherObject);
+		$contents = $contentRepository->findBy($matcherObject, $orderObject, $pagerObject->getLimit(), $pagerObject->getOffset());
+		$numberOfContents = $contentRepository->countBy($matcherObject);
 		$pagerObject->setCount($numberOfContents);
 
 		// Assign values

@@ -66,6 +66,14 @@ Vidi.Table = {
 			},
 			'fnDrawCallback': function () {
 
+				// Switch visibility of hidden elements when mouse is in table cell.
+				$('.dataTable tbody td')
+					.hover(function () {
+						$('.invisible', this).toggleClass('visible').toggleClass('invisible');
+					}, function () {
+						$('.visible', this).toggleClass('invisible').toggleClass('visible');
+					});
+
 				// Attach event to DOM elements
 				Vidi.Action.edit();
 				Vidi.Action.delete();

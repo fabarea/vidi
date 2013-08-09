@@ -38,23 +38,78 @@ class ContentTest extends \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCase {
 	/**
 	 * @var string
 	 */
-	private $dataType = 'fe_users';
-
-	/**
-	 * @var string
-	 */
-	private $moduleCode = 'user_VidiFeUsersM1';
+	private $dataType = 'tx_foo_domain_model_bar';
 
 	public function setUp() {
-		$moduleLoader = new \TYPO3\CMS\Vidi\ModuleLoader($this->dataType);
-		$moduleLoader->register();
-		$GLOBALS['_GET']['M'] = $this->moduleCode;
-
-		$this->fixture = new \TYPO3\CMS\Vidi\Domain\Model\Content();
+		$GLOBALS['TCA'][$this->dataType]['columns'] = array(
+			'foo' => array(),
+			'foo_bar' => array(),
+		);
+		$this->fixture = new \TYPO3\CMS\Vidi\Domain\Model\Content($this->dataType);
 	}
 
 	public function tearDown() {
-		unset($this->fixture, $GLOBALS['_GET']['M']);
+		unset($this->fixture, $GLOBALS['TCA'][$this->dataType]);
+	}
+
+	/**
+	 * @test
+	 * @dataProvider fieldNameProvider
+	 */
+	public function fieldNameIsConvertedToPropertyName($fieldName, $propertyName) {
+		$data = array(
+			$fieldName => 'foo data',
+		);
+		$object = new \TYPO3\CMS\Vidi\Domain\Model\Content($this->dataType, $data);
+		$this->assertObjectHasAttribute($propertyName, $object);
+	}
+
+	/**
+	 * @test
+	 * @dataProvider fieldNameProvider
+	 */
+	public function accessValueOfArrayObjectReturnsFooDataAsString($fieldName) {
+		$data = array(
+			$fieldName => 'foo data',
+		);
+		$object = new \TYPO3\CMS\Vidi\Domain\Model\Content($this->dataType, $data);
+		$this->assertSame($data[$fieldName], $object[$fieldName]);
+	}
+
+	/**
+	 * @test
+	 * @dataProvider fieldNameProvider
+	 */
+	public function getValueThroughGetterReturnsFooDataAsString($fieldName, $propertyName) {
+		$data = array(
+			$fieldName => 'foo data',
+		);
+		$object = new \TYPO3\CMS\Vidi\Domain\Model\Content($this->dataType, $data);
+		$getter = 'get' . ucfirst($propertyName);
+		$this->assertSame($data[$fieldName], $object->$getter());
+	}
+
+	/**
+	 * @test
+	 * @dataProvider fieldNameProvider
+	 */
+	public function toArrayMethodContainsGivenFieldName($fieldName) {
+		$data = array(
+			$fieldName => 'foo data',
+		);
+		$object = new \TYPO3\CMS\Vidi\Domain\Model\Content($this->dataType, $data);
+		$array = $object->toArray();
+		$this->assertArrayHasKey($fieldName, $array);
+	}
+
+	/**
+	 * Provider
+	 */
+	public function fieldNameProvider() {
+		return array(
+			array('foo', 'foo'),
+			array('foo_bar', 'fooBar'),
+		);
 	}
 
 	/**

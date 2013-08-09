@@ -38,12 +38,9 @@ class EditViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
 	 */
 	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object) {
 
-		/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
-		$moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
-
 		return sprintf('alt_doc.php?returnUrl=mod.php?M=%s&edit[%s][%s]=edit',
 			GeneralUtility::_GP('M'),
-			$moduleLoader->getDataType(),
+			$object->getDataType(),
 			$object->getUid()
 		);
 	}

@@ -60,7 +60,7 @@ class CategoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function renderAssetWithNoCategoryReturnsEmpty() {
-		$asset = new \TYPO3\CMS\Vidi\Domain\Model\Content();
+		$asset = new \TYPO3\CMS\Vidi\Domain\Model\Content($this->dataType);
 		$actual = $this->fixture->render($asset);
 		$this->assertEmpty($actual);
 	}

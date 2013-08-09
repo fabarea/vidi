@@ -111,7 +111,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Get the translation of a label given a column
 	 *
-	 * @param string $fieldName the name of the field
+	 * @param string $fieldName
 	 * @return string
 	 */
 	public function getLabel($fieldName) {
@@ -126,7 +126,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Get the translation of a label given a column
 	 *
-	 * @param string $fieldName the name of the field
+	 * @param string $fieldName
 	 * @param string $itemValue the item value to search for.
 	 * @return string
 	 */
@@ -147,7 +147,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Get a possible icon given a field name an an item
 	 *
-	 * @param string $fieldName the name of the field
+	 * @param string $fieldName
 	 * @param string $itemValue the item value to search for.
 	 * @return string
 	 */
@@ -168,7 +168,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns whether the field has a label
 	 *
-	 * @param string $fieldName the name of the field
+	 * @param string $fieldName
 	 * @return bool
 	 */
 	public function hasLabel($fieldName) {
@@ -179,7 +179,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns whether the field is required
 	 *
-	 * @param string $fieldName the name of the field
+	 * @param string $fieldName
 	 * @return bool
 	 */
 	public function isRequired($fieldName) {
@@ -194,7 +194,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns an array containing the configuration of an column
 	 *
-	 * @param string $fieldName the name of the field
+	 * @param string $fieldName
 	 * @return array
 	 */
 	public function getField($fieldName) {
@@ -208,7 +208,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Tell whether the field exists or not.
 	 *
-	 * @param string $fieldName the name of the field
+	 * @param string $fieldName
 	 * @return array
 	 */
 	public function hasField($fieldName) {
@@ -218,7 +218,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns the relation type
 	 *
-	 * @param string $fieldName the name of the field
+	 * @param string $fieldName
 	 * @return string
 	 */
 	public function relationDataType($fieldName) {
@@ -229,7 +229,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns whether the field has relation (one to many, many to many)
 	 *
-	 * @param string $fieldName the name of the field
+	 * @param string $fieldName
 	 * @return bool
 	 */
 	public function hasRelation($fieldName) {
@@ -240,7 +240,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns whether the field has no relation (one to many, many to many)
 	 *
-	 * @param string $fieldName the name of the field
+	 * @param string $fieldName
 	 * @return bool
 	 */
 	public function hasNoRelation($fieldName) {
@@ -248,20 +248,88 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
-	 * Returns whether the field has one to many relation.
+	 * Returns whether the field has relation "many" regarless of many-to-many or one-to-many.
 	 *
-	 * @param string $fieldName the name of the field
+	 * @param string $fieldName
+	 * @return bool
+	 */
+	public function hasRelationMany($fieldName) {
+		$configuration = $this->getConfiguration($fieldName);
+		return $this->hasRelation($fieldName) && $configuration['maxitems'] > 1;
+	}
+
+	/**
+	 * Returns whether the field has relation "one" regarless of one-to-many or one-to-one.
+	 *
+	 * @param string $fieldName
+	 * @return bool
+	 */
+	public function hasRelationOne($fieldName) {
+		$configuration = $this->getConfiguration($fieldName);
+		return $this->hasRelation($fieldName) && $configuration['maxitems'] == 1;
+	}
+
+	/**
+	 * Returns whether the field has one-to-many relation.
+	 *
+	 * @param string $fieldName
 	 * @return bool
 	 */
 	public function hasRelationOneToMany($fieldName) {
+		$result = FALSE;
+
 		$configuration = $this->getConfiguration($fieldName);
-		return $this->hasRelation($fieldName) && !isset($configuration['MM']) && $configuration['maxitems'] == 1;
+		if (!empty($configuration['foreign_field'])) {
+
+			// Load TCA service of foreign fields.
+			$tcaForeignFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($configuration['foreign_table']);
+			$result = $this->hasRelationMany($fieldName) && $tcaForeignFieldService->hasRelationOne($configuration['foreign_field']);
+		}
+		return $result;
+	}
+
+	/**
+	 * Returns whether the field has many-to-one relation.
+	 *
+	 * @param string $fieldName
+	 * @return bool
+	 */
+	public function hasRelationManyToOne($fieldName) {
+		$result = FALSE;
+
+		$configuration = $this->getConfiguration($fieldName);
+		if (!empty($configuration['foreign_field'])) {
+
+			// Load TCA service of foreign fields.
+			$tcaForeignFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($configuration['foreign_table']);
+			$result = $this->hasRelationOne($fieldName) && $tcaForeignFieldService->hasRelationMany($configuration['foreign_field']);
+		}
+		return $result;
+	}
+
+	/**
+	 * Returns whether the field has one-to-one relation.
+	 *
+	 * @param string $fieldName
+	 * @return bool
+	 */
+	public function hasRelationOneToOne($fieldName) {
+		$result = FALSE;
+
+		$configuration = $this->getConfiguration($fieldName);
+		if (!empty($configuration['foreign_field'])) {
+
+			// Load TCA service of foreign fields.
+			$tcaForeignFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($configuration['foreign_table']);
+			$result = $this->hasRelationOne($fieldName) && $tcaForeignFieldService->hasRelationOne($configuration['foreign_field']);
+		}
+		return $result;
 	}
 
 	/**
 	 * Returns whether the field has many to many relation.
 	 *
-	 * @param string $fieldName the name of the field
+	 * @param string $fieldName
 	 * @return bool
 	 */
 	public function hasRelationManyToMany($fieldName) {
@@ -272,12 +340,12 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns whether the field has many to many relation using comma separated values (legacy).
 	 *
-	 * @param string $fieldName the name of the field
+	 * @param string $fieldName
 	 * @return bool
 	 */
 	public function hasRelationWithCommaSeparatedValues($fieldName) {
 		$configuration = $this->getConfiguration($fieldName);
-		return $this->hasRelation($fieldName) && !isset($configuration['MM']) && $configuration['maxitems'] > 1;
+		return $this->hasRelation($fieldName) && !isset($configuration['MM']) && !isset($configuration['foreign_field']) && $configuration['maxitems'] > 1;
 	}
 
 	/**

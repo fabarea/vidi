@@ -22,6 +22,7 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
 
 /**
  * Class rendering relation
@@ -29,36 +30,78 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
 class Relation implements \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface {
 
 	/**
+	 * @var \TYPO3\CMS\Vidi\ViewHelpers\Link\EditViewHelper
+	 */
+	protected $editViewHelper;
+
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		$this->editViewHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ViewHelpers\Link\EditViewHelper');
+	}
+
+	/**
 	 * Render a representation of the relation on the GUI.
 	 *
 	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
-	 * @param string $propertyName
+	 * @param string $fieldName
 	 * @param array $configuration
 	 * @return string
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $content = NULL, $propertyName = NULL, $configuration = array()) {
+	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $content = NULL, $fieldName = NULL, $configuration = array()) {
 
 		$result = '';
 
-		#var_dump($propertyName);
+		// Get TCA Field service
+		$tcaFieldService = TcaServiceFactory::getFieldService($content->getDataType());
 
-		if (\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService()->hasRelation($propertyName)) {
-			$relations = $content[$propertyName];
-			if (!empty($relations)) {
-				$template = '<li style="list-style: disc">%s</li>';
+		// Get label of the foreign table
+		$foreignLabelField = $this->getForeignTableLabelField($fieldName);
 
-				// Compute the label of the foreign table.
-				$relationDataType = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService()->relationDataType($propertyName);
-				$labelField = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($relationDataType)->getLabelField();
+		if ($tcaFieldService->hasRelationOne($fieldName)) {
 
-				/** @var $relationalContent \TYPO3\CMS\Vidi\Domain\Model\Content */
-				foreach ($relations as $relationalContent) {
-					$result .= sprintf($template, $relationalContent[$labelField]);
+			$foreignObject = $content[$fieldName];
+
+			if ($foreignObject) {
+				$template = '<a href="%s" data-uid="%s" class="btn-edit invisible">%s</a><span>%s</span>';
+				$result = sprintf($template,
+					$this->editViewHelper->render($foreignObject),
+					$content->getUid(),
+					\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-open'),
+					$foreignObject[$foreignLabelField]
+				);
+			}
+		} elseif ($tcaFieldService->hasRelationMany($fieldName)) {
+
+			if (!empty($content[$fieldName])) {
+				$template = '<li><a href="%s" data-uid="%s" class="btn-edit invisible">%s</a><span>%s</span></li>';
+
+				/** @var $foreignObject \TYPO3\CMS\Vidi\Domain\Model\Content */
+				foreach ($content[$fieldName] as $foreignObject) {
+					$result .= sprintf($template,
+						$this->editViewHelper->render($foreignObject),
+						$content->getUid(),
+						\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-open'),
+						$foreignObject[$foreignLabelField]);
 				}
-				$result = sprintf('<ul>%s</ul>', $result);
+				$result = sprintf('<ul class="unstyled">%s</ul>', $result);
 			}
 		}
 		return $result;
+	}
+
+	/**
+	 * Return the label field of the foreign table.
+	 *
+	 * @param string $propertyName
+	 * @return string
+	 */
+	public function getForeignTableLabelField($propertyName) {
+
+		// Compute the label of the foreign table.
+		$relationDataType = TcaServiceFactory::getFieldService()->relationDataType($propertyName);
+		return TcaServiceFactory::getTableService($relationDataType)->getLabelField();
 	}
 }
 ?>

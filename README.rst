@@ -301,6 +301,22 @@ To render a custom column a class implementing Grid Renderer Interface must be g
 @todo write more...
 
 
+Content Repository Factory
+===========================
+
+Each Content type (e.g. fe_users, fe_groups) has its own Content repository instance which is manged internally by the Repository Factory.
+In order to get the adequate instance, the repository can be fetched by this code::
+
+
+	// Fetch the adequate repository for a known data type.
+	$dataType = 'fe_users';
+	$contentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance($dataType);
+
+	// The data type can be omitted in the context of a BE module
+	// Internally, the Factory ask the Module Loader to retrieve the main data type of the BE module.
+	$contentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance();
+
+
 TCA Service API
 =================
 
@@ -357,3 +373,105 @@ Instantiate a TCA service related to **grid**::
 	$tableService = \TYPO3\CMS\Media\Tca\TcaServiceFactory::getService($tableName, $serviceType);
 
 	// Refer to internal methods of the service...
+
+Gotchas
+---------------
+
+Important: whenever a relation is displayed within Vidi, the TCA configuration ``foreign_field``
+must be defined in both side of the relations to properly work. This is needed for Vidi to retrieve the content in both direction.
+Check example below which shows ``foreign_field`` set for each field.
+
+@todo write a TCA validator if the case is too misleading.
+
+
+One to Many relation and its opposite Many to One:
+
+::
+
+	#################
+	# opposite many
+	# one-to-many
+	$TCA['tx_foo_domain_model_book'] = array(
+		'columns' => array(
+			'access_codes' => array(
+				'config' => array(
+					'type' => 'inline',
+					'foreign_table' => 'tx_foo_domain_model_accesscode',
+					'foreign_field' => 'book',
+					'maxitems' => 9999,
+				),
+			),
+		),
+	);
+
+	# opposite one
+	# many-to-one
+	$TCA['tx_foo_domain_model_accesscode'] = array(
+		'columns' => array(
+			'book' => array(
+				'config' => array(
+					'type' => 'select',
+					'foreign_table' => 'tx_foo_domain_model_book',
+					'foreign_field' => 'access_codes',
+					'minitems' => 1,
+					'maxitems' => 1,
+				),
+			),
+		),
+	);
+
+
+Bi-directional Many to Many relation::
+
+	#################
+	# Many to many
+	$TCA['tx_foo_domain_model_book'] = array(
+		'columns' => array(
+			'tx_myext_locations' => array(
+				'config' => array(
+					'type' => 'select',
+					'foreign_table' => 'tx_foo_domain_categories',
+					'MM_opposite_field' => 'usage_mm',
+					'MM' => 'tx_foo_domain_categories_mm',
+					'MM_match_fields' => array(
+						'tablenames' => 'pages'
+					),
+					'size' => 5,
+					'maxitems' => 100
+				)
+			)
+		),
+	);
+
+	$TCA['tx_foo_domain_categories'] = array(
+		'columns' => array(
+			'usage_mm' => array(
+				'config' => array(
+					'type' => 'group',
+					'internal_type' => 'db',
+					'allowed' => 'pages,tt_news',
+					'prepend_tname' => 1,
+					'size' => 5,
+					'maxitems' => 100,
+					'MM' => 'tx_foo_domain_categories_mm'
+				)
+			)
+		),
+	);
+
+Legacy Many to Many relation with comma separated values (should be avoided in favour of proper MM relations). Notice field ``foreign_field`` is omitted::
+
+	#################
+	# Legacy MM relation
+	$TCA['tx_foo_domain_model_book'] = array(
+		'columns' => array(
+			'fe_groups' => array(
+				'config' => array(
+					'type' => 'inline',
+					'foreign_table' => 'tx_foo_domain_model_accesscode',
+					'foreign_field' => 'book',
+					'maxitems' => 9999,
+				),
+			),
+		),
+	);

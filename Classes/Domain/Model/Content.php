@@ -40,9 +40,9 @@ class Content implements \ArrayAccess {
 	protected $dataType;
 
 	/**
-	 * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+	 * @var \TYPO3\CMS\Vidi\Tca\FieldService
 	 */
-	protected $objectManager;
+	protected $tcaFieldService;
 
 	/**
 	 * Constructor for a Content object.
@@ -56,53 +56,51 @@ class Content implements \ArrayAccess {
 		$this->dataType = $dataType;
 		$this->uid = empty($contentData['uid']) ? NULL : $contentData['uid'];
 
-		/** @var \TYPO3\CMS\Vidi\Tca\FieldService $fieldTcaService */
-		$fieldTcaService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
-		$fields = $fieldTcaService->getFieldNames();
+		$this->tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($dataType);
+		$fields = $this->tcaFieldService->getFieldNames();
 
-		/** @var \TYPO3\CMS\Vidi\Tca\TableService $tableTcaService */
-		$tableTcaService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService();
+		/** @var \TYPO3\CMS\Vidi\Tca\TableService $tcaTableService */
+		$tcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($dataType);
 
 		// Create time stamp field
-		if ($tableTcaService->getTimeCreationField()) {
-			$fields[] = $tableTcaService->getTimeCreationField();
+		if ($tcaTableService->getTimeCreationField()) {
+			$fields[] = $tcaTableService->getTimeCreationField();
 		}
 
 		// Update time stamp field
-		if ($tableTcaService->getTimeModificationField()) {
-			$fields[] = $tableTcaService->getTimeModificationField();
+		if ($tcaTableService->getTimeModificationField()) {
+			$fields[] = $tcaTableService->getTimeModificationField();
 		}
 
 		// Get column to be displayed
-		foreach ($fields as $field) {
-			if (isset($contentData[$field])) {
-				$this->$field = $contentData[$field];
+		foreach ($fields as $fieldName) {
+			if (isset($contentData[$fieldName])) {
+				$propertyName = $this->convertFieldNameToPropertyName($fieldName);
+				$this->$propertyName = $contentData[$fieldName];
 			}
 		}
-
-		// Not automatically inherited like in Extbase context...
-		$this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
 	}
 
 	/**
-	 * Magic getter.
+	 * Convert a field name to a property name.
+	 * Example: converts blog_example to blogExample
 	 *
-	 * @param $property
-	 * @return mixed
+	 * @param $fieldName
+	 * @return string
 	 */
-	public function __get($property) {
-		return $this->$property;
+	protected function convertFieldNameToPropertyName($fieldName){
+		return \TYPO3\CMS\Core\Utility\GeneralUtility::underscoredToLowerCamelCase($fieldName);
 	}
 
 	/**
-	 * Magic setter.
+	 * Convert a property name to a field name.
+	 * Example: converts blogExample to blog_example
 	 *
-	 * @param $property
-	 * @param $value
+	 * @param $propertyName
+	 * @return string
 	 */
-	public function __set($property, $value) {
-		$this->$property = $value;
-		return $this;
+	protected function convertPropertyNameToFieldName($propertyName) {
+		return \TYPO3\CMS\Core\Utility\GeneralUtility::camelCaseToLowerCaseUnderscored($propertyName);
 	}
 
 	/**
@@ -115,42 +113,78 @@ class Content implements \ArrayAccess {
 	 * @api
 	 */
 	public function __call($methodName, $arguments) {
+		$result = NULL;
 		if (substr($methodName, 0, 3) === 'get' && strlen($methodName) > 4) {
 			$propertyName = strtolower(substr(substr($methodName, 3), 0, 1)) . substr(substr($methodName, 3), 1);
 
-			/** @var \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository $contentRepository */
-			$contentRepository = $this->objectManager->get('TYPO3\CMS\Vidi\Domain\Repository\ContentRepository');
+			$result = $this->$propertyName;
 
-			// Return content according relation type.
-			$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
-			if ($tcaFieldService->hasRelationWithCommaSeparatedValues($propertyName)) {
-
-				$values = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->$propertyName);
-				$dataType = $tcaFieldService->relationDataType($propertyName);
-
-				$result = $contentRepository->setDataType($dataType)
-					->findIn('uid', $values);
-
-			} elseif ($tcaFieldService->hasRelationManyToMany($propertyName)) {
-				// @todo implement me
-				#$dataType = $tcaFieldService->relationDataType($propertyName);
-				#$result = $contentRepository->setDataType($dataType)
-				#	->findRelations($propertyName);
-			} elseif ($tcaFieldService->hasRelationOneToMany($propertyName)) {
-				// @todo implement me
-				#$dataType = $tcaFieldService->relationDataType($propertyName);
-				#$result = $contentRepository->setDataType($dataType)
-				#	->findRelation($propertyName);
-			} else {
-				$result = $this->$propertyName;
+			// TRUE means it is a relation and it is not yet resolved.
+			if ($this->hasRelation($propertyName) && is_scalar($this->$propertyName)) {
+				$result = $this->resolveRelation($propertyName);
 			}
 
 		} elseif (substr($methodName, 0, 3) === 'set' && strlen($methodName) > 4 && isset($arguments[0])) {
 			$propertyName = strtolower(substr(substr($methodName, 3), 0, 1)) . substr(substr($methodName, 3), 1);
 			$this->$propertyName = $arguments[0];
-			$result = NULL;
 		}
 		return $result;
+	}
+
+	/**
+	 * Tell whether the property has a relation.
+	 *
+	 * @param string $propertyName
+	 * @return bool
+	 */
+	protected function hasRelation($propertyName){
+		$fieldName = $this->convertPropertyNameToFieldName($propertyName);
+		return $this->tcaFieldService->hasRelation($fieldName);
+	}
+
+	/**
+	 * Try to "resolve" the property whether it has a relation.
+	 * If the property has not relation it simply returns the same value.
+	 *
+	 * @throws \RuntimeException
+	 * @param string $propertyName
+	 * @return mixed
+	 */
+	protected function resolveRelation($propertyName) {
+
+		// Convert property name to field name and get the foreign data type.
+		$fieldName = $this->convertPropertyNameToFieldName($propertyName);
+		$foreignDataType = $this->tcaFieldService->relationDataType($fieldName);
+
+		// Get the foreign repository instance form the factory
+		$foreignRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance($foreignDataType);
+
+		if ($this->tcaFieldService->hasRelationWithCommaSeparatedValues($fieldName)) {
+
+			// Fetch values from repository
+			$values = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->$propertyName);
+			$this->$propertyName = $foreignRepository->findIn('uid', $values);
+		} elseif ($this->tcaFieldService->hasRelationMany($fieldName)) {
+
+			$configuration = $this->tcaFieldService->getConfiguration($fieldName);
+			if (empty($configuration['foreign_field'])) {
+				$message = sprintf('Missing "foreign_field" key for field "%s" in table "%s".',
+					$fieldName,
+					$this->dataType
+				);
+				throw new \RuntimeException($message, 1376149186);
+			}
+
+			// Fetch values from repository.
+			$foreignPropertyName = $this->convertFieldNameToPropertyName($configuration['foreign_field']);
+			$findByProperty = 'findBy' . ucfirst($foreignPropertyName);
+			$this->$propertyName = $foreignRepository->$findByProperty($this->uid);
+		} elseif ($this->tcaFieldService->hasRelationOne($propertyName)) {
+
+			// Fetch value from repository
+			$this->$propertyName = $foreignRepository->findByUid($this->$propertyName);
+		}
+		return $this->$propertyName;
 	}
 
 	/**
@@ -175,6 +209,7 @@ class Content implements \ArrayAccess {
 	 * @return boolean true on success or false on failure.
 	 */
 	public function offsetExists($offset) {
+		$offset = $this->convertFieldNameToPropertyName($offset);
 		return isset($this->$offset);
 	}
 
@@ -186,6 +221,7 @@ class Content implements \ArrayAccess {
 	 * @return mixed Can return all value types.
 	 */
 	public function offsetGet($offset) {
+		$offset = $this->convertFieldNameToPropertyName($offset);
 		$getter = 'get' . ucfirst($offset);
 		return $this->$getter();
 	}
@@ -196,10 +232,12 @@ class Content implements \ArrayAccess {
 	 * @link http://php.net/manual/en/arrayaccess.offsetset.php
 	 * @param mixed $offset
 	 * @param mixed $value
+	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
 	 * @return void
 	 */
 	public function offsetSet($offset, $value) {
-		$this->$offset = $value;
+		$message = 'Setting value for Array object is not supported';
+		throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException($message, 1376132305);
 	}
 
 	/**
@@ -207,10 +245,12 @@ class Content implements \ArrayAccess {
 	 *
 	 * @link http://php.net/manual/en/arrayaccess.offsetunset.php
 	 * @param mixed $offset
+	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
 	 * @return void
 	 */
 	public function offsetUnset($offset) {
-		unset($this->$offset);
+		$message = 'Un-setting value for Array object is not supported';
+		throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException($message, 1376132306);
 	}
 
 	/**
@@ -221,7 +261,13 @@ class Content implements \ArrayAccess {
 	public function toArray() {
 		$result['uid'] = $this->uid;
 		$properties = json_decode(json_encode($this), true);
-		return array_merge($result, $properties);
+
+		foreach ($properties as $propertyName => $value) {
+			$fieldName = $this->convertPropertyNameToFieldName($propertyName);
+			$result[$fieldName] = $value;
+		}
+
+		return $result;
 	}
 }
 ?>

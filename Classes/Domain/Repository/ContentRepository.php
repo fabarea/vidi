@@ -27,7 +27,7 @@ namespace TYPO3\CMS\Vidi\Domain\Repository;
 /**
  * Repository for accessing Content
  */
-class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInterface, \TYPO3\CMS\Core\SingletonInterface {
+class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInterface {
 
 	/**
 	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
@@ -54,19 +54,17 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 
 	/**
 	 * Constructor
+	 *
+	 * @param string $dataType
 	 */
-	public function __construct() {
-
-		/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
-		$moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
-		$this->dataType = $moduleLoader->getDataType();
-
+	public function __construct($dataType) {
+		$this->dataType = $dataType;
 		$this->databaseHandle = $GLOBALS['TYPO3_DB'];
 		$this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
 	}
 
 	/**
-	 * Update a content with new information
+	 * Update a content with new information.
 	 *
 	 * @throws \TYPO3\CMS\Vidi\Exception\MissingUidException
 	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
@@ -205,11 +203,14 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 */
 	public function __call($methodName, $arguments) {
 		if (substr($methodName, 0, 6) === 'findBy' && strlen($methodName) > 7) {
-			$result = $this->processMagicCall();
+			$propertyName = strtolower(substr(substr($methodName, 6), 0, 1)) . substr(substr($methodName, 6), 1);
+			$result = $this->processMagicCall($propertyName, $arguments[0]);
 		} elseif (substr($methodName, 0, 9) === 'findOneBy' && strlen($methodName) > 10) {
-			$result = $this->processMagicCall('one');
+			$propertyName = strtolower(substr(substr($methodName, 9), 0, 1)) . substr(substr($methodName, 9), 1);
+			$result = $this->processMagicCall($propertyName, $arguments[0], 'one');
 		} elseif (substr($methodName, 0, 7) === 'countBy' && strlen($methodName) > 8) {
-			$result = $this->processMagicCall('count');
+			$propertyName = strtolower(substr(substr($methodName, 7), 0, 1)) . substr(substr($methodName, 7), 1);
+			$result = $this->processMagicCall($propertyName, $arguments[0], 'count');
 		} else {
 			throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException('The method "' . $methodName . '" is not supported by the repository.', 1360838010);
 		}
@@ -260,25 +261,21 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	}
 
 	/**
-	 * @param string $dataType
-	 * @return \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository
-	 */
-	public function setDataType($dataType) {
-		$this->dataType = $dataType;
-		return $this;
-	}
-
-	/**
 	 * Handle the magic call by properly creating a Query object and returning its result.
 	 *
+	 * @param string $field
+	 * @param string $value
 	 * @param string $flag
 	 * @return array
 	 */
-	protected function processMagicCall($flag = '') {
+	protected function processMagicCall($field, $value, $flag = '') {
+
+		$matcher = $this->createMatch()->addMatch($field, $value);
 
 		$query = $this->createQuery();
 		$query->setRawResult($this->rawResult)
-			->setDataType($this->dataType);
+			->setDataType($this->dataType)
+			->setMatcher($matcher);
 
 		if ($flag == 'count') {
 			$result = $query->count();
@@ -293,6 +290,7 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * Adds an object to this repository.
 	 *
 	 * @param object $object The object to add
+	 * @throws \BadMethodCallException
 	 * @return void
 	 * @api
 	 */
@@ -353,6 +351,7 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * )
 	 *
 	 * @param array $defaultOrderings The property names to order by
+	 * @throws \BadMethodCallException
 	 * @return void
 	 * @api
 	 */
@@ -364,6 +363,7 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * Sets the default query settings to be used in this repository
 	 *
 	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $defaultQuerySettings The query settings to be used by default
+	 * @throws \BadMethodCallException
 	 * @return void
 	 * @api
 	 */
