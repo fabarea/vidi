@@ -294,4 +294,24 @@ class ModuleLoader {
 		$this->access = $access;
 		return $this;
 	}
+
+	/**
+	 * @return \string[]
+	 */
+	public function getAdditionalJavaScriptFiles() {
+		if (empty($this->additionalJavaScriptFiles)) {
+			$this->additionalJavaScriptFiles = $this->getModuleConfiguration('additionalJavaScriptFiles');
+		}
+		return $this->additionalJavaScriptFiles;
+	}
+
+	/**
+	 * @return \string[]
+	 */
+	public function getAdditionalStyleSheetFiles() {
+		if (empty($this->addStyleSheetFiles)) {
+			$this->addStyleSheetFiles = $this->getModuleConfiguration('additionalStyleSheetFiles');
+		}
+		return $this->addStyleSheetFiles;
+	}
 }

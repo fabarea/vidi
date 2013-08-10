@@ -24,11 +24,11 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Link;
 ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Render an edit link given an object.
  */
 class EditViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
-
 
 	/**
 	 * Render an edit link given an object.

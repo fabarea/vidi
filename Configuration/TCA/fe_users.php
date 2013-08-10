@@ -28,7 +28,10 @@ $tca = array(
 			),
 			'usergroup' => array(
 				'visible' => TRUE,
-				'renderer' => 'TYPO3\CMS\Vidi\GridRenderer\Relation',
+				'renderers' => array(
+					'TYPO3\CMS\Vidi\GridRenderer\CreateRelation',
+					'TYPO3\CMS\Vidi\GridRenderer\Relation',
+				),
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:usergroup',
 			),
 			'tstamp' => array(

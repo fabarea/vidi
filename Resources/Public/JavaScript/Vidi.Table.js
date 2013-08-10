@@ -43,7 +43,7 @@ Vidi.Table = {
 			 * @param {object} aoData dataTables settings object
 			 * @return void
 			 */
-			"fnServerParams": function (aoData) {
+			'fnServerParams': function (aoData) {
 
 				// Get the parameter related to filter from the URL and "re-inject" them into the Ajax request
 				var uri, moduleCode, parameterCode;

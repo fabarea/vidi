@@ -154,9 +154,9 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @param string $fieldName the name of the column
 	 * @return bool
 	 */
-	public function hasRenderer($fieldName) {
+	public function hasRenderers($fieldName) {
 		$field = $this->getField($fieldName);
-		return empty($field['renderer']) ? FALSE : TRUE;
+		return empty($field['renderer']) && empty($field['renderers']) ? FALSE : TRUE;
 	}
 
 	/**
@@ -165,9 +165,18 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @param string $fieldName the name of the column
 	 * @return string
 	 */
-	public function getRenderer($fieldName) {
+	public function getRenderers($fieldName) {
 		$field = $this->getField($fieldName);
-		return empty($field['renderer']) ? '' : $field['renderer'];
+		$renderers = array();
+		if (isset($field['renderer'])) {
+			$renderers[] = $field['renderer'];
+		}
+
+		if (isset($field['renderers'])) {
+			$renderers = array_merge($renderers, $field['renderers']);
+		}
+
+		return $renderers;
 	}
 
 	/**

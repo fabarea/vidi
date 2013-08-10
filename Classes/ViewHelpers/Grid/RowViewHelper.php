@@ -41,30 +41,34 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 		// Initialize returned array
 		$output = array();
 		$output['DT_RowId'] = 'row-' . $object->getUid();
-		$output['DT_RowClass'] = 'row-' . $object->getStatus();
+		#$output['DT_RowClass'] = 'row-' . $object->getStatus();
 
 		foreach($tcaGridService->getFields() as $fieldName => $configuration) {
 
 			if ($tcaGridService->isNotSystem($fieldName)) {
 
 				// Fetch value
-				if ($tcaGridService->hasRenderer($fieldName)) {
-					$renderer = $tcaGridService->getRenderer($fieldName);
+				if ($tcaGridService->hasRenderers($fieldName)) {
 
-					/** @var $rendererObject \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface */
-					$rendererObject = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($renderer);
-					$value = $rendererObject
-						->setObject($object)
-						->setFieldName($fieldName)
-						->setConfiguration($configuration)
-						->render();
+					$result = '';
+					$renderers = $tcaGridService->getRenderers($fieldName);
+					foreach ($renderers as $rendererClassName) {
+
+						/** @var $rendererObject \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface */
+						$rendererObject = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($rendererClassName);
+						$result .= $rendererObject
+							->setObject($object)
+							->setFieldName($fieldName)
+							->setConfiguration($configuration)
+							->render();
+					}
 				} else {
-					$value = $object[$fieldName]; // AccessArray object
+					$result = $object[$fieldName]; // AccessArray object
 				}
 
-				$value = $this->format($value, $configuration);
-				$value = $this->wrap($value, $configuration);
-				$output[$fieldName] = $value;
+				$result = $this->format($result, $configuration);
+				$result = $this->wrap($result, $configuration);
+				$output[$fieldName] = $result;
 			}
 		}
 

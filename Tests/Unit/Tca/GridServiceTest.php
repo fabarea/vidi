@@ -134,7 +134,7 @@ class GridServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function columnFooHasNoRenderer() {
-		$this->assertFalse($this->fixture->hasRenderer(uniqid('foo')));
+		$this->assertFalse($this->fixture->hasRenderers(uniqid('foo')));
 	}
 
 	/**
@@ -142,7 +142,7 @@ class GridServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 */
 	public function getTheRendererOfColumnFoo() {
 		$expected = '';
-		$this->assertEquals($expected, $this->fixture->getRenderer(uniqid('foo')));
+		$this->assertEquals($expected, $this->fixture->getRenderers(uniqid('foo')));
 	}
 
 	/**
