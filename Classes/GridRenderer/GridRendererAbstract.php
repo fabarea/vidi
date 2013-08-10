@@ -24,34 +24,71 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
  ***************************************************************/
 
 /**
- * Interface dealing with rendering a media in someway.
+ * Class rendering relation
  */
-interface GridRendererInterface {
+abstract class GridRendererAbstract implements GridRendererInterface {
 
 	/**
-	 * Render a media in someway.
-	 *
-	 * @return string
+	 * @var \TYPO3\CMS\Vidi\Domain\Model\Content
 	 */
-	public function render();
+	 protected $object;
+
+	/**
+	 * @var string
+	 */
+	protected $fieldName;
+
+	/**
+	 * @var array
+	 */
+	protected $configuration = array();
+
+	/**
+	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content
+	 */
+	public function getObject() {
+		return $this->object;
+	}
 
 	/**
 	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
 	 * @return $this
 	 */
-	public function setObject($object);
+	public function setObject($object) {
+		$this->object = $object;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getFieldName() {
+		return $this->fieldName;
+	}
 
 	/**
 	 * @param string $fieldName
 	 * @return $this
 	 */
-	public function setFieldName($fieldName);
+	public function setFieldName($fieldName) {
+		$this->fieldName = $fieldName;
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getConfiguration() {
+		return $this->configuration;
+	}
 
 	/**
 	 * @param array $configuration
 	 * @return $this
 	 */
-	public function setConfiguration($configuration);
-
+	public function setConfiguration($configuration) {
+		$this->configuration = $configuration;
+		return $this;
+	}
 }
 ?>

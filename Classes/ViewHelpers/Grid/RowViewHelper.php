@@ -53,7 +53,11 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 
 					/** @var $rendererObject \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface */
 					$rendererObject = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($renderer);
-					$value = $rendererObject->render($object, $fieldName, $configuration);
+					$value = $rendererObject
+						->setObject($object)
+						->setFieldName($fieldName)
+						->setConfiguration($configuration)
+						->render();
 				} else {
 					$value = $object[$fieldName]; // AccessArray object
 				}

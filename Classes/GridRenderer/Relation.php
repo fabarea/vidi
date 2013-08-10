@@ -27,7 +27,7 @@ use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
 /**
  * Class rendering relation
  */
-class Relation implements \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface {
+class Relation extends GridRendererAbstract {
 
 	/**
 	 * @var \TYPO3\CMS\Vidi\ViewHelpers\Link\EditViewHelper
@@ -44,44 +44,41 @@ class Relation implements \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface {
 	/**
 	 * Render a representation of the relation on the GUI.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
-	 * @param string $fieldName
-	 * @param array $configuration
 	 * @return string
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $content = NULL, $fieldName = NULL, $configuration = array()) {
+	public function render() {
 
 		$result = '';
 
 		// Get TCA Field service
-		$tcaFieldService = TcaServiceFactory::getFieldService($content->getDataType());
+		$tcaFieldService = TcaServiceFactory::getFieldService($this->object->getDataType());
 
 		// Get label of the foreign table
-		$foreignLabelField = $this->getForeignTableLabelField($fieldName);
+		$foreignLabelField = $this->getForeignTableLabelField($this->fieldName);
 
-		if ($tcaFieldService->hasRelationOne($fieldName)) {
+		if ($tcaFieldService->hasRelationOne($this->fieldName)) {
 
-			$foreignObject = $content[$fieldName];
+			$foreignObject = $this->object[$this->fieldName];
 
 			if ($foreignObject) {
 				$template = '<a href="%s" data-uid="%s" class="btn-edit invisible">%s</a><span>%s</span>';
 				$result = sprintf($template,
 					$this->editViewHelper->render($foreignObject),
-					$content->getUid(),
+					$this->object->getUid(),
 					\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-open'),
 					$foreignObject[$foreignLabelField]
 				);
 			}
-		} elseif ($tcaFieldService->hasRelationMany($fieldName)) {
+		} elseif ($tcaFieldService->hasRelationMany($this->fieldName)) {
 
-			if (!empty($content[$fieldName])) {
+			if (!empty($this->object[$this->fieldName])) {
 				$template = '<li><a href="%s" data-uid="%s" class="btn-edit invisible">%s</a><span>%s</span></li>';
 
 				/** @var $foreignObject \TYPO3\CMS\Vidi\Domain\Model\Content */
-				foreach ($content[$fieldName] as $foreignObject) {
+				foreach ($this->object[$this->fieldName] as $foreignObject) {
 					$result .= sprintf($template,
 						$this->editViewHelper->render($foreignObject),
-						$content->getUid(),
+						$this->object->getUid(),
 						\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-open'),
 						$foreignObject[$foreignLabelField]);
 				}

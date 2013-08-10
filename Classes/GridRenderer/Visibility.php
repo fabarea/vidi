@@ -26,21 +26,20 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
 /**
  * Class rendering visibility for the Grid.
  */
-class Visibility implements \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface {
+class Visibility extends GridRendererAbstract {
 
 	/**
 	 * Render visibility for the Grid.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
 	 * @return string
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $content = NULL) {
+	public function render() {
 
 		$result = 'No hidden field for this data type';
 		$getter = $this->formatGetter();
 
 		if ($getter) {
-			$spriteName = $content->$getter() ? 'actions-edit-unhide' : 'actions-edit-hide';
+			$spriteName = $this->object->$getter() ? 'actions-edit-unhide' : 'actions-edit-hide';
 			$result = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($spriteName);
 		}
 		return $result;
