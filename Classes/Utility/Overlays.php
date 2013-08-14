@@ -213,7 +213,7 @@ final class Overlays {
 	 * @deprecated Use self::getVersioningCondition() instead. Kept for backwards-compatibility but may be removed in the future.
 	 */
 	public static function getWorkspaceCondition($table) {
-		t3lib_div::logDeprecatedFunction();
+		\TYPO3\CMS\Core\Utility\GeneralUtility::logDeprecatedFunction();
 		return self::getVersioningCondition($table);
 	}
 
