@@ -50,10 +50,11 @@ class Matcher {
 	 * Constructs a new Matcher
 	 *
 	 * @param array $matches associative array($field => $value)
+	 * @param string $dataType which corresponds to an entry of the TCA (table name).
 	 * @return \TYPO3\CMS\Vidi\QueryElement\Matcher
 	 */
-	public function __construct($matches = array()) {
-		$this->tcaService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
+	public function __construct($matches = array(), $dataType = '') {
+		$this->tcaService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($dataType);
 		$this->matches = $matches;
 	}
 
@@ -103,6 +104,8 @@ class Matcher {
 
 	/**
 	 * Add a value to be used for filtering a given field.
+	 * If the field has a relation to a foreign table, multiple matching
+	 * values can be added.
 	 *
 	 * @param string $field
 	 * @param string $value

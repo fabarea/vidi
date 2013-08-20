@@ -20,4 +20,3 @@ module.tx_vidi {
 		layoutRootPath = {$module.tx_vidi.view.layoutRootPath}
 	}
 }
-

@@ -17,7 +17,7 @@ Vidi.Action = {
 
 		// bind the click handler script to the newly created elements held in the table
 		$('.btn-edit').bind('click', function (e) {
-			Vidi.Session.set('media.lastEditedUid', $(this).data('uid'));
+			Vidi.Session.set('vidi.lastEditedUid', $(this).data('uid'));
 		});
 
 		// Make a row selectable

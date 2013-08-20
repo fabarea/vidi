@@ -47,10 +47,10 @@ class CreateRelation extends GridRendererAbstract {
 	 * @return string
 	 */
 	public function render() {
-		$template = '<div style="text-align: right" class="pull-right btn-create-relation invisible"><a href="%s" data-uid="%s" class="btn-edit">%s</a></div>';
+		$template = '<div style="text-align: right" class="pull-right invisible"><a href="#" data-uid="%s" class="btn-create-relation btn-%s">%s</a></div>';
 		$result = sprintf($template,
-			'#',
 			$this->object->getUid(),
+			$this->object->getDataType(),
 			\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-new')
 		);
 

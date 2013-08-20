@@ -21,19 +21,19 @@ Vidi.Session = {
 		$('.nav-tabs li a').bind('click', function (e) {
 			var selectedTab = $(this).parent();
 			var selectedIndex = $('.nav-tabs li').index(selectedTab);
-			sessionStorage.setItem('media.selectedTab', selectedIndex);
+			sessionStorage.setItem('vidi.selectedTab', selectedIndex);
 		});
 
 		// Initialize default value
 		if (window.sessionStorage) {
-			if (sessionStorage.getItem('media.selectedTab') == null) {
-				sessionStorage.setItem('media.selectedTab', 0);
+			if (sessionStorage.getItem('vidi.selectedTab') == null) {
+				sessionStorage.setItem('vidi.selectedTab', 0);
 			}
 		}
 
 		// @todo remove me if not used in a close future e.g. for mass-editing!
 		// In case the form is loaded
-		var selectedTab = sessionStorage.getItem('media.selectedTab');
+		var selectedTab = sessionStorage.getItem('vidi.selectedTab');
 		$('.nav-tabs li:eq(' + selectedTab + ') a').tab('show');
 	},
 

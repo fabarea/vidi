@@ -224,7 +224,7 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * @api
 	 */
 	public function createQuery() {
-		return $this->objectManager->get('TYPO3\CMS\Vidi\QueryElement\Query');
+		return $this->objectManager->get('TYPO3\CMS\Vidi\QueryElement\Query', $this->dataType);
 	}
 
 	/**
@@ -234,7 +234,7 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * @return object
 	 */
 	public function createMatch() {
-		return $this->objectManager->get('TYPO3\CMS\Vidi\QueryElement\Matcher');
+		return $this->objectManager->get('TYPO3\CMS\Vidi\QueryElement\Matcher', array(), $this->dataType);
 	}
 
 	/**

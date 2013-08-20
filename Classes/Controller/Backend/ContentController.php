@@ -24,7 +24,7 @@ namespace TYPO3\CMS\Vidi\Controller\Backend;
  ***************************************************************/
 
 /**
- * Controller which handles actions related to Vidi.
+ * Controller which handles actions related to Vidi in the Backend.
  */
 class ContentController extends \TYPO3\CMS\Vidi\Controller\BaseController {
 

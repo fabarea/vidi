@@ -103,12 +103,14 @@ class Query {
 	protected $tcaTableService;
 
 	/**
+	 * @param string $dataType which corresponds to an entry of the TCA (table name).
+	 *
 	 * Constructor
 	 */
-	public function __construct() {
+	public function __construct($dataType = '') {
 		$this->databaseHandle = $GLOBALS['TYPO3_DB'];
-		$this->tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
-		$this->tcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService();
+		$this->tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($dataType);
+		$this->tcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($dataType);
 	}
 
 	/**

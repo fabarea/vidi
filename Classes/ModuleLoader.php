@@ -25,7 +25,7 @@ namespace TYPO3\CMS\Vidi;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
 /**
- * service class, used in other extensions to register a vidi based backend module
+ * Service class used in other extensions to register a vidi based backend module.
  */
 class ModuleLoader {
 

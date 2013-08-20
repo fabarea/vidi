@@ -62,11 +62,13 @@ Vidi.Table = {
 				[10, 25, 50, 100, "All"]
 			],
 			'fnInitComplete': function () {
-				Vidi.Table.animateRow();
 			},
 			'fnDrawCallback': function () {
 
-				// Switch visibility of hidden elements when mouse is in table cell.
+				// Possibly animate row
+				Vidi.Table.animateRow();
+
+				// Add action for switching visibility of hidden elements when mouse is in table cell.
 				$('.dataTable tbody td')
 					.hover(function () {
 						$('.invisible', this).toggleClass('visible').toggleClass('invisible');
@@ -93,8 +95,8 @@ Vidi.Table = {
 	animateRow: function () {
 
 		// Only if User has previously edited a record.
-		if (Vidi.Session.has('media.lastEditedUid')) {
-			var uid = Vidi.Session.get('media.lastEditedUid');
+		if (Vidi.Session.has('vidi.lastEditedUid')) {
+			var uid = Vidi.Session.get('vidi.lastEditedUid');
 
 			// Wait a little bit before applying fade-int class. Look nicer.
 			setTimeout(function () {
@@ -104,9 +106,8 @@ Vidi.Table = {
 				$('#row-' + uid).addClass('fade-out').removeClass('fade-in');
 
 				// Reset last edited uid
-				Vidi.Session.reset('media.lastEditedUid');
+				Vidi.Session.reset('vidi.lastEditedUid');
 			}, 500);
 		}
 	}
 };
-
