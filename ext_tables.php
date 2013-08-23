@@ -36,6 +36,7 @@ if (TYPO3_MODE == 'BE' && class_exists('TYPO3\CMS\Vidi\ModuleLoader')) {
 	$controllerActions = array(
 		'FrontendUser' => 'listFrontendUserGroup, addFrontendUserGroup',
 	);
+
 	/**
 	 * Register some controllers for the Backend (Ajax)
 	 * Special case for FE User and FE Group
