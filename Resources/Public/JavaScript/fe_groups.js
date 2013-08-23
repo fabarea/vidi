@@ -1,8 +1,6 @@
-"use strict";
-
 /** @namespace Vidi */
 
 $(document).ready(function () {
-
+	"use strict";
 
 });

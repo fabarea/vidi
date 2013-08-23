@@ -1,15 +1,14 @@
-"use strict";
-
 /** @namespace Vidi */
 
 $(document).ready(function () {
+	"use strict";
 
 	/**
 	 * Create relation action
 	 */
 	$(document).on('click', '.dataTable tbody .btn-fe_users', function (e) {
 
-		var frontendUserUid = $(this).data('uid');
+		var contentObjectUid = $(this).data('uid');
 
 		// Get content by ajax for the modal...
 		$.ajax(
@@ -23,7 +22,7 @@ $(document).ready(function () {
 					controllerName: 'FrontendUser',
 					actionName: 'listFrontendUserGroup',
 					arguments: {
-						frontendUser: frontendUserUid
+						frontendUser: contentObjectUid
 					}
 				}
 			})
@@ -37,7 +36,7 @@ $(document).ready(function () {
 						bootbox.hideAll();
 
 						// Store in session the last edited uid
-						Vidi.Session.set('vidi.lastEditedUid', frontendUserUid);
+						Vidi.Session.set('vidi.lastEditedUid', contentObjectUid);
 
 						// Reload data table.
 						Vidi.table.fnDraw();
