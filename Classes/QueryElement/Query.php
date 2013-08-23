@@ -182,19 +182,26 @@ class Query {
 		}
 
 		if (! is_null($this->matcher)) {
-			$clauseSearchTerm = $this->getClauseSearchTerm();
-			$clauseCategories = $this->getClauseManyToMany();
 
-			if (strlen($clauseSearchTerm) > 0 && strlen($clauseCategories) > 0) {
+			$clauseSearchTerm = $this->getClauseSearchTerm();
+			$clauseManyToMany = $this->getClauseManyToMany();
+
+			if (strlen($clauseSearchTerm) > 0 && strlen($clauseManyToMany) > 0) {
 				$queryPart = ' AND (%s) AND (%s)';
 				if ($this->matcher->getDefaultLogicalOperator() === self::LOGICAL_OR) {
 					$queryPart = ' AND (%s OR %s)';
 				}
-				$clause .= sprintf($queryPart, $clauseSearchTerm, $clauseCategories);
+				$clause .= sprintf($queryPart, $clauseSearchTerm, $clauseManyToMany);
 			} elseif (strlen($clauseSearchTerm) > 0) {
 				$clause .= sprintf(' AND (%s)', $clauseSearchTerm);
-			} elseif (strlen($clauseCategories) > 0) {
-				$clause .= sprintf(' AND (%s)', $clauseCategories);
+			} elseif (strlen($clauseManyToMany) > 0) {
+				$clause .= sprintf(' AND (%s)', $clauseManyToMany);
+			}
+
+			// @todo improve me. Was implemented as a hot fix. This is error prone.
+			$clauseOneToMany = $this->getClauseOneToMany();
+			if ($clauseOneToMany) {
+				$clause .= sprintf(' AND %s', $clauseOneToMany);
 			}
 
 			$clause .= $this->getClauseMain();
@@ -261,6 +268,28 @@ EOF;
 			}
 		}
 		return $clause;
+	}
+
+	/**
+	 * Get the category clause
+	 *
+	 * @return string
+	 */
+	protected function getClauseOneToMany() {
+		$clause = array();
+
+		foreach ($this->matcher->getMatches() as $field => $values) {
+
+			if ($this->tcaFieldService->hasRelationOne($field)) {
+				$clause[] = sprintf(' %s IN (%s)', $field, $values);
+			}
+		}
+
+		$result = '';
+		if (!empty($clause)) {
+			$result = implode('AND', $clause);
+		};
+		return $result;
 	}
 
 	/**
