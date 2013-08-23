@@ -13,6 +13,41 @@ body {
 	font-size: 11px;
 }
 
+.modal-body {
+	background-color: #F8F8F8 !important;
+}
+
+.modal-body select,
+.modal-body textarea,
+.modal-body input[type="text"],
+.modal-body input[type="password"],
+.modal-body input[type="datetime"],
+.modal-body input[type="datetime-local"],
+.modal-body input[type="date"],
+.modal-body input[type="month"],
+.modal-body input[type="time"],
+.modal-body input[type="week"],
+.modal-body input[type="number"],
+.modal-body input[type="email"],
+.modal-body input[type="url"],
+.modal-body input[type="search"],
+.modal-body input[type="tel"],
+.modal-body input[type="color"],
+.modal-body .uneditable-input {
+	font-size: 11px;
+	padding: 1px;
+	vertical-align: middle;
+	height: 20px;
+}
+
+.modal-body .control-group {
+	margin-bottom: 0;
+}
+
+.modal-body label {
+	font-weight: bold;
+}
+
 .btn,
 input,
 label {
@@ -81,7 +116,7 @@ table {
 
 .table-bordered thead:first-child tr:first-child th:first-child,
 .table-bordered tbody:first-child tr:first-child td:first-child,
-.table-bordered  {
+.table-bordered {
 	border-radius: 0;
 	-webkit-border-radius: 0;
 	-moz-border-radius: 0;
@@ -201,7 +236,7 @@ form .metadata {
 	writing-mode: lr-tb;
 }
 
-.table tbody tr.fade-in td  {
+.table tbody tr.fade-in td {
 	background: rgba(255, 151, 36, 0.20) !important;
 	transition: background .25s ease-in-out;
 }
