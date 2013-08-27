@@ -1,26 +1,36 @@
 <form action="/typo3/ajax.php" id="form-create-relation" method="post">
 
 	<!-- required field for BE Ajax call -->
-	<input type="hidden" name="ajaxID" value="vidiAjaxDispatcher" />
-	<input type="hidden" name="extensionName" value="vidi" />
-	<input type="hidden" name="pluginName" value="Pi1" />
-	<input type="hidden" name="controllerName" value="FrontendUser" />
-	<input type="hidden" name="actionName" value="addFrontendUserGroup" />
+	<input type="hidden" name="ajaxID" value="vidiAjaxDispatcher"/>
+	<input type="hidden" name="extensionName" value="vidi"/>
+	<input type="hidden" name="pluginName" value="Pi1"/>
+	<input type="hidden" name="controllerName" value="FrontendUser"/>
+	<input type="hidden" name="actionName" value="addFrontendUserGroup"/>
 
 	<!-- additional parameters -->
-	<input type="hidden" name="arguments[frontendUser]" value="{frontendUser.uid}" />
+	<input type="hidden" name="arguments[frontendUser]" value="{frontendUser.uid}"/>
 
 	<!-- @todo display records in two flex columns -->
-	<!-- @todo handle when there are many records -->
-	<ul>
-		<f:for each="{frontendUserGroups}" as="frontendUserGroup">
-		<li>
-			<label>
-				<v:form.checkbox user="{frontendUser}" userGroup="{frontendUserGroup}"/>
-				{frontendUserGroup.title}
-			</label>
-		</li>
-		</f:for>
-	</ul>
+	<div class="control-group create-one">
+
+		<label class="control-label">
+			Associated User Groups
+		</label>
+		<div class="controls">
+			<ul>
+				<f:for each="{frontendUserGroups}" as="frontendUserGroup">
+					<li>
+						<label style="font-weight: normal">
+							<v:form.checkbox user="{frontendUser}" userGroup="{frontendUserGroup}"/>
+							{frontendUserGroup.title}
+						</label>
+					</li>
+				</f:for>
+			</ul>
+		</div>
+	</div>
+
+	<!-- HIDDEN SUBMIT BUTTON -->
+	<input type="submit" style="visibility: hidden; height: 1px">
 </form>
 {namespace v=TYPO3\CMS\Vidi\ViewHelpers}

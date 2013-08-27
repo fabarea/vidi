@@ -29,19 +29,51 @@ $(document).ready(function () {
 			.done(function (data) {
 				$('.modal-body').html(data);
 
-				$('#form-create-relation').ajaxForm({
-					success: function (data) {
+				// bind submit handler to form.
+				$('#form-create-relation').on('submit', function (e) {
 
-						// Hide modal.
-						bootbox.hideAll();
+					// Prevent native submit
+					e.preventDefault();
 
-						// Store in session the last edited uid
-						Vidi.Session.set('vidi.lastEditedUid', contentObjectUid);
+					// Register
+					$(this).ajaxSubmit({
 
-						// Reload data table.
-						Vidi.table.fnDraw();
-					}
+						/**
+						 * Before submit handler.
+						 * @param arr
+						 * @param $form
+						 * @param options
+						 * @returns {boolean}
+						 */
+						beforeSubmit: function (arr, $form, options) {
+
+							// Only submit if button is not disabled
+							if ($('.btn-create-relation').hasClass('disabled')) {
+								return false;
+							}
+
+							// Else submit form
+							$('.btn-create-relation').text('Sending...').addClass('disabled');
+						},
+
+						/**
+						 * On success call back
+						 * @param data
+						 */
+						success: function (data) {
+
+							// Hide modal.
+							bootbox.hideAll();
+
+							// Store in session the last edited uid
+							Vidi.Session.set('vidi.lastEditedUid', contentObjectUid);
+
+							// Reload data table.
+							Vidi.table.fnDraw();
+						},
+					})
 				});
+
 			})
 			.fail(function (data) {
 				alert('Something went wrong! Check out console log for more detail');
@@ -59,7 +91,7 @@ $(document).ready(function () {
 			},
 			{
 				'label': 'Create relation',
-				'class': 'btn-primary',
+				'class': 'btn-primary btn-create-relation',
 				'callback': function () {
 
 					$('#form-create-relation').submit();
@@ -71,7 +103,7 @@ $(document).ready(function () {
 			}
 		], {
 			onEscape: function () {
-				// required to have escape stroke hiding modal window.
+				// required to have escape keystroke hiding modal window.
 			}
 		});
 		e.preventDefault()
