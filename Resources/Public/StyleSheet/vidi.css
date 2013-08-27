@@ -253,3 +253,8 @@ form .metadata {
 .popover-content {
 	text-align: center;
 }
+
+.icon-loading {
+	position: relative;
+	bottom: 5px;
+}
