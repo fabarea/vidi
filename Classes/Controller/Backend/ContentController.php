@@ -93,8 +93,12 @@ class ContentController extends \TYPO3\CMS\Vidi\Controller\BaseController {
 	 * @dontvalidate $content
 	 */
 	public function updateAction(array $content) {
-		$this->contentRepository->update($content);
-		$contentObject = $this->contentRepository->findByUid($content['uid']);
+
+		// Fetch the adequate repository
+		$contentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance();
+
+		$contentRepository->update($content);
+		$contentObject = $contentRepository->findByUid($content['uid']);
 		$result['status'] = TRUE;
 		$result['action'] = 'update';
 		$result['object'] = array(
@@ -115,10 +119,15 @@ class ContentController extends \TYPO3\CMS\Vidi\Controller\BaseController {
 	 * @return string
 	 */
 	public function deleteAction($content) {
+
+		// Fetch the adequate repository
+		$contentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance();
+
 		$labelField = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService()->getLabelField();
 		$getter = 'get' . ucfirst($labelField);
-		$contentObject = $this->contentRepository->findByUid($content);
-		$result['status'] = $this->contentRepository->remove($contentObject);
+
+		$contentObject = $contentRepository->findByUid($content);
+		$result['status'] = $contentRepository->remove($contentObject);
 		$result['action'] = 'delete';
 		if ($result['status']) {
 			$result['object'] = array(
