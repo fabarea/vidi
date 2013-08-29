@@ -84,7 +84,31 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
-	 * Returns the configuration for a $field
+	 * Returns the foreign field of a given field (opposite relational field).
+	 * If no relation exists, returns NULL.
+	 *
+	 * @param string $fieldName
+	 * @return string|NULL
+	 */
+	public function getForeignField($fieldName) {
+		$configuration = $this->getConfiguration($fieldName);
+		return empty($configuration['foreign_field']) ? NULL : $configuration['foreign_field'];
+	}
+
+	/**
+	 * Returns the foreign table of a given field (opposite relational table).
+	 * If no relation exists, returns NULL.
+	 *
+	 * @param string $fieldName
+	 * @return string|NULL
+	 */
+	public function getForeignTable($fieldName) {
+		$configuration = $this->getConfiguration($fieldName);
+		return empty($configuration['foreign_table']) ? NULL : $configuration['foreign_table'];
+	}
+
+	/**
+	 * Returns the configuration for a $field.
 	 *
 	 * @param string $fieldName
 	 * @return string
@@ -109,7 +133,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
-	 * Get the translation of a label given a column
+	 * Get the translation of a label given a column.
 	 *
 	 * @param string $fieldName
 	 * @return string
@@ -124,7 +148,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
-	 * Get the translation of a label given a column
+	 * Get the translation of a label given a column.
 	 *
 	 * @param string $fieldName
 	 * @param string $itemValue the item value to search for.
@@ -145,7 +169,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
-	 * Get a possible icon given a field name an an item
+	 * Get a possible icon given a field name an an item.
 	 *
 	 * @param string $fieldName
 	 * @param string $itemValue the item value to search for.
@@ -166,7 +190,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
-	 * Returns whether the field has a label
+	 * Returns whether the field has a label.
 	 *
 	 * @param string $fieldName
 	 * @return bool
@@ -177,7 +201,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
-	 * Returns whether the field is required
+	 * Returns whether the field is required.
 	 *
 	 * @param string $fieldName
 	 * @return bool
@@ -192,7 +216,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
-	 * Returns an array containing the configuration of an column
+	 * Returns an array containing the configuration of an column.
 	 *
 	 * @param string $fieldName
 	 * @return array
@@ -233,8 +257,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return bool
 	 */
 	public function hasRelation($fieldName) {
-		$configuration = $this->getConfiguration($fieldName);
-		return isset($configuration['foreign_table']);
+		return NULL !== $this->getForeignTable($fieldName);
 	}
 
 	/**
@@ -278,12 +301,13 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	public function hasRelationOneToMany($fieldName) {
 		$result = FALSE;
 
-		$configuration = $this->getConfiguration($fieldName);
-		if (!empty($configuration['foreign_field'])) {
+		$foreignField = $this->getForeignField($fieldName);
+		if (!empty($foreignField)) {
 
-			// Load TCA service of foreign fields.
-			$tcaForeignFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($configuration['foreign_table']);
-			$result = $this->hasRelationMany($fieldName) && $tcaForeignFieldService->hasRelationOne($configuration['foreign_field']);
+			// Load TCA service of foreign field..
+			$foreignTable = $this->getForeignTable($fieldName);
+			$tcaForeignFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($foreignTable);
+			$result = $this->hasRelationOne($fieldName) && $tcaForeignFieldService->hasRelationMany($foreignField);
 		}
 		return $result;
 	}
@@ -297,12 +321,13 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	public function hasRelationManyToOne($fieldName) {
 		$result = FALSE;
 
-		$configuration = $this->getConfiguration($fieldName);
-		if (!empty($configuration['foreign_field'])) {
+		$foreignField = $this->getForeignField($fieldName);
+		if (!empty($foreignField)) {
 
-			// Load TCA service of foreign fields.
-			$tcaForeignFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($configuration['foreign_table']);
-			$result = $this->hasRelationOne($fieldName) && $tcaForeignFieldService->hasRelationMany($configuration['foreign_field']);
+			// Load TCA service of foreign field..
+			$foreignTable = $this->getForeignTable($fieldName);
+			$tcaForeignFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($foreignTable);
+			$result = $this->hasRelationMany($fieldName) && $tcaForeignFieldService->hasRelationOne($foreignField);
 		}
 		return $result;
 	}
@@ -316,12 +341,13 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	public function hasRelationOneToOne($fieldName) {
 		$result = FALSE;
 
-		$configuration = $this->getConfiguration($fieldName);
-		if (!empty($configuration['foreign_field'])) {
+		$foreignField = $this->getForeignField($fieldName);
+		if (!empty($foreignField)) {
 
-			// Load TCA service of foreign fields.
-			$tcaForeignFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($configuration['foreign_table']);
-			$result = $this->hasRelationOne($fieldName) && $tcaForeignFieldService->hasRelationOne($configuration['foreign_field']);
+			// Load TCA service of foreign field.
+			$foreignTable = $this->getForeignTable($fieldName);
+			$tcaForeignFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($foreignTable);
+			$result = $this->hasRelationOne($fieldName) && $tcaForeignFieldService->hasRelationOne($foreignField);
 		}
 		return $result;
 	}

@@ -166,8 +166,8 @@ class Content implements \ArrayAccess {
 			$this->$propertyName = $foreignRepository->findIn('uid', $values);
 		} elseif ($this->tcaFieldService->hasRelationMany($fieldName)) {
 
-			$configuration = $this->tcaFieldService->getConfiguration($fieldName);
-			if (empty($configuration['foreign_field'])) {
+			$foreignFieldName = $this->tcaFieldService->getForeignField($fieldName);
+			if (empty($foreignFieldName)) {
 				$message = sprintf('Missing "foreign_field" key for field "%s" in table "%s".',
 					$fieldName,
 					$this->dataType
@@ -176,9 +176,10 @@ class Content implements \ArrayAccess {
 			}
 
 			// Fetch values from repository.
-			$foreignPropertyName = $this->convertFieldNameToPropertyName($configuration['foreign_field']);
+			$foreignPropertyName = $this->convertFieldNameToPropertyName($foreignFieldName);
 			$findByProperty = 'findBy' . ucfirst($foreignPropertyName);
 			$this->$propertyName = $foreignRepository->$findByProperty($this->uid);
+
 		} elseif ($this->tcaFieldService->hasRelationOne($propertyName)) {
 
 			// Fetch value from repository

@@ -63,7 +63,7 @@ be fine grained::
 
 .. _TCEmain: http://docs.typo3.org/TYPO3/CoreApiReference/ApiOverview/Typo3CoreEngine/UsingTcemain/Index.html
 
-How to load a BE module for a custom data type?
+Howto - load a BE module for a custom data type?
 ===================================================
 
 Loading a BE module for a custom data type can be summed up with:
@@ -149,6 +149,7 @@ columns should be rendered. Take inspiration of the example below for your own d
 			),
 		),
 	),
+
 
 
 Grid TCA configuration
@@ -374,23 +375,34 @@ Instantiate a TCA service related to **grid**::
 
 	// Refer to internal methods of the service...
 
-Gotchas
+
+Command line
+===================================================
+
+To check whether TCA is well configured, Vidi provides a Command that will scan the configuration::
+
+	# Check relations used in the grid.
+	./typo3/cli_dispatch.phpsh extbase vidi:checkrelations
+	./typo3/cli_dispatch.phpsh extbase vidi:checkrelations --table tx_domain_model_foo
+
+	# Check labels of the Grid
+	./typo3/cli_dispatch.phpsh extbase vidi:checkLabels
+
+
+Example of TCA
 ---------------
 
-Important: whenever a relation is displayed within Vidi, the TCA configuration ``foreign_field``
-must be defined in both side of the relations to properly work. This is needed for Vidi to retrieve the content in both direction.
+Important to notice that for displaying relational columns in a Vidi module, the TCA configuration ``foreign_field``
+must be defined in both side of the relations. This is needed for Vidi to retrieve the content in both direction.
 Check example below which shows ``foreign_field`` set for each field.
-
-@todo write a TCA validator if the case is too misleading.
-
 
 One to Many relation and its opposite Many to One:
 
 ::
 
 	#################
-	# opposite many
 	# one-to-many
+	#################
 	$TCA['tx_foo_domain_model_book'] = array(
 		'columns' => array(
 			'access_codes' => array(
@@ -404,14 +416,16 @@ One to Many relation and its opposite Many to One:
 		),
 	);
 
-	# opposite one
+	#################
 	# many-to-one
+	#################
 	$TCA['tx_foo_domain_model_accesscode'] = array(
 		'columns' => array(
 			'book' => array(
 				'config' => array(
 					'type' => 'select',
 					'foreign_table' => 'tx_foo_domain_model_book',
+					# IMPORTANT: DO NOT FORGET TO ADD foreign_field.
 					'foreign_field' => 'access_codes',
 					'minitems' => 1,
 					'maxitems' => 1,
@@ -424,7 +438,8 @@ One to Many relation and its opposite Many to One:
 Bi-directional Many to Many relation::
 
 	#################
-	# Many to many
+	# many-to-many
+	#################
 	$TCA['tx_foo_domain_model_book'] = array(
 		'columns' => array(
 			'tx_myext_locations' => array(
@@ -443,6 +458,9 @@ Bi-directional Many to Many relation::
 		),
 	);
 
+	#################
+	# many-to-many (opposite relation)
+	#################
 	$TCA['tx_foo_domain_categories'] = array(
 		'columns' => array(
 			'usage_mm' => array(
@@ -459,10 +477,11 @@ Bi-directional Many to Many relation::
 		),
 	);
 
-Legacy Many to Many relation with comma separated values (should be avoided in favour of proper MM relations). Notice field ``foreign_field`` is omitted::
+Legacy Many to Many relation with comma separated values (should be avoided in favour to proper MM relations). Notice field ``foreign_field`` is omitted::
 
 	#################
-	# Legacy MM relation
+	# Legacy MM relation (comma separated value)
+	#################
 	$TCA['tx_foo_domain_model_book'] = array(
 		'columns' => array(
 			'fe_groups' => array(
@@ -475,3 +494,90 @@ Legacy Many to Many relation with comma separated values (should be avoided in f
 			),
 		),
 	);
+
+
+
+HowTo - Load a custom Form
+===============================
+
+It is possible to load a custom form.
+
+* In ext_tables.php::
+
+	$moduleLoader->addJavaScriptFiles(array(sprintf('EXT:ebook/Resources/Public/JavaScript/%s.js', $dataType)));
+
+	$controllerActions = array(
+		'FrontendUser' => 'listFrontendUserGroup, addFrontendUserGroup',
+	);
+
+	/**
+	 * Register some controllers for the Backend (Ajax)
+	 * Special case for FE User and FE Group
+	 */
+	\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+		$_EXTKEY,
+		'Pi1',
+		$controllerActions,
+		$controllerActions
+	);
+
+	\TYPO3\CMS\Vidi\AjaxDispatcher::addAllowedActions(
+		$_EXTKEY,
+		'Pi1',
+		$controllerActions
+	);
+
+* Create Controller for loading Wizard::
+
+	touch EXT:ebook/Classes/Controller/Backend/AccessCodeController.php
+	touch EXT:ebook/Resources/Private/Backend/Templates/AccessCode/ShowWizard.html
+	touch EXT:ebook/Resources/Public/JavaScript/tx_ebook_domain_model_book.js
+	touch EXT:ebook/ext_typoscript_constants.txt
+	touch EXT:ebook/ext_typoscript_setup.txt
+	touch EXT:ebook/Migrations/Code/ClassAliasMap.php
+
+
+* TypoScript Constants in ``EXT:ebook/ext_typoscript_constants.txt``::
+
+	module.tx_ebook {
+		view {
+			 # cat=module.tx_ebook/file; type=string; label=Path to template root (BE)
+			templateRootPath = EXT:ebook/Resources/Private/Backend/Templates/
+			 # cat=module.tx_ebook/file; type=string; label=Path to template partials (BE)
+			partialRootPath = EXT:ebook/Resources/Private/Partials/
+			 # cat=module.tx_ebook/file; type=string; label=Path to template layouts (BE)
+			layoutRootPath = EXT:ebook/Resources/Private/Backend/Layouts/
+		}
+	}
+
+
+* Configure TypoScript in ``EXT:ebook/ext_typoscript_setup.txt``::
+
+	# Plugin configuration
+	plugin.tx_vidi {
+		settings {
+		}
+		view {
+			templateRootPath = {$plugin.tx_vidi.view.templateRootPath}
+			partialRootPath = {$plugin.tx_vidi.view.partialRootPath}
+			layoutRootPath = {$plugin.tx_vidi.view.layoutRootPath}
+			defaultPid = auto
+		}
+	}
+
+	# Module configuration
+	module.tx_vidi {
+		settings < plugin.tx_vidi.settings
+		view < plugin.tx_vidi.view
+		view {
+			templateRootPath = {$module.tx_vidi.view.templateRootPath}
+			partialRootPath = {$module.tx_vidi.view.partialRootPath}
+			layoutRootPath = {$module.tx_vidi.view.layoutRootPath}
+		}
+	}
+
+
+* Migration file in ``EXT:ebook/Migrations/Code/ClassAliasMap.php`` (copy example from EXT:ebook).
+* Backend Controller ``EXT:ebook/Classes/Controller/Backend/AccessCodeController.php`` (copy example from EXT:ebook).
+* HTML Template ``EXT:ebook/Resources/Private/Backend/Templates/AccessCode/ShowWizard.html`` (copy example from EXT:ebook).
+* JavaScript File ``EXT:ebook/Resources/Public/JavaScript/tx_ebook_domain_model_book.js`` (copy example from EXT:ebook).
