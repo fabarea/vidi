@@ -20,13 +20,23 @@ Vidi.Table = {
 		 * Internal reminder: properties of Datatables have prefix: m, b, s, i, o, a, fn etc...
 		 * this corresponds to the variable type e.g. mixed, boolean, string, integer, object, array, function
 		 */
-		return {
+		var config = {
 			'bStateSave': true,
 			'fnStateSave': function (oSettings, oData) {
 				sessionStorage.setItem('DataTables_' + Vidi.module.dataType, JSON.stringify(oData));
 			},
 			'fnStateLoad': function (oSettings) {
-				return JSON.parse(sessionStorage.getItem('DataTables_' + Vidi.module.dataType));
+				var state = JSON.parse(sessionStorage.getItem('DataTables_' + Vidi.module.dataType));
+
+				// Set default search by tampering the session data.
+				if (state) {
+					// Override search if given in URL.
+					var uri = new Uri(window.location.href);
+					if (uri.getQueryParamValue('search')) {
+						state.oSearch.sSearch = uri.getQueryParamValue('search');
+					}
+				}
+				return state;
 			},
 			'bProcessing': true,
 			'bServerSide': true,
@@ -84,6 +94,34 @@ Vidi.Table = {
 				Vidi.FlashMessage.showAll();
 			}
 		};
+
+		config = this.setDefaultSearch(config);
+		return config;
+	},
+
+	/**
+	 * Set a default search at the data table configuration level.
+	 * This case is needed when there is no data saved in session yet.
+	 *
+	 * @return {array} config
+	 * @return array
+	 * @private
+	 */
+	setDefaultSearch: function (config) {
+
+		var state = JSON.parse(sessionStorage.getItem('DataTables_' + Vidi.module.dataType));
+
+		// special case if no session exists.
+		if (!state) {
+			// Override search if given in URL.
+			var uri = new Uri(window.location.href);
+			if (uri.getQueryParamValue('search')) {
+				config.oSearch = {
+					'sSearch': uri.getQueryParamValue('search')
+				};
+			}
+		}
+		return config;
 	},
 
 	/**

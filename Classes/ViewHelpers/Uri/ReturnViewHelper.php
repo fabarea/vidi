@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Link;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 /***************************************************************
 *  Copyright notice
 *
@@ -28,7 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Render a create link given a data type.
  */
-class CreateViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class ReturnViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
 	 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
@@ -54,10 +54,8 @@ class CreateViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelp
 	 * @return string
 	 */
 	public function render() {
-		return sprintf('alt_doc.php?returnUrl=mod.php?M=%s&edit[%s][%s]=new',
-			GeneralUtility::_GP('M'),
-			$this->moduleLoader->getDataType(),
-			$this->getPid()
+		return sprintf('%s',
+			GeneralUtility::_GP('returnUrl')
 		);
 	}
 

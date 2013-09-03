@@ -53,6 +53,11 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	protected $objectManager;
 
 	/**
+	 * @var \TYPO3\CMS\Vidi\Persistence\querySettings
+	 */
+	protected $querySettings;
+
+	/**
 	 * Constructor
 	 *
 	 * @param string $dataType
@@ -89,11 +94,8 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content[]
 	 */
 	public function findAll() {
-
 		$query = $this->createQuery();
-		return $query->setRawResult($this->rawResult)
-			->setDataType($this->dataType)
-			->execute();
+		return $query->execute();
 	}
 
 	/**
@@ -115,15 +117,9 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content[]
 	 */
 	public function findIn($propertyName, array $values) {
-		$result = array();
-		$find = 'findBy' . ucfirst($propertyName);
-		// @todo improve me when implementing $query->matching($query->in('uid', $values))
-		foreach ($values as $value) {
-			if (strlen($value) > 0) {
-				$result[] = $this->$find($value);
-			}
-		}
-		return $result;
+		$query = $this->createQuery();
+		$query->matching($query->in($propertyName, $values));
+		return $query->execute();
 	}
 
 	/**
@@ -137,26 +133,110 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 */
 	public function findBy(\TYPO3\CMS\Vidi\QueryElement\Matcher $matcher, \TYPO3\CMS\Vidi\QueryElement\Order $order = NULL, $limit = NULL, $offset = NULL) {
 
-		$query = $this->createQuery()->setMatcher($matcher);
+		$query = $this->createQuery();
 
-		if ($order) {
-			$query->setOrder($order);
-		}
+		$constraints = $this->computeConstraint($query, $matcher);
 
-		if ($offset) {
-			$query->setOffset($offset);
+		if ($constraints) {
+			$query->matching($constraints);
 		}
 
 		if ($limit) {
 			$query->setLimit($limit);
 		}
 
-		return $query
-			->setRawResult($this->rawResult)
-			->setDataType($this->dataType)
-			->execute();
+		if ($order) {
+			$query->setOrderings($order->getOrderings());
+		}
+
+		if ($offset) {
+			$query->setOffset($offset);
+		}
+
+		return $query->execute();
 	}
 
+	/**
+	 * Get the constraints
+	 *
+	 * @param \TYPO3\CMS\Vidi\Persistence\Query $query
+	 * @param \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher
+	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\Constraint|NULL
+	 */
+	protected function computeConstraint(\TYPO3\CMS\Vidi\Persistence\Query $query, \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher) {
+
+		$result = NULL;
+
+		$constraintSearch = $this->computeSearchConstraint($query, $matcher);
+		$constraintMatch = $this->computeMatchesConstraint($query, $matcher);
+
+		if ($constraintSearch && $constraintMatch) {
+			$constraints = array($constraintSearch, $constraintMatch);
+			$result = $query->logicalAnd($constraints);
+		} elseif ($constraintSearch) {
+			$result = $constraintSearch;
+		} else {
+			$result = $constraintMatch;
+		}
+		return $result;
+	}
+
+	/**
+	 * Computes the search constraint and returns it.
+	 *
+	 * @param \TYPO3\CMS\Vidi\Persistence\Query $query
+	 * @param \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher
+	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\Constraint|NULL
+	 */
+	protected function computeSearchConstraint(\TYPO3\CMS\Vidi\Persistence\Query $query, \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher) {
+
+		$result = NULL;
+
+		// Search term case
+		if ($matcher->getSearchTerm()) {
+
+			$tcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($this->dataType);
+			$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($this->dataType);
+			$fields = explode(',', $tcaTableService->getSearchableFields());
+
+			$subConstraints = array();
+			$likeClause = sprintf('%%%s%%', $matcher->getSearchTerm());
+			foreach ($fields as $field) {
+				if ($tcaFieldService->hasRelation($field)) {
+					$foreignTable = $tcaFieldService->getForeignTable($field);
+					$foreignTcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($foreignTable);
+					$field = $field . '.' . $foreignTcaTableService->getLabelField();
+				}
+				$subConstraints[] = $query->like($field, $likeClause);
+			}
+			$result = $query->logicalOr($subConstraints);
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Computes the constraint for matches and returns it.
+	 *
+	 * @param \TYPO3\CMS\Vidi\Persistence\Query $query
+	 * @param \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher
+	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\Constraint|NULL
+	 */
+	protected function computeMatchesConstraint(\TYPO3\CMS\Vidi\Persistence\Query $query, \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher) {
+		$result = NULL;
+
+		// matches case
+		$matches = $matcher->getMatches();
+		if (!empty($matches)) {
+			$subConstraints = array();
+			foreach ($matches as $fieldName => $value) {
+				$subConstraints[] = $query->equals($fieldName, $value);
+			}
+			$result = $query->logicalAnd($subConstraints);
+		}
+
+		return $result;
+	}
 	/**
 	 * Count all Contents given specified matches.
 	 *
@@ -164,9 +244,16 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * @return int
 	 */
 	public function countBy(\TYPO3\CMS\Vidi\QueryElement\Matcher $matcher) {
-		$query = $this->createQuery()
-			->setDataType($this->dataType);
-		return $query->setMatcher($matcher)->count();
+
+		$query = $this->createQuery();
+
+		$constraints = $this->computeConstraint($query, $matcher);
+
+		if ($constraints) {
+			$query->matching($constraints);
+		}
+
+		return $query->count();
 	}
 
 	/**
@@ -220,11 +307,18 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	/**
 	 * Returns a query for objects of this repository
 	 *
-	 * @return \TYPO3\CMS\Vidi\QueryElement\Query
+	 * @return \TYPO3\CMS\Vidi\Persistence\Query
 	 * @api
 	 */
 	public function createQuery() {
-		return $this->objectManager->get('TYPO3\CMS\Vidi\QueryElement\Query', $this->dataType);
+		/** @var \TYPO3\CMS\Vidi\Persistence\Query $query */
+		$query = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\Query', $this->dataType);
+
+		/** @var \TYPO3\CMS\Vidi\Persistence\QuerySettings $querySettings */
+		$this->querySettings = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\QuerySettings');
+		$query->setQuerySettings($this->querySettings);
+
+		return $query;
 	}
 
 	/**
@@ -270,19 +364,15 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 */
 	protected function processMagicCall($field, $value, $flag = '') {
 
-		$matcher = $this->createMatch()->addMatch($field, $value);
-
 		$query = $this->createQuery();
-		$query->setRawResult($this->rawResult)
-			->setDataType($this->dataType)
-			->setMatcher($matcher);
+
+		$query->matching($query->equals($field, $value));
 
 		if ($flag == 'count') {
 			$result = $query->count();
 		} else {
 			$result = $query->execute();
 		}
-
 		return $flag == 'one' && !empty($result) ? reset($result) : $result;
 	}
 
@@ -327,18 +417,15 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * @api
 	 */
 	public function findByIdentifier($identifier) {
-
-		$matcher = $this->createMatch()->addMatch('uid', $identifier);
-
 		$query = $this->createQuery();
-		$result = $query->setRawResult($this->rawResult)
-			->setDataType($this->dataType)
-			->setMatcher($matcher)
+
+		$result = $query->matching($query->equals('uid', $identifier))
 			->execute();
 
 		if (is_array($result)) {
-			$result = reset($result);
+			$result = current($result);
 		}
+
 		return $result;
 	}
 

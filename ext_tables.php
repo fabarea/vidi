@@ -54,4 +54,12 @@ if (TYPO3_MODE == 'BE' && class_exists('TYPO3\CMS\Vidi\ModuleLoader')) {
 		$controllerActions
 	);
 }
+
+// Add new sprite icon.
+\TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons(
+	array(
+		'go' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Images/bullet_go.png',
+	),
+	$_EXTKEY
+);
 ?>

@@ -2,6 +2,9 @@
 if (!defined('TYPO3_MODE')) die ('Access denied.');
 
 $tca = array(
+	'ctrl' => array(
+		'searchFields' => $GLOBALS['TCA']['fe_users']['ctrl']['searchFields'] . ',usergroup',
+	),
 	'grid' => array(
 		'columns' => array(
 			'__checkbox' => array(

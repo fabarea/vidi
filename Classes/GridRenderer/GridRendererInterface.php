@@ -51,7 +51,13 @@ interface GridRendererInterface {
 	 * @param array $configuration
 	 * @return $this
 	 */
-	public function setConfiguration($configuration);
+	public function setFieldConfiguration($configuration);
+
+	/**
+	 * @param array $configuration
+	 * @return $this
+	 */
+	public function setGridRendererConfiguration($configuration);
 
 }
 ?>

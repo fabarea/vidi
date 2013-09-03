@@ -157,6 +157,7 @@ class Content implements \ArrayAccess {
 		$foreignDataType = $this->tcaFieldService->relationDataType($fieldName);
 
 		// Get the foreign repository instance form the factory
+		/** @var \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository $foreignRepository */
 		$foreignRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance($foreignDataType);
 
 		if ($this->tcaFieldService->hasRelationWithCommaSeparatedValues($fieldName)) {

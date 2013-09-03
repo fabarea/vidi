@@ -16,14 +16,18 @@
 						<div class="span6">
 						</div>
 					</div>
-
 				</div>
 			</div>
 			<div class="container-fluid navbar-typo3-bottom">
 				<div>
 					<div class="row-fluid">
 						<div class="span6">
-							<a href="{v:link.create()}" class="btn-new-top">
+							<f:if condition="{v:isGP(argument: 'returnUrl')}">
+								<a href="{v:uri.return()}" class="btn-return-top">
+									<v:sprite name="actions-document-close"/>
+								</a>
+							</f:if>
+							<a href="{v:uri.create()}" class="btn-new-top">
 								<v:sprite name="actions-document-new"/>
 							</a>
 						</div>

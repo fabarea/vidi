@@ -30,7 +30,7 @@ use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
 class Relation extends GridRendererAbstract {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\ViewHelpers\Link\EditViewHelper
+	 * @var \TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper
 	 */
 	protected $editViewHelper;
 
@@ -38,7 +38,7 @@ class Relation extends GridRendererAbstract {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->editViewHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ViewHelpers\Link\EditViewHelper');
+		$this->editViewHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper');
 	}
 
 	/**

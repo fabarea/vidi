@@ -41,7 +41,12 @@ abstract class GridRendererAbstract implements GridRendererInterface {
 	/**
 	 * @var array
 	 */
-	protected $configuration = array();
+	protected $fieldConfiguration = array();
+
+	/**
+	 * @var array
+	 */
+	protected $gridRendererConfiguration = array();
 
 	/**
 	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content
@@ -78,16 +83,32 @@ abstract class GridRendererAbstract implements GridRendererInterface {
 	/**
 	 * @return array
 	 */
-	public function getConfiguration() {
-		return $this->configuration;
+	public function getFieldConfiguration() {
+		return $this->fieldConfiguration;
 	}
 
 	/**
-	 * @param array $configuration
+	 * @param array $fieldConfiguration
 	 * @return $this
 	 */
-	public function setConfiguration($configuration) {
-		$this->configuration = $configuration;
+	public function setFieldConfiguration($fieldConfiguration) {
+		$this->fieldConfiguration = $fieldConfiguration;
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getGridRendererConfiguration() {
+		return $this->gridRendererConfiguration;
+	}
+
+	/**
+	 * @param array $gridRendererConfiguration
+	 * @return $this
+	 */
+	public function setGridRendererConfiguration($gridRendererConfiguration) {
+		$this->gridRendererConfiguration = $gridRendererConfiguration;
 		return $this;
 	}
 }

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Link;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 /***************************************************************
 *  Copyright notice
 *

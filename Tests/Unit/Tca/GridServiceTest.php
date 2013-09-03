@@ -140,8 +140,8 @@ class GridServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function getTheRendererOfColumnFoo() {
-		$expected = '';
+	public function getTheRendererOfColumnFooIsEmptyArray() {
+		$expected = array();
 		$this->assertEquals($expected, $this->fixture->getRenderers(uniqid('foo')));
 	}
 

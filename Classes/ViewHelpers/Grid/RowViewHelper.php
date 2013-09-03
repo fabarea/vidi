@@ -52,14 +52,23 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 
 					$result = '';
 					$renderers = $tcaGridService->getRenderers($fieldName);
-					foreach ($renderers as $rendererClassName) {
+					foreach ($renderers as $rendererClassNameOrIndex => $rendererClassNameOrConfiguration) {
+
+						if (is_array($rendererClassNameOrConfiguration)) {
+							$rendererClassName = $rendererClassNameOrIndex;
+							$gridRendererConfiguration = $rendererClassNameOrConfiguration;
+						} else {
+							$rendererClassName = $rendererClassNameOrConfiguration;
+							$gridRendererConfiguration = array();
+						}
 
 						/** @var $rendererObject \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface */
 						$rendererObject = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($rendererClassName);
 						$result .= $rendererObject
 							->setObject($object)
 							->setFieldName($fieldName)
-							->setConfiguration($configuration)
+							->setFieldConfiguration($configuration)
+							->setGridRendererConfiguration($gridRendererConfiguration)
 							->render();
 					}
 				} else {
