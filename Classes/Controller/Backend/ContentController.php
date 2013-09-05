@@ -88,26 +88,39 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 
 	/**
 	 * @param array $content
+	 * @throws \TYPO3\CMS\Vidi\Exception\MissingUidException
 	 * @return void
 	 * @dontvalidate $content
 	 */
-	public function updateAction(array $content) {
+	public function updateAction(array $content = array()) {
+
+		if (empty($content['uid'])) {
+			throw new \TYPO3\CMS\Vidi\Exception\MissingUidException('Missing Uid', 1351605545);
+		}
+
+		/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
+		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\ModuleLoader');
+
+		// transform array given as argument to object.
+		/** @var \TYPO3\CMS\Vidi\Domain\Model\Content $content */
+		$contentObject = $this->objectManager->get('TYPO3\CMS\Vidi\Domain\Model\Content',
+			$moduleLoader->getDataType(),
+			$content
+		);
 
 		// Fetch the adequate repository
 		$contentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance();
+		$contentRepository->update($contentObject);
 
-		$contentRepository->update($content);
-		$contentObject = $contentRepository->findByUid($content['uid']);
-		$result['status'] = TRUE;
-		$result['action'] = 'update';
-		$result['object'] = array(
-			'uid' => $contentObject->getUid(),
-			'title' => $contentObject->getTitle(),
-		);
+		// reload object from repository
+		$contentObject = $contentRepository->findByUid($contentObject->getUid());
 
-		# Json header is not automatically respected in the BE... so send one the hard way.
-		header('Content-type: application/json');
-		return json_encode($result);
+		// extract keys of content.
+		$keys = array_keys($content);
+
+		// assuming the field name is the first parameter of content
+		$fieldName = array_shift($keys);
+		return $contentObject[$fieldName];
 	}
 
 	/**

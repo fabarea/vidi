@@ -229,6 +229,38 @@ Default
 .. container:: table-row
 
 Key
+	**editable**
+
+Datatype
+	string
+
+Description
+	Whether the field is editable or not.
+
+Default
+	NULL
+
+.. ...............................................................
+.. ...............................................................
+.. container:: table-row
+
+Key
+	**class**
+
+Datatype
+	string
+
+Description
+	Will display the class name to every cell.
+
+Default
+	NULL
+
+.. ...............................................................
+.. ...............................................................
+.. container:: table-row
+
+Key
 	**wrap**
 
 Datatype
@@ -301,6 +333,20 @@ To render a custom column a class implementing Grid Renderer Interface must be g
 
 @todo write more...
 
+::
+
+			'access_codes' => array(
+				'visible' => TRUE,
+				'renderers' => array(
+					'TYPO3\CMS\Vidi\GridRenderer\CreateRelation',
+					'TYPO3\CMS\Vidi\GridRenderer\CountRelations' => array(
+						'labelSingular' => 'LLL:EXT:ebook/Resources/Private/Language/locallang_db.xlf:tx_ebook_domain_model_accesscode',
+						'labelPlural' => 'LLL:EXT:ebook/Resources/Private/Language/locallang_db.xlf:tx_ebook_domain_model_accesscodes',
+						'sourceModule' => 'ebook_VidiTxEbookDomainModelBookM1',
+						'targetModule' => 'ebook_VidiTxEbookDomainModelAccesscodeM1',
+					),
+				),
+			),
 
 Content Repository Factory
 ===========================

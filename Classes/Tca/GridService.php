@@ -191,6 +191,28 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
+	 * Returns whether the column is editable or not.
+	 *
+	 * @param string $fieldName the name of the column
+	 * @return bool
+	 */
+	public function isEditable($fieldName) {
+		$field = $this->getField($fieldName);
+		return isset($field['editable']) ? $field['editable'] : FALSE;
+	}
+
+	/**
+	 * Returns the class names applied to a cell
+	 *
+	 * @param string $fieldName the name of the column
+	 * @return bool
+	 */
+	public function getClass($fieldName) {
+		$field = $this->getField($fieldName);
+		return isset($field['class']) ? $field['class'] : '';
+	}
+
+	/**
 	 * Returns whether the column has a label.
 	 *
 	 * @param string $fieldName the name of the column

@@ -115,7 +115,7 @@ class ModuleLoader {
 			$subModuleName,
 			$this->position,
 			array(
-				'Content' => 'list, listRow, delete, massDelete',
+				'Content' => 'list, listRow, delete, massDelete, update',
 			),
 			array(
 				'access' => $this->access, // @todo property

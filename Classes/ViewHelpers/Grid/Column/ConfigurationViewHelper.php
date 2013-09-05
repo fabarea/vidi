@@ -44,11 +44,13 @@ class ConfigurationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractV
 				throw new \TYPO3\CMS\Vidi\Exception\NotExistingFieldException($message, 1375369594);
 			}
 
-			$output .= sprintf('Vidi._columns.push({ "mData": "%s", "bSortable": %s, "bVisible": %s, "sWidth": "%s" });' . PHP_EOL,
+			$output .= sprintf('Vidi._columns.push({ "mData": "%s", "bSortable": %s, "bVisible": %s, "sWidth": "%s", "sClass": "%s %s" });' . PHP_EOL,
 				$fieldName,
 				\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->isSortable($fieldName) ? 'true' : 'false',
 				\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->isVisible($fieldName) ? 'true' : 'false',
-				empty($configuration['width']) ? 'auto' : $configuration['width']
+				empty($configuration['width']) ? 'auto' : $configuration['width'],
+				\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->isEditable($fieldName) ? 'editable' : '',
+				\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->getClass($fieldName)
 			);
 		}
 

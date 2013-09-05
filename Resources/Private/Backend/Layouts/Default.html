@@ -24,6 +24,7 @@
 		Vidi.module.publicPath = '{v:publicPath()}';
 		Vidi.module.dataType = '{v:moduleLoader(property: "dataType")}';
 		Vidi.module.parameterPrefix = '{v:parameterPrefix()}';
+		Vidi.module.codeName = '{v:gP(argument: "M")}';
 		Vidi.module.tca = {};
 		Vidi.module.tca.ctrl = {};
 		Vidi.module.tca.ctrl.label = '{v:tca.table(key: "label")}';
@@ -37,6 +38,7 @@
 
 	<f:render section="main"/>
 
+	<v:js name="JQuery/jquery.jeditable.js"/>
 	<v:js name="JQuery/jquery.dataTables.min.js"/>
 	<v:js name="JQuery/jquery.form.js"/>
 	<v:js name="JQuery/jquery.dataTables.bootstrap.js"/>

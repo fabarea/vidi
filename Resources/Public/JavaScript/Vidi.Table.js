@@ -43,8 +43,8 @@ Vidi.Table = {
 			'sAjaxSource': "mod.php",
 			'oLanguage': {
 				// remove some label
-				"sSearch": '',
-				"sLengthMenu": '_MENU_'
+				'sSearch': '',
+				'sLengthMenu': '_MENU_'
 			},
 
 			/**
@@ -61,15 +61,15 @@ Vidi.Table = {
 				moduleCode = uri.getQueryParamValue('M');
 				parameterCode = 'tx_vidi_' + moduleCode.toLowerCase();
 
-				aoData.push({ "name": 'M', "value": moduleCode});
-				aoData.push({ "name": parameterCode + '[action]', "value": 'listRow' });
-				aoData.push({ "name": parameterCode + '[controller]', "value": 'Content' });
-				aoData.push({ "name": parameterCode + '[format]', "value": 'json' });
+				aoData.push({ 'name': 'M', 'value': moduleCode});
+				aoData.push({ 'name': parameterCode + '[action]', 'value': 'listRow' });
+				aoData.push({ 'name': parameterCode + '[controller]', 'value': 'Content' });
+				aoData.push({ 'name': parameterCode + '[format]', 'value': 'json' });
 			},
 			'aoColumns': Vidi._columns,
 			'aLengthMenu': [
 				[10, 25, 50, 100, -1],
-				[10, 25, 50, 100, "All"]
+				[10, 25, 50, 100, 'All']
 			],
 			'fnInitComplete': function () {
 			},
@@ -92,6 +92,41 @@ Vidi.Table = {
 
 				// Handle flash message
 				Vidi.FlashMessage.showAll();
+
+				/**
+				 * Bind handler for editable content.
+				 */
+				Vidi.table.$('td.editable').editable(
+					Vidi.Table.computeEditableUrl(),
+					{
+						placeholder: '',
+						indicator: '<img src="' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" width="16" height="" alt="" />',
+						//callback: function (sValue, settings) {
+							// could be the reload of the whole grid.
+						//},
+						data: function (value, settings) {
+
+							// Define dynamically the name of the field which will be used as POST parameter
+							var columnPosition = Vidi.table.fnGetPosition(this)[2];
+							var fieldName = Vidi._columns[columnPosition]['mData'];
+							var contentParameter = '{0}[content][{1}]'.format(Vidi.module.parameterPrefix, fieldName);
+							settings.name = contentParameter;
+
+							return value;
+						},
+						submitdata: function (value, settings) {
+
+							var data = {};
+
+							// Set uid parameter which must be defined at this level.
+							var uidParameter = '{0}[content][uid]'.format(Vidi.module.parameterPrefix);
+							data[uidParameter] = this.parentNode.getAttribute('id');
+
+							return data;
+						},
+						'height': '20px'
+					}
+				);
 			}
 		};
 
@@ -100,11 +135,34 @@ Vidi.Table = {
 	},
 
 	/**
+	 * Computed the URL used for editable content.
+	 *
+	 * @return {string}
+	 * @private
+	 */
+	computeEditableUrl: function () {
+
+		// list of parameters used to call the right controller / action.
+		var parameters = {
+			format: 'json',
+			action: 'update',
+			controller: 'Content'
+		};
+
+		var urlParts = ['M=' + Vidi.module.codeName];
+		$.each(parameters, function (index, value) {
+			var element = '{0}[{1}]={2}'.format(Vidi.module.parameterPrefix, index, value);
+			urlParts.push(element);
+		});
+
+		return '/typo3/mod.php?' + urlParts.join('&');
+	},
+
+	/**
 	 * Set a default search at the data table configuration level.
 	 * This case is needed when there is no data saved in session yet.
 	 *
 	 * @return {array} config
-	 * @return array
 	 * @private
 	 */
 	setDefaultSearch: function (config) {

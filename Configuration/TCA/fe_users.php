@@ -20,14 +20,17 @@ $tca = array(
 			'username' => array(
 				'visible' => TRUE,
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:username',
+				'editable' => TRUE,
 			),
 			'name' => array(
 				'visible' => TRUE,
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:name',
+				'editable' => TRUE,
 			),
 			'email' => array(
 				'visible' => TRUE,
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:email',
+				'editable' => TRUE,
 			),
 			'usergroup' => array(
 				'visible' => TRUE,
