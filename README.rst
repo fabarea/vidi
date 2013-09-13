@@ -31,7 +31,7 @@ http://twitter.com/fudriot
 Installation
 =================
 
-Download the source code either from the `Git repository`_ to get the master or from the TER for the stable releases. Install the extension as normal in the Extension Manager.
+Download the source code either from the `Git repository`_ to get the master or from the TER for the stable release (not yet true!). Install the extension as normal in the Extension Manager.
 
 .. _Git repository: https://git.typo3.org/TYPO3CMS/Extensions/vidi.git
 
@@ -45,7 +45,7 @@ TSconfig
 
 A pid (page id) is necessary to be defined when creating a new record for the need of TCEmain_.
 This is not true for all records as some of them can be on the root level and consequently have a pid 0.
-However most requires a pid value greater than 0. In a first place, a global pid can be configured in the Extension Manager
+However most require a pid value greater than 0. In a first place, a global pid can be configured in the Extension Manager
 which is taken as fallback value. Besides, User TSconfig can also be set which will configure a custom pid for each data type enabling to
 be fine grained::
 
@@ -368,14 +368,15 @@ TCA Service API
 =================
 
 This API enables to fetch info related to TCA in a programmatic way. Since TCA covers a very large set of data, the service is divided in types.
-There are are four parts being addressed: table, field, grid and form. The "grid" part extends the TCA and is introduced for the need of the BE module of media.
+There are are four parts being addressed: table, field, grid and form. The "grid" TCA is not official and is extending the TCA for the needs of Vidi.
 
-* table: deal with the "ctrl" part of the TCA. Typical info is what is the label of the table name, what is the default sorting, etc...
-* field: deal with the "columns" part of the TCA. Typical info is what configuration, label, ... has a field name.
-* grid: deal with the "grid" part of the TCA.
-* form: deal with the "types" (and possible "palette") part of the TCA. Get what field compose a record type.
+* table: deals with the "ctrl" part of the TCA. Typical info is what is the label of the table name, what is the default sorting, etc...
+* field: deals with the "columns" part of the TCA. Typical info is what configuration, label, ... has a field name.
+* grid: deals with the "grid" part of the TCA.
+* form: deals with the "types" (and possible "palette") part of the TCA. Get what field compose a record type.
 
-The API is meant to be generic and can be re-use for every record type within TYPO3. Find below some code example making use of the service factory.
+The API is meant to be generic and can be re-use for every record type within TYPO3.
+Find below some code examples.
 
 Instantiate a TCA service related to **fields**::
 
@@ -437,6 +438,8 @@ To check whether TCA is well configured, Vidi provides a Command that will scan 
 
 Example of TCA
 ---------------
+
+@todo writing review is necessary.
 
 Important to notice that for displaying relational columns in a Vidi module, the TCA configuration ``foreign_field``
 must be defined in both side of the relations. This is needed for Vidi to retrieve the content in both direction.
@@ -545,6 +548,8 @@ Legacy Many to Many relation with comma separated values (should be avoided in f
 
 HowTo - Load a custom Form
 ===============================
+
+@todo writing review is necessary.
 
 It is possible to load a custom form.
 
