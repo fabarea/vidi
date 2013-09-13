@@ -132,7 +132,8 @@ Vidi.Table = {
 
 							// Set uid parameter which must be defined at this level.
 							var uidParameter = '{0}[content][uid]'.format(Vidi.module.parameterPrefix);
-							data[uidParameter] = this.parentNode.getAttribute('id');
+							var uid = this.parentNode.getAttribute('id').replace('row-', '');
+							data[uidParameter] = uid;
 
 							return data;
 						},
