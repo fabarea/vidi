@@ -104,7 +104,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 *
 	 * @return string
 	 */
-	public function getSearchableFields() {
+	public function getSearchFields() {
 		return $this->get('searchFields');
 	}
 

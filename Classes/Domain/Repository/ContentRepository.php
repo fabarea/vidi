@@ -99,6 +99,20 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	}
 
 	/**
+	 * Returns all objects with unique value for a given property.
+	 *
+	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content[]
+	 */
+	public function findDistinctValues($propertyName) {
+		$query = $this->createQuery();
+		$constraint = $query->logicalNot($query->equals($propertyName, ''));
+		$query->setDistinct($propertyName)
+			->matching($constraint);
+
+		return $query->execute();
+	}
+
+	/**
 	 * Finds an object matching the given identifier.
 	 *
 	 * @param int $uid The identifier of the object to find
@@ -135,7 +149,7 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 
 		$query = $this->createQuery();
 
-		$constraints = $this->computeConstraint($query, $matcher);
+		$constraints = $this->computeConstraints($query, $matcher);
 
 		if ($constraints) {
 			$query->matching($constraints);
@@ -163,20 +177,31 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * @param \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher
 	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\Constraint|NULL
 	 */
-	protected function computeConstraint(\TYPO3\CMS\Vidi\Persistence\Query $query, \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher) {
+	protected function computeConstraints(\TYPO3\CMS\Vidi\Persistence\Query $query, \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher) {
 
 		$result = NULL;
 
-		$constraintSearch = $this->computeSearchConstraint($query, $matcher);
-		$constraintMatch = $this->computeMatchesConstraint($query, $matcher);
+		$constraints = array();
 
-		if ($constraintSearch && $constraintMatch) {
-			$constraints = array($constraintSearch, $constraintMatch);
-			$result = $query->logicalAnd($constraints);
-		} elseif ($constraintSearch) {
-			$result = $constraintSearch;
-		} else {
-			$result = $constraintMatch;
+		// Search term
+		$constraint = $this->computeSearchTermConstraint($query, $matcher);
+		if ($constraint) {
+			$constraints[] = $constraint;
+		}
+
+		foreach ($matcher->getSupportedOperators() as $operator) {
+			$constraint = $this->computeConstraint($query, $matcher, $operator);
+			if ($constraint) {
+				$constraints[] = $constraint;
+			}
+		}
+
+		if (count($constraints) > 1) {
+			$logical = $matcher->getDefaultLogicalSeparator();
+			$result = $query->$logical($constraints);
+		} elseif(!empty($constraints)) {
+			// true means there is one constraint only
+			$result = current($constraints);
 		}
 		return $result;
 	}
@@ -188,7 +213,7 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * @param \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher
 	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\Constraint|NULL
 	 */
-	protected function computeSearchConstraint(\TYPO3\CMS\Vidi\Persistence\Query $query, \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher) {
+	protected function computeSearchTermConstraint(\TYPO3\CMS\Vidi\Persistence\Query $query, \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher) {
 
 		$result = NULL;
 
@@ -197,9 +222,9 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 
 			$tcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($this->dataType);
 			$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($this->dataType);
-			$fields = explode(',', $tcaTableService->getSearchableFields());
+			$fields = explode(',', $tcaTableService->getSearchFields());
 
-			$subConstraints = array();
+			$constraints = array();
 			$likeClause = sprintf('%%%s%%', $matcher->getSearchTerm());
 			foreach ($fields as $field) {
 				if ($tcaFieldService->hasRelation($field)) {
@@ -207,9 +232,10 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 					$foreignTcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($foreignTable);
 					$field = $field . '.' . $foreignTcaTableService->getLabelField();
 				}
-				$subConstraints[] = $query->like($field, $likeClause);
+				$constraints[] = $query->like($field, $likeClause);
 			}
-			$result = $query->logicalOr($subConstraints);
+			$logical = $matcher->getLogicalSeparatorForSearchTerm();
+			$result = $query->$logical($constraints);
 		}
 
 		return $result;
@@ -220,23 +246,42 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 *
 	 * @param \TYPO3\CMS\Vidi\Persistence\Query $query
 	 * @param \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher
+	 * @param string $operator
 	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\Constraint|NULL
 	 */
-	protected function computeMatchesConstraint(\TYPO3\CMS\Vidi\Persistence\Query $query, \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher) {
+	protected function computeConstraint(\TYPO3\CMS\Vidi\Persistence\Query $query, \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher, $operator) {
 		$result = NULL;
 
-		// matches case
-		$matches = $matcher->getMatches();
-		if (!empty($matches)) {
-			$subConstraints = array();
-			foreach ($matches as $fieldName => $value) {
-				$subConstraints[] = $query->equals($fieldName, $value);
+		$operatorName = ucfirst($operator);
+		$getCriteria = sprintf('get%sCriteria', $operatorName);
+		$criteria = $matcher->$getCriteria();
+
+		if (!empty($criteria)) {
+			$constraints = array();
+
+			$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($this->dataType);
+			foreach ($criteria as $criterion) {
+
+				$field = $criterion['propertyName'];
+				$operand = $criterion['operand'];
+				if ($tcaFieldService->hasRelationMany($field) && is_numeric($operand)) {
+					$field = $field . '.uid';
+				} elseif ($tcaFieldService->hasRelationMany($field)) {
+					$foreignTable = $tcaFieldService->getForeignTable($field);
+					$foreignTcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($foreignTable);
+					$field = $field . '.' . $foreignTcaTableService->getLabelField();
+				}
+				$constraints[] = $query->$operator($field, $criterion['operand']);
 			}
-			$result = $query->logicalAnd($subConstraints);
+
+			$getLogicalSeparator = sprintf('getLogicalSeparatorFor%s', $operatorName);
+			$logical = $matcher->$getLogicalSeparator();
+			$result = $query->$logical($constraints);
 		}
 
 		return $result;
 	}
+
 	/**
 	 * Count all Contents given specified matches.
 	 *
@@ -247,7 +292,7 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 
 		$query = $this->createQuery();
 
-		$constraints = $this->computeConstraint($query, $matcher);
+		$constraints = $this->computeConstraints($query, $matcher);
 
 		if ($constraints) {
 			$query->matching($constraints);

@@ -47,6 +47,7 @@ Vidi.Session = {
 		var result;
 		result = null;
 		if (window.sessionStorage) {
+			key = this._getKey(key);
 			result = sessionStorage.getItem(key);
 		}
 		return result;
@@ -61,6 +62,7 @@ Vidi.Session = {
 	 */
 	set: function (key, value) {
 		if (window.sessionStorage) {
+			key = this._getKey(key);
 			sessionStorage.setItem(key, value);
 		}
 	},
@@ -73,6 +75,7 @@ Vidi.Session = {
 	 */
 	reset: function (key) {
 		if (window.sessionStorage) {
+			key = this._getKey(key);
 			sessionStorage.setItem(key, '');
 		}
 	},
@@ -85,5 +88,16 @@ Vidi.Session = {
 	 */
 	has: function (key) {
 		return this.get(key) != null && this.get(key) != '';
+	},
+
+	/**
+	 * Get a "formatted" key according the current module.
+	 *
+	 * @param {string} key corresponds to an identifier
+	 * @return string
+	 * @private
+	 */
+	_getKey: function (key) {
+		return 'vidi.' + Vidi.module.dataType + '.' + key;
 	}
 };

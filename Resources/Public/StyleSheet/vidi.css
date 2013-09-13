@@ -258,3 +258,14 @@ form .metadata {
 	position: relative;
 	bottom: 5px;
 }
+
+/* Hide by default the search bar from DataTables which is replaced by VisualSearch */
+input[aria-controls=content-list] {
+	display: none;
+}
+
+/* Hide border of fields in VisualSearch */
+.search_box_container textarea:focus,
+.search_box_container input:focus {
+	box-shadow: none !important;
+}

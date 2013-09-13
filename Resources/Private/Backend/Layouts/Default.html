@@ -5,7 +5,8 @@
 		1:'{f:uri.resource(path:\'StyleSheet/bootstrap-responsive.css\')}',
 		2:'{f:uri.resource(path:\'StyleSheet/vidi.css\')}',
 		3:'{f:uri.resource(path:\'StyleSheet/bootstrap-datatables.css\')}',
-		5:'{f:uri.resource(path:\'StyleSheet/JQueryUi/jquery-ui-1.10.1.custom.min.css\')}'
+		5:'{f:uri.resource(path:\'StyleSheet/JQueryUi/jquery-ui-1.10.1.custom.min.css\')}',
+		6:'{f:uri.resource(path:\'StyleSheet/VisualSearch/visualsearch.css\')}'
 	}"
                  includeJsFiles="{
 		0:'{f:uri.resource(path:\'JavaScript/JQuery/jquery-1.9.1.min.js\')}'
@@ -27,6 +28,7 @@
 		Vidi.module.codeName = '{v:gP(argument: "M")}';
 		Vidi.module.tca = {};
 		Vidi.module.tca.ctrl = {};
+		Vidi.module.tca.ctrl.searchFields = {v:searchFields()};
 		Vidi.module.tca.ctrl.label = '{v:tca.table(key: "label")}';
 
 		Vidi._columns = [];
@@ -37,6 +39,11 @@
 	</script>
 
 	<f:render section="main"/>
+
+	<v:js name="JQuery/jquery-ui-1.10.1.custom.min.js"/>
+	<v:js name="VisualSearch/underscore-1.4.3.js"/>
+	<v:js name="VisualSearch/backbone-0.9.10.js"/>
+	<v:js name="VisualSearch/visualsearch.js"/>
 
 	<v:js name="JQuery/jquery.jeditable.js"/>
 	<v:js name="JQuery/jquery.dataTables.min.js"/>
@@ -52,6 +59,7 @@
 	<v:js name="Encoder.js"/>
 
 	<v:js name="Vidi.js"/>
+	<v:js name="Vidi.VisualSearch.js"/>
 	<v:js name="Vidi.Panel.js"/>
 	<v:js name="Vidi.Table.js"/>
 	<v:js name="Vidi.Action.js"/>

@@ -71,11 +71,16 @@ class CountRelations extends GridRendererAbstract {
 			}
 		}
 
-		$template = '<a href="/typo3/mod.php?M=%s&returnUrl=%s&search=%s:%s">%s %s<span class="invisible" style="padding-left: 5px">%s</span></a>';
+		$template = '<a href="/typo3/mod.php?M=%s&returnUrl=%s&search=%s&query=%s:%s">%s %s<span class="invisible" style="padding-left: 5px">%s</span></a>';
 
+		$search = json_encode(array(array($tcaFieldService->getForeignField($this->fieldName) => $this->object->getUid())));
+
+		// @todo naive implementation. Better to base64 encode? Remove todo if no complain...
+		$search = str_replace('"', "'", $search);
 		return sprintf($template,
 			empty($this->gridRendererConfiguration['targetModule']) ? '' : $this->gridRendererConfiguration['targetModule'],
 			'/typo3/mod.php?M=' . $this->gridRendererConfiguration['sourceModule'],
+			$search,
 			$tcaFieldService->getForeignField($this->fieldName),
 			$this->object->getUid(),
 			$numberOfObjects,

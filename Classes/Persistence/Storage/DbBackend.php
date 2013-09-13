@@ -383,7 +383,8 @@ class DbBackend {
 		if ($this->query->getQuerySettings()->getDebugQuery()) {
 
 			// direct sql output
-			#debug($sql, -2);
+			debug($sql, -2);
+			#print($sql);
 
 			/** @var $loggerManager \TYPO3\CMS\Core\Log\LogManager */
 			$loggerManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager');
@@ -465,6 +466,10 @@ class DbBackend {
 			#$this->addRecordTypeConstraint($className, $sql);
 			$sql['fields'][$tableName] = $tableName . '.*';
 			$sql['tables'][$tableName] = $tableName;
+			if ($this->query->getDistinct()) {
+				$sql['fields'][$tableName] = $tableName . '.' . $this->query->getDistinct();
+				$sql['keywords']['distinct'] = 'DISTINCT';
+			}
 		} elseif ($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface) {
 			$this->parseJoin($source, $sql);
 		}

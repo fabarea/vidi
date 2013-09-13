@@ -52,7 +52,6 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 
 	/**
 	 * List Row action for this controller. Output a json list of contents
-	 * This action is expected to have a parameter format = json
 	 *
 	 * @param array $matches
 	 * @return void
@@ -62,7 +61,7 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		// Initialize some objects related to the query
 		$matcherObject = $this->createMatcherObject();
 		foreach ($matches as $propertyName => $value) {
-			$matcherObject->addMatch($propertyName, $value);
+			$matcherObject->equals($propertyName, $value);
 		}
 
 		$orderObject = $this->createOrderObject();
@@ -82,8 +81,59 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		$this->view->assign('pager', $pagerObject);
 
 		$this->request->setFormat('json');
-		# Json header is not automatically respected in the BE... so send one the hard way.
+		# Json header is not automatically respected in the BE with parameter format=json
+		# so send one the hard way.
 		header('Content-type: application/json');
+	}
+
+	/**
+	 * List facet action for this controller. Output a json list of value
+	 * corresponding of a searched facet.
+	 * This action is expected to have a parameter format = json
+	 *
+	 * @param string $facet
+	 * @param string $searchTerm
+	 * @return void
+	 */
+	public function listFacetValuesAction($facet, $searchTerm) {
+
+		$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
+		$values = array();
+		if ($tcaFieldService->hasField($facet)) {
+
+//			 @todo count contents and avoid too many items < 1000
+//			$numberOfContents = $contentRepository->countBy($matcherObject);
+			if ($tcaFieldService->hasRelation($facet)) {
+
+				// Fetch the adequate repository
+				$foreignTable = $tcaFieldService->getForeignTable($facet);
+				$contentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance($foreignTable);
+				$tcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($foreignTable);
+				$contents = $contentRepository->findAll();
+
+				foreach ($contents as $content) {
+					$values[] = array (
+						'value' => $content['uid'],
+						'label' => $content[$tcaTableService->getLabelField()],
+					);
+				}
+			} elseif (!$tcaFieldService->isTextArea($facet)) {
+
+				// Fetch the adequate repository
+				$contentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance();
+
+				// Query the repository
+				$contents = $contentRepository->findDistinctValues($facet);
+				foreach ($contents as $content) {
+					$values[] = $content[$facet];
+				}
+			}
+		}
+
+		# Json header is not automatically respected in the BE with parameter format=json
+		# so send one the hard way.
+		header('Content-type: application/json');
+		return json_encode($values);
 	}
 
 	/**
@@ -185,24 +235,26 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		// Special case for Grid in the BE using jQuery DataTables plugin.
 		// Retrieve a possible search term from GP.
 		$searchTerm = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sSearch');
+
 		if (strlen($searchTerm) > 0) {
-			$terms = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(':', $searchTerm);
 
-			if (count($terms) == 2) {
-				$fieldName = $terms[0];
-				$valueToMatch = $terms[1];
+			$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
 
-				$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
-				$fields = $tcaFieldService->getFieldNames();
-				foreach (array('uid', 'pid') as $field) {
-					$fields[] = $field;
-				}
+			// try to parse a json query
+			$terms = json_decode($searchTerm, TRUE);
+			if (is_array($terms)) {
 
-				if (in_array($fieldName, $fields) && strlen($valueToMatch) > 0) {
-					$matcher->setMatches(array($fieldName => $valueToMatch));
-				} else {
-					// must be empty because field name is invalid.
-					$matcher->setMatches(array('uid' => -1));
+				foreach ($terms as $term) {
+					$fieldName = key($term);
+					$value = current($term);
+					if ($fieldName === 'text') {
+						$matcher->setSearchTerm($value);
+					} elseif (($tcaFieldService->hasRelation($fieldName) && is_numeric($value))
+						|| $tcaFieldService->isNumerical($fieldName)) {
+							$matcher->equals($fieldName, $value);
+					} else {
+						$matcher->likes($fieldName, $value);
+					}
 				}
 			} else {
 				$matcher->setSearchTerm($searchTerm);

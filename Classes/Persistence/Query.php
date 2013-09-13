@@ -100,6 +100,13 @@ class Query implements \TYPO3\CMS\Extbase\Persistence\QueryInterface {
 	protected $offset;
 
 	/**
+	 * Apply DISTINCT upon property.
+	 *
+	 * @var string
+	 */
+	protected $distinct;
+
+	/**
 	 * The query settings.
 	 *
 	 * @var \TYPO3\CMS\Vidi\Persistence\QuerySettings
@@ -235,17 +242,6 @@ class Query implements \TYPO3\CMS\Extbase\Persistence\QueryInterface {
 	public function execute() {
 		/** @var \TYPO3\CMS\Vidi\Persistence\Storage\DbBackend $dbBackend */
 		$dbBackend = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\Storage\DbBackend', $this);
-
-		// Just for debugging the query
-		if ($this->getQuerySettings()->getDebugQuery()) {
-
-			/** @var $loggerManager \TYPO3\CMS\Core\Log\LogManager */
-			$loggerManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager');
-
-			/** @var $logger \TYPO3\CMS\Core\Log\Logger */
-			$sql = $dbBackend->getParsedSql();
-			$loggerManager->getLogger(get_class($this))->info($sql);
-		}
 
 		return $dbBackend->getResult();
 	}
@@ -551,7 +547,6 @@ class Query implements \TYPO3\CMS\Extbase\Persistence\QueryInterface {
 
 		/** @var \TYPO3\CMS\Vidi\Persistence\Storage\DbBackend $dbBackend */
 		$dbBackend = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\Storage\DbBackend', $this);
-		$this->querySettings->setDebugQuery(TRUE);
 
 		return $dbBackend->countResult();
 	}
@@ -567,6 +562,22 @@ class Query implements \TYPO3\CMS\Extbase\Persistence\QueryInterface {
 	 */
 	public function isEmpty($propertyName) {
 		throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException(__METHOD__);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDistinct() {
+		return $this->distinct;
+	}
+
+	/**
+	 * @param string $distinct
+	 * @return $this
+	 */
+	public function setDistinct($distinct) {
+		$this->distinct = $distinct;
+		return $this;
 	}
 }
 

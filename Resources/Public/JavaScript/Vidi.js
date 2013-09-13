@@ -153,3 +153,28 @@ Vidi.merge = function (set1, set2) {
 	}
 	return set1
 };
+
+
+/**
+ * Computed the URL with a parameter-able action.
+ *
+ * @return {string}
+ * @private
+ */
+Vidi.computeUrl = function (actionName) {
+
+	// list of parameters used to call the right controller / action.
+	var parameters = {
+		format: 'json',
+		action: actionName,
+		controller: 'Content'
+	};
+
+	var urlParts = ['M=' + Vidi.module.codeName];
+	$.each(parameters, function (index, value) {
+		var element = '{0}[{1}]={2}'.format(Vidi.module.parameterPrefix, index, value);
+		urlParts.push(element);
+	});
+
+	return '/typo3/mod.php?' + urlParts.join('&');
+}

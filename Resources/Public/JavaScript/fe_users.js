@@ -66,7 +66,7 @@ $(document).ready(function () {
 							bootbox.hideAll();
 
 							// Store in session the last edited uid
-							Vidi.Session.set('vidi.lastEditedUid', contentObjectUid);
+							Vidi.Session.set('lastEditedUid', contentObjectUid);
 
 							// Reload data table.
 							Vidi.table.fnDraw();

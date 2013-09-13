@@ -40,7 +40,7 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 
 		// Initialize returned array
 		$output = array();
-		$output['DT_RowId'] = $object->getUid();
+		$output['DT_RowId'] = 'row-' . $object->getUid();
 		#$output['DT_RowClass'] = 'row-' . $object->getStatus();
 
 		foreach($tcaGridService->getFields() as $fieldName => $configuration) {

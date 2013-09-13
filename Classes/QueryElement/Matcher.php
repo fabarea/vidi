@@ -30,16 +30,67 @@ namespace TYPO3\CMS\Vidi\QueryElement;
 class Matcher {
 
 	/**
+	 * The logical OR
+	 */
+	const LOGICAL_OR = 'logicalOr';
+
+	/**
+	 * The logical AND
+	 */
+	const LOGICAL_AND = 'logicalAnd';
+
+	/**
 	 * @var string
 	 */
 	protected $searchTerm = '';
 
 	/**
-	 * Contains associative values used for finding matches array($fieldName => $value)
+	 * @var array
+	 */
+	protected $supportedOperators = array('equals', 'like');
+
+	/**
+	 * Associative values used for equals operator ($fieldName => $value)
 	 *
 	 * @var array
 	 */
-	protected $matches = array();
+	protected $equalsCriteria = array();
+
+	/**
+	 * Associative values used for like operator ($fieldName => $value)
+	 *
+	 * @var array
+	 */
+	protected $likeCriteria = array();
+
+	/**
+	 * Default logical operator for like.
+	 *
+	 * @var array
+	 */
+	protected $defaultLogicalSeparator = self::LOGICAL_AND;
+
+	/**
+	 * Default logical operator for like.
+	 *
+	 * @var array
+	 */
+	protected $logicalSeparatorForLike = self::LOGICAL_AND;
+
+
+	/**
+	 * Default logical operator for equals.
+	 *
+	 * @var array
+	 */
+	protected $logicalSeparatorForEquals = self::LOGICAL_AND;
+
+	/**
+	 * Default logical operator for the search term.
+	 *
+	 * @var array
+	 */
+	protected $logicalSeparatorForSearchTerm = self::LOGICAL_OR;
 
 	/**
 	 * Constructs a new Matcher
@@ -51,18 +102,6 @@ class Matcher {
 	public function __construct($matches = array(), $dataType = '') {
 		$this->tcaService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($dataType);
 		$this->matches = $matches;
-	}
-
-	/**
-	 * Add a category to be used as match. It could be either an integer or a string. Try using integer in priority which is more efficient.
-	 * A string is also possible to be given. The Query object will attempt to find / convert to a category uid.
-	 *
-	 * @param int|string|object $category
-	 * @return \TYPO3\CMS\Vidi\QueryElement\Matcher
-	 */
-	public function addCategory($category) {
-		$this->addMatch('categories', $category);
-		return $this;
 	}
 
 	/**
@@ -84,38 +123,106 @@ class Matcher {
 	/**
 	 * @return array
 	 */
-	public function getMatches() {
-		return $this->matches;
+	public function getEqualsCriteria() {
+		return $this->equalsCriteria;
 	}
 
 	/**
-	 * @param array $matches
-	 * @return \TYPO3\CMS\Vidi\QueryElement\Matcher
+	 * @param $propertyName
+	 * @param $operand
+	 * @return $this
 	 */
-	public function setMatches($matches) {
-		$this->matches = $matches;
+	public function equals($propertyName, $operand) {
+		$this->equalsCriteria[] = array('propertyName' => $propertyName, 'operand' => $operand);
 		return $this;
 	}
 
 	/**
-	 * Add a value to be used for filtering a given field.
-	 * If the field has a relation to a foreign table, multiple matching
-	 * values can be added.
-	 *
-	 * @param string $field
-	 * @param string $value
-	 * @return \TYPO3\CMS\Vidi\QueryElement\Matcher
+	 * @return array
 	 */
-	public function addMatch($field, $value) {
-		if ($this->tcaService->hasRelationManyToMany($field)) {
-			if (empty($this->matches[$field])) {
-				$this->matches[$field] = array();
-			}
-			$this->matches[$field][] = $value;
-		} else {
-			$this->matches[$field] = $value;
-		}
+	public function getLikeCriteria() {
+		return $this->likeCriteria;
+	}
+
+	/**
+	 * @param $propertyName
+	 * @param $operand
+	 * @return $this
+	 */
+	public function likes($propertyName, $operand) {
+		$this->likeCriteria[] = array('propertyName' => $propertyName, 'operand' => '%' . $operand . '%');
 		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getDefaultLogicalSeparator() {
+		return $this->defaultLogicalSeparator;
+	}
+
+	/**
+	 * @param array $defaultLogicalSeparator
+	 * @return $this
+	 */
+	public function setDefaultLogicalSeparator($defaultLogicalSeparator) {
+		$this->defaultLogicalSeparator = $defaultLogicalSeparator;
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getLogicalSeparatorForLike() {
+		return $this->logicalSeparatorForLike;
+	}
+
+	/**
+	 * @param array $logicalSeparatorForLike
+	 * @return $this
+	 */
+	public function setLogicalSeparatorForLike($logicalSeparatorForLike) {
+		$this->logicalSeparatorForLike = $logicalSeparatorForLike;
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getLogicalSeparatorForEquals() {
+		return $this->logicalSeparatorForEquals;
+	}
+
+	/**
+	 * @param array $logicalSeparatorForEquals
+	 * @return $this
+	 */
+	public function setLogicalSeparatorForEquals($logicalSeparatorForEquals) {
+		$this->logicalSeparatorForEquals = $logicalSeparatorForEquals;
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getLogicalSeparatorForSearchTerm() {
+		return $this->logicalSeparatorForSearchTerm;
+	}
+
+	/**
+	 * @param array $logicalSeparatorForSearchTerm
+	 * @return $this
+	 */
+	public function setLogicalSeparatorForSearchTerm($logicalSeparatorForSearchTerm) {
+		$this->logicalSeparatorForSearchTerm = $logicalSeparatorForSearchTerm;
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getSupportedOperators() {
+		return $this->supportedOperators;
 	}
 }
 

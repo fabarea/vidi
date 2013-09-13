@@ -56,7 +56,7 @@ class TableServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function getSearchableFieldsIsNotEmptyByDefaultForTableSysFile() {
-		$actual = $this->fixture->getSearchableFields();
+		$actual = $this->fixture->getSearchFields();
 		$this->assertNotEmpty($actual);
 	}
 

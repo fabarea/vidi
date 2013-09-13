@@ -201,6 +201,36 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
+	 * Returns whether the field is numerical.
+	 *
+	 * @param string $fieldName
+	 * @return bool
+	 */
+	public function isNumerical($fieldName) {
+		$result = in_array($fieldName, array('uid', 'pid'));
+		if ($result === FALSE) {
+			$configuration = $this->getConfiguration($fieldName);
+			$parts = array();
+			if (!empty($configuration['eval'])) {
+				$parts = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['eval']);
+			}
+			$result = in_array('int', $parts) || in_array('float', $parts);
+		}
+		return $result;
+	}
+
+	/**
+	 * Returns whether the field is of type text area.
+	 *
+	 * @param string $fieldName
+	 * @return bool
+	 */
+	public function isTextArea($fieldName) {
+		$type = $this->getFieldType($fieldName);
+		return $type === 'text';
+	}
+
+	/**
 	 * Returns whether the field is required.
 	 *
 	 * @param string $fieldName
@@ -236,7 +266,8 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return array
 	 */
 	public function hasField($fieldName) {
-		return isset($this->tca['columns'][$fieldName]);
+		// @todo naive implementation, improve me according to the needs. Check if info is not yet in cache.
+		return isset($this->tca['columns'][$fieldName]) || in_array($fieldName, array('uid'));
 	}
 
 	/**

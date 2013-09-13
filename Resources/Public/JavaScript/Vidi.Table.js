@@ -23,17 +23,25 @@ Vidi.Table = {
 		var config = {
 			'bStateSave': true,
 			'fnStateSave': function (oSettings, oData) {
-				sessionStorage.setItem('DataTables_' + Vidi.module.dataType, JSON.stringify(oData));
+				Vidi.Session.set('dataTables', JSON.stringify(oData));
 			},
 			'fnStateLoad': function (oSettings) {
-				var state = JSON.parse(sessionStorage.getItem('DataTables_' + Vidi.module.dataType));
 
-				// Set default search by tampering the session data.
+
+				var state = JSON.parse(Vidi.Session.get('dataTables'));
+
+				// Set default search by overriding the session data if argument is passed.
 				if (state) {
 					// Override search if given in URL.
 					var uri = new Uri(window.location.href);
 					if (uri.getQueryParamValue('search')) {
-						state.oSearch.sSearch = uri.getQueryParamValue('search');
+						var search = uri.getQueryParamValue('search');
+						state.oSearch.sSearch = search.replace(/'/g, '"');
+					}
+
+					// Also stores value to be used in visual search.
+					if (uri.getQueryParamValue('query')) {
+						Vidi.Session.set('visualSearch.query', uri.getQueryParamValue('query'));
 					}
 				}
 				return state;
@@ -72,6 +80,10 @@ Vidi.Table = {
 				[10, 25, 50, 100, 'All']
 			],
 			'fnInitComplete': function () {
+				Vidi.VisualSearch.initialize();
+
+				var query = Vidi.Session.get('visualSearch.query');
+				Vidi.VisualSearch.instance.searchBox.setQuery(query);
 			},
 			'fnDrawCallback': function () {
 
@@ -167,16 +179,22 @@ Vidi.Table = {
 	 */
 	setDefaultSearch: function (config) {
 
-		var state = JSON.parse(sessionStorage.getItem('DataTables_' + Vidi.module.dataType));
+		var state = JSON.parse(Vidi.Session.get('dataTables'));
 
 		// special case if no session exists.
 		if (!state) {
 			// Override search if given in URL.
 			var uri = new Uri(window.location.href);
 			if (uri.getQueryParamValue('search')) {
+				var search = uri.getQueryParamValue('search');
 				config.oSearch = {
-					'sSearch': uri.getQueryParamValue('search')
+					'sSearch': search.replace(/'/g, '"')
 				};
+			}
+
+			// Also stores value to be used in visual search.
+			if (uri.getQueryParamValue('query')) {
+				Vidi.Session.set('visualSearch.query', uri.getQueryParamValue('query'));
 			}
 		}
 		return config;
@@ -191,8 +209,8 @@ Vidi.Table = {
 	animateRow: function () {
 
 		// Only if User has previously edited a record.
-		if (Vidi.Session.has('vidi.lastEditedUid')) {
-			var uid = Vidi.Session.get('vidi.lastEditedUid');
+		if (Vidi.Session.has('lastEditedUid')) {
+			var uid = Vidi.Session.get('lastEditedUid');
 
 			// Wait a little bit before applying fade-int class. Look nicer.
 			setTimeout(function () {
@@ -202,7 +220,7 @@ Vidi.Table = {
 				$('#row-' + uid).addClass('fade-out').removeClass('fade-in');
 
 				// Reset last edited uid
-				Vidi.Session.reset('vidi.lastEditedUid');
+				Vidi.Session.reset('lastEditedUid');
 			}, 500);
 		}
 	}
