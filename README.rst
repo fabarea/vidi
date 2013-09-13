@@ -2,7 +2,8 @@ Vidi for TYPO3 CMS
 ========================
 
 Vidi stands for "versatile and interactive display" and is the code name of a list component
-designed for listing all kind of records along with advanced filtering capabilities.
+designed for listing all kind of records along with advanced filtering capabilities. By default the
+extension ships two examples for FE Users / Groups but is configurable for any kind of data type.
 
 Veni, vidi, vici!
 
