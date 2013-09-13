@@ -264,9 +264,9 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 
 				$field = $criterion['propertyName'];
 				$operand = $criterion['operand'];
-				if ($tcaFieldService->hasRelationMany($field) && is_numeric($operand)) {
+				if ($tcaFieldService->hasRelation($field) && is_numeric($operand)) {
 					$field = $field . '.uid';
-				} elseif ($tcaFieldService->hasRelationMany($field)) {
+				} elseif ($tcaFieldService->hasRelation($field)) {
 					$foreignTable = $tcaFieldService->getForeignTable($field);
 					$foreignTcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($foreignTable);
 					$field = $field . '.' . $foreignTcaTableService->getLabelField();
