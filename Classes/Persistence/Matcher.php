@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\QueryElement;
+namespace TYPO3\CMS\Vidi\Persistence;
 
 /***************************************************************
  *  Copyright notice
@@ -97,7 +97,7 @@ class Matcher {
 	 *
 	 * @param array $matches associative array($field => $value)
 	 * @param string $dataType which corresponds to an entry of the TCA (table name).
-	 * @return \TYPO3\CMS\Vidi\QueryElement\Matcher
+	 * @return \TYPO3\CMS\Vidi\Persistence\Matcher
 	 */
 	public function __construct($matches = array(), $dataType = '') {
 		$this->tcaService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($dataType);
@@ -106,7 +106,7 @@ class Matcher {
 
 	/**
 	 * @param string $searchTerm
-	 * @return \TYPO3\CMS\Vidi\QueryElement\Matcher
+	 * @return \TYPO3\CMS\Vidi\Persistence\Matcher
 	 */
 	public function setSearchTerm($searchTerm) {
 		$this->searchTerm = $searchTerm;

@@ -225,12 +225,12 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	 * Returns a matcher object.
 	 * Note: this code is very much tight to the BE module. It should / could probably be improved at one point...
 	 *
-	 * @return \TYPO3\CMS\Vidi\QueryElement\Matcher
+	 * @return \TYPO3\CMS\Vidi\Persistence\Matcher
 	 */
 	protected function createMatcherObject() {
 
-		/** @var $matcher \TYPO3\CMS\Vidi\QueryElement\Matcher */
-		$matcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\QueryElement\Matcher');
+		/** @var $matcher \TYPO3\CMS\Vidi\Persistence\Matcher */
+		$matcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher');
 
 		// Special case for Grid in the BE using jQuery DataTables plugin.
 		// Retrieve a possible search term from GP.
@@ -268,7 +268,7 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	 * Returns an order object.
 	 * Note: this code is very much tight to the BE module. It should / could probably be improved at one point...
 	 *
-	 * @return \TYPO3\CMS\Vidi\QueryElement\Order
+	 * @return \TYPO3\CMS\Vidi\Persistence\Order
 	 */
 	protected function createOrderObject() {
 		// Default sort
@@ -284,19 +284,19 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 				$field => strtoupper($direction)
 			);
 		}
-		return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\QueryElement\Order', $order);
+		return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Order', $order);
 	}
 
 	/**
 	 * Returns a pager object.
 	 * Note: this code is very much tight to the BE module. It should / could probably be improved at one point...
 	 *
-	 * @return \TYPO3\CMS\Vidi\QueryElement\Pager
+	 * @return \TYPO3\CMS\Vidi\Persistence\Pager
 	 */
 	protected function createPagerObject() {
 
-		/** @var $pager \TYPO3\CMS\Vidi\QueryElement\Pager */
-		$pager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\QueryElement\Pager');
+		/** @var $pager \TYPO3\CMS\Vidi\Persistence\Pager */
+		$pager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Pager');
 
 		// Set items per page
 		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('iDisplayLength')) {

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\QueryElement;
+namespace TYPO3\CMS\Vidi\Persistence;
 
 /***************************************************************
  *  Copyright notice

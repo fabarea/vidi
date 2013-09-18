@@ -139,13 +139,13 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	/**
 	 * Finds all Contents given specified matches.
 	 *
-	 * @param \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher
-	 * @param \TYPO3\CMS\Vidi\QueryElement\Order $order The order
+	 * @param \TYPO3\CMS\Vidi\Persistence\Matcher $matcher
+	 * @param \TYPO3\CMS\Vidi\Persistence\Order $order The order
 	 * @param int $limit
 	 * @param int $offset
 	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content[]
 	 */
-	public function findBy(\TYPO3\CMS\Vidi\QueryElement\Matcher $matcher, \TYPO3\CMS\Vidi\QueryElement\Order $order = NULL, $limit = NULL, $offset = NULL) {
+	public function findBy(\TYPO3\CMS\Vidi\Persistence\Matcher $matcher, \TYPO3\CMS\Vidi\Persistence\Order $order = NULL, $limit = NULL, $offset = NULL) {
 
 		$query = $this->createQuery();
 
@@ -174,10 +174,10 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * Get the constraints
 	 *
 	 * @param \TYPO3\CMS\Vidi\Persistence\Query $query
-	 * @param \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher
+	 * @param \TYPO3\CMS\Vidi\Persistence\Matcher $matcher
 	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\Constraint|NULL
 	 */
-	protected function computeConstraints(\TYPO3\CMS\Vidi\Persistence\Query $query, \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher) {
+	protected function computeConstraints(\TYPO3\CMS\Vidi\Persistence\Query $query, \TYPO3\CMS\Vidi\Persistence\Matcher $matcher) {
 
 		$result = NULL;
 
@@ -210,10 +210,10 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * Computes the search constraint and returns it.
 	 *
 	 * @param \TYPO3\CMS\Vidi\Persistence\Query $query
-	 * @param \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher
+	 * @param \TYPO3\CMS\Vidi\Persistence\Matcher $matcher
 	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\Constraint|NULL
 	 */
-	protected function computeSearchTermConstraint(\TYPO3\CMS\Vidi\Persistence\Query $query, \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher) {
+	protected function computeSearchTermConstraint(\TYPO3\CMS\Vidi\Persistence\Query $query, \TYPO3\CMS\Vidi\Persistence\Matcher $matcher) {
 
 		$result = NULL;
 
@@ -245,11 +245,11 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * Computes the constraint for matches and returns it.
 	 *
 	 * @param \TYPO3\CMS\Vidi\Persistence\Query $query
-	 * @param \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher
+	 * @param \TYPO3\CMS\Vidi\Persistence\Matcher $matcher
 	 * @param string $operator
 	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\Constraint|NULL
 	 */
-	protected function computeConstraint(\TYPO3\CMS\Vidi\Persistence\Query $query, \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher, $operator) {
+	protected function computeConstraint(\TYPO3\CMS\Vidi\Persistence\Query $query, \TYPO3\CMS\Vidi\Persistence\Matcher $matcher, $operator) {
 		$result = NULL;
 
 		$operatorName = ucfirst($operator);
@@ -285,10 +285,10 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	/**
 	 * Count all Contents given specified matches.
 	 *
-	 * @param \TYPO3\CMS\Vidi\QueryElement\Matcher $matcher
+	 * @param \TYPO3\CMS\Vidi\Persistence\Matcher $matcher
 	 * @return int
 	 */
-	public function countBy(\TYPO3\CMS\Vidi\QueryElement\Matcher $matcher) {
+	public function countBy(\TYPO3\CMS\Vidi\Persistence\Matcher $matcher) {
 
 		$query = $this->createQuery();
 
@@ -369,11 +369,11 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	/**
 	 * Returns a matcher object for this repository
 	 *
-	 * @return \TYPO3\CMS\Vidi\QueryElement\Matcher
+	 * @return \TYPO3\CMS\Vidi\Persistence\Matcher
 	 * @return object
 	 */
 	public function createMatch() {
-		return $this->objectManager->get('TYPO3\CMS\Vidi\QueryElement\Matcher', array(), $this->dataType);
+		return $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\Matcher', array(), $this->dataType);
 	}
 
 	/**
