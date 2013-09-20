@@ -252,6 +252,19 @@ class ModuleLoader {
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getDataTypes() {
+
+		$dataTypes = array();
+		foreach ($GLOBALS['TBE_MODULES_EXT']['vidi'] as $module) {
+			$dataTypes[] = $module['dataType'];
+		}
+
+		return $dataTypes;
+	}
+
+	/**
 	 * @param string $dataType
 	 * @return $this
 	 */
