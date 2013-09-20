@@ -64,6 +64,19 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
+	 * Returns the translated label of the table name.
+	 *
+	 * @return string
+	 */
+	public function getLabel() {
+		$result = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($this->getLabelField(), '');
+		if (! $result) {
+			$result = $this->getLabelField();
+		}
+		return $result;
+	}
+
+	/**
 	 * Get the delete field for the table.
 	 *
 	 * @return string
