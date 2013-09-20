@@ -29,12 +29,25 @@ Flash news about latest development are also announced on
 http://twitter.com/fudriot
 
 
-Installation
-=================
+Installation and requirement
+==============================
 
-Download the source code either from the `Git repository`_ to get the master or from the TER for the stable release (not yet true!). Install the extension as normal in the Extension Manager.
+The extension **requires TYPO3 6.1**. In case a fresh TYPO3 set-up is available at http://get.typo3.org/.
+The extension is not yet released on the TER_. Download the source from the `master branch`_ and
+install the extension as normal in the Extension Manager::
 
-.. _Git repository: https://git.typo3.org/TYPO3CMS/Extensions/vidi.git
+	# local installation
+	cd typo3conf/ext
+
+	# download the source
+	git clone https://github.com/fudriot/vidi_starter.git
+
+	# -> open the Extension Manager in the BE
+
+
+.. _TER: typo3.org/extensions/repository/
+.. _master branch: https://github.com/fudriot/vidi_starter.git
+
 
 Configuration
 =================
@@ -83,7 +96,7 @@ Module Loader API was designed upon the work of `Steffen Ritter`_ .
 Grid TCA
 ===================================================
 
-A Grid is a list displayed in a BE module. TCA was extended to describe how a grid and its
+A Grid is an interactive list displayed in a BE module. TCA was extended to describe how a grid and its
 columns should be rendered. Take inspiration of `this example`_ below for your own data type::
 
 	'grid' => array(
@@ -316,7 +329,7 @@ Content Repository Factory
 ===========================
 
 Each Content type (e.g. fe_users, fe_groups) has its own Content repository instance which is manged internally by the Repository Factory.
-In order to get the adequate instance, the repository can be fetched by this code::
+For getting the adequate instance, the repository can be fetched by this code::
 
 
 	// Fetch the adequate repository for a known data type.
@@ -390,7 +403,7 @@ Instantiate a TCA service related to **grid**::
 Command line
 ===================================================
 
-To check whether TCA is well configured, Vidi provides a Command that will scan the configuration::
+To check whether TCA is well configured, Vidi provides a Command that will scan the configuration and report potential problem. This feature is still experimental::
 
 	# Check relations used in the grid.
 	./typo3/cli_dispatch.phpsh extbase vidi:checkrelations
@@ -510,8 +523,8 @@ Legacy Many to Many relation with comma separated values (should be avoided in f
 
 
 
-HowTo - Load a custom Form
-===============================
+Tutorial: display a custom widget within the BE module
+=======================================================
 
 @todo writing review is necessary.
 
