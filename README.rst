@@ -64,57 +64,27 @@ be fine grained::
 
 .. _TCEmain: http://docs.typo3.org/TYPO3/CoreApiReference/ApiOverview/Typo3CoreEngine/UsingTcemain/Index.html
 
-Howto - load a BE module for a custom data type?
+Start a new BE module for a custom data type
 ===================================================
 
 Loading a BE module for a custom data type can be summed up with:
 
 #. Configure the module loader
-#. Define an icon
-#. Define a language file where to find the label of the fields. Make sure the file contains also the BE module name as example:
+#. Define a language file which contains some labels.
+#. Define icon and JS / CSS files
 
-::
+The best way to get started is to install the Vidi Starter extension which is the ideal companion of Vidi
+aiming to facilitate the initial steps. More info https://github.com/fudriot/vidi_starter.
 
-	<trans-unit id="mlang_labels_tablabel">
-		<source>FE Group management</source>
-	</trans-unit>
-	<trans-unit id="mlang_tabs_tab" xml:space="preserve">
-		<source>FE Group</source>
-	</trans-unit>
-	<trans-unit id="mlang_labels_tabdescr" xml:space="preserve">
-		<source>Module for managing FE Groups</source>
-	</trans-unit>
-
-Module Loader configuration
--------------------------------
-
-To load a custom BE module in the BE, the Module loader should be used as follows::
-
-	// Make sure the class exists to avoid a Runtime Error
-	if (class_exists('TYPO3\CMS\Vidi\ModuleLoader')) {
-
-		$dataType = 'tx_domain_model_foo';
-		$icon = 'EXT:foo/Resources/Public/Icons/tx_domain_model_foo.png';
-		$languageFile = 'LLL:EXT:foo/Resources/Private/Language/locallang_db.xlf';
-
-		/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
-		$moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader', $dataType);
-		$moduleLoader->setIcon()
-			->setModuleLanguageFile(sprintf('LLL:EXT:foo/Resources/Private/Language/%s.xlf', $dataType))
-			->setDefaultPid(1) // used upon creation of a new record
-			->register();
-	}
-
-
-Module Loader API was designed upon the work / ideas of `Steffen Ritter`_ .
+Module Loader API was designed upon the work of `Steffen Ritter`_ .
 
 .. _Steffen Ritter: http://forge.typo3.org/users/446
 
 Grid TCA
--------------------------------
+===================================================
 
-A Grid is a list view typically used within Backend modules. TCA was extended to describe how a grid and its
-columns should be rendered. Take inspiration of the example below for your own data type::
+A Grid is a list displayed in a BE module. TCA was extended to describe how a grid and its
+columns should be rendered. Take inspiration of `this example`_ below for your own data type::
 
 	'grid' => array(
 		'columns' => array(
@@ -132,14 +102,6 @@ columns should be rendered. Take inspiration of the example below for your own d
 				'visible' => TRUE,
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:username',
 			),
-			'name' => array(
-				'visible' => TRUE,
-				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:name',
-			),
-			'email' => array(
-				'visible' => TRUE,
-				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:email',
-			),
 			'usergroup' => array(
 				'visible' => TRUE,
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:usergroup',
@@ -152,6 +114,7 @@ columns should be rendered. Take inspiration of the example below for your own d
 	),
 
 
+.. _this example: https://github.com/TYPO3-extensions/vidi/blob/master/Configuration/TCA/fe_users.php
 
 Grid TCA configuration
 ------------------------------
