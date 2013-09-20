@@ -223,7 +223,6 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 
 	/**
 	 * Returns a matcher object.
-	 * Note: this code is very much tight to the BE module. It should / could probably be improved at one point...
 	 *
 	 * @return \TYPO3\CMS\Vidi\Persistence\Matcher
 	 */
@@ -266,7 +265,6 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 
 	/**
 	 * Returns an order object.
-	 * Note: this code is very much tight to the BE module. It should / could probably be improved at one point...
 	 *
 	 * @return \TYPO3\CMS\Vidi\Persistence\Order
 	 */
@@ -289,7 +287,6 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 
 	/**
 	 * Returns a pager object.
-	 * Note: this code is very much tight to the BE module. It should / could probably be improved at one point...
 	 *
 	 * @return \TYPO3\CMS\Vidi\Persistence\Pager
 	 */
