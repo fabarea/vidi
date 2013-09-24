@@ -25,7 +25,6 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
 
 /**
  * Class rendering title and description for the Grid.
- * @todo implement me! The Grid renderer was stolen from EXT:media
  */
 class Title extends GridRendererAbstract {
 

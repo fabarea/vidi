@@ -138,6 +138,46 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
+	 * Tell whether the field exists in the grid or not.
+	 *
+	 * @param string $fieldName
+	 * @return bool
+	 */
+	public function hasField($fieldName) {
+		return isset($this->tca['columns'][$fieldName]);
+	}
+
+	/**
+	 * Tell whether the field does not exist.
+	 *
+	 * @param string $fieldName
+	 * @return bool
+	 */
+	public function hasNotField($fieldName) {
+		return !$this->hasField($fieldName);
+	}
+
+	/**
+	 * Tell whether the facet exists in the grid or not.
+	 *
+	 * @param string $fieldName
+	 * @return bool
+	 */
+	public function hasFacet($fieldName) {
+		return isset($this->tca['facets'][$fieldName]) || in_array($fieldName, $this->tca['facets']);
+	}
+
+	/**
+	 * Tell whether the facet does not exist.
+	 *
+	 * @param string $fieldName
+	 * @return bool
+	 */
+	public function hasNotFacet($fieldName) {
+		return !$this->hasFacet($fieldName);
+	}
+
+	/**
 	 * Returns an array containing facets fields.
 	 *
 	 * @return array

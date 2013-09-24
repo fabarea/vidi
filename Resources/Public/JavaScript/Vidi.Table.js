@@ -27,8 +27,18 @@ Vidi.Table = {
 			},
 			'fnStateLoad': function (oSettings) {
 
-
 				var state = JSON.parse(Vidi.Session.get('dataTables'));
+
+				// Mark or un-mark checkbox corresponding to column visibility.
+				if (state) {
+					$('.check-visible-toggle').each(function (index) {
+						if (state.abVisCols[index + 1]) {
+							$(this).attr('checked', 'checked');
+						} else {
+							$(this).removeAttr('checked')
+						}
+					});
+				}
 
 				// Set default search by overriding the session data if argument is passed.
 				if (state) {
@@ -77,7 +87,15 @@ Vidi.Table = {
 					}
 				}
 
-				// handle the search term parameter
+				// Transmit visible columns to the server so that id does not need to process not displayed stuff.
+				var columns = $(this).dataTable().fnSettings().aoColumns;
+				$.each(columns, function(index, column) {
+					if (column['bVisible']) {
+						aoData.push({ 'name': parameterPrefix + '[columns][]', 'value': column['mData'] });
+					}
+				});
+
+				// Handle the search term parameter
 				$.each(aoData, function (index, object) {
 					if (object['name'] === 'sSearch') {
 						aoData.push({ 'name': parameterPrefix + '[searchTerm]', 'value': object['value'] });
@@ -95,8 +113,8 @@ Vidi.Table = {
 			},
 			'aoColumns': Vidi._columns,
 			'aLengthMenu': [
-				[10, 25, 50, 100, -1],
-				[10, 25, 50, 100, 'All']
+				[10, 25, 50, 100, 200, 500],
+				[10, 25, 50, 100, 200, 500]
 			],
 			'fnInitComplete': function () {
 				Vidi.VisualSearch.initialize();

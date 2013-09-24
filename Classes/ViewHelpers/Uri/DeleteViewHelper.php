@@ -1,6 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Table;
-
+namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 /***************************************************************
 *  Copyright notice
 *
@@ -23,21 +22,40 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Table;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
- * View helper which displays a row number
+ * Render a delete URI given an object.
  */
-class RowNumberViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class DeleteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
-	 * Generates a row number
-	 *
-	 * @param int $index
-	 * @param int $offset
-	 * @return string the value
-	 * @api
+	 * @var \TYPO3\CMS\Vidi\ModuleLoader
+	 * @inject
 	 */
-	public function render($index, $offset) {
-		return $index + 1 + $offset;
+	protected $moduleLoader;
+
+
+	/**
+	 * Render a delete URI given an object.
+	 *
+	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @return string
+	 */
+	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object) {
+
+		$parameterPrefix = $this->moduleLoader->getParameterPrefix();
+
+//		return sprintf('alt_doc.php?returnUrl=mod.php?M=%s&edit[%s][%s]=edit',
+		return sprintf('mod.php?M=%s&%s[content]=%s&%s[format]=json&%s[action]=delete&%s[controller]=Content',
+			$this->moduleLoader->getModuleCode(),
+			$parameterPrefix,
+			$object->getUid(),
+			$parameterPrefix,
+			$parameterPrefix,
+			$parameterPrefix
+		);
 	}
 }
 ?>

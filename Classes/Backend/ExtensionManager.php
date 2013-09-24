@@ -117,7 +117,7 @@ class ExtensionManager {
 						});
 					</script>
 					$options
-					<input type="hidden" id="fieldDataTypes" name="tx_extensionmanager_tools_extensionmanagerextensionmanager[config][data_types][value]" value="" />
+					<input type="hidden" id="fieldDataTypes" name="tx_extensionmanager_tools_extensionmanagerextensionmanager[config][data_types][value]" value="{$this->configuration['data_types']}" />
 				</div>
 EOF;
 

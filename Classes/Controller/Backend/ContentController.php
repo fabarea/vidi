@@ -53,14 +53,19 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	/**
 	 * List Row action for this controller. Output a json list of contents
 	 *
+	 * @param array $columns corresponds to columns to be rendered.
 	 * @param array $matches
+	 * @param string $searchTerm
+	 * @validate $columns TYPO3\CMS\Vidi\Domain\Validator\ColumnsValidator
+	 * @validate $matches TYPO3\CMS\Vidi\Domain\Validator\MatchesValidator
 	 * @return void
 	 */
-	public function listRowAction($matches = array()) {
+	public function listRowAction(array $columns = array(), $matches = array(), $searchTerm = '') {
 
 		// Initialize some objects related to the query
 		$matcherObject = $this->createMatcherObject();
 		$this->emitProcessMatcherObjectSignal($matcherObject);
+
 		foreach ($matches as $propertyName => $value) {
 			$matcherObject->equals($propertyName, $value);
 		}
@@ -77,6 +82,7 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		$pagerObject->setCount($numberOfContents);
 
 		// Assign values
+		$this->view->assign('columns', $columns);
 		$this->view->assign('contents', $contents);
 		$this->view->assign('numberOfContents', $numberOfContents);
 		$this->view->assign('pager', $pagerObject);
@@ -94,40 +100,40 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	 *
 	 * @param string $facet
 	 * @param string $searchTerm
+	 * @validate $facet TYPO3\CMS\Vidi\Domain\Validator\FacetValidator
 	 * @return void
 	 */
 	public function listFacetValuesAction($facet, $searchTerm) {
 
 		$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
 		$values = array();
-		if ($tcaFieldService->hasField($facet)) {
 
-//			 @todo count contents and avoid too many items < 1000
-//			$numberOfContents = $contentRepository->countBy($matcherObject);
-			if ($tcaFieldService->hasRelation($facet)) {
+//		@todo count contents and avoid too many items < 1000
+//		$numberOfContents = $contentRepository->countBy($matcherObject);
+		if ($tcaFieldService->hasRelation($facet)) {
 
-				// Fetch the adequate repository
-				$foreignTable = $tcaFieldService->getForeignTable($facet);
-				$contentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance($foreignTable);
-				$tcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($foreignTable);
-				$contents = $contentRepository->findAll();
+			// Fetch the adequate repository
+			$foreignTable = $tcaFieldService->getForeignTable($facet);
+			$contentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance($foreignTable);
+			$tcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($foreignTable);
+			$contents = $contentRepository->findAll();
 
-				foreach ($contents as $content) {
-					$values[] = array (
-						'value' => $content['uid'],
-						'label' => $content[$tcaTableService->getLabelField()],
-					);
-				}
-			} elseif (!$tcaFieldService->isTextArea($facet)) {
+			foreach ($contents as $content) {
+				$values[] = array (
+					'value' => $content['uid'],
+					'label' => $content[$tcaTableService->getLabelField()],
+				);
+			}
+		} elseif (!$tcaFieldService->isTextArea($facet)) {
 
-				// Fetch the adequate repository
-				$contentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance();
+			// Fetch the adequate repository
+			/** @var \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository $contentRepository */
+			$contentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance();
 
-				// Query the repository
-				$contents = $contentRepository->findDistinctValues($facet);
-				foreach ($contents as $content) {
-					$values[] = $content[$facet];
-				}
+			// Query the repository
+			$contents = $contentRepository->findDistinctValues($facet);
+			foreach ($contents as $content) {
+				$values[] = $content[$facet];
 			}
 		}
 
@@ -297,14 +303,14 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		$pager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Pager');
 
 		// Set items per page
-		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('iDisplayLength')) {
+		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('iDisplayLength') !== NULL) {
 			$limit = (int) \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('iDisplayLength');
 			$pager->setLimit($limit);
 		}
 
 		// Set offset
 		$offset = 0;
-		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('iDisplayStart')) {
+		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('iDisplayStart') !== NULL) {
 			$offset = (int) \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('iDisplayStart');
 		}
 		$pager->setOffset($offset);

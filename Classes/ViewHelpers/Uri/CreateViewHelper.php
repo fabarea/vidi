@@ -26,7 +26,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Render a create link given a data type.
+ * Render a create URI given a data type.
  */
 class CreateViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
@@ -49,7 +49,7 @@ class CreateViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelp
 	}
 
 	/**
-	 * Render a create link given a data type.
+	 * Render a create URI given a data type.
 	 *
 	 * @return string
 	 */

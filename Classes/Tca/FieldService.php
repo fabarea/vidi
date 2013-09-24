@@ -271,6 +271,16 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
+	 * Tell whether the field does not exist.
+	 *
+	 * @param string $fieldName
+	 * @return array
+	 */
+	public function hasNotField($fieldName) {
+		return !$this->hasField($fieldName);
+	}
+
+	/**
 	 * Returns the relation type
 	 *
 	 * @param string $fieldName

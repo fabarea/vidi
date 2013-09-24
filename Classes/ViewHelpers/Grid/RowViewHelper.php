@@ -24,17 +24,30 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 ***************************************************************/
 
 /**
- * View helper for rendering rows of contents
+ * View helper for rendering a row of a content object.
  */
 class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
-	 * Render rows of contents and output them in JSON formation
+	 * @var array
+	 */
+	protected $columns = array();
+
+	/**
+	 * @param array $columns
+	 */
+	public function __construct($columns = array()){
+		$this->columns = $columns;
+	}
+
+	/**
+	 * Render a row per content object.
 	 *
 	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
-	 * @return string
+	 * @param int $offset
+	 * @return array
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object) {
+	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object, $offset) {
 
 		$tcaGridService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService();
 
@@ -45,7 +58,21 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 
 		foreach($tcaGridService->getFields() as $fieldName => $configuration) {
 
-			if ($tcaGridService->isNotSystem($fieldName)) {
+			if ($tcaGridService->isSystem($fieldName)) {
+
+				$systemFieldName = substr($fieldName, 2);
+				$className = sprintf('TYPO3\CMS\Vidi\ViewHelpers\Grid\Row\%sViewHelper', ucfirst($systemFieldName));
+				if (class_exists($className)) {
+
+					/** @var \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper $systemColumnViewHelper */
+					$systemColumnViewHelper = $this->objectManager->get($className);
+					$output[$fieldName] = $systemColumnViewHelper->render($object, $offset);
+				}
+
+			} elseif (!in_array($fieldName, $this->columns)) {
+				// Performance: if the column is not going to be displayed -> don't process it
+				$output[$fieldName] = '';
+			} else {
 
 				// Fetch value
 				if ($tcaGridService->hasRenderers($fieldName)) {
@@ -81,10 +108,7 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 			}
 		}
 
-		$output = json_encode($output);
-
-		// remove curly bracket before and after since content is encapsulate with other content.
-		return substr($output, 1, -1);
+		return $output;
 	}
 
 	/**

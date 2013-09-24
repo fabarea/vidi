@@ -1,6 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Table;
-
+namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
 /***************************************************************
 *  Copyright notice
 *
@@ -12,8 +11,8 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Table;
 *  it under the terms of the GNU General Public License as published by
 *  the Free Software Foundation; either version 2 of the License, or
 *  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
+ *
+ *  The GNU General Public License can be found at
 *  http://www.gnu.org/copyleft/gpl.html.
 *
 *  This script is distributed in the hope that it will be useful,
@@ -23,24 +22,22 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Table;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 /**
- * View helper which displays a checkbox for a row
+ * View helper for rendering a column header.
  */
-class CheckboxViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class HeadViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
-	 * Generates a checkbox.
+	 * Returns a column title
 	 *
-	 * @param int $index
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
-	 * @return string the value
-	 * @api
+	 * @param string $column name
+	 * @return string
 	 */
-	public function render($index, $object) {
-		return sprintf('<input type="checkbox" class="checkbox-row" data-index="%s" data-uid="%s"/>',
-			$index,
-			$object->getUid()
-		);
+	public function render($column) {
+		return \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->getLabel($column);
 	}
+
 }
+
 ?>

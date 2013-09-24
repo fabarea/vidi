@@ -126,14 +126,32 @@ class ModuleLoader {
 	}
 
 	/**
-	 * Return a configuraiton key or the entire module configuration array if not key is given.
+	 * Return the module code for a BE module.
+	 *
+	 * @return string
+	 */
+	public function getModuleCode() {
+		return \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('M');
+	}
+
+	/**
+	 * Return the parameter prefix for a BE module.
+	 *
+	 * @return string
+	 */
+	public function getParameterPrefix() {
+		return 'tx_vidi_' . strtolower($this->getModuleCode());
+	}
+
+	/**
+	 * Return a configuration key or the entire module configuration array if not key is given.
 	 *
 	 * @param string $key
 	 * @throws Exception\InvalidKeyInArrayException
 	 * @return mixed
 	 */
 	public function getModuleConfiguration($key = '') {
-		$moduleCode = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('M');
+		$moduleCode = $this->getModuleCode();
 
 		// Module code must exist
 		if (empty($GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode])) {

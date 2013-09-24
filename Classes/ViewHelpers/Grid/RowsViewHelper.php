@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 /***************************************************************
 *  Copyright notice
 *
@@ -23,26 +23,29 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /**
- * Render an edit URI given an object.
+ * View helper for rendering multiple rows.
  */
-class EditViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class RowsViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
-	 * Render an edit URI given an object.
+	 * Render rows of contents and output them in JSON format.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param array $objects
+	 * @param array $columns
 	 * @return string
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object) {
+	public function render(array $objects = array(), array $columns = array()) {
 
-		return sprintf('alt_doc.php?returnUrl=mod.php?M=%s&edit[%s][%s]=edit',
-			GeneralUtility::_GP('M'),
-			$object->getDataType(),
-			$object->getUid()
-		);
+		$result = array();
+		/** @var RowViewHelper $rowViewHelper */
+		$rowViewHelper = $this->objectManager->get('TYPO3\CMS\Vidi\ViewHelpers\Grid\RowViewHelper', $columns);
+
+		foreach ($objects as $offset => $object) {
+			$result[] = $rowViewHelper->render($object, $offset);
+		}
+		return json_encode($result);
 	}
 }
+
 ?>

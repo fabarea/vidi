@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Row;
 /***************************************************************
 *  Copyright notice
 *
@@ -24,20 +24,23 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
 ***************************************************************/
 
 /**
- * View helper for rendering a column header
+ * View helper for rendering a checkbox.
  */
-class TitleViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class CheckboxViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
-	 * Returns a label
+	 * Returns a checkbox for the grids.
 	 *
-	 * @param string $column name
+	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param  int $offset
 	 * @return string
 	 */
-	public function render($column) {
-		return \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->getLabel($column);
+	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object, $offset) {
+		return sprintf('<input type="checkbox" class="checkbox-row" data-index="%s" data-uid="%s"/>',
+			$offset,
+			$object->getUid()
+		);
 	}
-
 }
 
 ?>
