@@ -33,18 +33,21 @@ class SearchFieldsViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVi
 	 * @return boolean
 	 */
 	public function render() {
+		$tcaGridService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService();
 		$tcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService();
 		$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
 		$searchFields = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $tcaTableService->getSearchFields());
 
-		$labels = array('uid');
-		foreach ($searchFields as $field) {
+		$labels = array();
+		foreach ($tcaGridService->getFacets() as $fieldName => $configuration) {
+			if (is_int($fieldName)) {
+				$fieldName = $configuration;
+			}
 			// @todo keep no label field for now.
 			#$label = $tcaFieldService->getLabel($field);
 			#$labels[] = str_replace(':', '', $label);
-			$labels[] = $field;
+			$labels[] = $fieldName;
 		}
-
 		return json_encode($labels);
 	}
 }

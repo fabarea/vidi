@@ -62,17 +62,36 @@ Vidi.Table = {
 			 * @return void
 			 */
 			'fnServerParams': function (aoData) {
+				var uri, moduleCode, parameterPrefix;
+				parameterPrefix = Vidi.module.parameterPrefix;
 
 				// Get the parameter related to filter from the URL and "re-inject" them into the Ajax request
-				var uri, moduleCode, parameterCode;
 				uri = new Uri(window.location.href);
+				for (var index = 0; index < uri.queryPairs.length; index++) {
+					var queryPair = uri.queryPairs[index];
+					var parameterName = queryPair[0];
+					var parameterValue = queryPair[1];
+					var regularExpress = new RegExp(parameterPrefix + "\\[matches\\]");
+					if (regularExpress.test(parameterName)) {
+						aoData.push({ 'name': parameterName, 'value': parameterValue });
+					}
+				}
+
+				// handle the search term parameter
+				$.each(aoData, function (index, object) {
+					if (object['name'] === 'sSearch') {
+						aoData.push({ 'name': parameterPrefix + '[searchTerm]', 'value': object['value'] });
+					}
+				});
+
+				// Get the parameter related to filter from the URL and "re-inject" them into the Ajax request
 				moduleCode = uri.getQueryParamValue('M');
-				parameterCode = 'tx_vidi_' + moduleCode.toLowerCase();
+				parameterPrefix = 'tx_vidi_' + moduleCode.toLowerCase();
 
 				aoData.push({ 'name': 'M', 'value': moduleCode});
-				aoData.push({ 'name': parameterCode + '[action]', 'value': 'listRow' });
-				aoData.push({ 'name': parameterCode + '[controller]', 'value': 'Content' });
-				aoData.push({ 'name': parameterCode + '[format]', 'value': 'json' });
+				aoData.push({ 'name': parameterPrefix + '[action]', 'value': 'listRow' });
+				aoData.push({ 'name': parameterPrefix + '[controller]', 'value': 'Content' });
+				aoData.push({ 'name': parameterPrefix + '[format]', 'value': 'json' });
 			},
 			'aoColumns': Vidi._columns,
 			'aLengthMenu': [

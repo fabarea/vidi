@@ -138,6 +138,15 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
+	 * Returns an array containing facets fields.
+	 *
+	 * @return array
+	 */
+	public function getFacets() {
+		return is_array($this->tca['facets']) ? $this->tca['facets'] : array();
+	}
+
+	/**
 	 * Returns whether the column is sortable or not.
 	 *
 	 * @param string $fieldName the name of the column

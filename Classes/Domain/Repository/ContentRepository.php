@@ -53,7 +53,7 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	protected $objectManager;
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Persistence\querySettings
+	 * @var \TYPO3\CMS\Vidi\Persistence\QuerySettings
 	 */
 	protected $querySettings;
 
@@ -359,8 +359,11 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 		/** @var \TYPO3\CMS\Vidi\Persistence\Query $query */
 		$query = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\Query', $this->dataType);
 
-		/** @var \TYPO3\CMS\Vidi\Persistence\QuerySettings $querySettings */
+		// Initialize and pass the query settings at this level.
 		$this->querySettings = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\QuerySettings');
+
+		// Default choice for the BE.
+		$this->querySettings->setIgnoreEnableFields(TRUE);
 		$query->setQuerySettings($this->querySettings);
 
 		return $query;

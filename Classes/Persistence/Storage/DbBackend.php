@@ -1113,8 +1113,8 @@ class DbBackend {
 
 				if (!$this->query->getQuerySettings()->getReturnRawQueryResult()) {
 					$row = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->objectType, $this->query->getType(), $row);
-
 				}
+
 				$rows[] = $row;
 			}
 		}

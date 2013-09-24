@@ -60,6 +60,7 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 
 		// Initialize some objects related to the query
 		$matcherObject = $this->createMatcherObject();
+		$this->emitProcessMatcherObjectSignal($matcherObject);
 		foreach ($matches as $propertyName => $value) {
 			$matcherObject->equals($propertyName, $value);
 		}
@@ -316,6 +317,29 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		$pager->setPage($page);
 
 		return $pager;
+	}
+
+	/**
+	 * Signal that is called for post-processing a matcher object.
+	 *
+	 * @param \TYPO3\CMS\Vidi\Persistence\Matcher $matcherObject
+	 * @signal
+	 */
+	protected function emitProcessMatcherObjectSignal(\TYPO3\CMS\Vidi\Persistence\Matcher $matcherObject) {
+
+		/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
+		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\ModuleLoader');
+
+		$this->getSignalSlotDispatcher()->dispatch('TYPO3\CMS\Vidi\Controller\Backend\ContentController', 'processMatcherObject', array($matcherObject, $moduleLoader->getDataType()));
+	}
+
+	/**
+	 * Get the SignalSlot dispatcher
+	 *
+	 * @return \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+	 */
+	protected function getSignalSlotDispatcher() {
+		return $this->objectManager->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
 	}
 }
 ?>

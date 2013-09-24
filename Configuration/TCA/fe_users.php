@@ -6,6 +6,24 @@ $tca = array(
 		'searchFields' => $GLOBALS['TCA']['fe_users']['ctrl']['searchFields'] . ',usergroup',
 	),
 	'grid' => array(
+		'facets' => array(
+			'uid',
+			'username',
+			'name',
+			'first_name',
+			'last_name',
+			'middle_name',
+			'address',
+			'telephone',
+			'fax',
+			'email',
+			'title',
+			'zip',
+			'city',
+			'country',
+			'company',
+			'usergroup',
+		),
 		'columns' => array(
 			'__checkbox' => array(
 				'width' => '5px',
@@ -43,16 +61,16 @@ $tca = array(
 			'tstamp' => array(
 				'visible' => FALSE,
 				'format' => 'date',
-				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:tstamp',
+				'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:tstamp',
 			),
 			'crdate' => array(
 				'visible' => FALSE,
 				'format' => 'date',
-				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:crdate',
+				'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:crdate',
 			),
 			'disable' => array(
 				'renderer' => 'TYPO3\CMS\Vidi\GridRenderer\Visibility',
-				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:visibility_abbreviation',
+				'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:visibility_abbreviation',
 				'width' => '3%',
 			),
 			'__buttons' => array(

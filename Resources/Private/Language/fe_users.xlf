@@ -27,15 +27,6 @@
 			<trans-unit id="usergroup">
 				<source>User group</source>
 			</trans-unit>
-			<trans-unit id="tstamp">
-				<source>Modification date</source>
-			</trans-unit>
-			<trans-unit id="crdate">
-				<source>Creation date</source>
-			</trans-unit>
-			<trans-unit id="visibility_abbreviation">
-				<source>Vis.</source>
-			</trans-unit>
 		</body>
 	</file>
 </xliff>

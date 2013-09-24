@@ -3,6 +3,11 @@ if (!defined('TYPO3_MODE')) die ('Access denied.');
 
 $tca = array(
 	'grid' => array(
+		'facets' => array(
+			'uid',
+			'title',
+			'description',
+		),
 		'columns' => array(
 			'__checkbox' => array(
 				'width' => '5px',
@@ -21,16 +26,16 @@ $tca = array(
 			'tstamp' => array(
 				'visible' => FALSE,
 				'format' => 'date',
-				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_groups.xlf:tstamp',
+				'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:tstamp',
 			),
 			'crdate' => array(
 				'visible' => FALSE,
 				'format' => 'date',
-				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_groups.xlf:crdate',
+				'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:crdate',
 			),
 			'hidden' => array(
 				'renderer' => 'TYPO3\CMS\Vidi\GridRenderer\Visibility',
-				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_groups.xlf:visibility_abbreviation',
+				'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:visibility_abbreviation',
 				'width' => '3%',
 			),
 			'__buttons' => array(

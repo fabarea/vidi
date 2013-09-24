@@ -32,7 +32,7 @@ http://twitter.com/fudriot
 Installation and requirement
 ==============================
 
-The extension **requires TYPO3 6.1**. In case a fresh TYPO3 set-up is available at http://get.typo3.org/.
+The extension **requires TYPO3 6.1**. In case, a fresh TYPO3 set-up is available at http://get.typo3.org/.
 The extension is not yet released on the TER_. Download the source from the `master branch`_ and
 install the extension as normal in the Extension Manager::
 
