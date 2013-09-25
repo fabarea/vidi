@@ -108,6 +108,41 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
+	 * Returns the MM table of a field.
+	 * If no relation exists, returns NULL.
+	 *
+	 * @param string $fieldName
+	 * @return string|NULL
+	 */
+	public function getManyToManyTable($fieldName) {
+		$configuration = $this->getConfiguration($fieldName);
+		return empty($configuration['MM']) ? NULL : $configuration['MM'];
+	}
+
+	/**
+	 * Returns the a possible additional table name used in MM relations.
+	 * If no table name exists, returns NULL.
+	 *
+	 * @param string $fieldName
+	 * @return string|NULL
+	 */
+	public function getAdditionalTableNameCondition($fieldName) {
+		$configuration = $this->getConfiguration($fieldName);
+		return empty($configuration['MM_match_fields']['tablenames']) ? NULL : $configuration['MM_match_fields']['tablenames'];
+	}
+
+	/**
+	 * Returns whether the field name is the opposite in MM relation.
+	 *
+	 * @param string $fieldName
+	 * @return bool
+	 */
+	public function isOppositeRelation($fieldName) {
+		$configuration = $this->getConfiguration($fieldName);
+		return isset($configuration['MM_opposite_field']);
+	}
+
+	/**
 	 * Returns the configuration for a $field.
 	 *
 	 * @param string $fieldName

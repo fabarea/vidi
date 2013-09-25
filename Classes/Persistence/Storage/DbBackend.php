@@ -755,7 +755,6 @@ class DbBackend {
 			throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidRelationConfigurationException('The relation information for property "' . $propertyName . '" of class "' . $className . '" is missing.', 1353170925);
 		}
 
-		#if ($columnMap->getTypeOfRelation() === \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap::RELATION_HAS_ONE) {
 		if ($tcaFieldService->hasRelationOne($propertyName)) {
 			if (isset($parentKeyFieldName)) {
 				#$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.uid=' . $childTableName . '.' . $parentKeyFieldName;
@@ -765,7 +764,22 @@ class DbBackend {
 				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.' . $columnName . '=' . $childTableName . '.uid';
 			}
 			$className = $this->dataMapper->getType($className, $propertyName);
-		#} elseif ($columnMap->getTypeOfRelation() === \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap::RELATION_HAS_MANY) {
+		} elseif ($tcaFieldService->hasRelationManyToMany($propertyName)) {
+			$relationTableName = $tcaFieldService->getManyToManyTable($propertyName);
+
+			// @todo "isOppositeRelation" is certainly not sufficient for telling relation direction. But works for now...
+			$parentKeyFieldName = $tcaFieldService->isOppositeRelation($propertyName) ? 'uid_foreign' : 'uid_local';
+			$childKeyFieldName = !$tcaFieldService->isOppositeRelation($propertyName) ? 'uid_foreign' : 'uid_local';
+			$tableNameCondition = $tcaFieldService->getAdditionalTableNameCondition($propertyName);
+
+			$sql['unions'][$relationTableName] = 'LEFT JOIN ' . $relationTableName . ' ON ' . $tableName . '.uid=' . $relationTableName . '.' . $parentKeyFieldName;
+			$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $relationTableName . '.' . $childKeyFieldName . '=' . $childTableName . '.uid';
+
+			if ($tableNameCondition) {
+				$sql['unions'][$relationTableName] .= ' AND ' . $relationTableName . '.tablenames = \'' . $tableNameCondition . '\'';
+				$sql['unions'][$childTableName] .= ' AND ' . $relationTableName . '.tablenames = \'' . $tableNameCondition . '\'';
+			}
+			$className = $this->dataMapper->getType($className, $propertyName);
 		} elseif ($tcaFieldService->hasRelationMany($propertyName)) {
 			if (isset($parentKeyFieldName)) {
 				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.uid=' . $childTableName . '.' . $parentKeyFieldName;
@@ -773,14 +787,6 @@ class DbBackend {
 				$onStatement = '(FIND_IN_SET(' . $childTableName . '.uid, ' . $tableName . '.' . $columnName . '))';
 				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $onStatement;
 			}
-			$className = $this->dataMapper->getType($className, $propertyName);
-		#} elseif ($columnMap->getTypeOfRelation() === \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap::RELATION_HAS_AND_BELONGS_TO_MANY) {
-		} elseif ('RELATION_HAS_AND_BELONGS_TO_MANY' === \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap::RELATION_HAS_AND_BELONGS_TO_MANY) {
-
-			throw new \Exception('@todo', 1377952434);
-			$relationTableName = $columnMap->getRelationTableName();
-			$sql['unions'][$relationTableName] = 'LEFT JOIN ' . $relationTableName . ' ON ' . $tableName . '.uid=' . $relationTableName . '.' . $columnMap->getParentKeyFieldName();
-			$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $relationTableName . '.' . $columnMap->getChildKeyFieldName() . '=' . $childTableName . '.uid';
 			$className = $this->dataMapper->getType($className, $propertyName);
 		} else {
 			throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception('Could not determine type of relation.', 1252502725);
