@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 /***************************************************************
 *  Copyright notice
 *

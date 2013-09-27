@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Row;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 /***************************************************************
 *  Copyright notice
 *
@@ -24,22 +24,21 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Row;
 ***************************************************************/
 
 /**
- * View helper for rendering a checkbox.
+ * View helper for rendering the position number of an content object.
+ * @todo Not working currently because $index is not given. Implement me if needed.
  */
-class CheckboxViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class SystemNumberViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
-	 * Returns a checkbox for the grids.
+	 * Renders the position number of an content object.
 	 *
 	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
 	 * @param  int $offset
+	 * @param  int $index
 	 * @return string
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object, $offset) {
-		return sprintf('<input type="checkbox" class="checkbox-row" data-index="%s" data-uid="%s"/>',
-			$offset,
-			$object->getUid()
-		);
+	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object, $offset, $index) {
+		return $index + 1 + $offset;
 	}
 }
 

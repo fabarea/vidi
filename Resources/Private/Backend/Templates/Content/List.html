@@ -40,9 +40,9 @@
 								<ul class="dropdown-menu">
 									<f:for each="{columns}" key="columnName" as="configuration" iteration="iterator">
 										<li>
-											<f:if condition="{v:grid.column.isNotSystem(fieldName: '{columnName}')}">
+											<f:if condition="{v:grid.isNotSystem(fieldName: '{columnName}')}">
 												<label class="checkbox inline">
-													<f:if condition="{v:grid.column.isVisible(fieldName: '{columnName}')}">
+													<f:if condition="{v:grid.isVisible(fieldName: '{columnName}')}">
 														<f:then>
 															<input class="check-visible-toggle" type="checkbox" name=""
 															       value="{iterator.index}"
@@ -53,7 +53,7 @@
 															       value="{iterator.index}"/>
 														</f:else>
 													</f:if>
-													<v:grid.column.head column="{columnName}"/>
+													<v:grid.label column="{columnName}"/>
 												</label>
 											</f:if>
 										</li>
@@ -85,7 +85,7 @@
 									<f:format.raw>{configuration.html}</f:format.raw>
 								</f:then>
 								<f:else>
-									<v:grid.column.head column="{columnName}"/>
+									<v:grid.label column="{columnName}"/>
 								</f:else>
 							</f:if>
 						</th>

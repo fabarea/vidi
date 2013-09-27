@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 /***************************************************************
 *  Copyright notice
 *
@@ -26,7 +26,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
 /**
  * View helper for rendering a column header.
  */
-class HeadViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class LabelViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
 	 * Returns a column title

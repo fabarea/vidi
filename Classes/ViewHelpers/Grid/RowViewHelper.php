@@ -61,7 +61,7 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 			if ($tcaGridService->isSystem($fieldName)) {
 
 				$systemFieldName = substr($fieldName, 2);
-				$className = sprintf('TYPO3\CMS\Vidi\ViewHelpers\Grid\Row\%sViewHelper', ucfirst($systemFieldName));
+				$className = sprintf('TYPO3\CMS\Vidi\ViewHelpers\Grid\System%sViewHelper', ucfirst($systemFieldName));
 				if (class_exists($className)) {
 
 					/** @var \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper $systemColumnViewHelper */

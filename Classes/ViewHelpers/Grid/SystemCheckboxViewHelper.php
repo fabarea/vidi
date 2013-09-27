@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 /***************************************************************
 *  Copyright notice
 *
@@ -11,8 +11,8 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
 *  it under the terms of the GNU General Public License as published by
 *  the Free Software Foundation; either version 2 of the License, or
 *  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
+ *
+ *  The GNU General Public License can be found at
 *  http://www.gnu.org/copyleft/gpl.html.
 *
 *  This script is distributed in the hope that it will be useful,
@@ -22,21 +22,25 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 /**
- * Tells about the column of a grid
+ * View helper for rendering a checkbox.
  */
-class IsVisibleViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class SystemCheckboxViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
-	 * Returns whether the column is visible
+	 * Returns a checkbox for the grids.
 	 *
-	 * @param string $fieldName the column Name
-	 * @return boolean
+	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param  int $offset
+	 * @return string
 	 */
-	public function render($fieldName) {
-		return \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->isVisible($fieldName);
+	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object, $offset) {
+		return sprintf('<input type="checkbox" class="checkbox-row" data-index="%s" data-uid="%s"/>',
+			$offset,
+			$object->getUid()
+		);
 	}
-
 }
 
 ?>

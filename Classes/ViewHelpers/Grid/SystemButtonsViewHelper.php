@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Row;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 /***************************************************************
 *  Copyright notice
 *
@@ -26,7 +26,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Row;
 /**
  * View helper for rendering buttons in the grids.
  */
-class ButtonsViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class SystemButtonsViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
 	 * Rendering buttons in the grids for an object.
