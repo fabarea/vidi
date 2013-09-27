@@ -27,7 +27,7 @@ use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
 /**
  * Class rendering relation
  */
-class CreateRelation extends GridRendererAbstract {
+class RelationCreate extends GridRendererAbstract {
 
 	/**
 	 * Render a representation of the relation on the GUI.

@@ -179,7 +179,16 @@ class Content implements \ArrayAccess {
 			// Fetch values from repository.
 			$foreignPropertyName = $this->convertFieldNameToPropertyName($foreignFieldName);
 			$findByProperty = 'findBy' . ucfirst($foreignPropertyName);
-			$this->$propertyName = $foreignRepository->$findByProperty($this->uid);
+
+			// Date picker (type == group) are special fields because property path must contain the table name
+			// to determine the relation type. Example for sys_category, property path will look like "items.sys_file"
+			$propertyValue = $this->uid;
+			$foreignTcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($foreignDataType);
+			if ($foreignTcaFieldService->isGroup($foreignPropertyName)) {
+				$propertyValue = $this->dataType . '.' . $this->uid;
+			}
+
+			$this->$propertyName = $foreignRepository->$findByProperty($propertyValue);
 
 		} elseif ($this->tcaFieldService->hasRelationOne($propertyName)) {
 

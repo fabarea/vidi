@@ -22,39 +22,57 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Vidi\Exception\NotExistingFieldException;
+use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
 
 /**
  * View helper for rendering configuration that will be consumed by Javascript
  */
-class ConfigurationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class ConfigurationViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Render the columns of the grid
 	 *
+	 * @throws NotExistingFieldException
 	 * @return string
 	 */
 	public function render() {
 		$output = '';
 
-		foreach(\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->getFields() as $fieldName => $configuration) {
+		foreach(TcaServiceFactory::getGridService()->getFields() as $fieldName => $configuration) {
 
 			// Early failure if field does not exist.
 			if (!$this->isAllowed($fieldName)) {
 				$message = sprintf('Property "%s" does not exist!', $fieldName);
-				throw new \TYPO3\CMS\Vidi\Exception\NotExistingFieldException($message, 1375369594);
+				throw new NotExistingFieldException($message, 1375369594);
 			}
 
 			$output .= sprintf('Vidi._columns.push({ "mData": "%s", "bSortable": %s, "bVisible": %s, "sWidth": "%s", "sClass": "%s %s" });' . PHP_EOL,
 				$fieldName,
-				\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->isSortable($fieldName) ? 'true' : 'false',
-				\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->isVisible($fieldName) ? 'true' : 'false',
+				TcaServiceFactory::getGridService()->isSortable($fieldName) ? 'true' : 'false',
+				TcaServiceFactory::getGridService()->isVisible($fieldName) ? 'true' : 'false',
 				empty($configuration['width']) ? 'auto' : $configuration['width'],
-				\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->isEditable($fieldName) ? 'editable' : '',
-				\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->getClass($fieldName)
+				$this->computeEditableClass($fieldName),
+				TcaServiceFactory::getGridService()->getClass($fieldName)
 			);
 		}
 
 		return $output;
+	}
+
+	/**
+	 * Return the editable class name for jeditable plugin.
+	 *
+	 * @param string $fieldName
+	 * @return boolean
+	 */
+	protected function computeEditableClass($fieldName) {
+		$result = '';
+		if (TcaServiceFactory::getGridService()->isEditable($fieldName)) {
+			$result = TcaServiceFactory::getFieldService()->isTextArea($fieldName) ? 'editable-textarea' : 'editable-textfield';
+		}
+		return $result;
 	}
 
 	/**
@@ -65,9 +83,9 @@ class ConfigurationViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractV
 	 */
 	protected function isAllowed($fieldName){
 
-		$tcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService();
-		$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
-		$tcaGridService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService();
+		$tcaTableService = TcaServiceFactory::getTableService();
+		$tcaFieldService = TcaServiceFactory::getFieldService();
+		$tcaGridService = TcaServiceFactory::getGridService();
 
 		$result = FALSE;
 		if ($tcaFieldService->hasField($fieldName) || $tcaGridService->isSystem($fieldName) || $tcaTableService->isSystem($fieldName) || $tcaGridService->hasRenderers($fieldName)) {

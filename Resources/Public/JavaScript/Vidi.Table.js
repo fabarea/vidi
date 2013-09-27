@@ -143,38 +143,35 @@ Vidi.Table = {
 				Vidi.FlashMessage.showAll();
 
 				/**
-				 * Bind handler for editable content.
+				 * Bind handler for editable content for input.
 				 */
-				Vidi.table.$('td.editable').editable(
+				Vidi.table.$('td.editable-textarea').editable(
+					Vidi.Table.computeEditableUrl(),
+					{
+						type: 'textarea',
+						placeholder: '',
+						cancel: 'Cancel',
+						submit: 'OK',
+						indicator: Vidi.Editable.indicator,
+						data: Vidi.Editable.data,
+						submitdata: Vidi.Editable.submitData
+						//callback: function (sValue, settings) {
+						// could be the reload of the whole grid.
+						//},
+					}
+				);
+
+				/**
+				 * Bind handler for editable content for input.
+				 */
+				Vidi.table.$('td.editable-textfield').editable(
 					Vidi.Table.computeEditableUrl(),
 					{
 						placeholder: '',
-						indicator: '<img src="' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" width="16" height="" alt="" />',
-						//callback: function (sValue, settings) {
-							// could be the reload of the whole grid.
-						//},
-						data: function (value, settings) {
-
-							// Define dynamically the name of the field which will be used as POST parameter
-							var columnPosition = Vidi.table.fnGetPosition(this)[2];
-							var fieldName = Vidi._columns[columnPosition]['mData'];
-							var contentParameter = '{0}[content][{1}]'.format(Vidi.module.parameterPrefix, fieldName);
-							settings.name = contentParameter;
-
-							return value;
-						},
-						submitdata: function (value, settings) {
-
-							var data = {};
-
-							// Set uid parameter which must be defined at this level.
-							var uidParameter = '{0}[content][uid]'.format(Vidi.module.parameterPrefix);
-							var uid = this.parentNode.getAttribute('id').replace('row-', '');
-							data[uidParameter] = uid;
-
-							return data;
-						},
-						'height': '20px'
+						height: '20px',
+						indicator: Vidi.Editable.indicator,
+						data: Vidi.Editable.data,
+						submitdata: Vidi.Editable.submitData
 					}
 				);
 			}

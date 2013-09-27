@@ -28,7 +28,7 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
 /**
  * Test case for class \TYPO3\CMS\Vidi\GridRenderer\Category.
  */
-class CategoryTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
+class RelationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
 	/**
 	 * @var \TYPO3\CMS\Vidi\GridRenderer\Relation

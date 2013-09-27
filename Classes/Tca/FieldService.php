@@ -79,6 +79,13 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return array
 	 */
 	public function getConfiguration($fieldName) {
+
+		// In case field contains items.tx_table for field type "group"
+		if (strpos($fieldName, '.') !== FALSE) {
+			$fieldParts = explode('.', $fieldName, 2);
+			$fieldName = $fieldParts[0];
+		}
+
 		$fields = $this->getFields();
 		return $fields[$fieldName]['config'];
 	}
@@ -91,8 +98,28 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return string|NULL
 	 */
 	public function getForeignField($fieldName) {
+		$result = NULL;
 		$configuration = $this->getConfiguration($fieldName);
-		return empty($configuration['foreign_field']) ? NULL : $configuration['foreign_field'];
+
+		if (!empty($configuration['foreign_field'])) {
+			$result = $configuration['foreign_field'];
+		} elseif ($this->hasRelationManyToMany($fieldName)) {
+
+			$foreignTable = $configuration['foreign_table'];
+			$manyToManyTable = $this->getManyToManyTable($fieldName);
+
+			// Load TCA service of foreign field.
+			$tcaForeignFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($foreignTable);
+
+			// Look into the MM relations checking for the opposite field
+			foreach ($tcaForeignFieldService->getFieldNames() as $fieldName) {
+				if ($manyToManyTable == $tcaForeignFieldService->getManyToManyTable($fieldName)) {
+					$result = $fieldName;
+					break;
+				}
+			}
+		}
+		return $result;
 	}
 
 	/**
@@ -103,8 +130,16 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return string|NULL
 	 */
 	public function getForeignTable($fieldName) {
+		$result = NULL;
 		$configuration = $this->getConfiguration($fieldName);
-		return empty($configuration['foreign_table']) ? NULL : $configuration['foreign_table'];
+
+		if (!empty($configuration['foreign_table'])) {
+			$result = $configuration['foreign_table'];
+		} elseif ($this->isGroup($fieldName)) {
+			$fieldParts = explode('.', $fieldName, 2);
+			$result = $fieldParts[1];
+		}
+		return $result;
 	}
 
 	/**
@@ -127,8 +162,17 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return string|NULL
 	 */
 	public function getAdditionalTableNameCondition($fieldName) {
+		$result = NULL;
 		$configuration = $this->getConfiguration($fieldName);
-		return empty($configuration['MM_match_fields']['tablenames']) ? NULL : $configuration['MM_match_fields']['tablenames'];
+
+		if (!empty($configuration['MM_match_fields']['tablenames'])) {
+			$result = $configuration['MM_match_fields']['tablenames'];
+		} elseif ($this->isGroup($fieldName)) {
+			$fieldParts = explode('.', $fieldName, 2);
+			$result = $fieldParts[1];
+		}
+
+		return  $result;
 	}
 
 	/**
@@ -263,6 +307,28 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	public function isTextArea($fieldName) {
 		$type = $this->getFieldType($fieldName);
 		return $type === 'text';
+	}
+
+	/**
+	 * Returns whether the field is of type select.
+	 *
+	 * @param string $fieldName
+	 * @return bool
+	 */
+	public function isSelect($fieldName) {
+		$type = $this->getFieldType($fieldName);
+		return $type === 'select';
+	}
+
+	/**
+	 * Returns whether the field is of type db.
+	 *
+	 * @param string $fieldName
+	 * @return bool
+	 */
+	public function isGroup($fieldName) {
+		$type = $this->getFieldType($fieldName);
+		return $type === 'group';
 	}
 
 	/**

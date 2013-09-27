@@ -315,8 +315,8 @@ To render a custom column a class implementing Grid Renderer Interface must be g
 			'access_codes' => array(
 				'visible' => TRUE,
 				'renderers' => array(
-					'TYPO3\CMS\Vidi\GridRenderer\CreateRelation',
-					'TYPO3\CMS\Vidi\GridRenderer\CountRelations' => array(
+					'TYPO3\CMS\Vidi\GridRenderer\RelationCreate',
+					'TYPO3\CMS\Vidi\GridRenderer\RelationCount' => array(
 						'labelSingular' => 'LLL:EXT:ebook/Resources/Private/Language/locallang_db.xlf:tx_ebook_domain_model_accesscode',
 						'labelPlural' => 'LLL:EXT:ebook/Resources/Private/Language/locallang_db.xlf:tx_ebook_domain_model_accesscodes',
 						'sourceModule' => 'ebook_VidiTxEbookDomainModelBookM1',

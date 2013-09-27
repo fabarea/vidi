@@ -27,7 +27,7 @@ use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
 /**
  * Class rendering relation
  */
-class CountRelations extends GridRendererAbstract {
+class RelationCount extends GridRendererAbstract {
 
 	/**
 	 * @var \TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper

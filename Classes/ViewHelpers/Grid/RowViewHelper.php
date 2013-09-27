@@ -69,9 +69,11 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 					$output[$fieldName] = $systemColumnViewHelper->render($object, $offset);
 				}
 
-			} elseif (!in_array($fieldName, $this->columns)) {
-				// Performance: if the column is not going to be displayed -> don't process it
-				$output[$fieldName] = '';
+			} elseif (!in_array($fieldName, $this->columns)) { // Performance: if the column is not going to be displayed -> don't process it
+
+				// Show a default loading icon if use enable the column.
+				$relativePath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('vidi');
+				$output[$fieldName] = '<img src="' . $relativePath .  'Resources/Public/Images/loading.gif" width="16" height="" alt="" />';
 			} else {
 
 				// Fetch value

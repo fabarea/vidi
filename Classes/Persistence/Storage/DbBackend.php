@@ -732,20 +732,26 @@ class DbBackend {
 	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\MissingColumnMapException
 	 */
 	protected function addUnionStatement(&$className, &$tableName, &$propertyPath, array &$sql) {
+
+		$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($this->query->getType());
+
 		$explodedPropertyPath = explode('.', $propertyPath, 2);
 		$propertyName = $explodedPropertyPath[0];
+
+		// Field of type "group" are special because property path must contain the table name
+		// to determine the relation type. Example for sys_category, property path will look like "items.sys_file"
+		if ($tcaFieldService->isGroup($propertyName)) {
+
+			$parts = explode('.', $propertyPath, 3);
+			$explodedPropertyPath[0] = $parts[0] . '.' . $parts[1];
+			$explodedPropertyPath[1] = $parts[2];
+			$propertyName = $explodedPropertyPath[0];
+		}
+
 		$columnName = $this->dataMapper->convertPropertyNameToColumnName($propertyName, $className);
 		$tableName = $this->dataMapper->convertClassNameToTableName($className);
-		# @changed
-		#$columnMap = $this->dataMapper->getDataMap($className)->getColumnMap($propertyName);
-
-//		if ($columnMap === NULL) {
-//			throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\MissingColumnMapException('The ColumnMap for property "' . $propertyName . '" of class "' . $className . '" is missing.', 1355142232);
-//		}
 
 		# @changed
-		$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($this->query->getType());
-		#$parentKeyFieldName = $columnMap->getParentKeyFieldName();
 		$parentKeyFieldName = $tcaFieldService->getForeignField($propertyName);
 
 		#$childTableName = $columnMap->getChildTableName();
