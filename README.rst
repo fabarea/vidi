@@ -526,7 +526,7 @@ Legacy Many to Many relation with comma separated values (should be avoided in f
 Tutorial: display a custom widget within the BE module
 =======================================================
 
-@todo writing review is necessary.
+@todo put this into EXT:vidi_starter as a implemented option.
 
 It is possible to load a custom form.
 

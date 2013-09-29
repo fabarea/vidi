@@ -34,7 +34,7 @@ if (TYPO3_MODE == 'BE' && class_exists('TYPO3\CMS\Vidi\ModuleLoader')) {
 	$TYPO3_CONF_VARS['BE']['AJAX']['vidiAjaxDispatcher'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('vidi') . 'Classes/AjaxDispatcher.php:TYPO3\CMS\Vidi\AjaxDispatcher->initAndDispatch';
 
 	$controllerActions = array(
-		'FrontendUser' => 'listFrontendUserGroup, addFrontendUserGroup',
+		'Relation' => 'list, update',
 	);
 
 	/**

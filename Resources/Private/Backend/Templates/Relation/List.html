@@ -1,0 +1,39 @@
+<form action="/typo3/ajax.php" id="form-create-relation" method="post">
+
+	<!-- required field for BE Ajax call -->
+	<input type="hidden" name="ajaxID" value="vidiAjaxDispatcher"/>
+	<input type="hidden" name="extensionName" value="vidi"/>
+	<input type="hidden" name="pluginName" value="Pi1"/>
+	<input type="hidden" name="controllerName" value="Relation"/>
+	<input type="hidden" name="actionName" value="update"/>
+
+	<!-- additional parameters -->
+	<input type="hidden" name="arguments[content]" value="{content.uid}"/>
+	<input type="hidden" name="arguments[dataType]" value="{content.dataType}"/>
+	<input type="hidden" name="arguments[relationProperty]" value="{relationProperty}" />
+
+	<!-- @todo display records in two flex columns? -->
+	<div class="control-group create-one">
+
+		<label class="control-label">
+			<v:sprite name="{v:tca.table(key: \"typeicon_classes|default\", dataType: \"{relatedDataType}\")}"/>
+			{relatedContentTitle}
+		</label>
+		<div class="controls">
+			<ul>
+				<f:for each="{relatedContents}" as="relatedContent">
+					<li>
+						<label style="font-weight: normal">
+							<v:form.checkbox content="{content}" relationProperty="{relationProperty}" relatedContent="{relatedContent}" />
+							<v:contentTitle content="{relatedContent}"/>
+						</label>
+					</li>
+				</f:for>
+			</ul>
+		</div>
+	</div>
+
+	<!-- HIDDEN SUBMIT BUTTON -->
+	<input type="submit" style="visibility: hidden; height: 1px">
+</form>
+{namespace v=TYPO3\CMS\Vidi\ViewHelpers}

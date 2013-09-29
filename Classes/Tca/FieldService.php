@@ -105,7 +105,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 			$result = $configuration['foreign_field'];
 		} elseif ($this->hasRelationManyToMany($fieldName)) {
 
-			$foreignTable = $configuration['foreign_table'];
+			$foreignTable = $this->getForeignTable($fieldName);
 			$manyToManyTable = $this->getManyToManyTable($fieldName);
 
 			// Load TCA service of foreign field.

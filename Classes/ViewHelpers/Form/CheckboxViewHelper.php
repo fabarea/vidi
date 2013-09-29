@@ -36,20 +36,21 @@ class CheckboxViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
 	/**
 	 * Render a checkbox and mark whether the User belongs to the User Group.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $user
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $userGroup
+	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
+	 * @param string $relationProperty
+	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $relatedContent
 	 * @return boolean
 	 */
-	public function render($user, $userGroup) {
+	public function render($content, $relationProperty, $relatedContent) {
 
 		/** @var \TYPO3\CMS\Vidi\ViewHelpers\BelongsToViewHelper $belongsToViewHelper */
 		$belongsToViewHelper = $this->objectManager->get('TYPO3\CMS\Vidi\ViewHelpers\BelongsToViewHelper');
 
-		$template = '<input type="checkbox" name="arguments[frontendUserGroups][]" value="%s" %s/>';
+		$template = '<input type="checkbox" name="arguments[relatedContents][]" value="%s" %s/>';
 
 		return sprintf($template,
-			$userGroup->getUid(),
-			$belongsToViewHelper->render($user, $userGroup) ? 'checked="checked"' : ''
+			$relatedContent->getUid(),
+			$belongsToViewHelper->render($content, $relationProperty, $relatedContent) ? 'checked="checked"' : ''
 		);
 	}
 }

@@ -413,7 +413,7 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	protected function processMagicCall($field, $value, $flag = '') {
 
 		/** @var $matcher \TYPO3\CMS\Vidi\Persistence\Matcher */
-		$matcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher');
+		$matcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher', array(), $this->getDataType());
 
 		$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($this->dataType);
 		if ($tcaFieldService->isGroup($field)) {

@@ -31,15 +31,25 @@ class TableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelpe
 	 * Interface with the Tca Table service.
 	 *
 	 * @param string $key
+	 * @param string $dataType
 	 * @return string
 	 */
-	public function render($key) {
-		$result = FALSE;
-		$tcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService();
-		$tca = $tcaTableService->getTca();
-		if (!empty($tca[$key])) {
-			$result = $tca[$key];
+	public function render($key, $dataType = '') {
+		$tcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($dataType);
+		$result = $tcaTableService->getTca();
+
+		// Explode segment and loop around.
+		$keys = explode('|', $key);
+		foreach ($keys as $key) {
+			if (!empty($result[$key])) {
+				$result = $result[$key];
+			} else {
+				// not found value
+				$result = FALSE;
+				break;
+			}
 		}
+
 		return $result;
 	}
 

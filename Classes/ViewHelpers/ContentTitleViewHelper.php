@@ -22,21 +22,24 @@ namespace TYPO3\CMS\Vidi\ViewHelpers;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
 
 /**
- * View helper which render an icon using sprites
+ * View helper which returns the title of a content object.
  */
-class SpriteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class ContentTitleViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
-	 * Returns an icon using sprites
+	 * Returns the title of a content object.
 	 *
-	 * @param string $name the file to include
+	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
 	 * @return string
 	 */
-	public function render($name = NULL) {
-		return \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($name);
+	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $content) {
+		$tcaTableService = TcaServiceFactory::getTableService($content->getDataType());
+		return $content[$tcaTableService->getLabelField()];
 	}
+
 }
 
 ?>

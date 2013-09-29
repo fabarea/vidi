@@ -35,10 +35,18 @@ class RelationCreate extends GridRendererAbstract {
 	 * @return string
 	 */
 	public function render() {
-		$template = '<div style="text-align: right" class="pull-right invisible"><a href="#" data-uid="%s" class="btn-create-relation btn-%s">%s</a></div>';
+
+		$tcaFieldService = TcaServiceFactory::getFieldService();
+		$foreignTable = $tcaFieldService->getForeignTable($this->getFieldName());
+
+		$template = '<div style="text-align: right" class="pull-right invisible">
+			<a href="#" data-uid="%s" data-type="%s" data-relation-property="%s" data-related-type="%s" class="btn-create-relation btn-relation">%s</a>
+			</div>';
 		$result = sprintf($template,
 			$this->object->getUid(),
 			$this->object->getDataType(),
+			$this->getFieldName(),
+			$foreignTable,
 			\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-new')
 		);
 

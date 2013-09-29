@@ -102,10 +102,6 @@ table {
 	background-color: #FFF;
 }
 
-.navbar-fixed-top {
-	z-index: 100000;
-}
-
 .navbar-typo3-top {
 	background-color: #585858;
 	height: 27px;

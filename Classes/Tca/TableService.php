@@ -77,6 +77,19 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
+	 * Returns the title of the table.
+	 *
+	 * @return string
+	 */
+	public function getTitle() {
+		$result = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($this->get('title'), '');
+		if (!$result) {
+			$result = $this->get('title');
+		}
+		return $result;
+	}
+
+	/**
 	 * Get the delete field for the table.
 	 *
 	 * @return string

@@ -24,7 +24,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers;
 ***************************************************************/
 
 /**
- * View helper for telling whether a User belongs to a User Group.
+ * View helper for telling whether a Content belongs to a Related Content.
  *
  * @category    ViewHelpers
  * @package     TYPO3
@@ -36,19 +36,20 @@ class BelongsToViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewH
 	/**
 	 * Tells whether a User belongs to a User Group.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $user
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $userGroup
+	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
+	 * @param string $relationProperty
+	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $relatedContent
 	 * @return boolean
 	 */
-	public function render($user, $userGroup) {
+	public function render($content, $relationProperty, $relatedContent) {
 
 		// Build an array of user group uids
-		$userGroupUids = array();
-		foreach ($user->getUsergroup() as $_userGroup) {
-			$userGroupUids[] = $_userGroup->getUid();
+		$relatedContentsUid = array();
+		foreach ($content[$relationProperty] as $_content) {
+			$relatedContentsUid[] = $_content->getUid();
 		}
 
-		return in_array($userGroup->getUid(), $userGroupUids);
+		return in_array($relatedContent->getUid(), $relatedContentsUid);
 	}
 }
 
