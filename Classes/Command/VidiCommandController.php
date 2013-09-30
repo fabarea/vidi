@@ -49,13 +49,14 @@ class VidiCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandCon
 
 			$fields = $tcaGridService->getFields();
 			if (!empty($fields)) {
-				$this->outputLine(sprintf('Relations used in grid for table %s', $tableName));
 				$this->outputLine('--------------------------------------------------------------------');
+				$this->outputLine();
+				$this->outputLine(sprintf('Grid for "%s"', $tableName));
 				$this->outputLine();
 
 				$hasRelation = $this->checkRelationForTable($tableName);
 				if (!$hasRelation) {
-					$this->outputLine('No relation found!');
+					$this->outputLine('No relation to show in this grid!');
 					$this->outputLine();
 				}
 			}
@@ -83,8 +84,8 @@ class VidiCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandCon
 				if ($tcaFieldService->hasRelationWithCommaSeparatedValues($fieldName)) {
 					$this->printRelation($tableName, $fieldName, 'comma separated values');
 				} elseif ($tcaFieldService->hasRelationManyToMany($fieldName)) {
-					$output = sprintf('* %s (many-to-many) @todo write something more explicit.', $fieldName);
-					$this->outputLine($output);
+					$this->printRelationManyToMany($tableName, $fieldName);
+
 				} elseif ($tcaFieldService->hasRelationManyToOne($fieldName)) {
 					$this->printRelation($tableName, $fieldName, 'many-to-one');
 				} else {
@@ -116,6 +117,37 @@ class VidiCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandCon
 	}
 
 	/**
+	 * Convenience method for printing out relation many-to-many.
+	 *
+	 * @param string $tableName
+	 * @param string $fieldName
+	 * @return void
+	 */
+	protected function printRelationManyToMany($tableName, $fieldName) {
+
+		$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($tableName);
+		$output = sprintf('* %s (many-to-many)', $fieldName);
+		$this->outputLine($output);
+
+		$foreignTable = $tcaFieldService->getForeignTable($fieldName);
+		$manyToManyTable = $tcaFieldService->getManyToManyTable($fieldName);
+		$foreignField = $tcaFieldService->getForeignField($fieldName);
+
+		if (!$foreignField) {
+			$output = sprintf('  ERROR: can not found foreign field for "%s". Perhaps missing opposite configuration?', $fieldName);
+		} elseif (!$foreignTable) {
+			$output = sprintf('  ERROR: can not found foreign table for "%s". Perhaps missing opposite configuration?', $fieldName);
+		} elseif (!$manyToManyTable) {
+			$output = sprintf('  ERROR: can not found relation table (MM) for "%s". Perhaps missing opposite configuration?', $fieldName);
+		} else {
+			$output = sprintf('  %s.%s --> %s --> %s.%s', $tableName, $fieldName, $manyToManyTable, $foreignTable, $foreignField);
+		}
+
+		$this->outputLine($output);
+		$this->outputLine();
+	}
+
+	/**
 	 * Convenience method for printing out relation.
 	 *
 	 * @param string $tableName
@@ -133,6 +165,7 @@ class VidiCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandCon
 		$foreignField = $tcaFieldService->getForeignField($fieldName);
 		$output = sprintf('  %s.%s --> %s.%s', $tableName, $fieldName, $foreignTable, $foreignField);
 		$this->outputLine($output);
+		$this->outputLine();
 	}
 
 	/**
