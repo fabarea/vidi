@@ -81,9 +81,9 @@ Vidi.Table = {
 					var queryPair = uri.queryPairs[index];
 					var parameterName = queryPair[0];
 					var parameterValue = queryPair[1];
-					var regularExpress = new RegExp(parameterPrefix + "\\[matches\\]");
+					var regularExpress = new RegExp(parameterPrefix);
 					if (regularExpress.test(parameterName)) {
-						aoData.push({ 'name': parameterName, 'value': parameterValue });
+						aoData.push({ 'name': decodeURI(parameterName), 'value': parameterValue });
 					}
 				}
 

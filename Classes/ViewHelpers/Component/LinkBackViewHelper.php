@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
 /***************************************************************
 *  Copyright notice
 *
@@ -8,8 +8,8 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
 *  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
 *  (at your option) any later version.
 *
 *  The GNU General Public License can be found at
@@ -22,39 +22,32 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-
+use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Render a delete URI given an object.
+ * View helper which renders a "back" buttons to be placed in the doc header.
  */
-class DeleteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class LinkBackViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\ModuleLoader
-	 * @inject
-	 */
-	protected $moduleLoader;
-
-
-	/**
-	 * Render a delete URI given an object.
+	 * Returns the "back" buttons to be placed in the doc header.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
 	 * @return string
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object) {
+	public function render() {
 
-		$parameterPrefix = $this->moduleLoader->getParameterPrefix();
+		$result = '';
+		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('returnUrl')) {
+			$result = sprintf('<a href="%s" class="btn-return-top">%s</a>',
+				GeneralUtility::_GP('returnUrl'),
+				IconUtility::getSpriteIcon('actions-document-close')
+			);
+		}
 
-		return sprintf('mod.php?M=%s&%s[content]=%s&%s[format]=json&%s[action]=delete&%s[controller]=Content',
-			$this->moduleLoader->getModuleCode(),
-			$parameterPrefix,
-			$object->getUid(),
-			$parameterPrefix,
-			$parameterPrefix,
-			$parameterPrefix
-		);
+		return $result;
 	}
 }
+
 ?>

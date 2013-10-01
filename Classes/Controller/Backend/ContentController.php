@@ -22,6 +22,7 @@ namespace TYPO3\CMS\Vidi\Controller\Backend;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Vidi\ModuleLoader;
 
 /**
  * Controller which handles actions related to Vidi in the Backend.
@@ -33,6 +34,12 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	 * @inject
 	 */
 	protected $pageRenderer;
+
+	/**
+	 * @var \TYPO3\CMS\Vidi\ViewHelperRenderer
+	 * @inject
+	 */
+	protected $viewHelperRenderer;
 
 	/**
 	 * Initialize every action.
@@ -47,6 +54,28 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	 * @return void
 	 */
 	public function listAction() {
+
+		/** @var ModuleLoader $moduleLoader */
+		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\ModuleLoader');
+
+		$viewHelpers = $moduleLoader->getHeaderComponents(ModuleLoader::TOP, ModuleLoader::LEFT);
+		$this->view->assign('headerTopLeftComponents', $this->viewHelperRenderer->render($viewHelpers));
+
+		$viewHelpers = $moduleLoader->getHeaderComponents(ModuleLoader::TOP, ModuleLoader::RIGHT);
+		$this->view->assign('headerTopRightComponents', $this->viewHelperRenderer->render($viewHelpers));
+
+		$viewHelpers = $moduleLoader->getHeaderComponents(ModuleLoader::BOTTOM, ModuleLoader::LEFT);
+		$this->view->assign('headerBottomLeftComponents', $this->viewHelperRenderer->render($viewHelpers));
+
+		$viewHelpers = $moduleLoader->getHeaderComponents(ModuleLoader::BOTTOM, ModuleLoader::RIGHT);
+		$this->view->assign('headerBottomRightComponents', $this->viewHelperRenderer->render($viewHelpers));
+
+		$viewHelpers = $moduleLoader->getBodyComponents(ModuleLoader::TOP);
+		$this->view->assign('bodyTopComponents', $this->viewHelperRenderer->render($viewHelpers));
+
+		$viewHelpers = $moduleLoader->getBodyComponents(ModuleLoader::BOTTOM);
+		$this->view->assign('bodyBottomComponents', $this->viewHelperRenderer->render($viewHelpers));
+
 		$this->view->assign('columns', \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->getFields());
 	}
 
@@ -55,20 +84,20 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	 *
 	 * @param array $columns corresponds to columns to be rendered.
 	 * @param array $matches
-	 * @param string $searchTerm
 	 * @validate $columns TYPO3\CMS\Vidi\Domain\Validator\ColumnsValidator
 	 * @validate $matches TYPO3\CMS\Vidi\Domain\Validator\MatchesValidator
 	 * @return void
 	 */
-	public function listRowAction(array $columns = array(), $matches = array(), $searchTerm = '') {
+	public function listRowAction(array $columns = array(), $matches = array()) {
 
 		// Initialize some objects related to the query
 		$matcherObject = $this->createMatcherObject();
-		$this->emitProcessMatcherObjectSignal($matcherObject);
-
 		foreach ($matches as $propertyName => $value) {
 			$matcherObject->equals($propertyName, $value);
 		}
+
+		// Trigger signal for post processing Matcher Object.
+		$this->emitPostProcessMatcherObjectSignal($matcherObject);
 
 		$orderObject = $this->createOrderObject();
 		$pagerObject = $this->createPagerObject();
@@ -155,7 +184,7 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 			throw new \TYPO3\CMS\Vidi\Exception\MissingUidException('Missing Uid', 1351605545);
 		}
 
-		/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
+		/** @var ModuleLoader $moduleLoader */
 		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\ModuleLoader');
 
 		// transform array given as argument to object.
@@ -331,12 +360,12 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	 * @param \TYPO3\CMS\Vidi\Persistence\Matcher $matcherObject
 	 * @signal
 	 */
-	protected function emitProcessMatcherObjectSignal(\TYPO3\CMS\Vidi\Persistence\Matcher $matcherObject) {
+	protected function emitPostProcessMatcherObjectSignal(\TYPO3\CMS\Vidi\Persistence\Matcher $matcherObject) {
 
-		/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
+		/** @var ModuleLoader $moduleLoader */
 		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\ModuleLoader');
 
-		$this->getSignalSlotDispatcher()->dispatch('TYPO3\CMS\Vidi\Controller\Backend\ContentController', 'processMatcherObject', array($matcherObject, $moduleLoader->getDataType()));
+		$this->getSignalSlotDispatcher()->dispatch('TYPO3\CMS\Vidi\Controller\Backend\ContentController', 'postProcessMatcherObject', array($matcherObject, $moduleLoader->getDataType()));
 	}
 
 	/**

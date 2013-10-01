@@ -5,12 +5,14 @@ $(document).ready(function () {
 	 * Create relation action
 	 */
 	$(document).on('click', '.dataTable tbody .btn-relation', function (e) {
-		var contentUid, contentDataType, relatedDataType, relationProperty;
+		var contentUid, contentDataType, relatedDataType, relationProperty, $currentCell;
 
 		contentUid = $(this).data('uid');
 		contentDataType = $(this).data('type');
 		relatedDataType = $(this).data('related-type');
 		relationProperty = $(this).data('relation-property');
+		$currentCell = $(this).closest('td');
+
 
 		// Get content by ajax for the modal...
 		$.ajax(
@@ -53,12 +55,12 @@ $(document).ready(function () {
 						beforeSubmit: function (arr, $form, options) {
 
 							// Only submit if button is not disabled
-							if ($('.btn-create-relation').hasClass('disabled')) {
+							if ($('.btn-save-relation').hasClass('disabled')) {
 								return false;
 							}
 
 							// Else submit form
-							$('.btn-create-relation').text('Saving...').addClass('disabled');
+							$('.btn-save-relation').text('Saving...').addClass('disabled');
 						},
 
 						/**
@@ -96,13 +98,15 @@ $(document).ready(function () {
 			},
 			{
 				'label': 'Save relation',
-				'class': 'btn-primary btn-create-relation',
+				'class': 'btn-primary btn-save-relation',
 				'callback': function () {
 
 					$('#form-create-relation').submit();
 
-					// Prevent modal closing.
-					// Modal will be closed after submitting.
+					// Show to the User the grid is being refreshed.
+					$currentCell.html('<img src="' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" width="16" height="" alt="" />');
+
+					// Prevent modal closing ; modal window will be closed after submitting.
 					return false;
 				}
 			}

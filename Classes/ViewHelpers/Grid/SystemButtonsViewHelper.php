@@ -22,11 +22,24 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Vidi\ModuleLoader;
 
 /**
- * View helper for rendering buttons in the grids.
+ * View helper for rendering buttons in the grids. The View Helper fetches a list of components to be rendered.
  */
 class SystemButtonsViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+
+	/**
+	 * @var \TYPO3\CMS\Vidi\ModuleLoader
+	 * @inject
+	 */
+	protected $moduleLoader;
+
+	/**
+	 * @var \TYPO3\CMS\Vidi\ViewHelperRenderer
+	 * @inject
+	 */
+	protected $viewHelperRenderer;
 
 	/**
 	 * Rendering buttons in the grids for an object.
@@ -35,25 +48,8 @@ class SystemButtonsViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractV
 	 * @return string
 	 */
 	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object) {
-
-		/** @var \TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper $uriEditViewHelper */
-		$uriEditViewHelper = $this->objectManager->get('TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper');
-		$results[] = sprintf('<a href="%s" data-uid="%s" class="btn-edit">%s</a>',
-			$uriEditViewHelper->render($object),
-			$object->getUid(),
-			\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-open')
-		);
-
-		/** @var \TYPO3\CMS\Vidi\ViewHelpers\Uri\DeleteViewHelper $uriDeleteViewHelper */
-		$uriDeleteViewHelper = $this->objectManager->get('TYPO3\CMS\Vidi\ViewHelpers\Uri\DeleteViewHelper');
-
-		$results[] = sprintf('<a href="%s" data-uid="%s" class="btn-delete" >%s</a>',
-			$uriDeleteViewHelper->render($object),
-			$object->getUid(),
-			\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-edit-delete')
-		);
-
-		return implode(' ', $results);
+		$components = $this->moduleLoader->getGridComponents(ModuleLoader::BUTTONS);
+		return $this->viewHelperRenderer->render($components, $object);
 	}
 }
 

@@ -57,17 +57,7 @@ class ExtensionManager {
 	 * @return \TYPO3\CMS\Vidi\Backend\ExtensionManager
 	 */
 	public function __construct() {
-
-		/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-		$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
-
-		/** @var \TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility $configurationUtility */
-		$configurationUtility = $objectManager->get('TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility');
-		$configuration = $configurationUtility->getCurrentConfiguration($this->extKey);
-
-		foreach ($configuration as $key => $data) {
-			$this->configuration[$key] = $data['value'];
-		}
+		$this->configuration = \TYPO3\CMS\Vidi\Utility\ConfigurationUtility::getInstance()->getConfiguration();
 
 		// Merge with Data that comes from the User
 		$postData = \TYPO3\CMS\Core\Utility\GeneralUtility::_POST();

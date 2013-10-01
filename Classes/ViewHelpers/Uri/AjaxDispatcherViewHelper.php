@@ -26,34 +26,24 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Render a delete URI given an object.
+ * View helper which renders an URI for the Ajax dispatcher
  */
-class DeleteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class AjaxDispatcherViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\ModuleLoader
-	 * @inject
-	 */
-	protected $moduleLoader;
-
-
-	/**
-	 * Render a delete URI given an object.
+	 * Renders an URI for the Ajax dispatcher
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param string $extensionName
+	 * @param string $controllerName
+	 * @param string $actionName
 	 * @return string
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object) {
-
-		$parameterPrefix = $this->moduleLoader->getParameterPrefix();
-
-		return sprintf('mod.php?M=%s&%s[content]=%s&%s[format]=json&%s[action]=delete&%s[controller]=Content',
-			$this->moduleLoader->getModuleCode(),
-			$parameterPrefix,
-			$object->getUid(),
-			$parameterPrefix,
-			$parameterPrefix,
-			$parameterPrefix
+	public function render($extensionName, $controllerName, $actionName) {
+		return sprintf('/typo3/ajax.php?ajaxID=vidiAjaxDispatcher&extensionName=%s&pluginName=Pi1&controllerName=%s&actionName=%s&returnUrl=%s',
+			$extensionName,
+			$controllerName,
+			$actionName,
+			urlencode($GLOBALS['_SERVER']['REQUEST_URI'])
 		);
 	}
 }

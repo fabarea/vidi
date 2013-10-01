@@ -111,7 +111,6 @@ table {
 .navbar-typo3-bottom {
 	background-color: #DADADA;
 	height: 22px;
-	color: #fff;
 }
 
 .table-bordered thead:first-child tr:first-child th:first-child,
@@ -215,10 +214,10 @@ form .metadata {
 	padding-left: 10px;
 }
 
-.btn-tool-bar {
-	margin-right: 10px;
+.btn-doc-header {
+	padding: 0 4px 2px 4px;
+	margin: 2px 0 !important;
 }
-
 .form-upload .control-group {
 	margin-bottom: 0;
 }

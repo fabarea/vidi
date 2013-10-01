@@ -29,6 +29,22 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
  */
 class ModuleLoader {
 
+	const HEADER = 'header';
+
+	const BODY = 'body';
+
+	const TOP = 'top';
+
+	const BOTTOM = 'bottom';
+
+	const LEFT = 'left';
+
+	const RIGHT = 'right';
+
+	const GRID = 'grid';
+
+	const BUTTONS = 'buttons';
+
 	/**
 	 * The type of data being listed (which corresponds to a table name in TCA)
 	 *
@@ -84,6 +100,35 @@ class ModuleLoader {
 	protected $additionalStyleSheetFiles = array();
 
 	/**
+	 * @var array
+	 */
+	protected $components = array(
+		self::HEADER => array(
+			self::TOP => array(
+				self::LEFT => array(),
+				self::RIGHT => array(),
+			),
+			self::BOTTOM => array(
+				self::LEFT => array(
+					'TYPO3\CMS\Vidi\ViewHelpers\Component\ButtonNewViewHelper',
+					'TYPO3\CMS\Vidi\ViewHelpers\Component\LinkBackViewHelper',
+				),
+				self::RIGHT => array(),
+			),
+		),
+		self::BODY => array(
+			self::TOP => array(),
+			self::BOTTOM => array(),
+		),
+		self::GRID => array(
+			self::BUTTONS => array(
+				'TYPO3\CMS\Vidi\ViewHelpers\Component\ButtonEditViewHelper',
+				'TYPO3\CMS\Vidi\ViewHelpers\Component\ButtonDeleteViewHelper',
+			)
+		)
+	);
+
+	/**
 	 * @param string $dataType
 	 */
 	public function __construct($dataType = '') {
@@ -107,6 +152,7 @@ class ModuleLoader {
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode]['defaultPid'] = $this->defaultPid;
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode]['additionalJavaScriptFiles'] = $this->additionalJavaScriptFiles;
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode]['additionalStyleSheetFiles'] = $this->additionalStyleSheetFiles;
+		$GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode]['components'] = $this->components;
 
 		// @todo improve for loading main module after 6.2 http://forge.typo3.org/issues/49643
 		ExtensionUtility::registerModule(
@@ -273,12 +319,10 @@ class ModuleLoader {
 	 * @return array
 	 */
 	public function getDataTypes() {
-
 		$dataTypes = array();
 		foreach ($GLOBALS['TBE_MODULES_EXT']['vidi'] as $module) {
 			$dataTypes[] = $module['dataType'];
 		}
-
 		return $dataTypes;
 	}
 
@@ -307,6 +351,97 @@ class ModuleLoader {
 	 */
 	public function setDefaultPid($defaultPid) {
 		$this->defaultPid = $defaultPid;
+		return $this;
+	}
+
+	/**
+	 * @param string $positionVertical
+	 * @param string $positionHorizontal
+	 * @return $array
+	 */
+	public function getHeaderComponents($positionVertical, $positionHorizontal) {
+		$configuration = $this->getModuleConfiguration();
+		return $configuration['components'][self::HEADER][$positionVertical][$positionHorizontal];
+	}
+
+	/**
+	 * @param array $viewHelpers
+	 * @return $this
+	 */
+	public function setHeaderComponentsTopLeft(array $viewHelpers) {
+		$this->components[self::HEADER][self::TOP][self::LEFT] = $viewHelpers;
+		return $this;
+	}
+
+	/**
+	 * @param array $viewHelpers
+	 * @return $this
+	 */
+	public function setHeaderComponentsTopRight(array $viewHelpers) {
+		$this->components[self::HEADER][self::TOP][self::RIGHT] = $viewHelpers;
+		return $this;
+	}
+
+	/**
+	 * @param array $viewHelpers
+	 * @return $this
+	 */
+	public function setHeaderComponentsBottomLeft(array $viewHelpers) {
+		$this->components[self::HEADER][self::BOTTOM][self::LEFT] = $viewHelpers;
+		return $this;
+	}
+
+	/**
+	 * @param array $viewHelpers
+	 * @return $this
+	 */
+	public function setHeaderComponentsBottomRight(array $viewHelpers) {
+		$this->components[self::HEADER][self::BOTTOM][self::RIGHT] = $viewHelpers;
+		return $this;
+	}
+
+	/**
+	 * @param string $positionVertical
+	 * @return $array
+	 */
+	public function getBodyComponents($positionVertical) {
+		$configuration = $this->getModuleConfiguration();
+		return $configuration['components'][self::BODY][$positionVertical];
+	}
+
+	/**
+	 * @param array $viewHelpers
+	 * @return $this
+	 */
+	public function setBodyComponentsTop(array $viewHelpers) {
+		$this->components[self::BODY][self::TOP] = $viewHelpers;
+		return $this;
+	}
+
+	/**
+	 * @param array $viewHelpers
+	 * @return $this
+	 */
+	public function setBodyComponentsBottom(array $viewHelpers) {
+		$this->components[self::BODY][self::BOTTOM] = $viewHelpers;
+		return $this;
+	}
+
+	/**
+	 * @param string $componentType
+	 * @return $array
+	 */
+	public function getGridComponents($componentType) {
+		$configuration = $this->getModuleConfiguration();
+		return $configuration['components'][self::GRID][$componentType];
+	}
+
+	/**
+	 * @param array $viewHelpers
+	 * @return $this
+	 */
+	public function setGridComponentsButtons(array $viewHelpers) {
+		$this->components[self::GRID][self::BUTTONS] = $viewHelpers;
 		return $this;
 	}
 
@@ -344,5 +479,12 @@ class ModuleLoader {
 			$this->addStyleSheetFiles = $this->getModuleConfiguration('additionalStyleSheetFiles');
 		}
 		return $this->addStyleSheetFiles;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getComponents() {
+		return $this->components;
 	}
 }

@@ -16,8 +16,21 @@ $(document).ready(function () {
 		/* Get the DataTables object again - this is not a recreation, just a get of the object */
 		var oTable = $('#content-list').dataTable();
 
+		var loadingMessage = '<img src="' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" width="16" height="" alt="" />';
 		var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
 		oTable.fnSetColumnVis(iCol, bVis ? false : true);
+		if (! bVis) {
+
+			// look for the nth-child which corresponds to a visible column
+			var columnIndex = 1;
+			for(var index = 1; index < oTable.fnSettings().aoColumns.length && index <= iCol; index ++) {
+				var column = oTable.fnSettings().aoColumns[index];
+				if (column.bVisible) {
+					columnIndex ++;
+				}
+			}
+			$('#content-list tbody td:nth-child(' + columnIndex + ')').html(loadingMessage);
+		}
 	});
 
 	/**
