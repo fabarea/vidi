@@ -41,7 +41,7 @@ class CssViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 	 * @param string $pathInsideExt the path to the file relative to the ext-folder
 	 * @return string
 	 */
-	public function render($name = NULL, $extKey = NULL, $pathInsideExt = 'Resources/Public/StyleSheet/') {
+	public function render($name = NULL, $extKey = NULL, $pathInsideExt = 'Resources/Public/StyleSheets/') {
 
 		if ($extKey === NULL) {
 			$extKey = $this->controllerContext->getRequest()->getControllerExtensionKey();
