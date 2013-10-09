@@ -26,12 +26,12 @@ Vidi.Panel = {
 	/**
 	 * Display THE "list" panel
 	 *
-	 * @param {boolean} redraw
+	 * @param {boolean} reloadTable
 	 * @return void
 	 */
-	showList: function (redraw) {
-		if (typeof (redraw) == 'undefined') {
-			redraw = true;
+	showList: function (reloadTable) {
+		if (typeof (reloadTable) == 'undefined') {
+			reloadTable = true;
 		}
 
 		// Remove footer and header markup.
@@ -42,7 +42,7 @@ Vidi.Panel = {
 		$('#container-main-sub').html(Vidi.icons.loading);
 		this.togglePanel();
 
-		if (redraw) {
+		if (reloadTable) {
 			Vidi.table.fnDraw();
 		}
 	},
@@ -55,7 +55,7 @@ Vidi.Panel = {
 	 */
 	togglePanel: function () {
 		// Expand / Collapse widgets
-		$(['container-main-top', 'container-main-sub', 'navbar-sub']).each(function (index, value) {
+		$(['container-main-top', 'container-main-sub', 'navbar-main', 'navbar-sub']).each(function (index, value) {
 			$('#' + value).toggle();
 		});
 

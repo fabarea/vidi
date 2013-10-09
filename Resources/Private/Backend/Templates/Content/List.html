@@ -7,7 +7,7 @@
 <f:section name="main">
 
 	<div class="navbar navbar-fixed-top">
-		<div class="navbar-typo3">
+		<div id="navbar-main">
 			<div class="container-fluid navbar-typo3-top">
 				<div>
 					<div class="row-fluid">
@@ -61,6 +61,7 @@
 				</div>
 			</div>
 		</div>
+		<div id="navbar-sub" class="navbar-typo3 ajax-response-header" style="display: none"></div>
 	</div>
 
 	<f:flashMessages/>
@@ -121,7 +122,14 @@
 
 			<f:format.raw>{bodyBottomComponents}</f:format.raw>
 		</div>
+
+		<div id="container-main-sub" class="ajax-response-body container" style="display: none">
+			<div class="container" style="text-align: center">
+				<f:image src="{f:uri.resource(path:'Images/loading.gif')}" alt=""/>
+			</div>
+		</div>
 	</div>
+	<div id="footer" class="ajax-response-footer"></div>
 
 </f:section>
 </html>
