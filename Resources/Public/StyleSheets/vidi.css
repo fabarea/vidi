@@ -88,7 +88,7 @@ label {
 		padding-right: 0 !important;
 	}
 
-	.toolbar-left {
+	.toolbar-right {
 		display: none !important;
 	}
 
@@ -121,7 +121,7 @@ table {
 	-moz-border-radius: 0;
 }
 
-.toolbar-left {
+.toolbar-right {
 	text-align: right;
 }
 
@@ -267,4 +267,12 @@ input[aria-controls=content-list] {
 .search_box_container textarea:focus,
 .search_box_container input:focus {
 	box-shadow: none !important;
+}
+
+.navbar-typo3-top .row-fluid [class*="span"] {
+	min-height: 27px;
+}
+
+.navbar-typo3-bottom .row-fluid [class*="span"] {
+	min-height: 22px;
 }

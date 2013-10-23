@@ -9,54 +9,50 @@
 	<div class="navbar navbar-fixed-top">
 		<div id="navbar-main">
 			<div class="container-fluid navbar-typo3-top">
-				<div>
-					<div class="row-fluid">
-						<div class="span6">
-							<f:format.raw>{headerTopLeftComponents}</f:format.raw>
-						</div>
-						<div class="span6">
-							<f:format.raw>{headerTopRightComponents}</f:format.raw>
-						</div>
+				<div class="row-fluid">
+					<div class="span6">
+						<f:format.raw>{headerTopLeftComponents}</f:format.raw>
+					</div>
+					<div class="span6">
+						<f:format.raw>{headerTopRightComponents}</f:format.raw>
 					</div>
 				</div>
 			</div>
 			<div class="container-fluid navbar-typo3-bottom">
-				<div>
-					<div class="row-fluid">
-						<div class="span6">
-							<f:format.raw>{headerBottomLeftComponents}</f:format.raw>
-						</div>
-						<div class="span6 toolbar-left">
+				<div class="row-fluid">
+					<div class="span6">
+						<f:format.raw>{headerBottomLeftComponents}</f:format.raw>
+					</div>
+					<div class="span6 toolbar-right">
 
-							<div class="btn-group pull-right" style="margin-top: 1px;">
-								<a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#" style="padding: 0 4px;">
-									<span class="caret"></span>
-								</a>
-								<ul class="dropdown-menu">
-									<f:for each="{columns}" key="columnName" as="configuration" iteration="iterator">
-										<li>
-											<f:if condition="{v:grid.isNotSystem(fieldName: '{columnName}')}">
-												<label class="checkbox inline">
-													<f:if condition="{v:grid.isVisible(fieldName: '{columnName}')}">
-														<f:then>
-															<input class="check-visible-toggle" type="checkbox" name=""
-															       value="{iterator.index}"
-															       checked="checked"/>
-														</f:then>
-														<f:else>
-															<input class="check-visible-toggle" type="checkbox" name=""
-															       value="{iterator.index}"/>
-														</f:else>
-													</f:if>
-													<v:grid.label column="{columnName}"/>
-												</label>
-											</f:if>
-										</li>
-									</f:for>
-								</ul>
-							</div>
-							<f:format.raw>{headerBottomRightComponents}</f:format.raw>
+						<div class="btn-group pull-right" style="margin-top: 1px;">
+							<a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#" style="padding: 0 4px;">
+								<span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu">
+								<f:for each="{columns}" key="columnName" as="configuration" iteration="iterator">
+									<li>
+										<f:if condition="{v:grid.isNotSystem(fieldName: '{columnName}')}">
+											<label class="checkbox inline">
+												<f:if condition="{v:grid.isVisible(fieldName: '{columnName}')}">
+													<f:then>
+														<input class="check-visible-toggle" type="checkbox" name=""
+														       value="{iterator.index}"
+														       checked="checked"/>
+													</f:then>
+													<f:else>
+														<input class="check-visible-toggle" type="checkbox" name=""
+														       value="{iterator.index}"/>
+													</f:else>
+												</f:if>
+												<v:grid.label column="{columnName}"/>
+											</label>
+										</f:if>
+									</li>
+								</f:for>
+							</ul>
 						</div>
+						<f:format.raw>{headerBottomRightComponents}</f:format.raw>
 					</div>
 				</div>
 			</div>
