@@ -44,6 +44,11 @@ Vidi.VisualSearch = {
 				},
 				valueMatches: function (facet, searchTerm, callback) {
 
+					// Facet must never return values.
+					if (facet === 'text') {
+						return;
+					}
+
 					if (storage[facet] == undefined) {
 
 						// compute parameters with specific prefix.
