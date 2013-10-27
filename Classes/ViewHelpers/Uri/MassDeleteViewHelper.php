@@ -24,9 +24,9 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 ***************************************************************/
 
 /**
- * Render a delete URI given an object.
+ * Render a mass delete URI.
  */
-class DeleteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class MassDeleteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
 	 * @var \TYPO3\CMS\Vidi\ModuleLoader
@@ -34,21 +34,17 @@ class DeleteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelp
 	 */
 	protected $moduleLoader;
 
-
 	/**
-	 * Render a delete URI given an object.
+	 * Render a mass delete URI.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
 	 * @return string
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object) {
+	public function render() {
 
 		$parameterPrefix = $this->moduleLoader->getParameterPrefix();
 
-		return sprintf('mod.php?M=%s&%s[content]=%s&%s[format]=json&%s[action]=delete&%s[controller]=Content',
+		return sprintf('mod.php?M=%s&%s[format]=json&%s[action]=massDelete&%s[controller]=Content',
 			$this->moduleLoader->getModuleCode(),
-			$parameterPrefix,
-			$object->getUid(),
 			$parameterPrefix,
 			$parameterPrefix,
 			$parameterPrefix

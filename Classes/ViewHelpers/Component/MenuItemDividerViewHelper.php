@@ -22,32 +22,19 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-use TYPO3\CMS\Backend\Utility\IconUtility;
-use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
 
 /**
- * View helper which renders a "edit" button to be placed in the grid.
+ * View helper which renders a "divider" menu item to be placed in the grid menu.
  */
-class ButtonEditViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class MenuItemDividerViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper
-	 * @inject
-	 */
-	protected $uriEditViewHelper;
-
-	/**
-	 * Renders a "edit" button to be placed in the grid.
+	 * Renders a "divider" menu item to be placed in the grid menu.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
 	 * @return string
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object = NULL) {
-		return sprintf('<a href="%s" data-uid="%s" class="btn-edit">%s</a>',
-			$this->uriEditViewHelper->render($object),
-			$object->getUid(),
-			IconUtility::getSpriteIcon('actions-document-open')
-		);
+	public function render() {
+		return '<li class="divider"></li>';
 	}
 }
 

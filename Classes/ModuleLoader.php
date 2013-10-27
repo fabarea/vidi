@@ -29,9 +29,7 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
  */
 class ModuleLoader {
 
-	const HEADER = 'header';
-
-	const BODY = 'body';
+	const NAVIGATION = 'navigation';
 
 	const TOP = 'top';
 
@@ -44,6 +42,8 @@ class ModuleLoader {
 	const GRID = 'grid';
 
 	const BUTTONS = 'buttons';
+
+	const MENU = 'menu';
 
 	/**
 	 * The type of data being listed (which corresponds to a table name in TCA)
@@ -103,7 +103,7 @@ class ModuleLoader {
 	 * @var array
 	 */
 	protected $components = array(
-		self::HEADER => array(
+		self::NAVIGATION => array(
 			self::TOP => array(
 				self::LEFT => array(),
 				self::RIGHT => array(),
@@ -116,15 +116,20 @@ class ModuleLoader {
 				self::RIGHT => array(),
 			),
 		),
-		self::BODY => array(
-			self::TOP => array(),
-			self::BOTTOM => array(),
-		),
 		self::GRID => array(
+			self::TOP => array(),
 			self::BUTTONS => array(
 				'TYPO3\CMS\Vidi\ViewHelpers\Component\ButtonEditViewHelper',
 				'TYPO3\CMS\Vidi\ViewHelpers\Component\ButtonDeleteViewHelper',
-			)
+			),
+			self::MENU => array(
+				'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemExportXmlViewHelper',
+				'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemExportCsvViewHelper',
+				'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemDividerViewHelper',
+				'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemMassEditViewHelper',
+				'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemMassDeleteViewHelper',
+			),
+			self::BOTTOM => array(),
 		)
 	);
 
@@ -355,93 +360,138 @@ class ModuleLoader {
 	}
 
 	/**
-	 * @param string $positionVertical
-	 * @param string $positionHorizontal
 	 * @return $array
 	 */
-	public function getHeaderComponents($positionVertical, $positionHorizontal) {
+	public function getNavigationTopLeftComponents() {
 		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][self::HEADER][$positionVertical][$positionHorizontal];
+		return $configuration['components'][self::NAVIGATION][self::TOP][self::LEFT];
 	}
 
 	/**
 	 * @param array $viewHelpers
 	 * @return $this
 	 */
-	public function setHeaderComponentsTopLeft(array $viewHelpers) {
-		$this->components[self::HEADER][self::TOP][self::LEFT] = $viewHelpers;
+	public function setNavigationTopLeftComponents(array $viewHelpers) {
+		$this->components[self::NAVIGATION][self::TOP][self::LEFT] = $viewHelpers;
 		return $this;
 	}
 
 	/**
-	 * @param array $viewHelpers
-	 * @return $this
-	 */
-	public function setHeaderComponentsTopRight(array $viewHelpers) {
-		$this->components[self::HEADER][self::TOP][self::RIGHT] = $viewHelpers;
-		return $this;
-	}
-
-	/**
-	 * @param array $viewHelpers
-	 * @return $this
-	 */
-	public function setHeaderComponentsBottomLeft(array $viewHelpers) {
-		$this->components[self::HEADER][self::BOTTOM][self::LEFT] = $viewHelpers;
-		return $this;
-	}
-
-	/**
-	 * @param array $viewHelpers
-	 * @return $this
-	 */
-	public function setHeaderComponentsBottomRight(array $viewHelpers) {
-		$this->components[self::HEADER][self::BOTTOM][self::RIGHT] = $viewHelpers;
-		return $this;
-	}
-
-	/**
-	 * @param string $positionVertical
 	 * @return $array
 	 */
-	public function getBodyComponents($positionVertical) {
+	public function getNavigationTopRightComponents() {
 		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][self::BODY][$positionVertical];
+		return $configuration['components'][self::NAVIGATION][self::TOP][self::RIGHT];
 	}
 
 	/**
 	 * @param array $viewHelpers
 	 * @return $this
 	 */
-	public function setBodyComponentsTop(array $viewHelpers) {
-		$this->components[self::BODY][self::TOP] = $viewHelpers;
+	public function setNavigationTopRightComponents(array $viewHelpers) {
+		$this->components[self::NAVIGATION][self::TOP][self::RIGHT] = $viewHelpers;
 		return $this;
 	}
 
 	/**
-	 * @param array $viewHelpers
-	 * @return $this
-	 */
-	public function setBodyComponentsBottom(array $viewHelpers) {
-		$this->components[self::BODY][self::BOTTOM] = $viewHelpers;
-		return $this;
-	}
-
-	/**
-	 * @param string $componentType
 	 * @return $array
 	 */
-	public function getGridComponents($componentType) {
+	public function getNavigationBottomLeftComponents() {
 		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][self::GRID][$componentType];
+		return $configuration['components'][self::NAVIGATION][self::BOTTOM][self::LEFT];
 	}
 
 	/**
 	 * @param array $viewHelpers
 	 * @return $this
 	 */
-	public function setGridComponentsButtons(array $viewHelpers) {
+	public function setNavigationBottomLeftComponents(array $viewHelpers) {
+		$this->components[self::NAVIGATION][self::BOTTOM][self::LEFT] = $viewHelpers;
+		return $this;
+	}
+
+	/**
+	 * @return $array
+	 */
+	public function getNavigationBottomRightComponents() {
+		$configuration = $this->getModuleConfiguration();
+		return $configuration['components'][self::NAVIGATION][self::BOTTOM][self::RIGHT];
+	}
+
+	/**
+	 * @param array $viewHelpers
+	 * @return $this
+	 */
+	public function setNavigationBottomRightComponents(array $viewHelpers) {
+		$this->components[self::NAVIGATION][self::BOTTOM][self::RIGHT] = $viewHelpers;
+		return $this;
+	}
+
+	/**
+	 * @return $array
+	 */
+	public function getGridTopComponents() {
+		$configuration = $this->getModuleConfiguration();
+		return $configuration['components'][self::GRID][self::TOP];
+	}
+
+	/**
+	 * @param array $viewHelpers
+	 * @return $this
+	 */
+	public function setGridTopComponents(array $viewHelpers) {
+		$this->components[self::GRID][self::TOP] = $viewHelpers;
+		return $this;
+	}
+
+	/**
+	 * @return $array
+	 */
+	public function getGridBottomComponents() {
+		$configuration = $this->getModuleConfiguration();
+		return $configuration['components'][self::GRID][self::BOTTOM];
+	}
+
+	/**
+	 * @param array $viewHelpers
+	 * @return $this
+	 */
+	public function setGridBottomComponents(array $viewHelpers) {
+		$this->components[self::GRID][self::BOTTOM] = $viewHelpers;
+		return $this;
+	}
+
+	/**
+	 * @return $array
+	 */
+	public function getGridButtonsComponents() {
+		$configuration = $this->getModuleConfiguration();
+		return $configuration['components'][self::GRID][self::BUTTONS];
+	}
+
+	/**
+	 * @param array $viewHelpers
+	 * @return $this
+	 */
+	public function setGridButtonsComponents(array $viewHelpers) {
 		$this->components[self::GRID][self::BUTTONS] = $viewHelpers;
+		return $this;
+	}
+
+	/**
+	 * @return $array
+	 */
+	public function getGridMenuComponents() {
+		$configuration = $this->getModuleConfiguration();
+		return $configuration['components'][self::GRID][self::MENU];
+	}
+
+	/**
+	 * @param array $viewHelpers
+	 * @return $this
+	 */
+	public function setGridMenuComponents(array $viewHelpers) {
+		$this->components[self::GRID][self::MENU] = $viewHelpers;
 		return $this;
 	}
 

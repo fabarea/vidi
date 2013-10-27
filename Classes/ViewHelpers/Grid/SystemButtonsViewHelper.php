@@ -48,7 +48,7 @@ class SystemButtonsViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractV
 	 * @return string
 	 */
 	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object) {
-		$components = $this->moduleLoader->getGridComponents(ModuleLoader::BUTTONS);
+		$components = $this->moduleLoader->getGridButtonsComponents();
 		return $this->viewHelperRenderer->render($components, $object);
 	}
 }

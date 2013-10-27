@@ -28,6 +28,8 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
  * Service class used for dispatching Ajax request.
  * Code was inspired from this blog article:
  * http://daniel.lienert.cc/blog/blog-post/2011/04/23/typo3-extbase-und-ajax/
+ *
+ * @deprecated use the BE module hiding technique introduced in 6.2.
  */
 class AjaxDispatcher {
 

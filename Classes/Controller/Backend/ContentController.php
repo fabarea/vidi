@@ -58,23 +58,26 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		/** @var ModuleLoader $moduleLoader */
 		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\ModuleLoader');
 
-		$viewHelpers = $moduleLoader->getHeaderComponents(ModuleLoader::TOP, ModuleLoader::LEFT);
-		$this->view->assign('headerTopLeftComponents', $this->viewHelperRenderer->render($viewHelpers));
+		$viewHelpers = $moduleLoader->getNavigationTopLeftComponents();
+		$this->view->assign('navigationTopLeftComponents', $this->viewHelperRenderer->render($viewHelpers));
 
-		$viewHelpers = $moduleLoader->getHeaderComponents(ModuleLoader::TOP, ModuleLoader::RIGHT);
-		$this->view->assign('headerTopRightComponents', $this->viewHelperRenderer->render($viewHelpers));
+		$viewHelpers = $moduleLoader->getNavigationTopRightComponents();
+		$this->view->assign('navigationTopRightComponents', $this->viewHelperRenderer->render($viewHelpers));
 
-		$viewHelpers = $moduleLoader->getHeaderComponents(ModuleLoader::BOTTOM, ModuleLoader::LEFT);
-		$this->view->assign('headerBottomLeftComponents', $this->viewHelperRenderer->render($viewHelpers));
+		$viewHelpers = $moduleLoader->getNavigationBottomLeftComponents();
+		$this->view->assign('navigationBottomLeftComponents', $this->viewHelperRenderer->render($viewHelpers));
 
-		$viewHelpers = $moduleLoader->getHeaderComponents(ModuleLoader::BOTTOM, ModuleLoader::RIGHT);
-		$this->view->assign('headerBottomRightComponents', $this->viewHelperRenderer->render($viewHelpers));
+		$viewHelpers = $moduleLoader->getNavigationBottomRightComponents();
+		$this->view->assign('navigationBottomRightComponents', $this->viewHelperRenderer->render($viewHelpers));
 
-		$viewHelpers = $moduleLoader->getBodyComponents(ModuleLoader::TOP);
-		$this->view->assign('bodyTopComponents', $this->viewHelperRenderer->render($viewHelpers));
+		$viewHelpers = $moduleLoader->getGridTopComponents();
+		$this->view->assign('gridTopComponents', $this->viewHelperRenderer->render($viewHelpers));
 
-		$viewHelpers = $moduleLoader->getBodyComponents(ModuleLoader::BOTTOM);
-		$this->view->assign('bodyBottomComponents', $this->viewHelperRenderer->render($viewHelpers));
+		$viewHelpers = $moduleLoader->getGridBottomComponents();
+		$this->view->assign('gridBottomComponents', $this->viewHelperRenderer->render($viewHelpers));
+
+		$viewHelpers = $moduleLoader->getGridMenuComponents();
+		$this->view->assign('gridMenuComponents', $this->viewHelperRenderer->render($viewHelpers));
 
 		$this->view->assign('columns', \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->getFields());
 	}

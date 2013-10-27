@@ -23,10 +23,9 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 use TYPO3\CMS\Backend\Utility\IconUtility;
-use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
 
 /**
- * View helper which renders a "delete" button to be placed in the grid
+ * View helper which renders a "delete" button to be placed in the grid.
  */
 class ButtonDeleteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 

@@ -27,6 +27,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * View helper which renders an URI for the Ajax dispatcher
+ *
+ * @deprecated use the BE module hiding technique introduced in 6.2.
  */
 class AjaxDispatcherViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 

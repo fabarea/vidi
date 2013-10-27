@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
 /***************************************************************
 *  Copyright notice
 *
@@ -8,8 +8,8 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
 *  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
 *  (at your option) any later version.
 *
 *  The GNU General Public License can be found at
@@ -22,37 +22,30 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Backend\Utility\IconUtility;
 
 /**
- * Render a delete URI given an object.
+ * View helper which renders a "mass delete" menu item to be placed in the grid menu.
  */
-class DeleteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class MenuItemMassDeleteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\ModuleLoader
+	 * @var \TYPO3\CMS\Vidi\ViewHelpers\Uri\MassDeleteViewHelper
 	 * @inject
 	 */
-	protected $moduleLoader;
-
+	protected $uriMassDeleteViewHelper;
 
 	/**
-	 * Render a delete URI given an object.
+	 * Renders a "mass delete" menu item to be placed in the grid menu.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
 	 * @return string
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object) {
-
-		$parameterPrefix = $this->moduleLoader->getParameterPrefix();
-
-		return sprintf('mod.php?M=%s&%s[content]=%s&%s[format]=json&%s[action]=delete&%s[controller]=Content',
-			$this->moduleLoader->getModuleCode(),
-			$parameterPrefix,
-			$object->getUid(),
-			$parameterPrefix,
-			$parameterPrefix,
-			$parameterPrefix
+	public function render() {
+		return sprintf('<li><a href="%s" class="mass-delete" >%s Delete</a>',
+			$this->uriMassDeleteViewHelper->render(),
+			IconUtility::getSpriteIcon('actions-edit-delete')
 		);
 	}
 }
+
 ?>

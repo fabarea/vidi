@@ -11,17 +11,17 @@
 			<div class="container-fluid navbar-typo3-top">
 				<div class="row-fluid">
 					<div class="span6">
-						<f:format.raw>{headerTopLeftComponents}</f:format.raw>
+						<f:format.raw>{navigationTopLeftComponents}</f:format.raw>
 					</div>
 					<div class="span6">
-						<f:format.raw>{headerTopRightComponents}</f:format.raw>
+						<f:format.raw>{navigationTopRightComponents}</f:format.raw>
 					</div>
 				</div>
 			</div>
 			<div class="container-fluid navbar-typo3-bottom">
 				<div class="row-fluid">
 					<div class="span6">
-						<f:format.raw>{headerBottomLeftComponents}</f:format.raw>
+						<f:format.raw>{navigationBottomLeftComponents}</f:format.raw>
 					</div>
 					<div class="span6 toolbar-right">
 
@@ -52,7 +52,7 @@
 								</f:for>
 							</ul>
 						</div>
-						<f:format.raw>{headerBottomRightComponents}</f:format.raw>
+						<f:format.raw>{navigationBottomRightComponents}</f:format.raw>
 					</div>
 				</div>
 			</div>
@@ -67,7 +67,7 @@
 	<div id="container-main">
 		<div id="container-main-top" style="width: 99%">
 
-			<f:format.raw>{bodyTopComponents}</f:format.raw>
+			<f:format.raw>{gridTopComponents}</f:format.raw>
 
 			<table class="table table-striped table-bordered table-hover"
 			       id="content-list">
@@ -98,17 +98,8 @@
 								Selected rows will be...
 							</a>
 							<ul class="dropdown-menu">
-								<li><a href="#" class="mass-export-xml">export XML (not implemented)</a></li>
-								<li><a href="#" class="mass-export-csv">export CSV (not implemented)</a></li>
-								<li class="divider"></li>
-								<li><a href="#" class="mass-edit">edit (not implemented)</a></li>
-								<li>
-									<f:link.action action="massDelete" arguments="{format: 'json'}"
-									               class="mass-delete">
-										<v:sprite name="actions-edit-delete"/>
-										delete
-									</f:link.action>
-								</li>
+								<f:format.raw>{gridMenuComponents}</f:format.raw>
+
 							</ul>
 						</div>
 					</th>
@@ -116,7 +107,7 @@
 				</tfoot>
 			</table>
 
-			<f:format.raw>{bodyBottomComponents}</f:format.raw>
+			<f:format.raw>{gridBottomComponents}</f:format.raw>
 		</div>
 
 		<div id="container-main-sub" class="ajax-response-body container" style="display: none">
