@@ -239,7 +239,7 @@ class Query implements \TYPO3\CMS\Extbase\Persistence\QueryInterface {
 	 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|array The query result object or an array if $this->getQuerySettings()->getReturnRawQueryResult() is TRUE
 	 * @api
 	 */
-	public function execute() {
+	public function execute($returnRawQueryResult = FALSE) {
 		/** @var \TYPO3\CMS\Vidi\Persistence\Storage\DbBackend $dbBackend */
 		$dbBackend = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\Storage\DbBackend', $this);
 
