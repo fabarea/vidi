@@ -1,6 +1,9 @@
 # Plugin configuration
 plugin.tx_vidi {
 	settings {
+
+		# Limit the number of records for auto-suggestion in the search bar.
+		suggestionLimit = 1000
 	}
 	view {
 		templateRootPath = {$plugin.tx_vidi.view.templateRootPath}

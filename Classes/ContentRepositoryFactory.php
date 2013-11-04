@@ -48,7 +48,7 @@ class ContentRepositoryFactory implements \TYPO3\CMS\Core\SingletonInterface{
 		if ($dataType == '') {
 
 			// Try to get the data type from the module loader
-			$moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
+			$moduleLoader = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
 			$dataType = $moduleLoader->getDataType();
 		}
 
@@ -61,11 +61,9 @@ class ContentRepositoryFactory implements \TYPO3\CMS\Core\SingletonInterface{
 			$className = 'TYPO3\CMS\Vidi\Domain\Repository\ContentRepository';
 
 			/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-			$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+			$objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
 			self::$instances[$dataType] = $objectManager->get($className, $dataType);
 		}
 		return self::$instances[$dataType];
 	}
-
-
 }

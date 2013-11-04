@@ -61,7 +61,7 @@ Vidi.VisualSearch = {
 						// compute data object
 						$.ajax({
 							type: 'post',
-							url: Vidi.computeUrl('listFacetValues'),
+							url: Vidi.computeUrl('list', 'FacetValue'),
 							dataType: "json",
 							data: parameters,
 							success: function (data, xhr, textStatus) {

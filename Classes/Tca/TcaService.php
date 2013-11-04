@@ -23,13 +23,13 @@ namespace TYPO3\CMS\Vidi\Tca;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * A class to handle TCA ctrl.
- *
- * @deprecated use TcaService instead (without Factory).
  */
-class TcaServiceFactory extends TcaService {
+class TcaService implements \TYPO3\CMS\Core\SingletonInterface,
+	\TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 
 	/**
 	 * @var array
@@ -46,7 +46,24 @@ class TcaServiceFactory extends TcaService {
 	 * @return \TYPO3\CMS\Vidi\Tca\TcaServiceInterface
 	 */
 	static public function getService($tableName = '', $serviceType) {
-		return parent::getService($tableName, $serviceType);
+		if (TYPO3_MODE == 'BE' && empty($tableName)) {
+
+			/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
+			$moduleLoader = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
+			$tableName = $moduleLoader->getDataType();
+		}
+
+		if (empty(self::$instanceStorage[$tableName][$serviceType])) {
+			$className = sprintf('TYPO3\CMS\Vidi\Tca\%sService', ucfirst($serviceType));
+
+			if (! class_exists($className)) {
+				throw new \TYPO3\CMS\Vidi\Exception\NotExistingClassException('Class does not exit: ' . $className, 1357060937);
+
+			}
+			$instance = GeneralUtility::makeInstance($className, $tableName, $serviceType);
+			self::$instanceStorage[$tableName][$serviceType] = $instance;
+		}
+		return self::$instanceStorage[$tableName][$serviceType];
 	}
 
 	/**
@@ -55,10 +72,9 @@ class TcaServiceFactory extends TcaService {
 	 *
 	 * @param string $tableName
 	 * @return \TYPO3\CMS\Vidi\Tca\FieldService
-	 * @deprecated will be removed in the future.
 	 */
 	static public function field($tableName = '') {
-		return TcaService::getService($tableName, self::TYPE_FIELD);
+		return self::getService($tableName, self::TYPE_FIELD);
 	}
 
 	/**
@@ -67,10 +83,9 @@ class TcaServiceFactory extends TcaService {
 	 *
 	 * @param string $tableName
 	 * @return \TYPO3\CMS\Vidi\Tca\GridService
-	 * @deprecated will be removed in the future.
 	 */
 	static public function grid($tableName = '') {
-		return TcaService::getService($tableName, self::TYPE_GRID);
+		return self::getService($tableName, self::TYPE_GRID);
 	}
 
 	/**
@@ -78,47 +93,11 @@ class TcaServiceFactory extends TcaService {
 	 * This is a shorthand method for "table" (AKA "ctrl").
 	 *
 	 * @param string $tableName
-	 * @return \TYPO3\CMS\Vidi\Tca\TableService
 	 * @deprecated will be removed in the future.
+	 * @return \TYPO3\CMS\Vidi\Tca\TableService
 	 */
 	static public function table($tableName = '') {
-		return TcaService::getService($tableName, self::TYPE_TABLE);
-	}
-
-	/**
-	 * Returns a class instance of a corresponding TCA service.
-	 * This is a shorthand method for "field" (AKA "columns").
-	 *
-	 * @param string $tableName
-	 * @return \TYPO3\CMS\Vidi\Tca\FieldService
-	 * @deprecated will be removed in the future.
-	 */
-	static public function getFieldService($tableName = '') {
-		return self::field($tableName);
-	}
-
-	/**
-	 * Returns a class instance of a corresponding TCA service.
-	 * This is a shorthand method for "grid".
-	 *
-	 * @param string $tableName
-	 * @return \TYPO3\CMS\Vidi\Tca\GridService
-	 * @deprecated will be removed in the future.
-	 */
-	static public function getGridService($tableName = '') {
-		return self::grid($tableName);
-	}
-
-	/**
-	 * Returns a class instance of a corresponding TCA service.
-	 * This is a shorthand method for "table" (AKA "ctrl").
-	 *
-	 * @param string $tableName
-	 * @return \TYPO3\CMS\Vidi\Tca\TableService
-	 * @deprecated will be removed in the future.
-	 */
-	static public function getTableService($tableName = '') {
-		return self::table($tableName);
+		return self::getService($tableName, self::TYPE_TABLE);
 	}
 
 	/**

@@ -166,7 +166,8 @@ class ModuleLoader {
 			$subModuleName,
 			$this->position,
 			array(
-				'Content' => 'list, listRow, listFacetValues, delete, massDelete, update',
+				'Content' => 'list, listRow, delete, massDelete, update',
+				'FacetValue' => 'list',
 			),
 			array(
 				'access' => $this->access, // @todo property

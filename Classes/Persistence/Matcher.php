@@ -23,6 +23,7 @@ namespace TYPO3\CMS\Vidi\Persistence;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
 
 /**
  * Matcher class for conditions that will apply to a query.
@@ -38,6 +39,11 @@ class Matcher {
 	 * The logical AND
 	 */
 	const LOGICAL_AND = 'logicalAnd';
+
+	/**
+	 * @var string
+	 */
+	protected $dataType = '';
 
 	/**
 	 * @var string
@@ -100,8 +106,9 @@ class Matcher {
 	 * @return \TYPO3\CMS\Vidi\Persistence\Matcher
 	 */
 	public function __construct($matches = array(), $dataType = '') {
-		$this->tcaService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($dataType);
+		$this->dataType = $dataType;
 		$this->matches = $matches;
+		$this->tcaService = TcaServiceFactory::field($this->dataType);
 	}
 
 	/**
@@ -223,6 +230,22 @@ class Matcher {
 	 */
 	public function getSupportedOperators() {
 		return $this->supportedOperators;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDataType() {
+		return $this->dataType;
+	}
+
+	/**
+	 * @param string $dataType
+	 * @return $this
+	 */
+	public function setDataType($dataType) {
+		$this->dataType = $dataType;
+		return $this;
 	}
 }
 
