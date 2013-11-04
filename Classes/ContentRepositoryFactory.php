@@ -40,7 +40,7 @@ class ContentRepositoryFactory implements \TYPO3\CMS\Core\SingletonInterface{
 	 *
 	 * @throws \RuntimeException
 	 * @param string $dataType
-	 * @return \TYPO3\CMS\Extbase\Persistence\RepositoryInterface
+	 * @return \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository
 	 */
 	static public function getInstance($dataType = '') {
 

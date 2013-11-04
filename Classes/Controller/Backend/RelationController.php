@@ -22,7 +22,9 @@ namespace TYPO3\CMS\Vidi\Controller\Backend;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
+use TYPO3\CMS\Vidi\ContentRepositoryFactory;
+use TYPO3\CMS\Vidi\PersistenceObjectFactory;
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * Controller which handles relations between content objects.
@@ -72,19 +74,22 @@ class RelationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 */
 	public function listAction($content, $dataType, $relationProperty, $relatedDataType) {
 
-		$contentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance($dataType);
+		$contentRepository = ContentRepositoryFactory::getInstance($dataType);
 		$content = $contentRepository->findByUid($content);
 		$this->view->assign('content', $content);
 		$this->view->assign('relationProperty', $relationProperty);
 
-		$relatedContentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance($relatedDataType);
-		$relatedContents = $relatedContentRepository->findAll();
+		$relatedContentRepository = ContentRepositoryFactory::getInstance($relatedDataType);
+
+		// Initialize the matcher object.
+		$matcher = PersistenceObjectFactory::getInstance()->getMatcherObject($relatedDataType);
+		$order = PersistenceObjectFactory::getInstance()->getOrderObject($relatedDataType);
+
+		$relatedContents = $relatedContentRepository->findBy($matcher, $order);
 
 		$this->view->assign('relatedContents', $relatedContents);
 		$this->view->assign('relatedDataType', $relatedDataType);
-
-		$tcaTableService = TcaServiceFactory::getTableService($relatedDataType);
-		$this->view->assign('relatedContentTitle', $tcaTableService->getTitle());
+		$this->view->assign('relatedContentTitle', TcaService::table($relatedDataType)->getTitle());
 	}
 }
 

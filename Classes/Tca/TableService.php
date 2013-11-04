@@ -23,6 +23,8 @@ namespace TYPO3\CMS\Vidi\Tca;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
  * A class to handle TCA ctrl.
@@ -123,6 +125,39 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 */
 	public function getLanguageField() {
 		return $this->get('languageField');
+	}
+
+	/**
+	 * Returns the default order in the form of a SQL segment.
+	 *
+	 * @return string
+	 */
+	public function getDefaultOrderSql() {
+		return $this->get('default_sortby');
+	}
+
+	/**
+	 * Returns the parsed default orderings.
+	 * Returns array looks like array('title' => 'ASC');
+	 *
+	 * @return array
+	 */
+	public function getDefaultOrderings() {
+
+		// first clean up the sql segment
+		$defaultOrder = str_replace('ORDER BY', '', $this->getDefaultOrderSql());
+		$defaultOrderParts = GeneralUtility::trimExplode(',', $defaultOrder);
+
+		$orderings = array();
+		foreach ($defaultOrderParts as $defaultOrderPart) {
+			$parts = GeneralUtility::trimExplode(' ', $defaultOrderPart);
+			if (empty($parts[1])) {
+				$parts[1] = QueryInterface::ORDER_DESCENDING;
+			}
+			$orderings[$parts[0]] = $parts[1];
+		}
+
+		return $orderings;
 	}
 
 	/**

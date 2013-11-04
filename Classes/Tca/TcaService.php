@@ -93,7 +93,6 @@ class TcaService implements \TYPO3\CMS\Core\SingletonInterface,
 	 * This is a shorthand method for "table" (AKA "ctrl").
 	 *
 	 * @param string $tableName
-	 * @deprecated will be removed in the future.
 	 * @return \TYPO3\CMS\Vidi\Tca\TableService
 	 */
 	static public function table($tableName = '') {

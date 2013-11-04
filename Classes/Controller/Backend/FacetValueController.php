@@ -52,13 +52,13 @@ class FacetValueController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			$contentRepository = ContentRepositoryFactory::getInstance($foreignTable);
 			$tcaTableService = TcaService::table($foreignTable);
 
-			// Initialize some objects related to the query
-			$matcherObject = PersistenceObjectFactory::getInstance()->getMatcherObject($foreignTable);
+			// Initialize the matcher object.
+			$matcher = PersistenceObjectFactory::getInstance()->getMatcherObject($foreignTable);
 
-			$numberOfValues = $contentRepository->countBy($matcherObject);
+			$numberOfValues = $contentRepository->countBy($matcher);
 			if ($numberOfValues <= $this->getSuggestionLimit()) {
 
-				$contents = $contentRepository->findBy($matcherObject);
+				$contents = $contentRepository->findBy($matcher);
 
 				foreach ($contents as $content) {
 					// Format content so that suggestion displays the uid on the Visual Search.
@@ -76,10 +76,10 @@ class FacetValueController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			$contentRepository = ContentRepositoryFactory::getInstance();
 
 			// Initialize some objects related to the query
-			$matcherObject = PersistenceObjectFactory::getInstance()->getMatcherObject();
+			$matcher = PersistenceObjectFactory::getInstance()->getMatcherObject();
 
 			// Query the repository
-			$contents = $contentRepository->findDistinctValues($facet, $matcherObject);
+			$contents = $contentRepository->findDistinctValues($facet, $matcher);
 
 			// Only returns suggestion if it is not too much for the browser.
 			if (count($contents) <= $this->getSuggestionLimit()) {

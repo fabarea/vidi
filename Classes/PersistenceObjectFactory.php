@@ -48,13 +48,13 @@ class PersistenceObjectFactory implements \TYPO3\CMS\Core\SingletonInterface{
 	/**
 	 * Returns a matcher object.
 	 *
-	 * @param string $tableName
+	 * @param string $dataType
 	 * @return \TYPO3\CMS\Vidi\Persistence\Matcher
 	 */
-	public function getMatcherObject($tableName = '') {
+	public function getMatcherObject($dataType = '') {
 
 		/** @var $matcher \TYPO3\CMS\Vidi\Persistence\Matcher */
-		$matcher = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher', array(), $tableName);
+		$matcher = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher', array(), $dataType);
 
 		// Special case for Grid in the BE using jQuery DataTables plugin.
 		// Retrieve a possible search term from GP.
@@ -62,7 +62,7 @@ class PersistenceObjectFactory implements \TYPO3\CMS\Core\SingletonInterface{
 
 		if (strlen($searchTerm) > 0) {
 
-			$tcaFieldService = Tca\TcaServiceFactory::field($tableName);
+			$tcaFieldService = Tca\TcaServiceFactory::field($dataType);
 
 			// try to parse a json query
 			$terms = json_decode($searchTerm, TRUE);
@@ -95,16 +95,18 @@ class PersistenceObjectFactory implements \TYPO3\CMS\Core\SingletonInterface{
 	/**
 	 * Returns an order object.
 	 *
+	 * @param string $dataType
 	 * @return \TYPO3\CMS\Vidi\Persistence\Order
 	 */
-	public function getOrderObject() {
-		// Default sort
-		$order['uid'] = \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING;
+	public function getOrderObject($dataType = '') {
+
+		// Default ordering
+		$order = Tca\TcaService::table($dataType)->getDefaultOrderings();
 
 		// Retrieve a possible id of the column from the request
 		$columnPosition = GeneralUtility::_GP('iSortCol_0');
 		if ($columnPosition > 0) {
-			$field = Tca\TcaServiceFactory::grid()->getFieldNameByPosition($columnPosition);
+			$field = Tca\TcaService::grid()->getFieldNameByPosition($columnPosition);
 
 			$direction = GeneralUtility::_GP('sSortDir_0');
 			$order = array(
