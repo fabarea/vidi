@@ -62,9 +62,9 @@ Vidi.Table = {
 			'oLanguage': {
 				// remove some label
 				'sSearch': '',
-				'sLengthMenu': '_MENU_'
+				'sLengthMenu': '_MENU_',
+                'sProcessing': '<img src="' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" alt="" width="20"/>'
 			},
-
 			/**
 			 * Add Ajax parameters from plug-ins
 			 *
@@ -110,6 +110,9 @@ Vidi.Table = {
 				aoData.push({ 'name': parameterPrefix + '[action]', 'value': 'listRow' });
 				aoData.push({ 'name': parameterPrefix + '[controller]', 'value': 'Content' });
 				aoData.push({ 'name': parameterPrefix + '[format]', 'value': 'json' });
+
+				// Visual effect
+				$('#content-list').css('opacity', 0.3);
 			},
 			'aoColumns': Vidi._columns,
 			'aLengthMenu': [
@@ -123,6 +126,9 @@ Vidi.Table = {
 				Vidi.VisualSearch.instance.searchBox.setQuery(query);
 			},
 			'fnDrawCallback': function () {
+
+				// Restore visual
+				$('#content-list').css('opacity', 1);
 
 				// Possibly animate row
 				Vidi.Table.animateRow();
