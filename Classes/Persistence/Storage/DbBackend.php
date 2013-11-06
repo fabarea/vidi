@@ -390,7 +390,7 @@ class DbBackend {
 			$loggerManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager');
 
 			/** @var $logger \TYPO3\CMS\Core\Log\Logger */
-			$loggerManager->getLogger(get_class($this))->info($sql);
+			$loggerManager->getLogger(get_class($this))->debug($sql);
 		}
 	}
 
