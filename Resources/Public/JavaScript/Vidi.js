@@ -52,25 +52,25 @@ $(document).ready(function () {
 	 * Mass delete action
 	 */
 	$('.mass-delete').click(function (e) {
-		var checkboxes, message, url, uid;
+		var selectedRows, message, url, uid;
 
 		e.preventDefault();
 		url = $(this).attr('href');
 
-		checkboxes = [];
+		selectedRows = [];
 		$('#content-list')
 			.find('.checkbox-row')
 			.filter(':checked')
 			.each(function (index) {
 				uid = $(this).data('uid');
-				checkboxes.push(uid);
+				selectedRows.push(uid);
 				url += '&{0}[contents][{1}]={2}'.format(Vidi.module.parameterPrefix, index, uid);
 			});
 
 
-		message = Vidi.format("confirm-mass-delete-plural", checkboxes.length);
-		if (checkboxes.length <= 1) {
-			message = Vidi.format("confirm-mass-delete-singular", checkboxes.length);
+		message = Vidi.format("confirm-mass-delete-plural", selectedRows.length);
+		if (selectedRows.length <= 1) {
+			message = Vidi.format("confirm-mass-delete-singular", selectedRows.length);
 		}
 
 		bootbox.dialog(message, [
@@ -83,9 +83,9 @@ $(document).ready(function () {
 				'callback': function () {
 					$.get(url,
 						function (data) {
-							message = Vidi.format('message-mass-deleted-plural', checkboxes.length);
-							if (checkboxes.length <= 1) {
-								message = Vidi.format('message-mass-deleted-singular', checkboxes.length);
+							message = Vidi.format('message-mass-deleted-plural', selectedRows.length);
+							if (selectedRows.length <= 1) {
+								message = Vidi.format('message-mass-deleted-singular', selectedRows.length);
 							}
 							Vidi.FlashMessage.add(message, 'success');
 							Vidi.FlashMessage.showAll();
