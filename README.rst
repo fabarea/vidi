@@ -54,8 +54,8 @@ Configuration
 
 Configuration is mainly provided in the Extension Manager and is pretty much self-explanatory. Check possible options there.
 
-TSconfig
-------------
+User TSconfig
+---------------
 
 A pid (page id) is necessary to be defined when creating a new record for the need of TCEmain_.
 This is not true for all records as some of them can be on the root level and consequently have a pid 0.
