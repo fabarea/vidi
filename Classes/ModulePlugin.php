@@ -56,7 +56,7 @@ class ModulePlugin implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @param string $pluginName
 	 * @return bool
 	 */
-	public function isPluginCalled($pluginName) {
+	public function isPluginRequired($pluginName) {
 		$parameterPrefix = $this->moduleLoader->getParameterPrefix();
 		$parameters = GeneralUtility::_GET($parameterPrefix);
 		return !empty($parameters['plugins']) && is_array($parameters['plugins']) && in_array($pluginName, $parameters['plugins']);
