@@ -22,6 +22,7 @@ namespace TYPO3\CMS\Vidi\Command;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * Command Controller which handles actions related to Vidi.
@@ -45,7 +46,7 @@ class VidiCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandCon
 			if ($table != '' && $table !== $tableName) {
 				continue;
 			}
-			$tcaGridService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService($tableName);
+			$tcaGridService = TcaService::grid($tableName);
 
 			$fields = $tcaGridService->getFields();
 			if (!empty($fields)) {
@@ -71,8 +72,8 @@ class VidiCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandCon
 	 */
 	protected function checkRelationForTable($tableName){
 
-		$tcaGridService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService($tableName);
-		$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($tableName);
+		$tcaGridService = TcaService::grid($tableName);
+		$tcaFieldService = TcaService::field($tableName);
 
 		$hasRelation = FALSE;
 		foreach ($tcaGridService->getFields() as $fieldName => $configuration) {
@@ -125,7 +126,7 @@ class VidiCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandCon
 	 */
 	protected function printRelationManyToMany($tableName, $fieldName) {
 
-		$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($tableName);
+		$tcaFieldService = TcaService::field($tableName);
 		$output = sprintf('* %s (many-to-many)', $fieldName);
 		$this->outputLine($output);
 
@@ -157,7 +158,7 @@ class VidiCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandCon
 	 */
 	protected function printRelation($tableName, $fieldName, $relationType) {
 
-		$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($tableName);
+		$tcaFieldService = TcaService::field($tableName);
 		$output = sprintf('* %s (%s)', $fieldName, $relationType);
 		$this->outputLine($output);
 
@@ -178,7 +179,7 @@ class VidiCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandCon
 		$this->outputLine('Checking labels...');
 		$result = '-> OK';
 		foreach ($GLOBALS['TCA'] as $tableName => $TCA) {
-			$tcaGridService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService($tableName);
+			$tcaGridService = TcaService::grid($tableName);
 			foreach ($tcaGridService->getFields() as $fieldName => $configuration) {
 				$label = $tcaGridService->getLabel($fieldName);
 				if (empty($label) && $tcaGridService->isNotSystem($fieldName)) {
