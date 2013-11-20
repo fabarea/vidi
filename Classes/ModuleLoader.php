@@ -117,7 +117,10 @@ class ModuleLoader {
 			),
 		),
 		self::GRID => array(
-			self::TOP => array(),
+			self::TOP => array(
+				'TYPO3\CMS\Vidi\ViewHelpers\Component\CheckPidViewHelper',
+				'TYPO3\CMS\Vidi\ViewHelpers\Component\CheckRelationsViewHelper',
+			),
 			self::BUTTONS => array(
 				'TYPO3\CMS\Vidi\ViewHelpers\Component\ButtonEditViewHelper',
 				'TYPO3\CMS\Vidi\ViewHelpers\Component\ButtonDeleteViewHelper',
@@ -378,6 +381,19 @@ class ModuleLoader {
 	}
 
 	/**
+	 * @param string|array $viewHelpers
+	 * @return $this
+	 */
+	public function addNavigationTopLeftComponents($viewHelpers) {
+		if (is_string($viewHelpers)) {
+			$viewHelpers = array($viewHelpers);
+		}
+		$currentViewHelpers = $this->components[self::NAVIGATION][self::TOP][self::LEFT];
+		$this->components[self::NAVIGATION][self::TOP][self::LEFT] = array_merge($currentViewHelpers, $viewHelpers);
+		return $this;
+	}
+
+	/**
 	 * @return $array
 	 */
 	public function getNavigationTopRightComponents() {
@@ -391,6 +407,19 @@ class ModuleLoader {
 	 */
 	public function setNavigationTopRightComponents(array $viewHelpers) {
 		$this->components[self::NAVIGATION][self::TOP][self::RIGHT] = $viewHelpers;
+		return $this;
+	}
+
+	/**
+	 * @param string|array $viewHelpers
+	 * @return $this
+	 */
+	public function addNavigationTopRightComponents($viewHelpers) {
+		if (is_string($viewHelpers)) {
+			$viewHelpers = array($viewHelpers);
+		}
+		$currentViewHelpers = $this->components[self::NAVIGATION][self::TOP][self::RIGHT];
+		$this->components[self::NAVIGATION][self::TOP][self::RIGHT] = array_merge($currentViewHelpers, $viewHelpers);
 		return $this;
 	}
 
@@ -412,6 +441,19 @@ class ModuleLoader {
 	}
 
 	/**
+	 * @param string|array $viewHelpers
+	 * @return $this
+	 */
+	public function addNavigationBottomLeftComponents($viewHelpers) {
+		if (is_string($viewHelpers)) {
+			$viewHelpers = array($viewHelpers);
+		}
+		$currentViewHelpers = $this->components[self::NAVIGATION][self::BOTTOM][self::LEFT];
+		$this->components[self::NAVIGATION][self::BOTTOM][self::LEFT] = array_merge($currentViewHelpers, $viewHelpers);
+		return $this;
+	}
+
+	/**
 	 * @return $array
 	 */
 	public function getNavigationBottomRightComponents() {
@@ -425,6 +467,19 @@ class ModuleLoader {
 	 */
 	public function setNavigationBottomRightComponents(array $viewHelpers) {
 		$this->components[self::NAVIGATION][self::BOTTOM][self::RIGHT] = $viewHelpers;
+		return $this;
+	}
+
+	/**
+	 * @param string|array $viewHelpers
+	 * @return $this
+	 */
+	public function addNavigationBottomRightComponents($viewHelpers) {
+		if (is_string($viewHelpers)) {
+			$viewHelpers = array($viewHelpers);
+		}
+		$currentViewHelpers = $this->components[self::NAVIGATION][self::BOTTOM][self::RIGHT];
+		$this->components[self::NAVIGATION][self::BOTTOM][self::RIGHT] = array_merge($currentViewHelpers, $viewHelpers);
 		return $this;
 	}
 
@@ -446,6 +501,19 @@ class ModuleLoader {
 	}
 
 	/**
+	 * @param string|array $viewHelpers
+	 * @return $this
+	 */
+	public function addGridTopComponents($viewHelpers) {
+		if (is_string($viewHelpers)) {
+			$viewHelpers = array($viewHelpers);
+		}
+		$currentViewHelpers = $this->components[self::GRID][self::TOP];
+		$this->components[self::GRID][self::TOP] = array_merge($currentViewHelpers, $viewHelpers);
+		return $this;
+	}
+
+	/**
 	 * @return $array
 	 */
 	public function getGridBottomComponents() {
@@ -459,6 +527,19 @@ class ModuleLoader {
 	 */
 	public function setGridBottomComponents(array $viewHelpers) {
 		$this->components[self::GRID][self::BOTTOM] = $viewHelpers;
+		return $this;
+	}
+
+	/**
+	 * @param string|array $viewHelpers
+	 * @return $this
+	 */
+	public function addGridBottomComponents($viewHelpers) {
+		if (is_string($viewHelpers)) {
+			$viewHelpers = array($viewHelpers);
+		}
+		$currentViewHelpers = $this->components[self::GRID][self::BOTTOM];
+		$this->components[self::GRID][self::BOTTOM] = array_merge($currentViewHelpers, $viewHelpers);
 		return $this;
 	}
 
@@ -480,6 +561,19 @@ class ModuleLoader {
 	}
 
 	/**
+	 * @param string|array $viewHelpers
+	 * @return $this
+	 */
+	public function addGridButtonsComponents($viewHelpers) {
+		if (is_string($viewHelpers)) {
+			$viewHelpers = array($viewHelpers);
+		}
+		$currentViewHelpers = $this->components[self::GRID][self::BUTTONS];
+		$this->components[self::GRID][self::BUTTONS] = array_merge($currentViewHelpers, $viewHelpers);
+		return $this;
+	}
+
+	/**
 	 * @return $array
 	 */
 	public function getGridMenuComponents() {
@@ -493,6 +587,19 @@ class ModuleLoader {
 	 */
 	public function setGridMenuComponents(array $viewHelpers) {
 		$this->components[self::GRID][self::MENU] = $viewHelpers;
+		return $this;
+	}
+
+	/**
+	 * @param string|array $viewHelpers
+	 * @return $this
+	 */
+	public function addGridMenuComponents($viewHelpers) {
+		if (is_string($viewHelpers)) {
+			$viewHelpers = array($viewHelpers);
+		}
+		$currentViewHelpers = $this->components[self::GRID][self::MENU];
+		$this->components[self::GRID][self::MENU] = array_merge($currentViewHelpers, $viewHelpers);
 		return $this;
 	}
 
