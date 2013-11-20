@@ -18,7 +18,7 @@ $EM_CONF[$_EXTKEY] = array (
   'shy' => '',
   'priority' => '',
   'module' => '',
-  'state' => 'alpha',
+  'state' => 'beta',
   'internal' => '',
   'uploadfolder' => '0',
   'createDirs' => '',
@@ -26,18 +26,18 @@ $EM_CONF[$_EXTKEY] = array (
   'clearCacheOnLoad' => 0,
   'lockType' => '',
   'version' => '0.2.0-dev',
-  'constraints' => 
+  'constraints' =>
   array (
-    'depends' => 
+    'depends' =>
     array (
       'cms' => '',
       'fluid' => '',
       'typo3' => '6.1.0-6.1.99',
     ),
-    'conflicts' => 
+    'conflicts' =>
     array (
     ),
-    'suggests' => 
+    'suggests' =>
     array (
       'metadata' => '',
     ),
