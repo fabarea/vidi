@@ -49,7 +49,7 @@ install the extension as normal in the Extension Manager::
 
 
 .. _TER: typo3.org/extensions/repository/
-.. _master branch: https://github.com/fudriot/vidi_starter.git
+.. _master branch: https://github.com/TYPO3-extensions/vidi.git
 
 
 Configuration
