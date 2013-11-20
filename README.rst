@@ -40,7 +40,10 @@ install the extension as normal in the Extension Manager::
 	cd typo3conf/ext
 
 	# download the source
-	git clone https://github.com/fudriot/vidi_starter.git
+	git clone git://git.typo3.org/TYPO3CMS/Extensions/vidi.git
+
+	# alternatively, it can be fetched from the Git mirror.
+	git clone https://github.com/TYPO3-extensions/vidi.git
 
 	# -> open the Extension Manager in the BE
 
