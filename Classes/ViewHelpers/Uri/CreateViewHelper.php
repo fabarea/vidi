@@ -24,6 +24,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * Render a create URI given a data type.
@@ -62,12 +63,12 @@ class CreateViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelp
 	}
 
 	/**
-	 * Return the default pid configuration.
+	 * Return the default configured pid.
 	 *
 	 * @return int
 	 */
 	public function getPid() {
-		$isRootLevel = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService()->get('rootLevel');
+		$isRootLevel = TcaService::table()->get('rootLevel');
 		if ($isRootLevel) {
 			$pid = 0;
 		} else {
