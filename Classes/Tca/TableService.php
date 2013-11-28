@@ -25,6 +25,8 @@ namespace TYPO3\CMS\Vidi\Tca;
  ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException;
 
 /**
  * A class to handle TCA ctrl.
@@ -37,23 +39,27 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	protected $tca;
 
 	/**
+	 * @var array
+	 */
+	protected $columnTca;
+
+	/**
 	 * @var string
 	 */
 	protected $tableName;
 
 	/**
-	 * __construct
-	 *
-	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
+	 * @throws InvalidKeyInArrayException
 	 * @param string $tableName
 	 * @return \TYPO3\CMS\Vidi\Tca\TableService
 	 */
 	public function __construct($tableName) {
 		$this->tableName = $tableName;
 		if (empty($GLOBALS['TCA'][$this->tableName])) {
-			throw new \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException('No TCA existence for table name: ' . $this->tableName, 1356945106);
+			throw new InvalidKeyInArrayException(sprintf('No TCA existence for table "%s"', $this->tableName), 1356945106);
 		}
 		$this->tca = $GLOBALS['TCA'][$this->tableName]['ctrl'];
+		$this->columnTca = $GLOBALS['TCA'][$this->tableName]['columns'];
 	}
 
 	/**
@@ -62,7 +68,11 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return string
 	 */
 	public function getLabelField() {
-		return $this->get('label');
+		$labelField = $this->get('label');
+		if (empty($labelField)) {
+			throw new InvalidKeyInArrayException(sprintf('No label configured for table "%s"', $this->tableName), 1385586726);
+		}
+		return $labelField;
 	}
 
 	/**
@@ -71,8 +81,8 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return string
 	 */
 	public function getLabel() {
-		$result = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($this->getLabelField(), '');
-		if (! $result) {
+		$result = LocalizationUtility::translate($this->getLabelField(), '');
+		if (!$result) {
 			$result = $this->getLabelField();
 		}
 		return $result;
@@ -84,7 +94,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return string
 	 */
 	public function getTitle() {
-		$result = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($this->get('title'), '');
+		$result = LocalizationUtility::translate($this->get('title'), '');
 		if (!$result) {
 			$result = $this->get('title');
 		}
@@ -174,10 +184,33 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 *
 	 * @param string $fieldName
 	 * @return bool
+	 * @deprecated use TcaService::table($tableName)->field($fieldName)->isSystem()
 	 */
 	public function isSystem($fieldName) {
-		$systemFields = array('uid', 'tstamp', 'crdate', 'sys_language_uid');
+		$systemFields = array(
+			'uid', 'tstamp', 'crdate', 'deleted', 'hidden', 'startime', 'endtime',
+			'sys_language_uid', 'l18n_parent', 'l18n_diffsource',
+			't3ver_oid', 't3ver_id', 't3ver_wsid', 't3ver_label', 't3ver_state', 't3ver_stage', 't3ver_count', 't3ver_tstamp', 't3_origuid'
+		);
 		return in_array($fieldName, $systemFields);
+	}
+
+	/**
+	 * Returns an array containing the field names.
+	 *
+	 * @return array
+	 */
+	public function getFields() {
+		return array_keys($this->columnTca);
+	}
+
+	/**
+	 * Returns an array containing the fields and their configuration.
+	 *
+	 * @return array
+	 */
+	public function getFieldsAndConfiguration() {
+		return $this->columnTca;
 	}
 
 	/**
@@ -200,5 +233,37 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	public function getTca() {
 		return $this->tca;
 	}
+
+	/**
+	 * @var array
+	 */
+	protected $instances;
+
+	/**
+	 * @param string $fieldName
+	 * @throws \Exception
+	 * @return \TYPO3\CMS\Vidi\Tca\ColumnService
+	 */
+	public function field($fieldName) {
+
+		// In case field contains items.tx_table for field type "group"
+		$fieldNameAndPath = '';
+		if (strpos($fieldName, '.') !== FALSE) {
+			$fieldNameAndPath = $fieldName;
+			$fieldParts = explode('.', $fieldNameAndPath, 2);
+			$fieldName = $fieldParts[0];
+		}
+
+		if (empty($this->columnTca[$fieldName])) {
+			throw new \Exception(sprintf('Does the field really exist? No TCA entry found for field "%s"', $fieldName), 1385554481);
+		}
+		if (empty($this->instances[$fieldName])) {
+			$className = 'TYPO3\CMS\Vidi\Tca\ColumnService';
+			$instance = GeneralUtility::makeInstance($className, $fieldName, $this->columnTca[$fieldName], $this->tableName, $fieldNameAndPath);
+			$this->instances[$fieldName] = $instance;
+		}
+		return $this->instances[$fieldName];
+	}
 }
+
 ?>

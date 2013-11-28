@@ -31,10 +31,30 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class TcaService implements \TYPO3\CMS\Core\SingletonInterface,
 	\TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 
+	const TEXTFIELD = 'input';
+
+	const TEXTAREA = 'text';
+
+	const NUMBER = 'number';
+
+	const DATE = 'date';
+
+	const DATE_TIME = 'datetime';
+
+	const SELECT = 'select';
+
+	const RADIO = 'radio';
+
+	const CHECKBOX = 'check';
+
+	const MULTI_SELECT = 'multiselect';
+
+	const TREE = 'tree';
+
 	/**
 	 * @var array
 	 */
-	static protected $instanceStorage;
+	static protected $instances;
 
 	/**
 	 * Returns a class instance of a corresponding TCA service.
@@ -53,17 +73,17 @@ class TcaService implements \TYPO3\CMS\Core\SingletonInterface,
 			$tableName = $moduleLoader->getDataType();
 		}
 
-		if (empty(self::$instanceStorage[$tableName][$serviceType])) {
+		if (empty(self::$instances[$tableName][$serviceType])) {
 			$className = sprintf('TYPO3\CMS\Vidi\Tca\%sService', ucfirst($serviceType));
 
-			if (! class_exists($className)) {
+			if (!class_exists($className)) {
 				throw new \TYPO3\CMS\Vidi\Exception\NotExistingClassException('Class does not exit: ' . $className, 1357060937);
 
 			}
 			$instance = GeneralUtility::makeInstance($className, $tableName, $serviceType);
-			self::$instanceStorage[$tableName][$serviceType] = $instance;
+			self::$instances[$tableName][$serviceType] = $instance;
 		}
-		return self::$instanceStorage[$tableName][$serviceType];
+		return self::$instances[$tableName][$serviceType];
 	}
 
 	/**
@@ -72,6 +92,7 @@ class TcaService implements \TYPO3\CMS\Core\SingletonInterface,
 	 *
 	 * @param string $tableName
 	 * @return \TYPO3\CMS\Vidi\Tca\FieldService
+	 * @deprecated will be removed by another syntax. TcaService::table($tableName)->field($tableName)->get*;
 	 */
 	static public function field($tableName = '') {
 		return self::getService($tableName, self::TYPE_FIELD);
@@ -103,7 +124,8 @@ class TcaService implements \TYPO3\CMS\Core\SingletonInterface,
 	 * @return array
 	 */
 	public static function getInstanceStorage() {
-		return self::$instanceStorage;
+		return self::$instances;
 	}
 }
+
 ?>

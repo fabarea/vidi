@@ -355,53 +355,22 @@ There are are four parts being addressed: table, field, grid and form. The "grid
 * grid: deals with the "grid" part of the TCA.
 * form: deals with the "types" (and possible "palette") part of the TCA. Get what field compose a record type.
 
-The API is meant to be generic and can be re-use for every record type within TYPO3.
-Find below some code examples.
+The API is meant to be generic and can be re-use for every data type within TYPO3. Some code examples.
 
-Instantiate a TCA service related to **fields**::
+::
 
-	$tableName = 'tx_domain_model_foo';
-	$serviceType = \TYPO3\CMS\Vidi\Tca\TcaServiceInterface::TYPE_FIELD;
+	use TYPO3\CMS\Vidi\Tca\TcaService;
 
-	/** @var $fieldService \TYPO3\CMS\Media\Tca\FieldService */
-	$fieldService = \TYPO3\CMS\Media\Tca\TcaServiceFactory::getService($tableName, $serviceType);
+	# Return the field type
+	TcaService::table($tableName)->field($fieldName)->getType();
 
-	// Get all fields data type 'tx_domain_model_foo';
-	// For more examples, refer to internal methods of the service.
-	$fieldService->getFields();
+	# Return the translated label for a field
+	TcaService::table($tableName)->field($fieldName)->getLabel();
 
-Instantiate a TCA service related to **table**::
+	# Get all field configured for a table name
+	TcaService::table($tableName)->getFields();
 
-	$tableName = 'tx_domain_model_foo';
-	$serviceType = \TYPO3\CMS\Vidi\Tca\TcaServiceInterface::TYPE_TABLE;
-
-	/** @var $tableService \TYPO3\CMS\Media\Tca\TableService */
-	$tableService = \TYPO3\CMS\Media\Tca\TcaServiceFactory::getService($tableName, $serviceType);
-
-	// Get the label field of data type 'tx_domain_model_foo';
-	// For more examples, refer to internal methods of the service.
-	$tableService->getLabelField();
-
-Instantiate a TCA service related to **form**::
-
-	$tableName = 'tx_domain_model_foo';
-	$serviceType = \TYPO3\CMS\Vidi\Tca\TcaServiceInterface::TYPE_FORM;
-
-	/** @var $tableService \TYPO3\CMS\Media\Tca\TableService */
-	$tableService = \TYPO3\CMS\Media\Tca\TcaServiceFactory::getService($tableName, $serviceType);
-
-	// Refer to internal methods of the service...
-
-Instantiate a TCA service related to **grid**::
-
-	$tableName = 'tx_domain_model_foo';
-	$serviceType = \TYPO3\CMS\Vidi\Tca\TcaServiceInterface::TYPE_GRID;
-
-	/** @var $tableService \TYPO3\CMS\Media\Tca\TableService */
-	$tableService = \TYPO3\CMS\Media\Tca\TcaServiceFactory::getService($tableName, $serviceType);
-
-	// Refer to internal methods of the service...
-
+	...
 
 Command line
 ===================================================

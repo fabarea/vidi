@@ -34,7 +34,7 @@ class TcaServiceFactory extends TcaService {
 	/**
 	 * @var array
 	 */
-	static protected $instanceStorage;
+	static protected $instances;
 
 	/**
 	 * Returns a class instance of a corresponding TCA service.
@@ -125,7 +125,7 @@ class TcaServiceFactory extends TcaService {
 	 * @return array
 	 */
 	public static function getInstanceStorage() {
-		return self::$instanceStorage;
+		return self::$instances;
 	}
 }
 ?>
