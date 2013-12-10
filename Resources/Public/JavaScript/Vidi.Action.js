@@ -51,7 +51,7 @@ Vidi.Action = {
 	 *
 	 * @return void
 	 */
-	delete: function () {
+	remove: function () {
 		$('.btn-delete')
 			.click(function () {
 				Vidi.Action.scope = this;

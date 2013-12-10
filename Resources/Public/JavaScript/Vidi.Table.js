@@ -143,7 +143,7 @@ Vidi.Table = {
 
 				// Attach event to DOM elements
 				Vidi.Action.edit();
-				Vidi.Action.delete();
+				Vidi.Action.remove();
 
 				// Handle flash message
 				Vidi.FlashMessage.showAll();
