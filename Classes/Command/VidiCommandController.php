@@ -26,10 +26,6 @@ use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * Command Controller which handles actions related to Vidi.
- *
- * @author Fabien Udriot <fabien.udriot@typo3.org>
- * @package TYPO3
- * @subpackage media
  */
 class VidiCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandController {
 
@@ -73,36 +69,34 @@ class VidiCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandCon
 	protected function checkRelationForTable($tableName){
 
 		$tcaGridService = TcaService::grid($tableName);
-		$tcaFieldService = TcaService::field($tableName);
+		$tcaTableService = TcaService::table($tableName);
 
 		$hasRelation = FALSE;
 		foreach ($tcaGridService->getFields() as $fieldName => $configuration) {
 
-			if ($tcaFieldService->hasRelationMany($fieldName)) {
+			if ($tcaTableService->hasField($fieldName) && $tcaTableService->field($fieldName)->hasRelationMany()) {
 
 				$hasRelation = TRUE;
 
-				if ($tcaFieldService->hasRelationWithCommaSeparatedValues($fieldName)) {
+				if ($tcaTableService->field($fieldName)->hasRelationWithCommaSeparatedValues()) {
 					$this->printRelation($tableName, $fieldName, 'comma separated values');
-				} elseif ($tcaFieldService->hasRelationManyToMany($fieldName)) {
+				} elseif ($tcaTableService->field($fieldName)->hasRelationManyToMany()) {
 					$this->printRelationManyToMany($tableName, $fieldName);
 
-				} elseif ($tcaFieldService->hasRelationManyToOne($fieldName)) {
+				} elseif ($tcaTableService->field($fieldName)->hasRelationManyToOne()) {
 					$this->printRelation($tableName, $fieldName, 'many-to-one');
 				} else {
 					$output = sprintf('* NOTICE: %s (many-to-?). Could not define relation type precisely. Missing opposite TCA configuration?', $fieldName);
 					$this->outputLine($output);
 				}
-			}
-
-			if ($tcaFieldService->hasRelationOne($fieldName)) {
+			} elseif ($tcaTableService->hasField($fieldName) && $tcaTableService->field($fieldName)->hasRelationOne()) {
 
 				$hasRelation = TRUE;
 
-				if ($tcaFieldService->hasRelationOneToOne($fieldName)) {
+				if ($tcaTableService->field($fieldName)->hasRelationOneToOne()) {
 					$output = sprintf('* %s (one-to-one)', $fieldName);
 					$this->outputLine($output);
-				} elseif ($tcaFieldService->hasRelationOneToMany($fieldName)) {
+				} elseif ($tcaTableService->field($fieldName)->hasRelationOneToMany()) {
 					$this->printRelation($tableName, $fieldName, 'one-to-many');
 				} else {
 					$output = sprintf('* NOTICE: %s (one-to-?). Could not define relation type precisely. Missing opposite TCA configuration?', $fieldName);
@@ -126,13 +120,13 @@ class VidiCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandCon
 	 */
 	protected function printRelationManyToMany($tableName, $fieldName) {
 
-		$tcaFieldService = TcaService::field($tableName);
+		$tcaTableService = TcaService::table($tableName);
 		$output = sprintf('* %s (many-to-many)', $fieldName);
 		$this->outputLine($output);
 
-		$foreignTable = $tcaFieldService->getForeignTable($fieldName);
-		$manyToManyTable = $tcaFieldService->getManyToManyTable($fieldName);
-		$foreignField = $tcaFieldService->getForeignField($fieldName);
+		$foreignTable = $tcaTableService->field($fieldName)->getForeignTable();
+		$manyToManyTable = $tcaTableService->field($fieldName)->getManyToManyTable();
+		$foreignField = $tcaTableService->field($fieldName)->getForeignField();
 
 		if (!$foreignField) {
 			$output = sprintf('  ERROR: can not found foreign field for "%s". Perhaps missing opposite configuration?', $fieldName);
@@ -158,12 +152,12 @@ class VidiCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandCon
 	 */
 	protected function printRelation($tableName, $fieldName, $relationType) {
 
-		$tcaFieldService = TcaService::field($tableName);
+		$tcaTableService = TcaService::table($tableName);
 		$output = sprintf('* %s (%s)', $fieldName, $relationType);
 		$this->outputLine($output);
 
-		$foreignTable = $tcaFieldService->getForeignTable($fieldName);
-		$foreignField = $tcaFieldService->getForeignField($fieldName);
+		$foreignTable = $tcaTableService->field($fieldName)->getForeignTable();
+		$foreignField = $tcaTableService->field($fieldName)->getForeignField();
 		$output = sprintf('  %s.%s --> %s.%s', $tableName, $fieldName, $foreignTable, $foreignField);
 		$this->outputLine($output);
 		$this->outputLine();

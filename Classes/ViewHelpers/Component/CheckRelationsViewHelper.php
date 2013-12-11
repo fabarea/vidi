@@ -130,16 +130,16 @@ EOF;
 
 		$tableName = $this->moduleLoader->getDataType();
 		$tcaGridService = TcaService::grid($tableName);
-		$tcaFieldService = TcaService::field($tableName);
+		$tcaTableService = TcaService::table($tableName);
 
 		foreach ($tcaGridService->getFields() as $fieldName => $configuration) {
 
-			if ($tcaFieldService->hasRelationMany($fieldName)) {
-				if ($tcaFieldService->hasRelationManyToMany($fieldName)) {
+			if ($tcaGridService->isNotSystem($fieldName) && $tcaTableService->field($fieldName)->hasRelationMany()) {
+				if ($tcaTableService->field($fieldName)->hasRelationManyToMany()) {
 
-					$foreignTable = $tcaFieldService->getForeignTable($fieldName);
-					$manyToManyTable = $tcaFieldService->getManyToManyTable($fieldName);
-					$foreignField = $tcaFieldService->getForeignField($fieldName);
+					$foreignTable = $tcaTableService->field($fieldName)->getForeignTable();
+					$manyToManyTable = $tcaTableService->field($fieldName)->getManyToManyTable();
+					$foreignField = $tcaTableService->field($fieldName)->getForeignField();
 
 					if (!$foreignField) {
 						$this->invalidFields[] = $fieldName;

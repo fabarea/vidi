@@ -22,6 +22,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * View helper for rendering a row of a content object.
@@ -49,7 +50,7 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 	 */
 	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object, $offset) {
 
-		$tcaGridService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService();
+		$tcaGridService = TcaService::grid();
 
 		// Initialize returned array
 		$output = array();

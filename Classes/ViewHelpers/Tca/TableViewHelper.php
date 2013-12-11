@@ -22,6 +22,8 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Tca;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Vidi\Tca\TcaService;
+
 /**
  * View helper which connects the Tca Table service.
  */
@@ -35,8 +37,7 @@ class TableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelpe
 	 * @return string
 	 */
 	public function render($key, $dataType = '') {
-		$tcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($dataType);
-		$result = $tcaTableService->getTca();
+		$result = TcaService::table($dataType)->getTca();
 
 		// Explode segment and loop around.
 		$keys = explode('|', $key);

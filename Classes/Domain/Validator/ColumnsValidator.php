@@ -23,6 +23,7 @@ namespace TYPO3\CMS\Vidi\Domain\Validator;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * Validate "columns" to be displayed in the BE module.
@@ -37,10 +38,8 @@ class ColumnsValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractV
 	 */
 	public function isValid($columns) {
 
-		$tcaGridService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService();
-
 		foreach ($columns as $columnName) {
-			if ($tcaGridService->hasNotField($columnName)) {
+			if (TcaService::grid()->hasNotField($columnName)) {
 				$message = sprintf('Column "%s" is not allowed. Actually, it was not configured to be displayed in the grid.', $columnName);
 				$this->addError($message , 1380019718);
 			}

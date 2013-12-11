@@ -24,6 +24,7 @@ namespace TYPO3\CMS\Vidi\Domain\Repository;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use TYPO3\CMS\Vidi\Persistence\Matcher;
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * Repository for accessing Content
@@ -235,19 +236,18 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 		// Search term case
 		if ($matcher->getSearchTerm()) {
 
-			$tcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($this->dataType);
-			$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($this->dataType);
+			$tcaTableService = TcaService::table($this->dataType);
 			$fields = explode(',', $tcaTableService->getSearchFields());
 
 			$constraints = array();
 			$likeClause = sprintf('%%%s%%', $matcher->getSearchTerm());
-			foreach ($fields as $field) {
-				if ($tcaFieldService->hasRelation($field)) {
-					$foreignTable = $tcaFieldService->getForeignTable($field);
-					$foreignTcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($foreignTable);
-					$field = $field . '.' . $foreignTcaTableService->getLabelField();
+			foreach ($fields as $fieldName) {
+				if ($tcaTableService->field($fieldName)->hasRelation()) {
+					$foreignTable = $tcaTableService->field($fieldName)->getForeignTable();
+					$foreignTcaTableService = TcaService::table($foreignTable);
+					$fieldName = $fieldName . '.' . $foreignTcaTableService->getLabelField();
 				}
-				$constraints[] = $query->like($field, $likeClause);
+				$constraints[] = $query->like($fieldName, $likeClause);
 			}
 			$logical = $matcher->getLogicalSeparatorForSearchTerm();
 			$result = $query->$logical($constraints);
@@ -274,19 +274,19 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 		if (!empty($criteria)) {
 			$constraints = array();
 
-			$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($this->dataType);
+			$tcaTableService = TcaService::table($this->dataType);
 			foreach ($criteria as $criterion) {
 
-				$field = $criterion['propertyName'];
+				$fieldName = $criterion['propertyName'];
 				$operand = $criterion['operand'];
-				if ($tcaFieldService->hasRelation($field) && is_numeric($operand)) {
-					$field = $field . '.uid';
-				} elseif ($tcaFieldService->hasRelation($field)) {
-					$foreignTable = $tcaFieldService->getForeignTable($field);
-					$foreignTcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($foreignTable);
-					$field = $field . '.' . $foreignTcaTableService->getLabelField();
+				if ($tcaTableService->field($fieldName)->hasRelation() && is_numeric($operand)) {
+					$fieldName = $fieldName . '.uid';
+				} elseif ($tcaTableService->field($fieldName)->hasRelation()) {
+					$foreignTable = $tcaTableService->field($fieldName)->getForeignTable();
+					$foreignTcaTableService = TcaService::table($foreignTable);
+					$fieldName = $fieldName . '.' . $foreignTcaTableService->getLabelField();
 				}
-				$constraints[] = $query->$operator($field, $criterion['operand']);
+				$constraints[] = $query->$operator($fieldName, $criterion['operand']);
 			}
 
 			$getLogicalSeparator = sprintf('getLogicalSeparatorFor%s', $operatorName);
@@ -430,8 +430,8 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 		/** @var $matcher Matcher */
 		$matcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher', array(), $this->getDataType());
 
-		$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($this->dataType);
-		if ($tcaFieldService->isGroup($field)) {
+		$tcaTableService = TcaService::table($this->dataType);
+		if ($tcaTableService->field($field)->isGroup()) {
 
 			$valueParts = explode('.', $value, 2);
 			$field = $field . '.' . $valueParts[0];

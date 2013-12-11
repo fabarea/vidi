@@ -22,6 +22,8 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * Class rendering visibility for the Grid.
@@ -40,7 +42,7 @@ class Visibility extends GridRendererAbstract {
 
 		if ($getter) {
 			$spriteName = $this->object->$getter() ? 'actions-edit-unhide' : 'actions-edit-hide';
-			$result = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($spriteName);
+			$result = IconUtility::getSpriteIcon($spriteName);
 		}
 		return $result;
 	}
@@ -52,9 +54,9 @@ class Visibility extends GridRendererAbstract {
 	 */
 	protected function formatGetter() {
 		$result = NULL;
-		if (\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService()->hasField('hidden')) {
+		if (TcaService::table()->hasField('hidden')) {
 			$result = 'getHidden';
-		} elseif (\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService()->hasField('disable')) {
+		} elseif (TcaService::table()->hasField('disable')) {
 			$result = 'getDisable';
 		}
 		return $result;

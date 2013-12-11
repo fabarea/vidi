@@ -27,7 +27,9 @@ namespace TYPO3\CMS\Vidi\Persistence\Storage;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-/**
+use TYPO3\CMS\Vidi\Tca\TcaService;
+
+	/**
  * A Storage backend
  */
 #implements \TYPO3\CMS\Extbase\Persistence\Generic\Storage\BackendInterface, \TYPO3\CMS\Core\SingletonInterface
@@ -733,14 +735,15 @@ class DbBackend {
 	 */
 	protected function addUnionStatement(&$className, &$tableName, &$propertyPath, array &$sql) {
 
-		$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($this->query->getType());
+		$tcaTableService = TcaService::table($this->query->getType());
+
 
 		$explodedPropertyPath = explode('.', $propertyPath, 2);
 		$propertyName = $explodedPropertyPath[0];
 
 		// Field of type "group" are special because property path must contain the table name
 		// to determine the relation type. Example for sys_category, property path will look like "items.sys_file"
-		if ($tcaFieldService->isGroup($propertyName)) {
+		if ($tcaTableService->field($propertyName)->isGroup()) {
 
 			$parts = explode('.', $propertyPath, 3);
 			$explodedPropertyPath[0] = $parts[0] . '.' . $parts[1];
@@ -752,16 +755,16 @@ class DbBackend {
 		$tableName = $this->dataMapper->convertClassNameToTableName($className);
 
 		# @changed
-		$parentKeyFieldName = $tcaFieldService->getForeignField($propertyName);
+		$parentKeyFieldName = $tcaTableService->field($propertyName)->getForeignField();
 
 		#$childTableName = $columnMap->getChildTableName();
-		$childTableName = $tcaFieldService->getForeignTable($propertyName);
+		$childTableName = $tcaTableService->field($propertyName)->getForeignTable();
 
 		if ($childTableName === NULL) {
 			throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidRelationConfigurationException('The relation information for property "' . $propertyName . '" of class "' . $className . '" is missing.', 1353170925);
 		}
 
-		if ($tcaFieldService->hasRelationOne($propertyName)) {
+		if ($tcaTableService->field($propertyName)->hasRelationOne()) {
 			if (isset($parentKeyFieldName)) {
 				#$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.uid=' . $childTableName . '.' . $parentKeyFieldName;
 				// line was copied from else part below.
@@ -770,13 +773,13 @@ class DbBackend {
 				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.' . $columnName . '=' . $childTableName . '.uid';
 			}
 			$className = $this->dataMapper->getType($className, $propertyName);
-		} elseif ($tcaFieldService->hasRelationManyToMany($propertyName)) {
-			$relationTableName = $tcaFieldService->getManyToManyTable($propertyName);
+		} elseif ($tcaTableService->field($propertyName)->hasRelationManyToMany()) {
+			$relationTableName = $tcaTableService->field($propertyName)->getManyToManyTable();
 
 			// @todo "isOppositeRelation" is certainly not sufficient for telling relation direction. But works for now...
-			$parentKeyFieldName = $tcaFieldService->isOppositeRelation($propertyName) ? 'uid_foreign' : 'uid_local';
-			$childKeyFieldName = !$tcaFieldService->isOppositeRelation($propertyName) ? 'uid_foreign' : 'uid_local';
-			$tableNameCondition = $tcaFieldService->getAdditionalTableNameCondition($propertyName);
+			$parentKeyFieldName = $tcaTableService->field($propertyName)->isOppositeRelation() ? 'uid_foreign' : 'uid_local';
+			$childKeyFieldName = !$tcaTableService->field($propertyName)->isOppositeRelation() ? 'uid_foreign' : 'uid_local';
+			$tableNameCondition = $tcaTableService->field($propertyName)->getAdditionalTableNameCondition();
 
 			$sql['unions'][$relationTableName] = 'LEFT JOIN ' . $relationTableName . ' ON ' . $tableName . '.uid=' . $relationTableName . '.' . $parentKeyFieldName;
 			$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $relationTableName . '.' . $childKeyFieldName . '=' . $childTableName . '.uid';
@@ -786,7 +789,7 @@ class DbBackend {
 				$sql['unions'][$childTableName] .= ' AND ' . $relationTableName . '.tablenames = \'' . $tableNameCondition . '\'';
 			}
 			$className = $this->dataMapper->getType($className, $propertyName);
-		} elseif ($tcaFieldService->hasRelationMany($propertyName)) {
+		} elseif ($tcaTableService->field($propertyName)->hasRelationMany()) {
 			if (isset($parentKeyFieldName)) {
 				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.uid=' . $childTableName . '.' . $parentKeyFieldName;
 			} else {

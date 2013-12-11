@@ -23,6 +23,7 @@ namespace TYPO3\CMS\Vidi\Tca;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * A class to handle TCA grid configuration
@@ -76,9 +77,9 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 		$result = '';
 		if ($this->hasLabel($fieldName)) {
 			$field = $this->getField($fieldName);
-			$result = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($field['label'], '');
-		} elseif (\TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($this->tableName)->hasLabel($fieldName)) {
-			$result = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($this->tableName)->getLabel($fieldName);
+			$result = LocalizationUtility::translate($field['label'], '');
+		} elseif ($this->isNotSystem($fieldName) && TcaService::table($this->tableName)->field($fieldName)->hasLabel()) {
+			$result = TcaService::table($this->tableName)->field($fieldName)->getLabel($fieldName);
 		}
 		return $result;
 	}
@@ -97,6 +98,7 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * Returns the field name given its position.
 	 *
 	 * @param string $position the position of the field in the grid
+	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
 	 * @return int
 	 */
 	public function getFieldNameByPosition($position) {

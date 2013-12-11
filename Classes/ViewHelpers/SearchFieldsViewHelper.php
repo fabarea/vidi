@@ -22,6 +22,8 @@ namespace TYPO3\CMS\Vidi\ViewHelpers;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Vidi\Tca\TcaService;
+
 /**
  * View helper which returns the json serialization of the search fields.
  */
@@ -33,13 +35,9 @@ class SearchFieldsViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVi
 	 * @return boolean
 	 */
 	public function render() {
-		$tcaGridService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService();
-		$tcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService();
-		$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
-		$searchFields = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $tcaTableService->getSearchFields());
 
 		$labels = array();
-		foreach ($tcaGridService->getFacets() as $fieldName => $configuration) {
+		foreach (TcaService::grid()->getFacets() as $fieldName => $configuration) {
 			if (is_int($fieldName)) {
 				$fieldName = $configuration;
 			}

@@ -23,6 +23,7 @@ namespace TYPO3\CMS\Vidi\Domain\Validator;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * Validate "matches" to be used to filter the repository.
@@ -37,10 +38,8 @@ class MatchesValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractV
 	 */
 	public function isValid($matches) {
 
-		$tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService();
-
 		foreach ($matches as $fieldName => $value) {
-			if ($tcaFieldService->hasNotField($fieldName)) {
+			if (TcaService::table()->hasNotField($fieldName)) {
 				$message = sprintf('Field "%s" is not allowed. Actually, it is not configured in the TCA.', $fieldName);
 				$this->addError($message, 1380019718);
 			}

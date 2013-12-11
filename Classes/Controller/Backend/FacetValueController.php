@@ -45,10 +45,10 @@ class FacetValueController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 
 		$values = array();
 
-		if (TcaService::field()->hasRelation($facet)) {
+		if (TcaService::table()->field($facet)->hasRelation()) {
 
 			// Fetch the adequate repository
-			$foreignTable = TcaService::field()->getForeignTable($facet);
+			$foreignTable = TcaService::table()->field($facet)->getForeignTable();
 			$contentRepository = ContentRepositoryFactory::getInstance($foreignTable);
 			$tcaTableService = TcaService::table($foreignTable);
 
@@ -69,7 +69,7 @@ class FacetValueController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 					$values[] = $content[$tcaTableService->getLabelField()];
 				}
 			}
-		} elseif (!TcaService::field()->isTextArea($facet)) {
+		} elseif (!TcaService::table()->field($facet)->isTextArea()) {
 
 			// Fetch the adequate repository
 			/** @var \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository $contentRepository */

@@ -22,6 +22,7 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Vidi\Tca\TcaService;
 use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
 
 /**
@@ -50,13 +51,13 @@ class Relation extends GridRendererAbstract {
 
 		$result = '';
 
-		// Get TCA Field service
-		$tcaFieldService = TcaServiceFactory::getFieldService($this->object->getDataType());
+		// Get TCA table service.
+		$tcaTableService = TcaService::table($this->object->getDataType());
 
-		// Get label of the foreign table
+		// Get label of the foreign table.
 		$foreignLabelField = $this->getForeignTableLabelField($this->fieldName);
 
-		if ($tcaFieldService->hasRelationOne($this->fieldName)) {
+		if ($tcaTableService->field($this->fieldName)->hasRelationOne()) {
 
 			$foreignObject = $this->object[$this->fieldName];
 
@@ -69,7 +70,7 @@ class Relation extends GridRendererAbstract {
 					$foreignObject[$foreignLabelField]
 				);
 			}
-		} elseif ($tcaFieldService->hasRelationMany($this->fieldName)) {
+		} elseif ($tcaTableService->field($this->fieldName)->hasRelationMany()) {
 
 			if (!empty($this->object[$this->fieldName])) {
 				$template = '<li><a href="%s" data-uid="%s" class="btn-edit invisible">%s</a><span>%s</span></li>';
@@ -91,14 +92,18 @@ class Relation extends GridRendererAbstract {
 	/**
 	 * Return the label field of the foreign table.
 	 *
-	 * @param string $propertyName
+	 * @param string $fieldName
 	 * @return string
 	 */
-	public function getForeignTableLabelField($propertyName) {
+	protected function getForeignTableLabelField($fieldName) {
+
+		// Get TCA table service.
+		$tcaTableService = TcaService::table($this->object->getDataType());
 
 		// Compute the label of the foreign table.
-		$relationDataType = TcaServiceFactory::getFieldService()->relationDataType($propertyName);
-		return TcaServiceFactory::getTableService($relationDataType)->getLabelField();
+		$relationDataType = $tcaTableService->field($fieldName)->relationDataType();
+		return TcaService::table($relationDataType)->getLabelField();
 	}
 }
+
 ?>

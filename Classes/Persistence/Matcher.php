@@ -23,7 +23,6 @@ namespace TYPO3\CMS\Vidi\Persistence;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
 
 /**
  * Matcher class for conditions that will apply to a query.
@@ -108,7 +107,6 @@ class Matcher {
 	public function __construct($matches = array(), $dataType = '') {
 		$this->dataType = $dataType;
 		$this->matches = $matches;
-		$this->tcaService = TcaServiceFactory::field($this->dataType);
 	}
 
 	/**

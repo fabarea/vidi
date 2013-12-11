@@ -65,6 +65,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Get the label name of table name.
 	 *
+	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
 	 * @return string
 	 */
 	public function getLabelField() {
@@ -214,6 +215,26 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
+	 * Tell whether the field exists or not.
+	 *
+	 * @param string $fieldName
+	 * @return array
+	 */
+	public function hasField($fieldName) {
+		return isset($this->columnTca[$fieldName]) || in_array($fieldName, TcaService::getSystemFields());
+	}
+
+	/**
+	 * Tell whether the field does not exist.
+	 *
+	 * @param string $fieldName
+	 * @return array
+	 */
+	public function hasNotField($fieldName) {
+		return !$this->hasField($fieldName);
+	}
+
+	/**
 	 * Return configuration value given a key.
 	 *
 	 * @param string $key
@@ -252,11 +273,23 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 			$fieldNameAndPath = $fieldName;
 			$fieldParts = explode('.', $fieldNameAndPath, 2);
 			$fieldName = $fieldParts[0];
+
+			// Special when field has been instantiated without the field name and path.
+			if (!empty($this->instances[$fieldName])) {
+				/** @var ColumnService $fieldTcaService */
+				$fieldTcaService = $this->instances[$fieldName];
+				$fieldTcaService->setFieldNameAndPath($fieldNameAndPath);
+			}
 		}
 
-		if (empty($this->columnTca[$fieldName])) {
+		// True for system fields such as uid, pid that don't necessarily have a TCA.
+		if (empty($this->columnTca[$fieldName]) && in_array($fieldName, TcaService::getSystemFields())) {
+			$this->columnTca[$fieldName] = array();
+		} elseif (empty($this->columnTca[$fieldName])) {
 			throw new \Exception(sprintf('Does the field really exist? No TCA entry found for field "%s"', $fieldName), 1385554481);
 		}
+
+
 		if (empty($this->instances[$fieldName])) {
 			$className = 'TYPO3\CMS\Vidi\Tca\ColumnService';
 			$instance = GeneralUtility::makeInstance($className, $fieldName, $this->columnTca[$fieldName], $this->tableName, $fieldNameAndPath);

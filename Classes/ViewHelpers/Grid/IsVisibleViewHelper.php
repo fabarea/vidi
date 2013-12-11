@@ -22,8 +22,10 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Vidi\Tca\TcaService;
+
 /**
- * Tells about the column of a grid
+ * Tells about the column type of the grid whether the field is visible.
  */
 class IsVisibleViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
@@ -34,7 +36,7 @@ class IsVisibleViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewH
 	 * @return boolean
 	 */
 	public function render($fieldName) {
-		return \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->isVisible($fieldName);
+		return TcaService::grid()->isVisible($fieldName);
 	}
 
 }

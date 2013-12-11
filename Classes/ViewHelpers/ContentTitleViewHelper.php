@@ -22,7 +22,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * View helper which returns the title of a content object.
@@ -36,7 +36,7 @@ class ContentTitleViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVi
 	 * @return string
 	 */
 	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $content) {
-		$tcaTableService = TcaServiceFactory::getTableService($content->getDataType());
+		$tcaTableService = TcaService::table($content->getDataType());
 		return $content[$tcaTableService->getLabelField()];
 	}
 

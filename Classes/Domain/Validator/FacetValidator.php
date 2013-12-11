@@ -23,6 +23,7 @@ namespace TYPO3\CMS\Vidi\Domain\Validator;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * Validate "facet" to be used in the repository.
@@ -37,9 +38,7 @@ class FacetValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractVal
 	 */
 	public function isValid($facet) {
 
-		$tcaGridService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService();
-
-		if ($tcaGridService->hasNotFacet($facet)) {
+		if (TcaService::grid()->hasNotFacet($facet)) {
 			$message = sprintf('Facet "%s" is not allowed. Actually, it was not configured to be displayed in the grid.', $facet);
 			$this->addError($message, 1380019719);
 		}

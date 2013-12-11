@@ -22,7 +22,10 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
+use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * Class rendering relation
@@ -43,8 +46,8 @@ class RelationCount extends GridRendererAbstract {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->editViewHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper');
-		$this->translateViewHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Fluid\ViewHelpers\TranslateViewHelper');
+		$this->editViewHelper = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper');
+		$this->translateViewHelper = GeneralUtility::makeInstance('TYPO3\CMS\Fluid\ViewHelpers\TranslateViewHelper');
 	}
 
 	/**
@@ -55,7 +58,7 @@ class RelationCount extends GridRendererAbstract {
 	public function render() {
 
 		// Get TCA Field service
-		$tcaFieldService = TcaServiceFactory::getFieldService($this->object->getDataType());
+		$tcaTableService = TcaService::table($this->object->getDataType());
 
 		$numberOfObjects = count($this->object[$this->fieldName]);
 
@@ -73,7 +76,7 @@ class RelationCount extends GridRendererAbstract {
 
 		$template = '<a href="/typo3/mod.php?M=%s&returnUrl=%s&search=%s&query=%s:%s">%s %s<span class="invisible" style="padding-left: 5px">%s</span></a>';
 
-		$search = json_encode(array(array($tcaFieldService->getForeignField($this->fieldName) => $this->object->getUid())));
+		$search = json_encode(array(array($tcaTableService->field($this->fieldName)->getForeignField() => $this->object->getUid())));
 
 		// @todo naive implementation. Better to base64 encode? Remove todo if no complain...
 		$search = str_replace('"', "'", $search);
@@ -81,11 +84,11 @@ class RelationCount extends GridRendererAbstract {
 			empty($this->gridRendererConfiguration['targetModule']) ? '' : $this->gridRendererConfiguration['targetModule'],
 			'/typo3/mod.php?M=' . $this->gridRendererConfiguration['sourceModule'],
 			$search,
-			$tcaFieldService->getForeignField($this->fieldName),
+			$tcaTableService->field($this->fieldName)->getForeignField(),
 			$this->object->getUid(),
 			$numberOfObjects,
-			\TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($label, ''),
-			\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('extensions-vidi-go')
+			LocalizationUtility::translate($label, ''),
+			IconUtility::getSpriteIcon('extensions-vidi-go')
 		);
 	}
 }

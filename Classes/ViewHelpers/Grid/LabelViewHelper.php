@@ -22,20 +22,21 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
- * View helper for rendering a column header.
+ * View helper for rendering a column title in the grid.
  */
 class LabelViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
-	 * Returns a column title
+	 * Returns a column title.
 	 *
 	 * @param string $column name
 	 * @return string
 	 */
 	public function render($column) {
-		return \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->getLabel($column);
+		return TcaService::grid()->getLabel($column);
 	}
 
 }

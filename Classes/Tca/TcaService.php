@@ -28,8 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * A class to handle TCA ctrl.
  */
-class TcaService implements \TYPO3\CMS\Core\SingletonInterface,
-	\TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
+class TcaService implements \TYPO3\CMS\Core\SingletonInterface, \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 
 	const TEXTFIELD = 'input';
 
@@ -50,6 +49,34 @@ class TcaService implements \TYPO3\CMS\Core\SingletonInterface,
 	const MULTI_SELECT = 'multiselect';
 
 	const TREE = 'tree';
+
+	/**
+	 * Fields that are considered as system.
+	 *
+	 * @var array
+	 */
+	static protected $systemFields = array(
+		'uid',
+		'pid',
+		'tstamp',
+		'crdate',
+		'deleted',
+		'hidden',
+		'startime',
+		'endtime',
+		'sys_language_uid',
+		'l18n_parent',
+		'l18n_diffsource',
+		't3ver_oid',
+		't3ver_id',
+		't3ver_wsid',
+		't3ver_label',
+		't3ver_state',
+		't3ver_stage',
+		't3ver_count',
+		't3ver_tstamp',
+		't3_origuid',
+	);
 
 	/**
 	 * @var array
@@ -125,6 +152,13 @@ class TcaService implements \TYPO3\CMS\Core\SingletonInterface,
 	 */
 	public static function getInstanceStorage() {
 		return self::$instances;
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function getSystemFields() {
+		return self::$systemFields;
 	}
 }
 

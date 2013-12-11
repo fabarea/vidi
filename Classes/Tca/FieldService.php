@@ -23,6 +23,7 @@ namespace TYPO3\CMS\Vidi\Tca;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException;
 
 /**
  * A class to handle TCA field configuration
@@ -41,16 +42,14 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	protected $tableName;
 
 	/**
-	 * __construct
-	 *
-	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
+	 * @throws InvalidKeyInArrayException
 	 * @param string $tableName
 	 * @return \TYPO3\CMS\Vidi\Tca\FieldService
 	 */
 	public function __construct($tableName) {
 		$this->tableName = $tableName;
 		if (empty($GLOBALS['TCA'][$this->tableName])) {
-			throw new \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException('No TCA existence for table name: ' . $this->tableName, 1356945107);
+			throw new InvalidKeyInArrayException('No TCA existence for table name: ' . $this->tableName, 1356945107);
 		}
 		$this->tca = $GLOBALS['TCA'][$this->tableName];
 	}
@@ -59,6 +58,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * Returns an array containing column names
 	 *
 	 * @return array
+	 * @deprecated
 	 */
 	public function getFields() {
 		return $this->tca['columns'];
@@ -91,10 +91,10 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 		$fields = $this->getFields();
 
 		if (empty($fields[$fieldName])) {
-			throw new \Exception('No field "%s" was found in "%s".', $fieldName, $this->tableName, 1385408685);
+			throw new \Exception(sprintf('No field "%s" was found in "%s".', $fieldName, $this->tableName), 1385408685);
 		}
 		if (empty($fields[$fieldName]['config'])) {
-			throw new \Exception('No configuration available for field "%s".', $fieldName, $this->tableName, 1385408686);
+			throw new \Exception(sprintf('No configuration available for field "%s".', $fieldName, $this->tableName), 1385408686);
 		}
 		return $fields[$fieldName]['config'];
 	}

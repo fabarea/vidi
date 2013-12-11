@@ -24,6 +24,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 ***************************************************************/
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Vidi\Exception\NotExistingFieldException;
+use TYPO3\CMS\Vidi\Tca\TcaService;
 use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
 
 /**
@@ -32,7 +33,7 @@ use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
 class ConfigurationViewHelper extends AbstractViewHelper {
 
 	/**
-	 * Render the columns of the grid
+	 * Render the columns of the grid.
 	 *
 	 * @throws NotExistingFieldException
 	 * @return string
@@ -40,7 +41,7 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 	public function render() {
 		$output = '';
 
-		foreach(TcaServiceFactory::getGridService()->getFields() as $fieldName => $configuration) {
+		foreach(TcaService::grid()->getFields() as $fieldName => $configuration) {
 
 			// Early failure if field does not exist.
 			if (!$this->isAllowed($fieldName)) {
@@ -50,11 +51,11 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 
 			$output .= sprintf('Vidi._columns.push({ "mData": "%s", "bSortable": %s, "bVisible": %s, "sWidth": "%s", "sClass": "%s %s" });' . PHP_EOL,
 				$fieldName,
-				TcaServiceFactory::getGridService()->isSortable($fieldName) ? 'true' : 'false',
-				TcaServiceFactory::getGridService()->isVisible($fieldName) ? 'true' : 'false',
+				TcaService::grid()->isSortable($fieldName) ? 'true' : 'false',
+				TcaService::grid()->isVisible($fieldName) ? 'true' : 'false',
 				empty($configuration['width']) ? 'auto' : $configuration['width'],
 				$this->computeEditableClass($fieldName),
-				TcaServiceFactory::getGridService()->getClass($fieldName)
+				TcaService::grid()->getClass($fieldName)
 			);
 		}
 
@@ -69,26 +70,26 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 	 */
 	protected function computeEditableClass($fieldName) {
 		$result = '';
-		if (TcaServiceFactory::getGridService()->isEditable($fieldName)) {
-			$result = TcaServiceFactory::getFieldService()->isTextArea($fieldName) ? 'editable-textarea' : 'editable-textfield';
+		if (TcaService::grid()->isEditable($fieldName)) {
+			$result = TcaService::table()->field($fieldName)->isTextArea() ? 'editable-textarea' : 'editable-textfield';
 		}
 		return $result;
 	}
 
 	/**
-	 * Tell whether the field looks ok to be displayed within the Grid
+	 * Tell whether the field looks ok to be displayed within the Grid.
 	 *
 	 * @param string $fieldName
 	 * @return boolean
 	 */
 	protected function isAllowed($fieldName){
 
-		$tcaTableService = TcaServiceFactory::getTableService();
-		$tcaFieldService = TcaServiceFactory::getFieldService();
-		$tcaGridService = TcaServiceFactory::getGridService();
-
 		$result = FALSE;
-		if ($tcaFieldService->hasField($fieldName) || $tcaGridService->isSystem($fieldName) || $tcaTableService->isSystem($fieldName) || $tcaGridService->hasRenderers($fieldName)) {
+		if (TcaService::grid()->isSystem($fieldName)
+			|| TcaService::grid()->hasRenderers($fieldName)
+			|| TcaService::table()->field($fieldName)->isSystem()
+			|| TcaService::table()->hasField($fieldName)
+		) {
 			$result = TRUE;
 		}
 		return $result;

@@ -23,6 +23,9 @@ namespace TYPO3\CMS\Vidi\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException;
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * Content representation.
@@ -40,11 +43,6 @@ class Content implements \ArrayAccess {
 	protected $dataType;
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Tca\FieldService
-	 */
-	protected $tcaFieldService;
-
-	/**
 	 * Constructor for a Content object.
 	 *
 	 * @param string $dataType will basically correspond to a table name, e.g fe_users, tt_content, ...
@@ -56,11 +54,10 @@ class Content implements \ArrayAccess {
 		$this->dataType = $dataType;
 		$this->uid = empty($contentData['uid']) ? NULL : $contentData['uid'];
 
-		$this->tcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($dataType);
-		$fields = $this->tcaFieldService->getFieldNames();
-
 		/** @var \TYPO3\CMS\Vidi\Tca\TableService $tcaTableService */
-		$tcaTableService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService($dataType);
+		$tcaTableService = TcaService::table($dataType);
+
+		$fields = $tcaTableService->getFields();
 
 		// Create time stamp field
 		if ($tcaTableService->getTimeCreationField()) {
@@ -88,8 +85,8 @@ class Content implements \ArrayAccess {
 	 * @param $fieldName
 	 * @return string
 	 */
-	protected function convertFieldNameToPropertyName($fieldName){
-		return \TYPO3\CMS\Core\Utility\GeneralUtility::underscoredToLowerCamelCase($fieldName);
+	protected function convertFieldNameToPropertyName($fieldName) {
+		return GeneralUtility::underscoredToLowerCamelCase($fieldName);
 	}
 
 	/**
@@ -100,7 +97,7 @@ class Content implements \ArrayAccess {
 	 * @return string
 	 */
 	protected function convertPropertyNameToFieldName($propertyName) {
-		return \TYPO3\CMS\Core\Utility\GeneralUtility::camelCaseToLowerCaseUnderscored($propertyName);
+		return GeneralUtility::camelCaseToLowerCaseUnderscored($propertyName);
 	}
 
 	/**
@@ -137,9 +134,19 @@ class Content implements \ArrayAccess {
 	 * @param string $propertyName
 	 * @return bool
 	 */
-	protected function hasRelation($propertyName){
+	protected function hasRelation($propertyName) {
 		$fieldName = $this->convertPropertyNameToFieldName($propertyName);
-		return $this->tcaFieldService->hasRelation($fieldName);
+		return $this->getTcaFieldService($fieldName)->hasRelation();
+	}
+
+	/**
+	 * Return the TCA Table Service.
+	 *
+	 * @param string $fieldName
+	 * @return \TYPO3\CMS\Vidi\Tca\ColumnService
+	 */
+	protected function getTcaFieldService($fieldName) {
+		return TcaService::table($this->dataType)->field($fieldName);
 	}
 
 	/**
@@ -154,20 +161,20 @@ class Content implements \ArrayAccess {
 
 		// Convert property name to field name and get the foreign data type.
 		$fieldName = $this->convertPropertyNameToFieldName($propertyName);
-		$foreignDataType = $this->tcaFieldService->relationDataType($fieldName);
+		$foreignDataType = $this->getTcaFieldService($fieldName)->relationDataType();
 
 		// Get the foreign repository instance form the factory
 		/** @var \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository $foreignRepository */
 		$foreignRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance($foreignDataType);
 
-		if ($this->tcaFieldService->hasRelationWithCommaSeparatedValues($fieldName)) {
+		if ($this->getTcaFieldService($fieldName)->hasRelationWithCommaSeparatedValues()) {
 
 			// Fetch values from repository
-			$values = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->$propertyName);
+			$values = GeneralUtility::trimExplode(',', $this->$propertyName);
 			$this->$propertyName = $foreignRepository->findIn('uid', $values);
-		} elseif ($this->tcaFieldService->hasRelationMany($fieldName)) {
+		} elseif ($this->getTcaFieldService($fieldName)->hasRelationMany()) {
 
-			$foreignFieldName = $this->tcaFieldService->getForeignField($fieldName);
+			$foreignFieldName = $this->getTcaFieldService($fieldName)->getForeignField();
 			if (empty($foreignFieldName)) {
 				$message = sprintf('Missing "foreign_field" key for field "%s" in table "%s".',
 					$fieldName,
@@ -183,14 +190,14 @@ class Content implements \ArrayAccess {
 			// Date picker (type == group) are special fields because property path must contain the table name
 			// to determine the relation type. Example for sys_category, property path will look like "items.sys_file"
 			$propertyValue = $this->uid;
-			$foreignTcaFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($foreignDataType);
-			if ($foreignTcaFieldService->isGroup($foreignPropertyName)) {
+			$foreignTcaTableService = TcaService::table($foreignDataType);
+			if ($foreignTcaTableService->field($foreignPropertyName)->isGroup()) {
 				$propertyValue = $this->dataType . '.' . $this->uid;
 			}
 
 			$this->$propertyName = $foreignRepository->$findByProperty($propertyValue);
 
-		} elseif ($this->tcaFieldService->hasRelationOne($propertyName)) {
+		} elseif ($this->getTcaFieldService($propertyName)->hasRelationOne()) {
 
 			// Fetch value from repository
 			$this->$propertyName = $foreignRepository->findByUid($this->$propertyName);
@@ -226,8 +233,8 @@ class Content implements \ArrayAccess {
 
 	/**
 	 * Offset to retrieve
-	 * @link http://php.net/manual/en/arrayaccess.offsetget.php
 	 *
+	 * @link http://php.net/manual/en/arrayaccess.offsetget.php
 	 * @param mixed $offset
 	 * @return mixed Can return all value types.
 	 */
@@ -243,12 +250,12 @@ class Content implements \ArrayAccess {
 	 * @link http://php.net/manual/en/arrayaccess.offsetset.php
 	 * @param mixed $offset
 	 * @param mixed $value
-	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
+	 * @throws NotImplementedException
 	 * @return void
 	 */
 	public function offsetSet($offset, $value) {
 		$message = 'Setting value for Array object is not supported';
-		throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException($message, 1376132305);
+		throw new NotImplementedException($message, 1376132305);
 	}
 
 	/**
@@ -256,12 +263,12 @@ class Content implements \ArrayAccess {
 	 *
 	 * @link http://php.net/manual/en/arrayaccess.offsetunset.php
 	 * @param mixed $offset
-	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
+	 * @throws NotImplementedException
 	 * @return void
 	 */
 	public function offsetUnset($offset) {
 		$message = 'Un-setting value for Array object is not supported';
-		throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException($message, 1376132306);
+		throw new NotImplementedException($message, 1376132306);
 	}
 
 	/**
@@ -281,4 +288,5 @@ class Content implements \ArrayAccess {
 		return $result;
 	}
 }
+
 ?>

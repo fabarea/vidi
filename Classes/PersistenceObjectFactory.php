@@ -23,6 +23,7 @@ namespace TYPO3\CMS\Vidi;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * Factory class to server instances related persistence object.
@@ -62,7 +63,7 @@ class PersistenceObjectFactory implements \TYPO3\CMS\Core\SingletonInterface{
 
 		if (strlen($searchTerm) > 0) {
 
-			$tcaFieldService = Tca\TcaServiceFactory::field($dataType);
+			$tcaTableService = TcaService::table($dataType);
 
 			// try to parse a json query
 			$terms = json_decode($searchTerm, TRUE);
@@ -73,8 +74,8 @@ class PersistenceObjectFactory implements \TYPO3\CMS\Core\SingletonInterface{
 					$value = current($term);
 					if ($fieldName === 'text') {
 						$matcher->setSearchTerm($value);
-					} elseif (($tcaFieldService->hasRelation($fieldName) && is_numeric($value))
-						|| $tcaFieldService->isNumerical($fieldName)
+					} elseif (($tcaTableService->field($fieldName)->hasRelation() && is_numeric($value))
+						|| $tcaTableService->field($fieldName)->isNumerical()
 					) {
 						$matcher->equals($fieldName, $value);
 					} else {

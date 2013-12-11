@@ -24,6 +24,7 @@ namespace TYPO3\CMS\Vidi\Controller\Backend;
  ***************************************************************/
 use TYPO3\CMS\Vidi\ModuleLoader;
 use TYPO3\CMS\Vidi\PersistenceObjectFactory;
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * Controller which handles actions related to Vidi in the Backend.
@@ -80,7 +81,7 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		$viewHelpers = $moduleLoader->getGridMenuComponents();
 		$this->view->assign('gridMenuComponents', $this->viewHelperRenderer->render($viewHelpers));
 
-		$this->view->assign('columns', \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getGridService()->getFields());
+		$this->view->assign('columns', TcaService::grid()->getFields());
 	}
 
 	/**
@@ -172,7 +173,7 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		// Fetch the adequate repository
 		$contentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance();
 
-		$labelField = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getTableService()->getLabelField();
+		$labelField = TcaService::table()->getLabelField();
 		$getter = 'get' . ucfirst($labelField);
 
 		$contentObject = $contentRepository->findByUid($content);
