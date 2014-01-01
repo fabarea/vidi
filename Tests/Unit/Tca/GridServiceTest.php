@@ -106,7 +106,7 @@ class GridServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function labelOfColumnFooShouldBeEmpty() {
-		# @todo create fake TCA
+		$this->markTestIncomplete(); # TCA must be faked
 		#$this->assertEmpty($this->fixture->getLabel(uniqid('foo_')));
 	}
 
