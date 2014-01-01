@@ -58,11 +58,11 @@ class RelationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
 	/**
 	 * @test
+	 * @expectedException \Exception
 	 */
 	public function renderAssetWithNoCategoryReturnsEmpty() {
 		$content = new \TYPO3\CMS\Vidi\Domain\Model\Content($this->dataType);
-		$actual = $this->fixture->setObject($content)->render();
-		$this->assertEmpty($actual);
+		$this->fixture->setObject($content)->render();
 	}
 }
 ?>
