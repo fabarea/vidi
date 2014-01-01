@@ -157,7 +157,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 
 		// first clean up the sql segment
 		$defaultOrder = str_replace('ORDER BY', '', $this->getDefaultOrderSql());
-		$defaultOrderParts = GeneralUtility::trimExplode(',', $defaultOrder);
+		$defaultOrderParts = GeneralUtility::trimExplode(',', $defaultOrder, TRUE);
 
 		$orderings = array();
 		foreach ($defaultOrderParts as $defaultOrderPart) {
