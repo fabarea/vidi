@@ -10,7 +10,7 @@
 
 $EM_CONF[$_EXTKEY] = array (
   'title' => 'Versatile and Interactive Display',
-  'description' => 'Display configurable list of records. Veni, vidi, vici!',
+  'description' => 'Display advanced list of records in the BE. Veni, vidi, vici!',
   'category' => 'module',
   'author' => 'Fabien Udriot',
   'author_email' => 'fabien.udriot@typo3.org',
