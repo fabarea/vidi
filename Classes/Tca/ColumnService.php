@@ -246,6 +246,10 @@ class ColumnService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 		$result = '';
 		if ($this->hasLabel()) {
 			$result = LocalizationUtility::translate($this->tca['label'], '');
+
+			if (empty($result)) {
+				$result = $this->tca['label'];
+			}
 		}
 		return $result;
 	}
@@ -351,11 +355,16 @@ class ColumnService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 */
 	public function isRequired() {
 		$configuration = $this->getConfiguration();
-		$parts = array();
-		if (!empty($configuration['eval'])) {
-			$parts = GeneralUtility::trimExplode(',', $configuration['eval']);
+
+		$isRequired = FALSE;
+		if (isset($configuration['minitems'])) {
+			// is required of a select?
+			$isRequired = $configuration['minitems'] == 1 ? TRUE : FALSE;
+		} elseif (isset($configuration['eval'])) {
+			$parts = GeneralUtility::trimExplode(',', $configuration['eval'], TRUE);
+			$isRequired = in_array('required', $parts);
 		}
-		return in_array('required', $parts);
+		return $isRequired;
 	}
 
 	/**
