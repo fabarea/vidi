@@ -214,7 +214,7 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * Returns a renderer.
 	 *
 	 * @param string $fieldName the name of the column
-	 * @return string
+	 * @return array
 	 */
 	public function getRenderers($fieldName) {
 		$field = $this->getField($fieldName);

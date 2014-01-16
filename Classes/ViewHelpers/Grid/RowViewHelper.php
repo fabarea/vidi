@@ -22,6 +22,8 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Vidi\Domain\Model\Content;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
@@ -48,7 +50,7 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 	 * @param int $offset
 	 * @return array
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object, $offset) {
+	public function render(Content $object, $offset) {
 
 		$tcaGridService = TcaService::grid();
 
@@ -92,7 +94,7 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 						}
 
 						/** @var $rendererObject \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface */
-						$rendererObject = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($rendererClassName);
+						$rendererObject = GeneralUtility::makeInstance($rendererClassName);
 						$result .= $rendererObject
 							->setObject($object)
 							->setFieldName($fieldName)
@@ -102,6 +104,12 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 					}
 				} else {
 					$result = $object[$fieldName]; // AccessArray object
+
+					// Avoid bad surprise, converts characters to HTML.
+					$fieldType = TcaService::table($object->getDataType())->field($fieldName)->getFieldType();
+					if ($fieldType !== TcaService::TEXTAREA) {
+						$result = htmlentities($result); // AccessArray object
+					}
 				}
 
 				$result = $this->format($result, $configuration);
