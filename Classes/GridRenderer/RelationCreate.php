@@ -22,35 +22,14 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Backend\Utility\IconUtility;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use TYPO3\CMS\Vidi\Grid\RelationCreateRenderer;
 
 /**
  * Class rendering relation
+ *
+ * @deprecated use TYPO3\CMS\Vidi\Grid\RelationCreateRenderer
  */
-class RelationCreate extends GridRendererAbstract {
+class RelationCreate extends RelationCreateRenderer {
 
-	/**
-	 * Render a representation of the relation on the GUI.
-	 *
-	 * @return string
-	 */
-	public function render() {
-
-		$foreignTable = TcaService::table()->field($this->getFieldName())->getForeignTable();
-
-		$template = '<div style="text-align: right" class="pull-right invisible">
-			<a href="#" data-uid="%s" data-type="%s" data-relation-property="%s" data-related-type="%s" class="btn-create-relation btn-relation">%s</a>
-			</div>';
-		$result = sprintf($template,
-			$this->object->getUid(),
-			$this->object->getDataType(),
-			$this->getFieldName(),
-			$foreignTable,
-			IconUtility::getSpriteIcon('actions-document-new')
-		);
-
-		return $result;
-	}
 }
 ?>

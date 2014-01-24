@@ -89,7 +89,8 @@ $(document).ready(function () {
 							}
 							Vidi.FlashMessage.add(message, 'success');
 							Vidi.FlashMessage.showAll();
-
+							$('.checkbox-row-top').removeAttr('checked'); // un-check the top checkbox.
+							
 							// Reload data table
 							Vidi.table.fnDraw();
 						}

@@ -23,13 +23,13 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 use TYPO3\CMS\Backend\Utility\IconUtility;
-use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper which renders a "back" buttons to be placed in the doc header.
  */
-class LinkBackViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class LinkBackViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Returns the "back" buttons to be placed in the doc header.
@@ -39,7 +39,7 @@ class LinkBackViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
 	public function render() {
 
 		$result = '';
-		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('returnUrl')) {
+		if (GeneralUtility::_GET('returnUrl')) {
 			$result = sprintf('<a href="%s" class="btn-return-top">%s</a>',
 				GeneralUtility::_GP('returnUrl'),
 				IconUtility::getSpriteIcon('actions-document-close')

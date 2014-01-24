@@ -25,91 +25,10 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
 
 /**
  * Class rendering relation
+ *
+ * @deprecated use \TYPO3\CMS\Vidi\Grid\GridRendererAbstract
  */
-abstract class GridRendererAbstract implements GridRendererInterface {
+abstract class GridRendererAbstract extends \TYPO3\CMS\Vidi\Grid\GridRendererAbstract {
 
-	/**
-	 * @var \TYPO3\CMS\Vidi\Domain\Model\Content
-	 */
-	 protected $object;
-
-	/**
-	 * @var string
-	 */
-	protected $fieldName;
-
-	/**
-	 * @var array
-	 */
-	protected $fieldConfiguration = array();
-
-	/**
-	 * @var array
-	 */
-	protected $gridRendererConfiguration = array();
-
-	/**
-	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content
-	 */
-	public function getObject() {
-		return $this->object;
-	}
-
-	/**
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
-	 * @return $this
-	 */
-	public function setObject($object) {
-		$this->object = $object;
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getFieldName() {
-		return $this->fieldName;
-	}
-
-	/**
-	 * @param string $fieldName
-	 * @return $this
-	 */
-	public function setFieldName($fieldName) {
-		$this->fieldName = $fieldName;
-		return $this;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getFieldConfiguration() {
-		return $this->fieldConfiguration;
-	}
-
-	/**
-	 * @param array $fieldConfiguration
-	 * @return $this
-	 */
-	public function setFieldConfiguration($fieldConfiguration) {
-		$this->fieldConfiguration = $fieldConfiguration;
-		return $this;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getGridRendererConfiguration() {
-		return $this->gridRendererConfiguration;
-	}
-
-	/**
-	 * @param array $gridRendererConfiguration
-	 * @return $this
-	 */
-	public function setGridRendererConfiguration($gridRendererConfiguration) {
-		$this->gridRendererConfiguration = $gridRendererConfiguration;
-		return $this;
-	}
 }
 ?>

@@ -53,8 +53,8 @@ $tca = array(
 			'usergroup' => array(
 				'visible' => TRUE,
 				'renderers' => array(
-					'TYPO3\CMS\Vidi\GridRenderer\RelationCreate',
-					'TYPO3\CMS\Vidi\GridRenderer\Relation',
+					'TYPO3\CMS\Vidi\Grid\RelationCreateRenderer',
+					'TYPO3\CMS\Vidi\Grid\RelationRenderer',
 				),
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:usergroup',
 			),
@@ -69,7 +69,7 @@ $tca = array(
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:crdate',
 			),
 			'disable' => array(
-				'renderer' => 'TYPO3\CMS\Vidi\GridRenderer\Visibility',
+				'renderer' => 'TYPO3\CMS\Vidi\Grid\VisibilityRenderer',
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:visibility_abbreviation',
 				'width' => '3%',
 			),

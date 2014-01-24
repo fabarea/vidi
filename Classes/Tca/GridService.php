@@ -24,6 +24,8 @@ namespace TYPO3\CMS\Vidi\Tca;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException;
+use TYPO3\CMS\Vidi\Grid\GenericRendererComponent;
 
 /**
  * A class to handle TCA grid configuration
@@ -43,7 +45,7 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * __construct
 	 *
-	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
+	 * @throws InvalidKeyInArrayException
 	 * @param string $tableName
 	 * @return \TYPO3\CMS\Vidi\Tca\GridService
 	 */
@@ -52,7 +54,7 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 		$this->tableName = $tableName;
 
 		if (empty($GLOBALS['TCA'][$this->tableName])) {
-			throw new \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException('No TCA existence for table name: ' . $this->tableName, 1356945108);
+			throw new InvalidKeyInArrayException('No TCA existence for table name: ' . $this->tableName, 1356945108);
 		}
 
 		$this->tca = $GLOBALS['TCA'][$this->tableName]['grid'];
@@ -78,6 +80,9 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 		if ($this->hasLabel($fieldName)) {
 			$field = $this->getField($fieldName);
 			$result = LocalizationUtility::translate($field['label'], '');
+			if (is_null($result)) {
+				$result = $field['label'];
+			}
 		} elseif ($this->isNotSystem($fieldName) && TcaService::table($this->tableName)->field($fieldName)->hasLabel()) {
 			$result = TcaService::table($this->tableName)->field($fieldName)->getLabel($fieldName);
 		}
@@ -98,13 +103,13 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * Returns the field name given its position.
 	 *
 	 * @param string $position the position of the field in the grid
-	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
+	 * @throws InvalidKeyInArrayException
 	 * @return int
 	 */
 	public function getFieldNameByPosition($position) {
 		$fields = array_keys($this->getFields());
 		if (empty($fields[$position])) {
-			throw new \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException('No field exist for position: ' . $position, 1356945119);
+			throw new InvalidKeyInArrayException('No field exist for position: ' . $position, 1356945119);
 		}
 
 		return $fields[$position];
@@ -219,15 +224,30 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	public function getRenderers($fieldName) {
 		$field = $this->getField($fieldName);
 		$renderers = array();
-		if (isset($field['renderer'])) {
-			$renderers[] = $field['renderer'];
-		}
-
-		if (isset($field['renderers'])) {
-			$renderers = array_merge($renderers, $field['renderers']);
+		if (!empty($field['renderer'])) {
+			$renderers = $this->convertRendererToArray($field['renderer']);
+		} elseif (!empty($field['renderers']) && is_array($field['renderers'])) {
+			foreach ($field['renderers'] as $renderer) {
+				$renderers = $renderers + $this->convertRendererToArray($renderer);
+			}
 		}
 
 		return $renderers;
+	}
+
+	/**
+	 * @param string|GenericRendererComponent $renderer
+	 * @return array
+	 */
+	public function convertRendererToArray($renderer) {
+		$result = array();
+		if (is_string($renderer)) {
+			$result[$renderer] = array();
+		} elseif ($renderer instanceof GenericRendererComponent) {
+			/** @var GenericRendererComponent $renderer */
+			$result[$renderer->getClassName()] = $renderer->getConfiguration();
+		}
+		return $result;
 	}
 
 	/**
@@ -239,6 +259,19 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	public function isVisible($fieldName) {
 		$field = $this->getField($fieldName);
 		return isset($field['visible']) ? $field['visible'] : TRUE;
+	}
+
+	/**
+	 * Returns whether the column must be rendered.
+	 * There is a mechanism that only necessary columns are rendered to improve performance.
+	 * The "force" flag can by pass this mechanism.
+	 *
+	 * @param string $fieldName the name of the column
+	 * @return bool
+	 */
+	public function isForce($fieldName) {
+		$field = $this->getField($fieldName);
+		return isset($field['force']) ? $field['force'] : FALSE;
 	}
 
 	/**
@@ -261,6 +294,17 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	public function getClass($fieldName) {
 		$field = $this->getField($fieldName);
 		return isset($field['class']) ? $field['class'] : '';
+	}
+
+	/**
+	 * Returns the class names applied to a cell
+	 *
+	 * @param string $fieldName the name of the column
+	 * @return bool
+	 */
+	public function getDataType($fieldName) {
+		$field = $this->getField($fieldName);
+		return isset($field['dataType']) ? $field['dataType'] : $this->tableName;
 	}
 
 	/**

@@ -22,12 +22,13 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
+use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper which renders a "new" button to be placed in the doc header.
  */
-class ButtonNewViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class ButtonNewViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Renders a "new" button to be placed in the doc header.
@@ -42,7 +43,7 @@ class ButtonNewViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewH
 
 		return sprintf('<a href="%s" class="btn-new-top">%s</a>',
 			$uriCreateViewHelper->render(),
-			\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-new')
+			IconUtility::getSpriteIcon('actions-document-new')
 		);
 	}
 }

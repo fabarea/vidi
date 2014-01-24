@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Formatter;
+namespace TYPO3\CMS\Vidi\Grid;
 /***************************************************************
  *  Copyright notice
  *
@@ -22,30 +22,42 @@ namespace TYPO3\CMS\Vidi\Formatter;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Core\SingletonInterface;
 
 /**
- * Format date + time that will be displayed in the Grid
+ * Interface dealing with rendering a media in someway.
  */
-class Datetime implements FormatterInterface , SingletonInterface{
+interface GridRendererInterface {
 
 	/**
-	 * Format a date
+	 * Render a media in someway.
 	 *
-	 * @param int $value
 	 * @return string
 	 */
-	public function format($value) {
-		$result = '';
-		if ($value > 0) {
+	public function render();
 
+	/**
+	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @return $this
+	 */
+	public function setObject($object);
 
-			/** @var $viewHelper \TYPO3\CMS\Fluid\ViewHelpers\Format\DateViewHelper */
-			$viewHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Fluid\ViewHelpers\Format\DateViewHelper');
-			$result = $viewHelper->render('@' . $value, 'd.m.Y - H:i');
-		}
-		return $result;
-	}
+	/**
+	 * @param string $fieldName
+	 * @return $this
+	 */
+	public function setFieldName($fieldName);
+
+	/**
+	 * @param array $configuration
+	 * @return $this
+	 */
+	public function setFieldConfiguration($configuration);
+
+	/**
+	 * @param array $configuration
+	 * @return $this
+	 */
+	public function setGridRendererConfiguration($configuration);
 
 }
 ?>

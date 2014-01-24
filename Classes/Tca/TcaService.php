@@ -62,7 +62,7 @@ class TcaService implements \TYPO3\CMS\Core\SingletonInterface, \TYPO3\CMS\Vidi\
 		'crdate',
 		'deleted',
 		'hidden',
-		'startime',
+		'starttime',
 		'endtime',
 		'sys_language_uid',
 		'l18n_parent',

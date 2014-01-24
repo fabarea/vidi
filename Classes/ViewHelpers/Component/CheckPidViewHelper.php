@@ -45,7 +45,7 @@ class CheckPidViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
 		$result = '';
 
 		// Check whether storage is configured or not.
-		if ($this->checkPidIsNotValid()) {
+		if (!$this->isPidValid()) {
 			$result .= $this->formatMessagePidIsNotValid();
 		}
 
@@ -62,7 +62,7 @@ class CheckPidViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
 		$result = <<< EOF
 			<div class="typo3-message message-warning">
 				<div class="message-header">
-					Page id "{$this->getPid()}" has be found to be a wrong configuration for "{$this->moduleLoader->getDataType()}"
+					Page id "{$this->getConfiguredPid()}" has be found to be a wrong configuration for "{$this->moduleLoader->getDataType()}"
 				</div>
 				<div class="message-body">
 					New record can not be created with this configured pid. Configuration can be changed at different levels:
@@ -91,23 +91,29 @@ EOF;
 	}
 
 	/**
-	 * Check whether the page id is valid.
+	 * Check whether the page id is valid or not.
 	 *
 	 * @return boolean
 	 */
-	protected function checkPidIsNotValid() {
+	protected function isPidValid() {
 
 		$result = FALSE;
-		$pageId = $this->getPid();
+		$pageId = $this->getConfiguredPid();
 
-		// check page doktype of configured page id.
-		$page = $this->getDatabaseConnection()->exec_SELECTgetSingleRow('doktype', 'pages', 'deleted = 0 AND uid = ' . $pageId);
+		$isRootLevel = TcaService::table()->get('rootLevel');
+		if ($isRootLevel) {
+			$result = $this->getConfiguredPid() == 0;
+		} else {
+			// check if the page id is adequate (folder vs page)
+			$page = $this->getDatabaseConnection()->exec_SELECTgetSingleRow('doktype', 'pages', 'deleted = 0 AND uid = ' . $pageId);
 
-		// if different than a folder, check if that is alright
-		if ($page['doktype'] != \TYPO3\CMS\Frontend\Page\PageRepository::DOKTYPE_SYSFOLDER) {
-			$allowedTables = explode(',', $GLOBALS['PAGES_TYPES']['default']['allowedTables']);
-			$result = !in_array($this->moduleLoader->getDataType(), $allowedTables);
+			// if different than a folder, check if that is alright
+			if (!empty($page) && $page['doktype'] != \TYPO3\CMS\Frontend\Page\PageRepository::DOKTYPE_SYSFOLDER) {
+				$allowedTables = explode(',', $GLOBALS['PAGES_TYPES']['default']['allowedTables']);
+				$result = in_array($this->moduleLoader->getDataType(), $allowedTables);
+			}
 		}
+
 		return $result;
 	}
 
@@ -116,20 +122,16 @@ EOF;
 	 *
 	 * @return int
 	 */
-	public function getPid() {
-		$isRootLevel = TcaService::table()->get('rootLevel');
-		if ($isRootLevel) {
-			$pid = 0;
-		} else {
-			// Get configuration from User TSconfig if any
-			$tsConfigPath = sprintf('tx_vidi.dataType.%s.storagePid', $this->moduleLoader->getDataType());
-			$result = $this->getBackendUser()->getTSConfig($tsConfigPath);
-			$pid = $result['value'];
+	protected function getConfiguredPid() {
 
-			// Get pid from Module Loader
-			if (NULL === $pid) {
-				$pid = $this->moduleLoader->getDefaultPid();
-			}
+		// Get configuration from User TSconfig if any
+		$tsConfigPath = sprintf('tx_vidi.dataType.%s.storagePid', $this->moduleLoader->getDataType());
+		$result = $this->getBackendUser()->getTSConfig($tsConfigPath);
+		$pid = $result['value'];
+
+		// Get pid from Module Loader
+		if (NULL === $pid) {
+			$pid = $this->moduleLoader->getDefaultPid();
 		}
 		return $pid;
 	}

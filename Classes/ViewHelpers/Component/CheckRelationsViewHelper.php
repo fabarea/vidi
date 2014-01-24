@@ -50,7 +50,7 @@ class CheckRelationsViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abstract
 		$result = '';
 
 		// Check whether storage is configured or not.
-		if ($this->checkTcaIsNotValid()) {
+		if (!$this->isTcaValid()) {
 			$result .= $this->formatMessageTcaIsNotValid();
 		}
 
@@ -126,7 +126,7 @@ EOF;
 	 *
 	 * @return boolean
 	 */
-	protected function checkTcaIsNotValid() {
+	protected function isTcaValid() {
 
 		$tableName = $this->moduleLoader->getDataType();
 		$tcaGridService = TcaService::grid($tableName);
@@ -152,7 +152,7 @@ EOF;
 			}
 		}
 
-		return !empty($this->invalidFields);
+		return empty($this->invalidFields);
 	}
 
 	/**

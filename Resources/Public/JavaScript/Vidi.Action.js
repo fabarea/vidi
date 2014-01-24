@@ -73,15 +73,12 @@ Vidi.Action = {
 
 					// bind click on "btn-delete-row"
 					$('.btn-delete-row').bind('click', function (e) {
-						var row, title, message, url;
+						var row, message, url;
 
 						$(this).addClass('disabled').text(Vidi.translate('deleting'));
-						url = $(Vidi.Action.scope).attr('href');
 
-						// Compute media title
+						url = $(Vidi.Action.scope).attr('href');
 						row = $(Vidi.Action.scope).closest("tr").get(0);
-						title = $('.media-title', row).html();
-						message = Vidi.format("confirm-delete", $.trim(title));
 
 						// Send Ajax request to delete media
 						$.get(url,

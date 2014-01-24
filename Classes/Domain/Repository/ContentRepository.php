@@ -23,6 +23,8 @@ namespace TYPO3\CMS\Vidi\Domain\Repository;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Vidi\Exception\MissingUidException;
 use TYPO3\CMS\Vidi\Persistence\Matcher;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
@@ -67,22 +69,32 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	public function __construct($dataType) {
 		$this->dataType = $dataType;
 		$this->databaseHandle = $GLOBALS['TYPO3_DB'];
-		$this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+		$this->objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
 	}
 
 	/**
 	 * Update a content with new information.
 	 *
-	 * @throws \TYPO3\CMS\Vidi\Exception\MissingUidException
 	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
+	 * @throws \TYPO3\CMS\Vidi\Exception\MissingUidException
+	 * @throws \Exception
 	 * @return void
 	 */
 	public function update($content) {
 		if ($content->getUid() <= 0) {
-			throw new \TYPO3\CMS\Vidi\Exception\MissingUidException('Missing Uid', 1351605542);
+			throw new MissingUidException('Missing Uid', 1351605542);
 		}
 
-		$data[$content->getDataType()][$content->getUid()] = $content->toArray();
+		$values = $content->toArray();
+		// Check the field to be updated exists
+		foreach ($values as $fieldName => $value) {
+			if (TcaService::table($content->getDataType())->hasNotField($fieldName)) {
+				$message = sprintf('It looks field "%s" does not exist for data type "%s"', $fieldName, $content->getDataType());
+				throw new \Exception($message, 1390668497);
+			}
+		}
+
+		$data[$content->getDataType()][$content->getUid()] = $values;
 
 		/** @var $tce \TYPO3\CMS\Core\DataHandling\DataHandler */
 		$tce = $this->objectManager->get('TYPO3\CMS\Core\DataHandling\DataHandler');
@@ -428,7 +440,7 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	protected function processMagicCall($field, $value, $flag = '') {
 
 		/** @var $matcher Matcher */
-		$matcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher', array(), $this->getDataType());
+		$matcher = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher', array(), $this->getDataType());
 
 		$tcaTableService = TcaService::table($this->dataType);
 		if ($tcaTableService->field($field)->isGroup()) {

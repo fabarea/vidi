@@ -22,6 +22,7 @@ namespace TYPO3\CMS\Vidi\Controller\Backend;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Vidi\ContentRepositoryFactory;
 use TYPO3\CMS\Vidi\ModuleLoader;
 use TYPO3\CMS\Vidi\PersistenceObjectFactory;
 use TYPO3\CMS\Vidi\Tca\TcaService;
@@ -105,7 +106,7 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		$pagerObject = PersistenceObjectFactory::getInstance()->getPagerObject();
 
 		// Fetch the adequate repository
-		$contentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance();
+		$contentRepository = ContentRepositoryFactory::getInstance();
 
 		// Query the repository
 		$contents = $contentRepository->findBy($matcherObject, $orderObject, $pagerObject->getLimit(), $pagerObject->getOffset());
@@ -125,32 +126,30 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	}
 
 	/**
+	 * @todo possibly implement a type converter for argument $content.
 	 * @param array $content
-	 * @throws \TYPO3\CMS\Vidi\Exception\MissingUidException
-	 * @return void
-	 * @dontvalidate $content
+	 * @param string $dataType
+	 * @return string
 	 */
-	public function updateAction(array $content = array()) {
-
-		if (empty($content['uid'])) {
-			throw new \TYPO3\CMS\Vidi\Exception\MissingUidException('Missing Uid', 1351605545);
-		}
+	public function updateAction(array $content = array(), $dataType = '') {
 
 		/** @var ModuleLoader $moduleLoader */
 		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\ModuleLoader');
+		$dataType = empty($dataType) ? $moduleLoader->getDataType() : $dataType;
 
-		// transform array given as argument to object.
-		/** @var \TYPO3\CMS\Vidi\Domain\Model\Content $content */
-		$contentObject = $this->objectManager->get('TYPO3\CMS\Vidi\Domain\Model\Content',
-			$moduleLoader->getDataType(),
-			$content
-		);
+		/** @var \TYPO3\CMS\Vidi\Domain\Validator\ContentValidator $contentValidator */
+		$contentValidator = $this->objectManager->get('TYPO3\CMS\Vidi\Domain\Validator\ContentValidator');
+		$contentValidator->validate($content, $dataType);
 
 		// Fetch the adequate repository
-		$contentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance();
+		$contentRepository = ContentRepositoryFactory::getInstance($dataType);
+
+		// Instantiate Content object.
+		/** @var \TYPO3\CMS\Vidi\Domain\Model\Content $contentObject */
+		$contentObject = $this->objectManager->get('TYPO3\CMS\Vidi\Domain\Model\Content', $dataType, $content);
 		$contentRepository->update($contentObject);
 
-		// reload object from repository
+		// reload the updated object from repository
 		$contentObject = $contentRepository->findByUid($contentObject->getUid());
 
 		// extract keys of content.
@@ -171,7 +170,7 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	public function deleteAction($content) {
 
 		// Fetch the adequate repository
-		$contentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance();
+		$contentRepository = ContentRepositoryFactory::getInstance();
 
 		$labelField = TcaService::table()->getLabelField();
 		$getter = 'get' . ucfirst($labelField);

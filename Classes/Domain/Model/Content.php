@@ -250,12 +250,13 @@ class Content implements \ArrayAccess {
 	 * @link http://php.net/manual/en/arrayaccess.offsetset.php
 	 * @param mixed $offset
 	 * @param mixed $value
-	 * @throws NotImplementedException
-	 * @return void
+	 * @return $this
 	 */
 	public function offsetSet($offset, $value) {
-		$message = 'Setting value for Array object is not supported';
-		throw new NotImplementedException($message, 1376132305);
+		$offset = $this->convertFieldNameToPropertyName($offset);
+		$setter = 'set' . ucfirst($offset);
+		$this->$setter($value);
+		return $this;
 	}
 
 	/**

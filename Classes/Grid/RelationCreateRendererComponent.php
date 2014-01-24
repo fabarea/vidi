@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Formatter;
+namespace TYPO3\CMS\Vidi\Grid;
 /***************************************************************
  *  Copyright notice
  *
@@ -22,30 +22,19 @@ namespace TYPO3\CMS\Vidi\Formatter;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Core\SingletonInterface;
 
 /**
- * Format date + time that will be displayed in the Grid
+ * Class for configuring a "Create Relation" Grid Renderer in the Grid TCA.
  */
-class Datetime implements FormatterInterface , SingletonInterface{
+class RelationCreateRendererComponent extends GenericRendererComponent {
 
 	/**
-	 * Format a date
-	 *
-	 * @param int $value
-	 * @return string
+	 * Constructor for a "Create Relation" Grid Renderer Component.
 	 */
-	public function format($value) {
-		$result = '';
-		if ($value > 0) {
-
-
-			/** @var $viewHelper \TYPO3\CMS\Fluid\ViewHelpers\Format\DateViewHelper */
-			$viewHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Fluid\ViewHelpers\Format\DateViewHelper');
-			$result = $viewHelper->render('@' . $value, 'd.m.Y - H:i');
-		}
-		return $result;
+	public function __construct() {
+		$className = 'TYPO3\CMS\Vidi\Grid\RelationCreateRenderer';
+		parent::__construct($className, array());
 	}
-
 }
+
 ?>

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\GridRenderer;
+namespace TYPO3\CMS\Vidi\Grid;
 
 /***************************************************************
  *  Copyright notice
@@ -26,12 +26,12 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
  ***************************************************************/
 
 /**
- * Test case for class \TYPO3\CMS\Vidi\GridRenderer\Category.
+ * Test case for class \TYPO3\CMS\Vidi\Grid\CategoryRenderer.
  */
-class RelationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
+class RelationRendererTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\GridRenderer\Relation
+	 * @var \TYPO3\CMS\Vidi\Grid\RelationRenderer
 	 */
 	private $fixture;
 
@@ -49,7 +49,7 @@ class RelationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 		$moduleLoader = new \TYPO3\CMS\Vidi\ModuleLoader($this->dataType);
 		$moduleLoader->register();
 		$GLOBALS['_GET']['M'] = $this->moduleCode;
-		$this->fixture = new \TYPO3\CMS\Vidi\GridRenderer\Relation();
+		$this->fixture = new \TYPO3\CMS\Vidi\Grid\RelationRenderer();
 	}
 
 	public function tearDown() {

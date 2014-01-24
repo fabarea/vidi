@@ -161,9 +161,9 @@ Vidi.Table = {
 						indicator: Vidi.Editable.indicator,
 						data: Vidi.Editable.data,
 						submitdata: Vidi.Editable.submitData
-						//callback: function (sValue, settings) {
-						// could be the reload of the whole grid.
-						//},
+//						callback: function (sValue, settings) {
+//							console.log(sValue);
+//						}
 					}
 				);
 

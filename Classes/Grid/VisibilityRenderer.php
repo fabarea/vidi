@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Formatter;
+namespace TYPO3\CMS\Vidi\Grid;
 /***************************************************************
  *  Copyright notice
  *
@@ -22,30 +22,44 @@ namespace TYPO3\CMS\Vidi\Formatter;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
- * Format date + time that will be displayed in the Grid
+ * Class rendering visibility for the Grid.
  */
-class Datetime implements FormatterInterface , SingletonInterface{
+class VisibilityRenderer extends GridRendererAbstract {
 
 	/**
-	 * Format a date
+	 * Render visibility for the Grid.
 	 *
-	 * @param int $value
 	 * @return string
 	 */
-	public function format($value) {
-		$result = '';
-		if ($value > 0) {
+	public function render() {
 
+		$result = 'No hidden field for this data type';
+		$getter = $this->formatGetter();
 
-			/** @var $viewHelper \TYPO3\CMS\Fluid\ViewHelpers\Format\DateViewHelper */
-			$viewHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Fluid\ViewHelpers\Format\DateViewHelper');
-			$result = $viewHelper->render('@' . $value, 'd.m.Y - H:i');
+		if ($getter) {
+			$spriteName = $this->object->$getter() ? 'actions-edit-unhide' : 'actions-edit-hide';
+			$result = IconUtility::getSpriteIcon($spriteName);
 		}
 		return $result;
 	}
 
+	/**
+	 * Return a getter for the hidden field
+	 *
+	 * @return string
+	 */
+	protected function formatGetter() {
+		$result = NULL;
+		if (TcaService::table()->hasField('hidden')) {
+			$result = 'getHidden';
+		} elseif (TcaService::table()->hasField('disable')) {
+			$result = 'getDisable';
+		}
+		return $result;
+	}
 }
 ?>

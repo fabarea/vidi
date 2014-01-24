@@ -23,7 +23,6 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 use TYPO3\CMS\Backend\Utility\IconUtility;
-use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
 
 /**
  * View helper which renders a "edit" button to be placed in the grid.

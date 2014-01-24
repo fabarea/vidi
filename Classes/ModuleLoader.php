@@ -23,6 +23,7 @@ namespace TYPO3\CMS\Vidi;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
+use TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException;
 
 /**
  * Service class used in other extensions to register a vidi based backend module.
@@ -157,7 +158,7 @@ class ModuleLoader {
 
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode] = array();
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode]['dataType'] = $this->dataType;
-		$GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode]['defaultPid'] = $this->defaultPid;
+		$GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode]['defaultPid'] = is_null($this->defaultPid) ? 0 : $this->defaultPid;
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode]['additionalJavaScriptFiles'] = $this->additionalJavaScriptFiles;
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode]['additionalStyleSheetFiles'] = $this->additionalStyleSheetFiles;
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode]['components'] = $this->components;
@@ -211,7 +212,7 @@ class ModuleLoader {
 		// Module code must exist
 		if (empty($GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode])) {
 			$message = sprintf('Invalid or not existing module code "%s"', $moduleCode);
-			throw new \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException($message, 1375092053);
+			throw new InvalidKeyInArrayException($message, 1375092053);
 		}
 
 		$result = $GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode];
@@ -222,7 +223,7 @@ class ModuleLoader {
 			} else {
 				// key must exist
 				$message = sprintf('Invalid key configuration "%s"', $key);
-				throw new \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException($message, 1375092054);
+				throw new InvalidKeyInArrayException($message, 1375092054);
 			}
 		}
 		return $result;

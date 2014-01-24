@@ -22,60 +22,14 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Vidi\Grid\TitleRenderer;
 
 /**
  * Class rendering title and description for the Grid.
+ *
+ * @depreated use \TYPO3\CMS\Vidi\Grid\TitleRenderer
  */
-class Title extends GridRendererAbstract {
+class Title extends TitleRenderer {
 
-	/**
-	 * Render title for the Grid.
-	 *
-	 * @return string
-	 */
-	public function render() {
-
-		$result = '';
-		$template = '<div>%s %s <br /><span class="text-light">%s</span></div>';
-
-		if ($this->object->getTitle() || $this->object->getDescription()) {
-
-			// Get a possible default icon
-			$defaultFlag = '';
-			$tsConfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getModTSconfig(0, 'mod.SHARED');
-			// fallback non sprite-configuration
-			if (($pos = strrpos($tsConfig['properties']['defaultLanguageFlag'], '.')) !== FALSE) {
-				$defaultFlag = substr($tsConfig['properties']['defaultLanguageFlag'], 0, $pos);
-			}
-
-			$result = sprintf($template,
-				empty($defaultFlag) ? '' : \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('flags-' . $defaultFlag),
-				$this->object->getTitle(),
-				$this->object->getDescription() // @todo shorten text if too long
-			);
-		}
-
-		// Get the Language Uid checking whether to render flags
-		$languages = \TYPO3\CMS\Vidi\Utility\Language::getInstance()->getLanguages();
-		if (!empty($languages) && $this->object->getUid() > 0) {
-
-			foreach ($languages as $language) {
-				$records = \TYPO3\CMS\Vidi\Utility\Overlays::getOverlayRecords('sys_file', array($this->object->getUid()), $language['uid']);
-
-				if (!empty($records[$this->object->getUid()])) {
-					$key = key($records[$this->object->getUid()]);
-					$record = $records[$this->object->getUid()][$key];
-
-					$result .= sprintf($template,
-						\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('flags-' . $language['flag']),
-						$record['title'],
-						$record['description']
-					);
-				}
-			}
-		}
-
-		return $result;
-	}
 }
 ?>

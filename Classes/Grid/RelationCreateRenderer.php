@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\GridRenderer;
+namespace TYPO3\CMS\Vidi\Grid;
 /***************************************************************
  *  Copyright notice
  *
@@ -22,42 +22,35 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
- * Interface dealing with rendering a media in someway.
+ * Class rendering relation
  */
-interface GridRendererInterface {
+class RelationCreateRenderer extends GridRendererAbstract {
 
 	/**
-	 * Render a media in someway.
+	 * Render a representation of the relation on the GUI.
 	 *
 	 * @return string
 	 */
-	public function render();
+	public function render() {
 
-	/**
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
-	 * @return $this
-	 */
-	public function setObject($object);
+		$foreignTable = TcaService::table()->field($this->getFieldName())->getForeignTable();
 
-	/**
-	 * @param string $fieldName
-	 * @return $this
-	 */
-	public function setFieldName($fieldName);
+		$template = '<div style="text-align: right" class="pull-right invisible">
+			<a href="#" data-uid="%s" data-type="%s" data-relation-property="%s" data-related-type="%s" class="btn-create-relation btn-relation">%s</a>
+			</div>';
+		$result = sprintf($template,
+			$this->object->getUid(),
+			$this->object->getDataType(),
+			$this->getFieldName(),
+			$foreignTable,
+			IconUtility::getSpriteIcon('actions-document-new')
+		);
 
-	/**
-	 * @param array $configuration
-	 * @return $this
-	 */
-	public function setFieldConfiguration($configuration);
-
-	/**
-	 * @param array $configuration
-	 * @return $this
-	 */
-	public function setGridRendererConfiguration($configuration);
-
+		return $result;
+	}
 }
 ?>

@@ -39,7 +39,7 @@ class RelationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @param string $relationProperty
 	 * @param array $relatedContents
 	 * @throws \TYPO3\CMS\Vidi\Exception\MissingUidException
-	 * @return void
+	 * @return string
 	 */
 	public function updateAction($content, $dataType, $relationProperty, array $relatedContents) {
 		if ((int) $content <= 0) {
@@ -70,7 +70,7 @@ class RelationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @param string $dataType
 	 * @param string $relationProperty
 	 * @param string $relatedDataType
-	 * @return string
+	 * @return void
 	 */
 	public function listAction($content, $dataType, $relationProperty, $relatedDataType) {
 

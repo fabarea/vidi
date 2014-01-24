@@ -22,74 +22,13 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Backend\Utility\IconUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use TYPO3\CMS\Vidi\Grid\RelationCountRenderer;
 
 /**
  * Class rendering relation
+ *
+ * @deprecated use TYPO3\CMS\Vidi\Grid\RelationCountRenderer
  */
-class RelationCount extends GridRendererAbstract {
-
-	/**
-	 * @var \TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper
-	 */
-	protected $editViewHelper;
-
-	/**
-	 * @var \TYPO3\CMS\Fluid\ViewHelpers\TranslateViewHelper
-	 */
-	protected $translateViewHelper;
-
-	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		$this->editViewHelper = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper');
-		$this->translateViewHelper = GeneralUtility::makeInstance('TYPO3\CMS\Fluid\ViewHelpers\TranslateViewHelper');
-	}
-
-	/**
-	 * Render a representation of the relation on the GUI.
-	 *
-	 * @return string
-	 */
-	public function render() {
-
-		// Get TCA Field service
-		$tcaTableService = TcaService::table($this->object->getDataType());
-
-		$numberOfObjects = count($this->object[$this->fieldName]);
-
-		if ($numberOfObjects > 1) {
-			$label = 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:items';
-			if (isset($this->gridRendererConfiguration['labelPlural'])) {
-				$label = $this->gridRendererConfiguration['labelPlural'];
-			}
-		} else {
-			$label = 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:item';
-			if (isset($this->gridRendererConfiguration['labelSingular'])) {
-				$label = $this->gridRendererConfiguration['labelSingular'];
-			}
-		}
-
-		$template = '<a href="/typo3/mod.php?M=%s&returnUrl=%s&search=%s&query=%s:%s">%s %s<span class="invisible" style="padding-left: 5px">%s</span></a>';
-
-		$search = json_encode(array(array($tcaTableService->field($this->fieldName)->getForeignField() => $this->object->getUid())));
-
-		// @todo naive implementation. Better to base64 encode? Remove todo if no complain...
-		$search = str_replace('"', "'", $search);
-		return sprintf($template,
-			empty($this->gridRendererConfiguration['targetModule']) ? '' : $this->gridRendererConfiguration['targetModule'],
-			'/typo3/mod.php?M=' . $this->gridRendererConfiguration['sourceModule'],
-			$search,
-			$tcaTableService->field($this->fieldName)->getForeignField(),
-			$this->object->getUid(),
-			$numberOfObjects,
-			LocalizationUtility::translate($label, ''),
-			IconUtility::getSpriteIcon('extensions-vidi-go')
-		);
-	}
+class RelationCount extends RelationCountRenderer {
 }
 ?>

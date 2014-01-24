@@ -23,7 +23,9 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Vidi\ContentRepositoryFactory;
 use TYPO3\CMS\Vidi\Domain\Model\Content;
+use TYPO3\CMS\Vidi\Formatter\FormatterInterface;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
@@ -35,6 +37,11 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 	 * @var array
 	 */
 	protected $columns = array();
+
+	/**
+	 * @var array
+	 */
+	protected $relations = array();
 
 	/**
 	 * @param array $columns
@@ -52,16 +59,13 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 	 */
 	public function render(Content $object, $offset) {
 
-		$tcaGridService = TcaService::grid();
 
 		// Initialize returned array
 		$output = array();
-		$output['DT_RowId'] = 'row-' . $object->getUid();
-		#$output['DT_RowClass'] = 'row-' . $object->getStatus();
 
-		foreach($tcaGridService->getFields() as $fieldName => $configuration) {
+		foreach(TcaService::grid()->getFields() as $fieldName => $configuration) {
 
-			if ($tcaGridService->isSystem($fieldName)) {
+			if (TcaService::grid()->isSystem($fieldName)) {
 
 				$systemFieldName = substr($fieldName, 2);
 				$className = sprintf('TYPO3\CMS\Vidi\ViewHelpers\Grid\System%sViewHelper', ucfirst($systemFieldName));
@@ -71,44 +75,45 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 					$systemColumnViewHelper = $this->objectManager->get($className);
 					$output[$fieldName] = $systemColumnViewHelper->render($object, $offset);
 				}
-
-			} elseif (!in_array($fieldName, $this->columns)) {
+			} elseif (!in_array($fieldName, $this->columns) && !TcaService::grid()->isForce($fieldName)) {
 
 				// Show nothing if the column is not requested which is good for performance.
 				$output[$fieldName] = '';
 			} else {
 
+				$this->handleRelation($object, $fieldName);
+
 				// Fetch value
-				if ($tcaGridService->hasRenderers($fieldName)) {
+				if (TcaService::grid()->hasRenderers($fieldName)) {
 
 					$result = '';
-					$renderers = $tcaGridService->getRenderers($fieldName);
-					foreach ($renderers as $rendererClassNameOrIndex => $rendererClassNameOrConfiguration) {
+					$renderers = TcaService::grid()->getRenderers($fieldName);
 
-						if (is_array($rendererClassNameOrConfiguration)) {
-							$rendererClassName = $rendererClassNameOrIndex;
-							$gridRendererConfiguration = $rendererClassNameOrConfiguration;
-						} else {
-							$rendererClassName = $rendererClassNameOrConfiguration;
-							$gridRendererConfiguration = array();
-						}
+					// if is relation has one
+					foreach ($renderers as $rendererClassName => $rendererConfiguration) {
 
-						/** @var $rendererObject \TYPO3\CMS\Vidi\GridRenderer\GridRendererInterface */
+						/** @var $rendererObject \TYPO3\CMS\Vidi\Grid\GridRendererInterface */
 						$rendererObject = GeneralUtility::makeInstance($rendererClassName);
 						$result .= $rendererObject
 							->setObject($object)
 							->setFieldName($fieldName)
 							->setFieldConfiguration($configuration)
-							->setGridRendererConfiguration($gridRendererConfiguration)
+							->setGridRendererConfiguration($rendererConfiguration)
 							->render();
 					}
 				} else {
-					$result = $object[$fieldName]; // AccessArray object
+
+					// Retrieve the content from the field.
+					$result = $object[$fieldName] instanceof Content ? $object[$fieldName]['uid'] : $object[$fieldName]; // AccessArray object
 
 					// Avoid bad surprise, converts characters to HTML.
 					$fieldType = TcaService::table($object->getDataType())->field($fieldName)->getFieldType();
 					if ($fieldType !== TcaService::TEXTAREA) {
-						$result = htmlentities($result); // AccessArray object
+						$result = htmlentities($result);
+					} elseif ($fieldType === TcaService::TEXTAREA && !$this->isClean($result)) {
+						$result = htmlentities($result);
+					} elseif ($fieldType === TcaService::TEXTAREA && !$this->hasHtml($result)) {
+						$result = nl2br($result);
 					}
 				}
 
@@ -118,7 +123,80 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 			}
 		}
 
+		$output['DT_RowId'] = 'row-' . $object->getUid();
+		$output['DT_RowClass'] = sprintf('%s_%s %s',
+			$object->getDataType(),
+			$object->getUid(),
+			implode(' ', $this->relations)
+		);
+
 		return $output;
+	}
+
+	/**
+	 * Handle if the field to be outputted has a relation.
+	 * Collect this relations along the way to be displayed in the final JSON.
+	 *
+	 * @param Content $object
+	 * @param string $fieldName
+	 * @return void
+	 */
+	protected function handleRelation(Content $object, $fieldName) {
+
+		// It must be resolved.
+		$dataType = TcaService::grid()->getDataType($fieldName);
+		if ($object->getDataType() == $dataType
+			&& TcaService::table()->hasField($fieldName)
+			&& TcaService::table()->field($fieldName)->hasRelationOneToOne()) {
+
+			$foreignDataType = TcaService::table()->field($fieldName)->getForeignTable();
+
+			// Check if the relation is handle on this side or on the opposite side.
+			if (!empty($object[$fieldName])) {
+				$this->relations[] = $foreignDataType . '_' . $object[$fieldName]['uid'];
+			} else {
+				// We must query the opposite side to get the identifier of the foreign object.
+				$foreignField = TcaService::table()->field($fieldName)->getForeignField();
+				$foreignDataType = TcaService::table()->field($fieldName)->getForeignTable();
+				$foreignField = TcaService::table()->field($fieldName)->getForeignField();
+				$foreignRepository = ContentRepositoryFactory::getInstance($foreignDataType);
+				$find = 'findOneBy' . GeneralUtility::underscoredToUpperCamelCase($foreignField);
+
+				/** @var Content $foreignObject */
+				$foreignObject = $foreignRepository->$find($object->getUid());
+				$this->relations[] = $foreignDataType . '_' . $foreignObject->getUid();
+				$object[$fieldName] = $foreignObject;
+			}
+		}
+	}
+
+	/**
+	 * Check whether a string contains HTML tags.
+	 *
+	 * @param string $content the content to be analyzed
+	 * @return boolean
+	 */
+	protected function hasHtml($content) {
+		$result = FALSE;
+
+		// We compare the length of the string with html tags and without html tags.
+		if (strlen($content) != strlen(strip_tags($content))) {
+			$result = TRUE;
+		}
+		return $result;
+	}
+
+	/**
+	 * Check whether a string contains potential XSS.
+	 *
+	 * @param string $content the content to be analyzed
+	 * @return boolean
+	 */
+	protected function isClean($content) {
+
+		// @todo implement me!
+		$result = TRUE;
+		return $result;
 	}
 
 	/**
@@ -130,8 +208,11 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 	 */
 	protected function format($value, array $configuration) {
 		if (!empty($configuration['format'])) {
-			$formatter = sprintf('TYPO3\CMS\Vidi\Formatter\%s::format', ucfirst($configuration['format']));
-			$value = call_user_func($formatter, $value);
+			$className = 'TYPO3\CMS\Vidi\Formatter\\' . ucfirst($configuration['format']);
+
+			/** @var FormatterInterface  $formatter */
+			$formatter = $this->objectManager->get($className);
+			$value = $formatter->format($value);
 		}
 		return $value;
 	}

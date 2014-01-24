@@ -22,88 +22,16 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Vidi\Tca\TcaService;
-use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
+use TYPO3\CMS\Vidi\Grid\RelationRenderer;
 
 /**
  * Class rendering relation
+ *
+ * @deprecated use \TYPO3\CMS\Vidi\Grid\RelationRenderer
  */
-class Relation extends GridRendererAbstract {
+class Relation extends RelationRenderer {
 
-	/**
-	 * @var \TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper
-	 */
-	protected $editViewHelper;
 
-	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		$this->editViewHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper');
-	}
-
-	/**
-	 * Render a representation of the relation on the GUI.
-	 *
-	 * @return string
-	 */
-	public function render() {
-
-		$result = '';
-
-		// Get TCA table service.
-		$tcaTableService = TcaService::table($this->object->getDataType());
-
-		// Get label of the foreign table.
-		$foreignLabelField = $this->getForeignTableLabelField($this->fieldName);
-
-		if ($tcaTableService->field($this->fieldName)->hasRelationOne()) {
-
-			$foreignObject = $this->object[$this->fieldName];
-
-			if ($foreignObject) {
-				$template = '<a href="%s" data-uid="%s" class="btn-edit invisible">%s</a><span>%s</span>';
-				$result = sprintf($template,
-					$this->editViewHelper->render($foreignObject),
-					$this->object->getUid(),
-					\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-open'),
-					$foreignObject[$foreignLabelField]
-				);
-			}
-		} elseif ($tcaTableService->field($this->fieldName)->hasRelationMany()) {
-
-			if (!empty($this->object[$this->fieldName])) {
-				$template = '<li><a href="%s" data-uid="%s" class="btn-edit invisible">%s</a><span>%s</span></li>';
-
-				/** @var $foreignObject \TYPO3\CMS\Vidi\Domain\Model\Content */
-				foreach ($this->object[$this->fieldName] as $foreignObject) {
-					$result .= sprintf($template,
-						$this->editViewHelper->render($foreignObject),
-						$this->object->getUid(),
-						\TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-open'),
-						$foreignObject[$foreignLabelField]);
-				}
-				$result = sprintf('<ul class="unstyled">%s</ul>', $result);
-			}
-		}
-		return $result;
-	}
-
-	/**
-	 * Return the label field of the foreign table.
-	 *
-	 * @param string $fieldName
-	 * @return string
-	 */
-	protected function getForeignTableLabelField($fieldName) {
-
-		// Get TCA table service.
-		$tcaTableService = TcaService::table($this->object->getDataType());
-
-		// Compute the label of the foreign table.
-		$relationDataType = $tcaTableService->field($fieldName)->relationDataType();
-		return TcaService::table($relationDataType)->getLabelField();
-	}
 }
 
 ?>

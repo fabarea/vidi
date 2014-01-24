@@ -49,13 +49,14 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 				throw new NotExistingFieldException($message, 1375369594);
 			}
 
-			$output .= sprintf('Vidi._columns.push({ "mData": "%s", "bSortable": %s, "bVisible": %s, "sWidth": "%s", "sClass": "%s %s" });' . PHP_EOL,
+			$output .= sprintf('Vidi._columns.push({ "mData": "%s", "bSortable": %s, "bVisible": %s, "sWidth": "%s", "sClass": "%s %s", "dataType": "%s" });' . PHP_EOL,
 				$fieldName,
 				TcaService::grid()->isSortable($fieldName) ? 'true' : 'false',
 				TcaService::grid()->isVisible($fieldName) ? 'true' : 'false',
 				empty($configuration['width']) ? 'auto' : $configuration['width'],
 				$this->computeEditableClass($fieldName),
-				TcaService::grid()->getClass($fieldName)
+				TcaService::grid()->getClass($fieldName),
+				TcaService::grid()->getDataType($fieldName)
 			);
 		}
 
@@ -69,9 +70,10 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 	 * @return boolean
 	 */
 	protected function computeEditableClass($fieldName) {
-		$result = '';
+		$result = FALSE;
 		if (TcaService::grid()->isEditable($fieldName)) {
-			$result = TcaService::table()->field($fieldName)->isTextArea() ? 'editable-textarea' : 'editable-textfield';
+			$dataType = TcaService::grid()->getDataType($fieldName);
+			$result = TcaService::table($dataType)->field($fieldName)->isTextArea() ? 'editable-textarea' : 'editable-textfield';
 		}
 		return $result;
 	}

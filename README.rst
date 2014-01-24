@@ -138,7 +138,6 @@ Grid TCA configuration
 Key and values that can be used in TCA Grid
 
 .. ...............................................................
-.. ...............................................................
 .. container:: table-row
 
 Key
@@ -154,7 +153,6 @@ Default
 	TRUE
 
 
-.. ...............................................................
 .. ...............................................................
 .. container:: table-row
 
@@ -172,7 +170,6 @@ Default
 	TRUE
 
 .. ...............................................................
-.. ...............................................................
 .. container:: table-row
 
 Key
@@ -187,7 +184,6 @@ Description
 Default
 	NULL
 
-.. ...............................................................
 .. ...............................................................
 .. container:: table-row
 
@@ -205,7 +201,6 @@ Default
 
 
 .. ...............................................................
-.. ...............................................................
 .. container:: table-row
 
 Key
@@ -221,6 +216,22 @@ Default
 	NULL
 
 .. ...............................................................
+.. container:: table-row
+
+Key
+	**dataType**
+
+Datatype
+	string
+
+Description
+	The table name where the field belong.
+	Only defines this option if the field comes from another table.
+	A Grid Render will be necessary to render the content.
+
+Default
+	NULL
+
 .. ...............................................................
 .. container:: table-row
 
@@ -237,7 +248,6 @@ Default
 	NULL
 
 .. ...............................................................
-.. ...............................................................
 .. container:: table-row
 
 Key
@@ -252,7 +262,6 @@ Description
 Default
 	NULL
 
-.. ...............................................................
 .. ...............................................................
 .. container:: table-row
 
@@ -309,24 +318,38 @@ Description
 Grid Renderer
 ------------------
 
-To render a custom column a class implementing Grid Renderer Interface must be given to the Grid TCA.
+By default the value of the column is displayed without further processing except the HTML entities conversion.
+In some cases, it is wanted to customize the output for instance whenever displaying relations.
+A Grid Renderer can be configured for the column as example. You can write your custom Grid Renderer, they just have to implement
+Grid Renderer Interface.
 
-@todo write more...
 
-::
+Basic Grid Renderer::
 
-			'access_codes' => array(
-				'visible' => TRUE,
-				'renderers' => array(
-					'TYPO3\CMS\Vidi\GridRenderer\RelationCreate',
-					'TYPO3\CMS\Vidi\GridRenderer\RelationCount' => array(
-						'labelSingular' => 'LLL:EXT:ebook/Resources/Private/Language/locallang_db.xlf:tx_ebook_domain_model_accesscode',
-						'labelPlural' => 'LLL:EXT:ebook/Resources/Private/Language/locallang_db.xlf:tx_ebook_domain_model_accesscodes',
-						'sourceModule' => 'ebook_VidiTxEbookDomainModelBookM1',
-						'targetModule' => 'ebook_VidiTxEbookDomainModelAccesscodeM1',
-					),
-				),
-			),
+
+	# "foo" is the name of a field and is assumed to have a complex rendering
+	'foo' => array(
+		'label' => 'LLL:EXT:lang/locallang_tca.xlf:tx_bar_domain_model.foo', // Label is required
+		'renderer' => 'TYPO3\CMS\Vidi\Grid\RelationRenderer',
+	),
+
+Grid Renderer with options::
+
+	# "foo" is the name of a field and is assumed to have a complex rendering
+	'foo' => array(
+		'label' => 'LLL:EXT:lang/locallang_tca.xlf:tx_bar_domain_model.foo', // Label is required
+		'renderer' => new TYPO3\CMS\Vidi\Grid\GenericRendererComponent('TYPO3\CMS\Vidi\Grid\RelationRenderer', array('foo' => 'bar')),
+	),
+
+Multiple Grid Renderers with options::
+
+	'foo' => array(
+		'label' => 'LLL:EXT:lang/locallang_tca.xlf:tx_bar_domain_model.foo', // Label is required
+		'renderers' => array(
+			new TYPO3\CMS\Vidi\Grid\GenericRendererComponent('TYPO3\CMS\Vidi\Grid\RelationRenderer', array('foo' => 'bar')),
+			... // more possible renderers to come
+		),
+	),
 
 Content Repository Factory
 ===========================

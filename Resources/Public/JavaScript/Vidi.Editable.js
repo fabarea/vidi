@@ -20,12 +20,35 @@ Vidi.Editable = {
 	 * @returns {object}
 	 */
 	submitData: function (value, settings) {
-
+		var uidParameter, uid, dataTypeParameter, dataType, columnPosition, classes, expression;
 		var data = {};
 
-		// Set uid parameter which must be defined at this level.
-		var uidParameter = '{0}[content][uid]'.format(Vidi.module.parameterPrefix);
-		var uid = this.parentNode.getAttribute('id').replace('row-', '');
+		// Compute parameter which must be defined at this level.
+		dataTypeParameter = '{0}[dataType]'.format(Vidi.module.parameterPrefix);
+		uidParameter = '{0}[content][uid]'.format(Vidi.module.parameterPrefix);
+
+		// Get needed values
+		columnPosition = Vidi.table.fnGetPosition(this)[2];
+		dataType = Vidi._columns[columnPosition]['dataType'];
+
+		classes = this.parentNode.getAttribute('class').split(' ');
+		expression = new RegExp(dataType + '_[0-9]+', 'ig');
+		uid = 0;
+		$.each(classes, function(index, value) {
+
+			var match = value.match(expression);
+			if (match) {
+				var matches = match[0].split('_');
+				uid = matches[matches.length - 1];
+			}
+		});
+
+		if (uid == 0) {
+			console.log('Vidi: I could not found a valid uid. Update will not succeed! #1390668840')
+		}
+
+		// ... And return as array
+		data[dataTypeParameter] = dataType;
 		data[uidParameter] = uid;
 		return data;
 	},
@@ -36,13 +59,14 @@ Vidi.Editable = {
 	 * @returns {string}
 	 */
 	data: function (value, settings) {
+		var contentParameter, columnPosition, fieldName;
 
 		// Define dynamically the name of the field which will be used as POST parameter
-		var columnPosition = Vidi.table.fnGetPosition(this)[2];
-		var fieldName = Vidi._columns[columnPosition]['mData'];
-		var contentParameter = '{0}[content][{1}]'.format(Vidi.module.parameterPrefix, fieldName);
-		settings.name = contentParameter;
+		columnPosition = Vidi.table.fnGetPosition(this)[2];
+		fieldName = Vidi._columns[columnPosition]['mData'];
+		contentParameter = '{0}[content][{1}]'.format(Vidi.module.parameterPrefix, fieldName);
 
+		settings.name = contentParameter;
 		return value;
 	}
 };

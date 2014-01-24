@@ -22,22 +22,28 @@ namespace TYPO3\CMS\Vidi\Formatter;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\SingletonInterface;
 
 /**
  * Format a date that will be displayed in the Grid
  */
-class Date {
+class Date implements FormatterInterface, SingletonInterface {
 
 	/**
 	 * Format a date
 	 *
-	 * @param string $value
+	 * @param int $value
 	 * @return string
 	 */
 	public function format($value) {
-		/** @var $viewHelper \TYPO3\CMS\Fluid\ViewHelpers\Format\DateViewHelper */
-		$viewHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Fluid\ViewHelpers\Format\DateViewHelper');
-		return $viewHelper->render('@' . $value, 'd.m.Y');
+		$result = '';
+		if ($value > 0) {
+
+			/** @var $viewHelper \TYPO3\CMS\Fluid\ViewHelpers\Format\DateViewHelper */
+			$viewHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Fluid\ViewHelpers\Format\DateViewHelper');
+			$result = $viewHelper->render('@' . $value, 'd.m.Y');
+		}
+		return $result;
 	}
 
 }

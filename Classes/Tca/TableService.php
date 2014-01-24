@@ -189,7 +189,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 */
 	public function isSystem($fieldName) {
 		$systemFields = array(
-			'uid', 'tstamp', 'crdate', 'deleted', 'hidden', 'startime', 'endtime',
+			'uid', 'tstamp', 'crdate', 'deleted', 'hidden', 'starttime', 'endtime',
 			'sys_language_uid', 'l18n_parent', 'l18n_diffsource',
 			't3ver_oid', 't3ver_id', 't3ver_wsid', 't3ver_label', 't3ver_state', 't3ver_stage', 't3ver_count', 't3ver_tstamp', 't3_origuid'
 		);
@@ -286,6 +286,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 		if (empty($this->columnTca[$fieldName]) && in_array($fieldName, TcaService::getSystemFields())) {
 			$this->columnTca[$fieldName] = array();
 		} elseif (empty($this->columnTca[$fieldName])) {
+
 			throw new \Exception(sprintf('Does the field really exist? No TCA entry found for field "%s"', $fieldName), 1385554481);
 		}
 

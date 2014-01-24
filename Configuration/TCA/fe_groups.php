@@ -34,7 +34,7 @@ $tca = array(
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:crdate',
 			),
 			'hidden' => array(
-				'renderer' => 'TYPO3\CMS\Vidi\GridRenderer\Visibility',
+				'renderer' => 'TYPO3\CMS\Vidi\Grid\VisibilityRenderer',
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:visibility_abbreviation',
 				'width' => '3%',
 			),
