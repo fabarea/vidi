@@ -38,7 +38,7 @@
 				<source>Close</source>
 			</trans-unit>
 			<trans-unit id="new">
-				<source>New object</source>
+				<source>New</source>
 			</trans-unit>
 			<trans-unit id="edit">
 				<source>Edit</source>

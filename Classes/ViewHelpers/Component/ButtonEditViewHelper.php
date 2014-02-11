@@ -23,6 +23,8 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Vidi\Domain\Model\Content;
 
 /**
  * View helper which renders a "edit" button to be placed in the grid.
@@ -38,13 +40,14 @@ class ButtonEditViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
 	/**
 	 * Renders a "edit" button to be placed in the grid.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param Content $object
 	 * @return string
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object = NULL) {
-		return sprintf('<a href="%s" data-uid="%s" class="btn-edit">%s</a>',
+	public function render(Content $object = NULL) {
+		return sprintf('<a href="%s" data-uid="%s" class="btn-edit" title="%s">%s</a>',
 			$this->uriEditViewHelper->render($object),
 			$object->getUid(),
+			LocalizationUtility::translate('edit', 'vidi'),
 			IconUtility::getSpriteIcon('actions-document-open')
 		);
 	}

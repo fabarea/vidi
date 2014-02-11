@@ -13,15 +13,15 @@ Vidi.Action = {
 	 *
 	 * @return void
 	 */
-	edit: function () {
+	edit: function() {
 
 		// bind the click handler script to the newly created elements held in the table
-		$('.btn-edit').bind('click', function (e) {
+		$('.btn-edit').bind('click', function(e) {
 			Vidi.Session.set('lastEditedUid', $(this).data('uid'));
 		});
 
 		// Make a row selectable
-		$('.checkbox-row').bind('click', function (e) {
+		$('.checkbox-row').bind('click', function(e) {
 			var checkboxes;
 
 			$(this)
@@ -41,7 +41,7 @@ Vidi.Action = {
 		$('.checkbox-row')
 			.parent()
 			.css('cursor', 'pointer')
-			.bind('click', function (e) {
+			.bind('click', function(e) {
 				$(this).find('.checkbox-row').click()
 			});
 	},
@@ -51,9 +51,9 @@ Vidi.Action = {
 	 *
 	 * @return void
 	 */
-	remove: function () {
+	remove: function() {
 		$('.btn-delete')
-			.click(function () {
+			.click(function() {
 				Vidi.Action.scope = this;
 			})
 			// Click-over is a jQuery Plugin extending pop-over plugin from Twitter Bootstrap
@@ -66,13 +66,13 @@ Vidi.Action = {
 					"<button data-dismiss='clickover' class='btn'>Cancel</button>" +
 					"<button class='btn btn-danger btn-delete-row'>Delete</button>" +
 					"</div>",
-				onShown: function () {
+				onShown: function() {
 
 					// Element corresponds to the click-over box. Keep it accessible in the closure.
 					var element = this;
 
 					// bind click on "btn-delete-row"
-					$('.btn-delete-row').bind('click', function (e) {
+					$('.btn-delete-row').bind('click', function(e) {
 						var row, message, url;
 
 						$(this).addClass('disabled').text(Vidi.translate('deleting'));
@@ -82,7 +82,7 @@ Vidi.Action = {
 
 						// Send Ajax request to delete media
 						$.get(url,
-							function (data) {
+							function(data) {
 
 								// Hide click-over box.
 								element.hide();
@@ -95,7 +95,9 @@ Vidi.Action = {
 						);
 					});
 				}
-			});
+			})
+			// Reset default title which was stripped by clickover plugin.
+			.attr('title', Vidi.translate('delete'));
 	}
 };
 
