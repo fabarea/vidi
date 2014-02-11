@@ -33,5 +33,3 @@ class Relation extends RelationRenderer {
 
 
 }
-
-?>

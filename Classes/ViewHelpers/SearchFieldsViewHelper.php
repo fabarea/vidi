@@ -49,5 +49,3 @@ class SearchFieldsViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVi
 		return json_encode($labels);
 	}
 }
-
-?>

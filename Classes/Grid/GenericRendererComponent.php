@@ -83,5 +83,3 @@ class GenericRendererComponent implements RendererComponentInterface {
 		return new GenericRendererComponent($states['className'], $states['configuration']);
 	}
 }
-
-?>

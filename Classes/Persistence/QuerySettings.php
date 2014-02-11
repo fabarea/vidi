@@ -64,5 +64,3 @@ class QuerySettings extends \TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySet
 		return $this;
 	}
 }
-
-?>

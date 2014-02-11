@@ -289,5 +289,3 @@ class Content implements \ArrayAccess {
 		return $result;
 	}
 }
-
-?>

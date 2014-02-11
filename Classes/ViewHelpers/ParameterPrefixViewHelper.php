@@ -38,4 +38,3 @@ class ParameterPrefixViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abstrac
 		return 'tx_vidi_' . strtolower($moduleCode);
 	}
 }
-?>

@@ -30,5 +30,3 @@ namespace TYPO3\CMS\Vidi\Exception;
 class EmptyPropertyException extends \Exception {
 
 }
-
-?>

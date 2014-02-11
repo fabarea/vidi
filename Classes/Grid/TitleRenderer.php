@@ -78,4 +78,3 @@ class TitleRenderer extends GridRendererAbstract {
 		return $result;
 	}
 }
-?>

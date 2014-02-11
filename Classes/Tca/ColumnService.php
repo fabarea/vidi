@@ -520,5 +520,3 @@ class ColumnService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 }
-
-?>

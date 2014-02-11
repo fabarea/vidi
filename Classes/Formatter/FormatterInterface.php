@@ -37,4 +37,3 @@ interface FormatterInterface {
 	public function format($value);
 
 }
-?>

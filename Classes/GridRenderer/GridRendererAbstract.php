@@ -31,4 +31,3 @@ namespace TYPO3\CMS\Vidi\GridRenderer;
 abstract class GridRendererAbstract extends \TYPO3\CMS\Vidi\Grid\GridRendererAbstract {
 
 }
-?>

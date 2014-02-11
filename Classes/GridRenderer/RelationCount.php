@@ -31,4 +31,3 @@ use TYPO3\CMS\Vidi\Grid\RelationCountRenderer;
  */
 class RelationCount extends RelationCountRenderer {
 }
-?>

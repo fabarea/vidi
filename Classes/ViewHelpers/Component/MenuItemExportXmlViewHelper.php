@@ -37,5 +37,3 @@ class MenuItemExportXmlViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abstr
 		return '<li><a href="#" class="mass-export-xml">Export XML (not implemented)</a></li>';
 	}
 }
-
-?>

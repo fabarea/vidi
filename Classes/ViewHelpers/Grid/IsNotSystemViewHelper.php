@@ -40,5 +40,3 @@ class IsNotSystemViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 	}
 
 }
-
-?>

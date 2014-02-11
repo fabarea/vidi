@@ -47,5 +47,3 @@ class RowsViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
 		return json_encode($result);
 	}
 }
-
-?>

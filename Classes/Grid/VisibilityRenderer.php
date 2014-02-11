@@ -62,4 +62,3 @@ class VisibilityRenderer extends GridRendererAbstract {
 		return $result;
 	}
 }
-?>

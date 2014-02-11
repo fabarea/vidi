@@ -36,5 +36,3 @@ class PublicPathViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
 		return \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('vidi');
 	}
 }
-
-?>

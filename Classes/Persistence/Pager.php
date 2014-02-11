@@ -186,5 +186,3 @@ class Pager  {
 		$this->offset = $offset;
 	}
 }
-
-?>

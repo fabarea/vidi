@@ -53,4 +53,3 @@ class RelationCreateRenderer extends GridRendererAbstract {
 		return $result;
 	}
 }
-?>

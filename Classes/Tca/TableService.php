@@ -299,5 +299,3 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 		return $this->instances[$fieldName];
 	}
 }
-
-?>

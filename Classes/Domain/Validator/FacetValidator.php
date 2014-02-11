@@ -44,5 +44,3 @@ class FacetValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractVal
 		}
 	}
 }
-
-?>

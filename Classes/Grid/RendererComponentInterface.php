@@ -48,5 +48,3 @@ interface RendererComponentInterface {
 	 */
 	public function toArray();
 }
-
-?>

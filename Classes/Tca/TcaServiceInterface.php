@@ -37,4 +37,3 @@ interface TcaServiceInterface {
 
 	const TYPE_FORM = 'form';
 }
-?>

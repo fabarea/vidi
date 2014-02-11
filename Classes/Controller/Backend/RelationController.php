@@ -92,5 +92,3 @@ class RelationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$this->view->assign('relatedContentTitle', TcaService::table($relatedDataType)->getTitle());
 	}
 }
-
-?>

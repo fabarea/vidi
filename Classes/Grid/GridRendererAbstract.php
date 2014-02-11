@@ -112,4 +112,3 @@ abstract class GridRendererAbstract implements GridRendererInterface {
 		return $this;
 	}
 }
-?>

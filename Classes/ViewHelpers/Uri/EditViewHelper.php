@@ -45,4 +45,3 @@ class EditViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
 		);
 	}
 }
-?>

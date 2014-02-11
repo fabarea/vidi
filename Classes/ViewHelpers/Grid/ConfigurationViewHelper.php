@@ -98,5 +98,3 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 	}
 
 }
-
-?>

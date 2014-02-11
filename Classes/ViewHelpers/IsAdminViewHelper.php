@@ -40,5 +40,3 @@ class IsAdminViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHel
 	}
 
 }
-
-?>

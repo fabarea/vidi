@@ -580,5 +580,3 @@ class Query implements \TYPO3\CMS\Extbase\Persistence\QueryInterface {
 		return $this;
 	}
 }
-
-?>

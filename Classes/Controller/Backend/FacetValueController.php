@@ -108,4 +108,3 @@ class FacetValueController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		return $suggestionLimit;
 	}
 }
-?>

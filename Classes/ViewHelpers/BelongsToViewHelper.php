@@ -52,5 +52,3 @@ class BelongsToViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewH
 		return in_array($relatedContent->getUid(), $relatedContentsUid);
 	}
 }
-
-?>

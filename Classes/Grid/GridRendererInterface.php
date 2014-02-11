@@ -60,4 +60,3 @@ interface GridRendererInterface {
 	public function setGridRendererConfiguration($configuration);
 
 }
-?>

@@ -105,5 +105,3 @@ class RelationRenderer extends GridRendererAbstract {
 		return TcaService::table($relationDataType)->getLabelField();
 	}
 }
-
-?>

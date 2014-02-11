@@ -1294,5 +1294,3 @@ class DbBackend {
 		}
 	}
 }
-
-?>

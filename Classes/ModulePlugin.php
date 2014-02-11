@@ -63,6 +63,3 @@ class ModulePlugin implements \TYPO3\CMS\Core\SingletonInterface {
 	}
 
 }
-
-
-?>

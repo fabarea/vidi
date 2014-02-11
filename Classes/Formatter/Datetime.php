@@ -48,4 +48,3 @@ class Datetime implements FormatterInterface , SingletonInterface{
 	}
 
 }
-?>

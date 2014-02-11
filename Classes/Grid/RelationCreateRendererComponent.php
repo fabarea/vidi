@@ -36,5 +36,3 @@ class RelationCreateRendererComponent extends GenericRendererComponent {
 		parent::__construct($className, array());
 	}
 }
-
-?>

@@ -96,4 +96,3 @@ class ConfigurationUtility implements \TYPO3\CMS\Core\SingletonInterface {
 		return $this->configuration;
 	}
 }
-?>

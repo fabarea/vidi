@@ -49,5 +49,3 @@ class ButtonNewViewHelper extends AbstractViewHelper {
 		);
 	}
 }
-
-?>

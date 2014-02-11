@@ -161,5 +161,3 @@ class TcaService implements \TYPO3\CMS\Core\SingletonInterface, \TYPO3\CMS\Vidi\
 		return self::$systemFields;
 	}
 }
-
-?>

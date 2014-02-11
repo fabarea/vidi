@@ -325,4 +325,3 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 		return $this->tca;
 	}
 }
-?>

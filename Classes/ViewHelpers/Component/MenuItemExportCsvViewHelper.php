@@ -37,5 +37,3 @@ class MenuItemExportCsvViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abstr
 		return '<li><a href="#" class="mass-export-csv">Export CSV (not implemented)</a></li>';
 	}
 }
-
-?>

@@ -173,5 +173,3 @@ EOF;
 		return $GLOBALS['TYPO3_DB'];
 	}
 }
-
-?>

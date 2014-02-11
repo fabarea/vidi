@@ -112,5 +112,3 @@ class DataMapper implements \TYPO3\CMS\Core\SingletonInterface {
 //		return $type;
 	}
 }
-
-?>

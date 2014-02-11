@@ -32,4 +32,3 @@ use TYPO3\CMS\Vidi\Grid\TitleRenderer;
 class Title extends TitleRenderer {
 
 }
-?>

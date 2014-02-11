@@ -37,5 +37,3 @@ class MenuItemMassEditViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abstra
 		return '<li><a href="#" class="mass-edit">Edit (not implemented)</a></li>';
 	}
 }
-
-?>

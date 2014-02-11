@@ -32,4 +32,3 @@ use TYPO3\CMS\Vidi\Grid\VisibilityRenderer;
 class Visibility extends VisibilityRenderer {
 
 }
-?>

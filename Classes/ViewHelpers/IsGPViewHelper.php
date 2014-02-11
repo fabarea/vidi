@@ -40,5 +40,3 @@ class IsGPViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
 		return GeneralUtility::_GP($argument) !== NULL;
 	}
 }
-
-?>

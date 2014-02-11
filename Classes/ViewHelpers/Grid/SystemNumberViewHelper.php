@@ -41,5 +41,3 @@ class SystemNumberViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVi
 		return $index + 1 + $offset;
 	}
 }
-
-?>

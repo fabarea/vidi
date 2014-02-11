@@ -42,4 +42,3 @@ class TransactionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 		return $transaction;
 	}
 }
-?>

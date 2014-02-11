@@ -37,5 +37,3 @@ class MenuItemDividerViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abstrac
 		return '<li class="divider"></li>';
 	}
 }
-
-?>

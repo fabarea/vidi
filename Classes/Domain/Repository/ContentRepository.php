@@ -542,5 +542,3 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 		throw new \BadMethodCallException('Repository does not support the setDefaultQuerySettings() method.', 1375805597);
 	}
 }
-
-?>

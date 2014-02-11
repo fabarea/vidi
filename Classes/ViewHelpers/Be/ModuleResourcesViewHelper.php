@@ -71,4 +71,3 @@ class ModuleResourcesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Be\Abstract
 		return $uri;
 	}
 }
-?>

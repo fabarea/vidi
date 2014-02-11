@@ -208,4 +208,3 @@ class ContentController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 		return json_encode($result);
 	}
 }
-?>

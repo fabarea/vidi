@@ -49,5 +49,3 @@ class LinkBackViewHelper extends AbstractViewHelper {
 		return $result;
 	}
 }
-
-?>

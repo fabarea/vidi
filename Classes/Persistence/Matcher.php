@@ -246,5 +246,3 @@ class Matcher {
 		return $this;
 	}
 }
-
-?>
