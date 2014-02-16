@@ -411,7 +411,7 @@ class ColumnService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 */
 	public function hasRelationMany() {
 		$configuration = $this->getConfiguration();
-		return $this->hasRelation() && $configuration['maxitems'] > 1;
+		return $this->hasRelation() && ($configuration['maxitems'] > 1 || isset($configuration['foreign_table_field']));
 	}
 
 	/**
@@ -485,7 +485,7 @@ class ColumnService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 */
 	public function hasRelationManyToMany() {
 		$configuration = $this->getConfiguration();
-		return $this->hasRelation() && isset($configuration['MM']);
+		return $this->hasRelation() && (isset($configuration['MM']) || isset($configuration['foreign_table_field']));
 	}
 
 	/**
