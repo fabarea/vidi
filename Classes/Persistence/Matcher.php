@@ -167,7 +167,7 @@ class Matcher {
 	}
 
 	/**
-	 * @param array $defaultLogicalSeparator
+	 * @param string $defaultLogicalSeparator
 	 * @return $this
 	 */
 	public function setDefaultLogicalSeparator($defaultLogicalSeparator) {
@@ -176,14 +176,14 @@ class Matcher {
 	}
 
 	/**
-	 * @return array
+	 * @return string
 	 */
 	public function getLogicalSeparatorForLike() {
 		return $this->logicalSeparatorForLike;
 	}
 
 	/**
-	 * @param array $logicalSeparatorForLike
+	 * @param string $logicalSeparatorForLike
 	 * @return $this
 	 */
 	public function setLogicalSeparatorForLike($logicalSeparatorForLike) {
@@ -192,14 +192,14 @@ class Matcher {
 	}
 
 	/**
-	 * @return array
+	 * @return string
 	 */
 	public function getLogicalSeparatorForEquals() {
 		return $this->logicalSeparatorForEquals;
 	}
 
 	/**
-	 * @param array $logicalSeparatorForEquals
+	 * @param string $logicalSeparatorForEquals
 	 * @return $this
 	 */
 	public function setLogicalSeparatorForEquals($logicalSeparatorForEquals) {
@@ -208,14 +208,14 @@ class Matcher {
 	}
 
 	/**
-	 * @return array
+	 * @return string
 	 */
 	public function getLogicalSeparatorForSearchTerm() {
 		return $this->logicalSeparatorForSearchTerm;
 	}
 
 	/**
-	 * @param array $logicalSeparatorForSearchTerm
+	 * @param string $logicalSeparatorForSearchTerm
 	 * @return $this
 	 */
 	public function setLogicalSeparatorForSearchTerm($logicalSeparatorForSearchTerm) {
