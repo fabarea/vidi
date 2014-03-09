@@ -12,7 +12,7 @@ Vidi.Table = {
 	/**
 	 * @return object
 	 */
-	getOptions: function () {
+	getOptions: function() {
 
 		/**
 		 * Table initial options.
@@ -22,16 +22,16 @@ Vidi.Table = {
 		 */
 		var config = {
 			'bStateSave': true,
-			'fnStateSave': function (oSettings, oData) {
+			'fnStateSave': function(oSettings, oData) {
 				Vidi.Session.set('dataTables', JSON.stringify(oData));
 			},
-			'fnStateLoad': function (oSettings) {
+			'fnStateLoad': function(oSettings) {
 
 				var state = JSON.parse(Vidi.Session.get('dataTables'));
 
 				// Mark or un-mark checkbox corresponding to column visibility.
 				if (state) {
-					$('.check-visible-toggle').each(function (index) {
+					$('.check-visible-toggle').each(function(index) {
 						if (state.abVisCols[index + 1]) {
 							$(this).attr('checked', 'checked');
 						} else {
@@ -60,10 +60,11 @@ Vidi.Table = {
 			'bServerSide': true,
 			'sAjaxSource': "mod.php",
 			'oLanguage': {
-				// remove some label
+				// Commented because bug in IE.
+				//'sProcessing': '<img src="' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" alt="" width="20"/>',
+				// Override some label.
 				'sSearch': '',
-				'sLengthMenu': '_MENU_',
-                'sProcessing': '<img src="' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" alt="" width="20"/>'
+				'sLengthMenu': '_MENU_'
 			},
 			/**
 			 * Add Ajax parameters from plug-ins
@@ -71,7 +72,7 @@ Vidi.Table = {
 			 * @param {object} aoData dataTables settings object
 			 * @return void
 			 */
-			'fnServerParams': function (aoData) {
+			'fnServerParams': function(aoData) {
 				var uri, moduleCode, parameterPrefix;
 				parameterPrefix = Vidi.module.parameterPrefix;
 
@@ -96,7 +97,7 @@ Vidi.Table = {
 				});
 
 				// Handle the search term parameter
-				$.each(aoData, function (index, object) {
+				$.each(aoData, function(index, object) {
 					if (object['name'] === 'sSearch') {
 						aoData.push({ 'name': parameterPrefix + '[searchTerm]', 'value': object['value'] });
 					}
@@ -119,13 +120,13 @@ Vidi.Table = {
 				[10, 25, 50, 100, 200, 500],
 				[10, 25, 50, 100, 200, 500]
 			],
-			'fnInitComplete': function () {
+			'fnInitComplete': function() {
 				Vidi.VisualSearch.initialize();
 
 				var query = Vidi.Session.get('visualSearch.query');
 				Vidi.VisualSearch.instance.searchBox.setQuery(query);
 			},
-			'fnDrawCallback': function () {
+			'fnDrawCallback': function() {
 
 				// Restore visual
 				$('#content-list').css('opacity', 1);
@@ -135,9 +136,9 @@ Vidi.Table = {
 
 				// Add action for switching visibility of hidden elements when mouse is in table cell.
 				$('.dataTable tbody td')
-					.hover(function () {
+					.hover(function() {
 						$('.invisible', this).toggleClass('visible').toggleClass('invisible');
-					}, function () {
+					}, function() {
 						$('.visible', this).toggleClass('invisible').toggleClass('visible');
 					});
 
@@ -193,7 +194,7 @@ Vidi.Table = {
 	 * @return {string}
 	 * @private
 	 */
-	computeEditableUrl: function () {
+	computeEditableUrl: function() {
 
 		// list of parameters used to call the right controller / action.
 		var parameters = {
@@ -203,7 +204,7 @@ Vidi.Table = {
 		};
 
 		var urlParts = ['M=' + Vidi.module.codeName];
-		$.each(parameters, function (index, value) {
+		$.each(parameters, function(index, value) {
 			var element = '{0}[{1}]={2}'.format(Vidi.module.parameterPrefix, index, value);
 			urlParts.push(element);
 		});
@@ -218,7 +219,7 @@ Vidi.Table = {
 	 * @return {array} config
 	 * @private
 	 */
-	setDefaultSearch: function (config) {
+	setDefaultSearch: function(config) {
 
 		var state = JSON.parse(Vidi.Session.get('dataTables'));
 
@@ -247,17 +248,17 @@ Vidi.Table = {
 	 * @return void
 	 * @private
 	 */
-	animateRow: function () {
+	animateRow: function() {
 
 		// Only if User has previously edited a record.
 		if (Vidi.Session.has('lastEditedUid')) {
 			var uid = Vidi.Session.get('lastEditedUid');
 
 			// Wait a little bit before applying fade-int class. Look nicer.
-			setTimeout(function () {
+			setTimeout(function() {
 				$('#row-' + uid).addClass('fade-in');
 			}, 100);
-			setTimeout(function () {
+			setTimeout(function() {
 				$('#row-' + uid).addClass('fade-out').removeClass('fade-in');
 
 				// Reset last edited uid
