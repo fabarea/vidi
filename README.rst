@@ -188,6 +188,21 @@ Default
 .. container:: table-row
 
 Key
+	**format**
+
+Datatype
+	string
+
+Description
+	A full qualified class name implementing :code:`\TYPO3\CMS\Vidi\Formatter\FormatterInterface`
+
+Default
+	NULL
+
+.. ...............................................................
+.. container:: table-row
+
+Key
 	**label**
 
 Datatype
@@ -350,6 +365,34 @@ Multiple Grid Renderers with options::
 			... // more possible renderers to come
 		),
 	),
+
+
+Grid Formatter
+------------------
+
+You can format the value of a column by using one of the built-in formatter of vidi or a custom formatter.
+
+There are two built-in formatters:
+
+* :code:`\TYPO3\CMS\Vidi\Formatter\Date` - formats a timestamp with d.m.Y
+* :code:`\TYPO3\CMS\Vidi\Formatter\Datetime` - formats a timestamp with d.m.Y - H:i
+
+If you want to provide a custom formatter, it has to implement :code:`\TYPO3\CMS\Vidi\Formatter\FormatterInterface`
+
+Example, using a built-in formatter::
+
+	'starttime' => array(
+		'label' => ...
+		'format' => 'TYPO3\\CMS\\Vidi\\Formatter\Date',
+	),
+
+Example, using the custom FancyDate formatter from the Acme Package::
+
+	'starttime' => array(
+		'label' => ...
+		'format' => 'Acme\\Package\\Vidi\\Formatter\\FancyDate',
+	),
+
 
 Content Repository Factory
 ===========================

@@ -207,13 +207,24 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 	 * @return mixed
 	 */
 	protected function format($value, array $configuration) {
-		if (!empty($configuration['format'])) {
-			$className = 'TYPO3\CMS\Vidi\Formatter\\' . ucfirst($configuration['format']);
-
-			/** @var FormatterInterface  $formatter */
-			$formatter = $this->objectManager->get($className);
-			$value = $formatter->format($value);
+		if (empty($configuration['format'])) {
+			return $value;
 		}
+		$className = $configuration['format'];
+
+		// Support legacy formatter names which are not full qualified class names.
+		if (!class_exists($className)) {
+			$message = 'The Ext:vidi Grid configuration option "format" needs to be a full qualified class name since version 0.3.0.';
+			$message .= 'Support for "date" and "datetime" will be removed two versions later.';
+			GeneralUtility::deprecationLog($message);
+
+			$className = 'TYPO3\\CMS\\Vidi\\Formatter\\' . ucfirst($className);
+		}
+
+		/** @var \TYPO3\CMS\Vidi\Formatter\FormatterInterface $formatter */
+		$formatter = $this->objectManager->get($className);
+		$value = $formatter->format($value);
+
 		return $value;
 	}
 
