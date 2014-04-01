@@ -4,6 +4,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
  *  Copyright notice
  *
  *  (c) 2012-2013 Fabien Udriot <fabien.udriot@typo3.org>
+ *  (c) 2014 Steffen Müller <typo3@t3node.com>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,6 +23,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Frontend\Page\PageRepository;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
@@ -34,6 +36,35 @@ class CheckPidViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
 	 * @inject
 	 */
 	protected $moduleLoader;
+
+	/**
+	 * The data type (table)
+	 *
+	 * @var string
+	 */
+	protected $dataType = '';
+
+	/**
+	 * The configured pid for the data type
+	 *
+	 * @var int
+	 */
+	protected $configuredPid = 0;
+
+	/**
+	 * A speaking error message why the pid is invalid.
+	 *
+	 * @var string
+	 */
+	protected $error = '';
+
+	/**
+	 * Pseudo-Constructor, which ensures all dependencies are injected when called.
+	 */
+	public function initializeObject() {
+		$this->dataType = $this->moduleLoader->getDataType();
+		$this->configuredPid = $this->getConfiguredPid();
+	}
 
 	/**
 	 * Renders a button for uploading assets.
@@ -62,22 +93,23 @@ class CheckPidViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
 		$result = <<< EOF
 			<div class="typo3-message message-warning">
 				<div class="message-header">
-					Page id "{$this->getConfiguredPid()}" has be found to be a wrong configuration for "{$this->moduleLoader->getDataType()}"
+					Page id "{$this->configuredPid}" has found to be a wrong configuration for "{$this->dataType}"
 				</div>
 				<div class="message-body">
-					New record can not be created with this configured pid. Configuration can be changed at different levels:
+					<p>{$this->error}</p>
+					New records cannot be created with this page id. The configuration can be changed at different levels:
 					<ul>
 						<li>Settings in the Extension Manager which is the fall-back configuration.</li>
 						<li>In some ext_tables.php file, by allowing this record type on any pages.<br />
-						\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('{$this->moduleLoader->getDataType()}')
+						\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('{$this->dataType}')
 						</li>
 						<li>By User TSconfig:</li>
 					</ul>
 <pre>
-# User TSconfig defining default pid for "{$this->moduleLoader->getDataType()}" in Vidi:
+# User TSconfig defining default pid for "{$this->dataType}" in Vidi:
 tx_vidi {
 	dataType {
-		{$this->moduleLoader->getDataType()} {
+		{$this->dataType} {
 			storagePid = xx
 		}
 	}
@@ -97,22 +129,60 @@ EOF;
 	 */
 	protected function isPidValid() {
 
-		$result = FALSE;
-		$pageId = $this->getConfiguredPid();
+		$result = TRUE;
 
-		$isRootLevel = TcaService::table()->get('rootLevel');
-		if ($isRootLevel) {
-			$result = $this->getConfiguredPid() == 0;
-		} else {
-			// check if the page id is adequate (folder vs page)
-			$page = $this->getDatabaseConnection()->exec_SELECTgetSingleRow('doktype', 'pages', 'deleted = 0 AND uid = ' . $pageId);
-
-			// if different than a folder, check if that is alright
-			if (!empty($page) && $page['doktype'] != \TYPO3\CMS\Frontend\Page\PageRepository::DOKTYPE_SYSFOLDER) {
-				$allowedTables = explode(',', $GLOBALS['PAGES_TYPES']['default']['allowedTables']);
-				$result = in_array($this->moduleLoader->getDataType(), $allowedTables);
-			}
+		// Check if the current table is allowed to be used on the rootLevel
+		if ($this->configuredPid === 0 && !$this->isTableAllowedOnRootLevel()) {
+			$this->error = sprintf(
+				'You are not allowed to use page id "0" unless you set $GLOBALS[\'TCA\'][\'%1$s\'][\'ctrl\'][\'rootLevel\'] = 1;',
+				$this->dataType
+			);
+			$result = FALSE;
 		}
+
+		// Check if the page exists
+		$page = $this->getDatabaseConnection()->exec_SELECTgetSingleRow('doktype', 'pages', 'deleted = 0 AND uid = ' . $this->configuredPid);
+		if (empty($page)) {
+			$this->error = sprintf(
+				'No page found for the configured page id "%s".',
+				$this->configuredPid
+			);
+			$result = FALSE;
+		}
+
+		// If the configured page is not a folder, check if it's allowed.
+		if (!empty($page) && $page['doktype'] != PageRepository::DOKTYPE_SYSFOLDER && !$this->isTableAllowedOnStandardPages()) {
+			$this->error = sprintf(
+				'The page with the id "%s" either has to be of the type "folder" (doktype=254) or the table "%s" has to be allowed on standard pages.',
+				$this->configuredPid,
+				$this->dataType
+			);
+			$result = FALSE;
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Check if given table is allowed on root level
+	 *
+	 * @return bool
+	 */
+	protected function isTableAllowedOnRootLevel() {
+		$isRootLevel = (bool)TcaService::table()->get('rootLevel');
+
+		return $isRootLevel;
+	}
+
+	/**
+	 * Check if given table is allowed on standard pages
+	 *
+	 * @see \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages()
+	 * @return bool
+	 */
+	protected function isTableAllowedOnStandardPages() {
+		$allowedTables = explode(',', $GLOBALS['PAGES_TYPES']['default']['allowedTables']);
+		$result = in_array($this->dataType, $allowedTables);
 
 		return $result;
 	}
@@ -124,15 +194,14 @@ EOF;
 	 */
 	protected function getConfiguredPid() {
 
-		// Get configuration from User TSconfig if any
-		$tsConfigPath = sprintf('tx_vidi.dataType.%s.storagePid', $this->moduleLoader->getDataType());
+		// Get pid from User TSconfig if any
+		$tsConfigPath = sprintf('tx_vidi.dataType.%s.storagePid', $this->dataType);
 		$result = $this->getBackendUser()->getTSConfig($tsConfigPath);
-		$pid = $result['value'];
+		$configuredPid = (int)$result['value'];
 
-		// Get pid from Module Loader
-		if (NULL === $pid) {
-			$pid = $this->moduleLoader->getDefaultPid();
-		}
+		// If no pid is configured, use default pid from Module Loader
+		$pid = ($configuredPid) ?: $this->moduleLoader->getDefaultPid();
+
 		return $pid;
 	}
 
