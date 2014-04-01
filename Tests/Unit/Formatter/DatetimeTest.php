@@ -33,22 +33,24 @@ class DatetimeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @var \TYPO3\CMS\Vidi\Formatter\Date
 	 */
-	private $fixture;
+	private $subject;
 
 	public function setUp() {
-		$this->fixture = new \TYPO3\CMS\Vidi\Formatter\Datetime();
+		$this->subject = new \TYPO3\CMS\Vidi\Formatter\Datetime();
+		$GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] = 'd.m.Y';
+		$GLOBALS['TYPO3_CONF_VARS']['SYS']['hhmm'] = 'H:i';
 	}
 
 	public function tearDown() {
-		unset($this->fixture);
+		unset($this->subject);
 	}
 
 	/**
 	 * @test
 	 */
 	public function canFormatDatetime() {
-		$foo = $this->fixture->format('1351880525');
-		$this->assertEquals('02.11.2012 - 19:22', $foo);
+		$foo = $this->subject->format('1351880525');
+		$this->assertEquals('02.11.2012 19:22', $foo);
 
 	}
 }
