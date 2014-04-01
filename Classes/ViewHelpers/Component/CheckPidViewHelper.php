@@ -52,11 +52,18 @@ class CheckPidViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
 	protected $configuredPid = 0;
 
 	/**
-	 * A speaking error message why the pid is invalid.
+	 * The page record of the configured pid
 	 *
-	 * @var string
+	 * @var array
 	 */
-	protected $error = '';
+	protected $page = NULL;
+
+	/**
+	 * A collection of speaking error messages why the pid is invalid.
+	 *
+	 * @var array
+	 */
+	protected $errors = array();
 
 	/**
 	 * Pseudo-Constructor, which ensures all dependencies are injected when called.
@@ -67,16 +74,18 @@ class CheckPidViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
 	}
 
 	/**
-	 * Renders a button for uploading assets.
+	 * Renders warnings if storagePid is not properly configured.
 	 *
 	 * @return string
 	 */
 	public function render() {
-
 		$result = '';
 
-		// Check whether storage is configured or not.
-		if (!$this->isPidValid()) {
+		$this->validateRootLevel();
+		$this->validatePageExist();
+		$this->validateDoktype();
+
+		if (!empty($this->errors)) {
 			$result .= $this->formatMessagePidIsNotValid();
 		}
 
@@ -90,13 +99,14 @@ class CheckPidViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHe
 	 */
 	protected function formatMessagePidIsNotValid() {
 
+		$error = implode('<br />', $this->errors);
 		$result = <<< EOF
 			<div class="typo3-message message-warning">
 				<div class="message-header">
 					Page id "{$this->configuredPid}" has found to be a wrong configuration for "{$this->dataType}"
 				</div>
 				<div class="message-body">
-					<p>{$this->error}</p>
+					<p>{$error}</p>
 					New records cannot be created with this page id. The configuration can be changed at different levels:
 					<ul>
 						<li>Settings in the Extension Manager which is the fall-back configuration.</li>
@@ -123,55 +133,61 @@ EOF;
 	}
 
 	/**
-	 * Check whether the page id is valid or not.
+	 * Check if pid is 0 and given table is allowed on root level
 	 *
-	 * @return boolean
+	 * @return void
 	 */
-	protected function isPidValid() {
+	protected function validateRootLevel() {
+		if ($this->configuredPid > 0) {
+			return;
+		}
 
-		$result = TRUE;
-
-		// Check if the current table is allowed to be used on the rootLevel
-		if ($this->configuredPid === 0 && !$this->isTableAllowedOnRootLevel()) {
-			$this->error = sprintf(
+		$isRootLevel = (bool)TcaService::table()->get('rootLevel');
+		if (!$isRootLevel) {
+			$this->errors[] = sprintf(
 				'You are not allowed to use page id "0" unless you set $GLOBALS[\'TCA\'][\'%1$s\'][\'ctrl\'][\'rootLevel\'] = 1;',
 				$this->dataType
 			);
-			$result = FALSE;
+		}
+	}
+
+	/**
+	 * Check if a page exists for the configured pid
+	 *
+	 * @return void
+	 */
+	protected function validatePageExist() {
+		if ($this->configuredPid === 0) {
+			return;
 		}
 
-		// Check if the page exists
-		$page = $this->getDatabaseConnection()->exec_SELECTgetSingleRow('doktype', 'pages', 'deleted = 0 AND uid = ' . $this->configuredPid);
+		$page = $this->getPage();
 		if (empty($page)) {
-			$this->error = sprintf(
+			$this->errors[] = sprintf(
 				'No page found for the configured page id "%s".',
 				$this->configuredPid
 			);
-			$result = FALSE;
+		}
+	}
+
+	/**
+	 * Check if configured page is a sysfolder and if it is allowed.
+	 *
+	 * @return void
+	 */
+	protected function validateDoktype() {
+		if ($this->configuredPid === 0) {
+			return;
 		}
 
-		// If the configured page is not a folder, check if it's allowed.
+		$page = $this->getPage();
 		if (!empty($page) && $page['doktype'] != PageRepository::DOKTYPE_SYSFOLDER && !$this->isTableAllowedOnStandardPages()) {
-			$this->error = sprintf(
+			$this->errors[] = sprintf(
 				'The page with the id "%s" either has to be of the type "folder" (doktype=254) or the table "%s" has to be allowed on standard pages.',
 				$this->configuredPid,
 				$this->dataType
 			);
-			$result = FALSE;
 		}
-
-		return $result;
-	}
-
-	/**
-	 * Check if given table is allowed on root level
-	 *
-	 * @return bool
-	 */
-	protected function isTableAllowedOnRootLevel() {
-		$isRootLevel = (bool)TcaService::table()->get('rootLevel');
-
-		return $isRootLevel;
 	}
 
 	/**
@@ -221,5 +237,18 @@ EOF;
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Returns the page record of the configured pid
+	 *
+	 * @return array
+	 */
+	public function getPage() {
+		if ($this->page !== NULL) {
+			return $this->page;
+		} else {
+			return $this->getDatabaseConnection()->exec_SELECTgetSingleRow('doktype', 'pages', 'deleted = 0 AND uid = ' . $this->configuredPid);
+		}
 	}
 }
