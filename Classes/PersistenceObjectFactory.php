@@ -66,7 +66,9 @@ class PersistenceObjectFactory implements \TYPO3\CMS\Core\SingletonInterface{
 			$tcaTableService = TcaService::table($dataType);
 
 			// try to parse a json query
+			$searchTerm = rawurldecode($searchTerm);
 			$terms = json_decode($searchTerm, TRUE);
+
 			if (is_array($terms)) {
 
 				foreach ($terms as $term) {
