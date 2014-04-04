@@ -42,7 +42,7 @@ class Datetime implements FormatterInterface , SingletonInterface{
 
 			/** @var $viewHelper \TYPO3\CMS\Fluid\ViewHelpers\Format\DateViewHelper */
 			$viewHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Fluid\ViewHelpers\Format\DateViewHelper');
-			$result = $viewHelper->render('@' . $value, 'd.m.Y - H:i');
+			$result = $viewHelper->render('@' . $value, $GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] . ' ' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['hhmm']);
 		}
 		return $result;
 	}

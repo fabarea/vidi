@@ -33,21 +33,22 @@ class DateTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @var \TYPO3\CMS\Vidi\Formatter\Date
 	 */
-	private $fixture;
+	private $subject;
 
 	public function setUp() {
-		$this->fixture = new \TYPO3\CMS\Vidi\Formatter\Date();
+		$this->subject = new \TYPO3\CMS\Vidi\Formatter\Date();
+		$GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] = 'd.m.Y';
 	}
 
 	public function tearDown() {
-		unset($this->fixture);
+		unset($this->subject);
 	}
 
 	/**
 	 * @test
 	 */
 	public function canFormatDate() {
-		$foo = $this->fixture->format('1351880525');
+		$foo = $this->subject->format('1351880525');
 		$this->assertEquals('02.11.2012', $foo);
 
 	}

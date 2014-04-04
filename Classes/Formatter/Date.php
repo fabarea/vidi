@@ -38,10 +38,9 @@ class Date implements FormatterInterface, SingletonInterface {
 	public function format($value) {
 		$result = '';
 		if ($value > 0) {
-
 			/** @var $viewHelper \TYPO3\CMS\Fluid\ViewHelpers\Format\DateViewHelper */
 			$viewHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Fluid\ViewHelpers\Format\DateViewHelper');
-			$result = $viewHelper->render('@' . $value, 'd.m.Y');
+			$result = $viewHelper->render('@' . $value, $GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy']);
 		}
 		return $result;
 	}
