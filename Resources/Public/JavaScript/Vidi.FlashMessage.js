@@ -17,7 +17,7 @@ Vidi.FlashMessage = {
 	/**
 	 * Stack
 	 *
-	 * @param {mixed} message
+	 * @param {string} message
 	 * @param {string} severity
 	 */
 	add: function (message, severity) {
@@ -39,16 +39,17 @@ Vidi.FlashMessage = {
 	/**
 	 * Display all message from the stack
 	 *
+	 * @param {boolean} fadeOut
 	 * @return void
 	 */
-	showAll: function () {
+	showAll: function (fadeOut) {
 		var flashMessage, message, output, index;
 
 		// Clear stack first
 		$(".flash-message").html('');
 
 		while (flashMessage = this.pop()) {
-			this.show(flashMessage['message'], flashMessage['severity']);
+			this.show(flashMessage['message'], flashMessage['severity'], fadeOut);
 		}
 	},
 
@@ -57,8 +58,13 @@ Vidi.FlashMessage = {
 	 *
 	 * @param {string} message
 	 * @param {string} severity
+	 * @param {boolean} fadeOut
 	 */
-	show: function (message, severity) {
+	show: function (message, severity, fadeOut) {
+
+		if (typeof fadeOut === undefined) {
+			fadeOut = true;
+		}
 
 		var positionWidthCss, width, output;
 
@@ -71,9 +77,11 @@ Vidi.FlashMessage = {
 
 		// Manipulate DOM to display flash message
 		$(".flash-message").append($(output)).css("margin-left", positionWidthCss);
-		$(".alert").delay(2000).fadeOut("slow", function () {
-			$(this).remove();
-		});
+		if (fadeOut) {
+			$(".alert").delay(2000).fadeOut("slow", function () {
+				$(this).remove();
+			});
+		}
 	}
 };
 
