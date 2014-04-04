@@ -109,9 +109,9 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 					// Avoid bad surprise, converts characters to HTML.
 					$fieldType = TcaService::table($object->getDataType())->field($fieldName)->getFieldType();
 					if ($fieldType !== TcaService::TEXTAREA) {
-						$result = htmlentities($result);
+						$result = htmlspecialchars($result);
 					} elseif ($fieldType === TcaService::TEXTAREA && !$this->isClean($result)) {
-						$result = htmlentities($result);
+						$result = htmlspecialchars($result);
 					} elseif ($fieldType === TcaService::TEXTAREA && !$this->hasHtml($result)) {
 						$result = nl2br($result);
 					}
