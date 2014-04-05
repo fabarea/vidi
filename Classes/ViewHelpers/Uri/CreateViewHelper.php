@@ -23,6 +23,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
@@ -55,9 +56,9 @@ class CreateViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelp
 	 * @return string
 	 */
 	public function render() {
-		return sprintf('alt_doc.php?returnUrl=mod.php?M=%s&edit[%s][%s]=new',
-			GeneralUtility::_GP('M'),
-			$this->moduleLoader->getDataType(),
+		return sprintf('alt_doc.php?returnUrl=%s&edit[%s][%s]=new',
+			rawurlencode(BackendUtility::getModuleUrl(GeneralUtility::_GP('M'))),
+			rawurlencode($this->moduleLoader->getDataType()),
 			$this->getPid()
 		);
 	}
