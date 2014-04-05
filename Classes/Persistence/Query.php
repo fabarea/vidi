@@ -85,6 +85,11 @@ class Query implements \TYPO3\CMS\Extbase\Persistence\QueryInterface {
 	protected $constraint;
 
 	/**
+	 * @var \TYPO3\CMS\Extbase\Persistence\Generic\Qom\Statement
+	 */
+	protected $statement;
+
+	/**
 	 * @var int
 	 */
 	protected $orderings = array();
@@ -420,11 +425,12 @@ class Query implements \TYPO3\CMS\Extbase\Persistence\QueryInterface {
 	/**
 	 * Performs a logical negation of the given constraint
 	 *
-	 * @param object $constraint Constraint to negate
+	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface $constraint Constraint to negate
+	 * @throws \RuntimeException
 	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\NotInterface
 	 * @api
 	 */
-	public function logicalNot($constraint) {
+	public function logicalNot(\TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface $constraint) {
 		return $this->qomFactory->not($constraint);
 	}
 
@@ -578,5 +584,27 @@ class Query implements \TYPO3\CMS\Extbase\Persistence\QueryInterface {
 	public function setDistinct($distinct) {
 		$this->distinct = $distinct;
 		return $this;
+	}
+
+	/**
+	 * Sets the statement of this query. If you use this, you will lose the abstraction from a concrete storage
+	 * backend (database).
+	 *
+	 * @param string|\TYPO3\CMS\Core\Database\PreparedStatement $statement The statement
+	 * @param array $parameters An array of parameters. These will be bound to placeholders '?' in the $statement.
+	 * @return QueryInterface
+	 */
+	public function statement($statement, array $parameters = array()) {
+		$this->statement = $this->qomFactory->statement($statement, $parameters);
+		return $this;
+	}
+
+	/**
+	 * Returns the statement of this query.
+	 *
+	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\Statement
+	 */
+	public function getStatement() {
+		return $this->statement;
 	}
 }
