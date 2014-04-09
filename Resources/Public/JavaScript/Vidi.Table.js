@@ -65,10 +65,7 @@ Vidi.Table = {
 					"data": aoData,
 					"success": fnCallback,
 					"error": function() {
-						var message = 'Oups! Something went wrong in the Ajax request... Most probably the JSON returned is not valid but I would be curious to know more. <br />' +
-							'Consider debugging the XHR request in the Network Monitor. <br/>' +
-							'<strong>After investigation</strong>, do not hesistate to report to the Vidi ' +
-							'<a href="https://forge.typo3.org/projects/extension-vidi/issues" target="_blank">Bug Tracker</a> if you think it is a bug.';
+						var message = 'Oups! Something went wrong in the Ajax request... Consider investigating the problem in the Network Monitor. <br />' +
 						Vidi.FlashMessage.add(message, 'error');
 						var fadeOut = false;
 						Vidi.FlashMessage.showAll();
