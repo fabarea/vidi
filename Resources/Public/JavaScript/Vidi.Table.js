@@ -74,7 +74,7 @@ Vidi.Table = {
 			},
 			'bProcessing': true,
 			'bServerSide': true,
-			'sAjaxSource': "mod.php",
+			'sAjaxSource': Vidi.module.moduleUrl,
 			'oLanguage': {
 				// Commented because bug in IE.
 				//'sProcessing': '<img src="' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" alt="" width="20"/>',
@@ -89,7 +89,7 @@ Vidi.Table = {
 			 * @return void
 			 */
 			'fnServerParams': function(aoData) {
-				var uri, moduleCode, parameterPrefix;
+				var uri, parameterPrefix;
 				parameterPrefix = Vidi.module.parameterPrefix;
 
 				// Get the parameter related to filter from the URL and "re-inject" them into the Ajax request
@@ -120,10 +120,8 @@ Vidi.Table = {
 				});
 
 				// Get the parameter related to filter from the URL and "re-inject" them into the Ajax request
-				moduleCode = uri.getQueryParamValue('M');
-				parameterPrefix = 'tx_vidi_' + moduleCode.toLowerCase();
+				parameterPrefix = 'tx_vidi_' + Vidi.module.moduleCode.toLowerCase();
 
-				aoData.push({ 'name': 'M', 'value': moduleCode});
 				aoData.push({ 'name': parameterPrefix + '[action]', 'value': 'listRow' });
 				aoData.push({ 'name': parameterPrefix + '[controller]', 'value': 'Content' });
 				aoData.push({ 'name': parameterPrefix + '[format]', 'value': 'json' });
@@ -219,13 +217,13 @@ Vidi.Table = {
 			controller: 'Content'
 		};
 
-		var urlParts = ['M=' + Vidi.module.codeName];
+		var urlParts = [Vidi.module.moduleUrl];
 		$.each(parameters, function(index, value) {
 			var element = '{0}[{1}]={2}'.format(Vidi.module.parameterPrefix, index, value);
 			urlParts.push(element);
 		});
 
-		return '/typo3/mod.php?' + urlParts.join('&');
+		return urlParts.join('&');
 	},
 
 	/**

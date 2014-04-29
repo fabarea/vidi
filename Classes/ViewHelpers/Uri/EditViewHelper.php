@@ -23,6 +23,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -38,9 +39,9 @@ class EditViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
 	 */
 	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object) {
 
-		return sprintf('alt_doc.php?returnUrl=mod.php?M=%s&edit[%s][%s]=edit',
-			GeneralUtility::_GP('M'),
-			$object->getDataType(),
+		return sprintf('alt_doc.php?returnUrl=%s&edit[%s][%s]=edit',
+			rawurlencode(BackendUtility::getModuleUrl(GeneralUtility::_GP('M'))),
+			rawurlencode($object->getDataType()),
 			$object->getUid()
 		);
 	}

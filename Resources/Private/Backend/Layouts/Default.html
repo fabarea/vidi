@@ -23,9 +23,10 @@
 		// "Live" variables taking into consideration Fluid parign which would be confused with a different syntax.
 		Vidi.module = {};
 		Vidi.module.publicPath = '{v:publicPath()}';
-		Vidi.module.dataType = '{v:moduleLoader(property: "dataType")}';
+		Vidi.module.dataType = '{v:moduleLoader(key: "dataType")}';
 		Vidi.module.parameterPrefix = '{v:parameterPrefix()}';
-		Vidi.module.codeName = '{v:gP(argument: "M")}';
+		Vidi.module.moduleUrl = '{v:moduleLoader(key: "moduleUrl") -> f:format.raw()}';
+		Vidi.module.moduleCode = '{v:moduleLoader(key: "moduleCode")}';
 		Vidi.module.tca = {};
 		Vidi.module.tca.ctrl = {};
 		Vidi.module.tca.ctrl.searchFields = {v:searchFields()};

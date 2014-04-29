@@ -186,11 +186,11 @@ Vidi.computeUrl = function (actionName, controllerName) {
 		controller: controllerName
 	};
 
-	var urlParts = ['M=' + Vidi.module.codeName];
+	var urlParts = [Vidi.module.moduleUrl];
 	$.each(parameters, function (index, value) {
 		var element = '{0}[{1}]={2}'.format(Vidi.module.parameterPrefix, index, value);
 		urlParts.push(element);
 	});
 
-	return '/typo3/mod.php?' + urlParts.join('&');
+	return urlParts.join('&');
 }

@@ -22,6 +22,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * Render a delete URI given an object.
@@ -44,14 +45,15 @@ class DeleteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelp
 	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object) {
 
 		$parameterPrefix = $this->moduleLoader->getParameterPrefix();
+		$parameterPrefixEncoded = rawurlencode($parameterPrefix);
 
-		return sprintf('mod.php?M=%s&%s[content]=%s&%s[format]=json&%s[action]=delete&%s[controller]=Content',
-			$this->moduleLoader->getModuleCode(),
-			$parameterPrefix,
+		return sprintf('%s&%s[content]=%s&%s[format]=json&%s[action]=delete&%s[controller]=Content',
+			BackendUtility::getModuleUrl($this->moduleLoader->getModuleCode()),
+			$parameterPrefixEncoded,
 			$object->getUid(),
-			$parameterPrefix,
-			$parameterPrefix,
-			$parameterPrefix
+			$parameterPrefixEncoded,
+			$parameterPrefixEncoded,
+			$parameterPrefixEncoded
 		);
 	}
 }

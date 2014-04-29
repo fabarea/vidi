@@ -22,6 +22,7 @@ namespace TYPO3\CMS\Vidi\Grid;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -74,19 +75,19 @@ class RelationCountRenderer extends GridRendererAbstract {
 			}
 		}
 
-		$template = '<a href="/typo3/mod.php?M=%s&returnUrl=%s&search=%s&query=%s:%s">%s %s<span class="invisible" style="padding-left: 5px">%s</span></a>';
+		$template = '<a href="%s&returnUrl=%s&search=%s&query=%s:%s">%s %s<span class="invisible" style="padding-left: 5px">%s</span></a>';
 
 		$search = json_encode(array(array($tcaTableService->field($this->fieldName)->getForeignField() => $this->object->getUid())));
-		$search = rawurlencode($search);
 
+		$moduleTarget = empty($this->gridRendererConfiguration['targetModule']) ? '' : $this->gridRendererConfiguration['targetModule'];
 		return sprintf($template,
-			empty($this->gridRendererConfiguration['targetModule']) ? '' : $this->gridRendererConfiguration['targetModule'],
-			'/typo3/mod.php?M=' . $this->gridRendererConfiguration['sourceModule'],
-			$search,
-			$tcaTableService->field($this->fieldName)->getForeignField(),
-			$this->object->getUid(),
-			$numberOfObjects,
-			LocalizationUtility::translate($label, ''),
+			BackendUtility::getModuleUrl($moduleTarget),
+			rawurlencode(BackendUtility::getModuleUrl($this->gridRendererConfiguration['sourceModule'])),
+			rawurlencode($search),
+			rawurlencode($tcaTableService->field($this->fieldName)->getForeignField()),
+			rawurlencode($this->object->getUid()),
+			htmlspecialchars($numberOfObjects),
+			htmlspecialchars(LocalizationUtility::translate($label, '')),
 			IconUtility::getSpriteIcon('extensions-vidi-go')
 		);
 	}

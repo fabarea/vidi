@@ -22,6 +22,8 @@ namespace TYPO3\CMS\Vidi;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 use TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException;
 
@@ -153,7 +155,7 @@ class ModuleLoader {
 		$subModuleName = $this->dataType . '_' . $this->moduleKey;
 		$moduleCode = sprintf('%s_Vidi%s',
 			$this->mainModule,
-			\TYPO3\CMS\Core\Utility\GeneralUtility::underscoredToUpperCamelCase($subModuleName)
+			GeneralUtility::underscoredToUpperCamelCase($subModuleName)
 		);
 
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode] = array();
@@ -187,7 +189,17 @@ class ModuleLoader {
 	 * @return string
 	 */
 	public function getModuleCode() {
-		return \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('M');
+		return GeneralUtility::_GP('M');
+	}
+
+	/**
+	 * Return the module URL.
+	 *
+	 * @return string
+	 */
+	public function getModuleUrl() {
+		$moduleCode = $this->getModuleCode();
+		return BackendUtility::getModuleUrl($moduleCode);
 	}
 
 	/**

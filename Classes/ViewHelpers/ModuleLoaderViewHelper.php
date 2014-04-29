@@ -30,11 +30,11 @@ class ModuleLoaderViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVi
 	/**
 	 * Interface with the Module Loader
 	 *
-	 * @param string $property
+	 * @param string $key
 	 * @return string
 	 */
-	public function render($property) {
-		$getter = 'get' . ucfirst($property);
+	public function render($key) {
+		$getter = 'get' . ucfirst($key);
 
 		/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
 		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\ModuleLoader');
