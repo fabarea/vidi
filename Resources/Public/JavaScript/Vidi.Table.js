@@ -65,10 +65,10 @@ Vidi.Table = {
 					"data": aoData,
 					"success": fnCallback,
 					"error": function() {
-						var message = 'Oups! Something went wrong in the Ajax request... Consider investigating the problem in the Network Monitor. <br />' +
+						var message = 'Oups! Something went wrong in the Ajax request... Consider investigating the problem in the Network Monitor. <br />';
 						Vidi.FlashMessage.add(message, 'error');
 						var fadeOut = false;
-						Vidi.FlashMessage.showAll();
+						Vidi.FlashMessage.showAll(fadeOut);
 					}
 				});
 			},
