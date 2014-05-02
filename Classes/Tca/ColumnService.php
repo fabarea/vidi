@@ -140,6 +140,51 @@ class ColumnService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
+	 * Returns the foreign clause.
+	 * If no foreign order exists, returns empty string.
+	 *
+	 * @return string
+	 */
+	public function getForeignClause() {
+		$result = '';
+		$configuration = $this->getConfiguration();
+
+		if (!empty($configuration['foreign_table_where'])) {
+			$parts = explode('ORDER BY', $configuration['foreign_table_where']);
+			if (!empty($parts[0])) {
+				$result = $parts[0];
+			}
+		}
+
+		// Substitute some variables
+		return $this->substituteKnownMarkers($result);
+	}
+
+	/**
+	 * Substitute some known markers from the where clause in the Frontend Context.
+	 *
+	 * @param string $clause
+	 * @return string
+	 */
+	protected function substituteKnownMarkers($clause) {
+		if ($clause && $this->isFrontendMode()) {
+
+			$searches = array(
+				'###CURRENT_PID###',
+				'###REC_FIELD_sys_language_uid###'
+			);
+
+			$replaces = array(
+				$this->getFrontendObject()->id,
+				$this->getFrontendObject()->sys_language_uid,
+			);
+
+			$clause = str_replace($searches, $replaces, $clause);
+		}
+		return $clause;
+	}
+
+	/**
 	 * Returns the foreign order of the current field.
 	 * If no foreign order exists, returns empty string.
 	 *
@@ -518,5 +563,24 @@ class ColumnService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	public function setFieldNameAndPath($fieldNameAndPath) {
 		$this->fieldNameAndPath = $fieldNameAndPath;
 	}
+
+	/**
+	 * Returns whether the current mode is Frontend
+	 *
+	 * @return bool
+	 */
+	protected function isFrontendMode() {
+		return TYPO3_MODE == 'FE';
+	}
+
+	/**
+	 * Returns an instance of the Frontend object.
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected function getFrontendObject() {
+		return $GLOBALS['TSFE'];
+	}
+
 
 }
