@@ -90,6 +90,18 @@ class ColumnService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
+	 * Returns a key of the configuration.
+	 * If the key can not to be found, returns NULL.
+	 *
+	 * @param string $key
+	 * @return mixed
+	 */
+	public function get($key) {
+		$configuration = $this->getConfiguration();
+		return empty($configuration[$key]) ? NULL : $configuration[$key];
+	}
+
+	/**
 	 * Returns the foreign field of a given field (opposite relational field).
 	 * If no relation exists, returns NULL.
 	 *
