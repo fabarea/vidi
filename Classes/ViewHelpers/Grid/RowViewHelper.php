@@ -108,7 +108,14 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 
 					// Avoid bad surprise, converts characters to HTML.
 					$fieldType = TcaService::table($object->getDataType())->field($fieldName)->getFieldType();
-					if ($fieldType !== TcaService::TEXTAREA) {
+					if ($fieldType === TcaService::RADIO || $fieldType === TcaService::SELECT) {
+
+						// Attempt to convert the value into a label for radio and select fields.
+						$label = TcaService::table($object->getDataType())->field($fieldName)->getLabelForItem($result);
+						if ($label) {
+							$result = $label;
+						}
+					} elseif ($fieldType !== TcaService::TEXTAREA) {
 						$result = htmlspecialchars($result);
 					} elseif ($fieldType === TcaService::TEXTAREA && !$this->isClean($result)) {
 						$result = htmlspecialchars($result);

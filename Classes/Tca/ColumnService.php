@@ -324,6 +324,9 @@ class ColumnService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 			foreach ($configuration['items'] as $item) {
 				if ($item[1] == $itemValue) {
 					$result = LocalizationUtility::translate($item[0], '');
+					if (empty($result)) {
+						$result = $item[0];
+					}
 					break;
 				}
 			}
