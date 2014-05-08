@@ -23,11 +23,13 @@ namespace TYPO3\CMS\Vidi\Utility;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * A class for handling configuration of the extension
  */
-class ConfigurationUtility implements \TYPO3\CMS\Core\SingletonInterface {
+class ConfigurationUtility implements SingletonInterface {
 
 	/**
 	 * @var string
@@ -45,7 +47,7 @@ class ConfigurationUtility implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @return \TYPO3\CMS\Vidi\Utility\ConfigurationUtility
 	 */
 	static public function getInstance() {
-		return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Utility\ConfigurationUtility');
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Utility\ConfigurationUtility');
 	}
 
 	/**
@@ -56,7 +58,7 @@ class ConfigurationUtility implements \TYPO3\CMS\Core\SingletonInterface {
 	public function __construct() {
 
 		/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-		$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+		$objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
 
 		/** @var \TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility $configurationUtility */
 		$configurationUtility = $objectManager->get('TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility');

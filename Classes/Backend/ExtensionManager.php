@@ -25,6 +25,8 @@ namespace TYPO3\CMS\Vidi\Backend;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Vidi\Utility\ConfigurationUtility;
 
 /**
  * Display custom fields in the Extension Manager.
@@ -37,36 +39,9 @@ class ExtensionManager {
 	protected $extKey = 'vidi';
 
 	/**
-	 * @var string
-	 */
-	protected $dataTypes = array('fe_users', 'fe_groups');
-
-	/**
 	 * @var array
 	 */
-	protected $configuration = array();
-
-	/**
-	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected $databaseHandler;
-
-	/**
-	 * Constructor
-	 *
-	 * @return \TYPO3\CMS\Vidi\Backend\ExtensionManager
-	 */
-	public function __construct() {
-		$this->configuration = \TYPO3\CMS\Vidi\Utility\ConfigurationUtility::getInstance()->getConfiguration();
-
-		// Merge with Data that comes from the User
-		$postData = \TYPO3\CMS\Core\Utility\GeneralUtility::_POST();
-		if (!empty($postData['data'])) {
-			$this->settings = array_merge($this->settings, $postData['data']);
-		}
-
-		$this->databaseHandler = $GLOBALS['TYPO3_DB'];
-	}
+	protected $dataTypes = array('fe_users', 'fe_groups');
 
 	/**
 	 * Display a message to the Extension Manager whether the configuration is OK or KO.
@@ -76,7 +51,9 @@ class ExtensionManager {
 	 * @return string the HTML message
 	 */
 	public function renderDataTypes(&$params, &$tsObj) {
-		$dataTypes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->configuration['data_types']);
+
+		$configuration = ConfigurationUtility::getInstance()->getConfiguration();
+		$dataTypes = GeneralUtility::trimExplode(',', $configuration['data_types']);
 
 		$options = '';
 		foreach ($this->dataTypes as $dataType) {
@@ -91,23 +68,27 @@ class ExtensionManager {
 		$output = <<<EOF
 				<div class="typo3-tstemplate-ceditor-row" id="userTS-dataTypes">
 					<script type="text/javascript">
-						$(document).ready(function() {
+						(function($) {
+						    $(function() {
 
-							// Handler which will concatenate selected data types.
-							$('.fieldDataType').change(function() {
-								var selected = [];
+								// Handler which will concatenate selected data types.
+								$('.fieldDataType').change(function() {
+									var selected = [];
 
-								$('.fieldDataType').each(function(){
-									if ($(this).is(':checked')) {
-										selected.push($(this).val());
-									}
+									$('.fieldDataType').each(function(){
+										if ($(this).is(':checked')) {
+											selected.push($(this).val());
+										}
+									});
+
+									$('#fieldDataTypes').val(selected.join(','));
 								});
-								$('#fieldDataTypes').val(selected.join(','));
-							});
-						});
+						    });
+						})(jQuery);
 					</script>
 					$options
-					<input type="hidden" id="fieldDataTypes" name="tx_extensionmanager_tools_extensionmanagerextensionmanager[config][data_types][value]" value="{$this->configuration['data_types']}" />
+
+					<input type="hidden" id="fieldDataTypes" name="tx_extensionmanager_tools_extensionmanagerextensionmanager[config][data_types][value]" value="{$configuration['data_types']}" />
 				</div>
 EOF;
 
