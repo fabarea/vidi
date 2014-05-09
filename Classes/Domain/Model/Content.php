@@ -197,7 +197,7 @@ class Content implements \ArrayAccess {
 
 			$this->$propertyName = $foreignRepository->$findByProperty($propertyValue);
 
-		} elseif ($this->getTcaFieldService($propertyName)->hasRelationOne()) {
+		} elseif ($this->getTcaFieldService($fieldName)->hasRelationOne()) {
 
 			// Fetch value from repository
 			$this->$propertyName = $foreignRepository->findByUid($this->$propertyName);
