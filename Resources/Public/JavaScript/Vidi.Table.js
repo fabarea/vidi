@@ -190,6 +190,7 @@ Vidi.Table = {
 					{
 						placeholder: '',
 						height: '20px',
+						submit: 'OK',
 						indicator: Vidi.Editable.indicator,
 						data: Vidi.Editable.data,
 						submitdata: Vidi.Editable.submitData
