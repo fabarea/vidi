@@ -23,18 +23,21 @@ namespace TYPO3\CMS\Vidi\Tca;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * A class to handle TCA ctrl.
  */
-class TcaService implements \TYPO3\CMS\Core\SingletonInterface, \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
+class TcaService implements SingletonInterface, TcaServiceInterface {
 
 	const TEXTFIELD = 'input';
 
 	const TEXTAREA = 'text';
 
 	const NUMBER = 'number';
+
+	const EMAIL = 'email';
 
 	const DATE = 'date';
 
@@ -90,7 +93,7 @@ class TcaService implements \TYPO3\CMS\Core\SingletonInterface, \TYPO3\CMS\Vidi\
 	 * @throws \TYPO3\CMS\Vidi\Exception\NotExistingClassException
 	 * @param string $tableName
 	 * @param string $serviceType of the TCA. Typical values are: field, table, grid
-	 * @return \TYPO3\CMS\Vidi\Tca\TcaServiceInterface
+	 * @return TcaServiceInterface
 	 */
 	static public function getService($tableName = '', $serviceType) {
 		if (TYPO3_MODE == 'BE' && empty($tableName)) {

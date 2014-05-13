@@ -286,6 +286,8 @@ class ColumnService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 					$result = TcaService::DATE_TIME;
 				} elseif (in_array('date', $parts)) {
 					$result = TcaService::DATE;
+				} elseif (in_array('email', $parts)) {
+					$result = TcaService::EMAIL;
 				} elseif (in_array('int', $parts)) {
 					$result = TcaService::NUMBER;
 				}
