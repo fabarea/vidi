@@ -153,15 +153,6 @@ table .thumbnail {
 	margin: 0px auto;
 }
 
-.metadata {
-	font-size: 7pt;
-	color: rgb(119, 119, 119);
-}
-
-form .metadata {
-	padding-left: 10px;
-}
-
 .center {
 	text-align: center;
 }
