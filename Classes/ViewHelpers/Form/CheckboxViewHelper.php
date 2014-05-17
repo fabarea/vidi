@@ -25,11 +25,6 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Form;
 
 /**
  * View helper which render a checkbox and mark whether the User belongs to the User Group.
- *
- * @category    ViewHelpers
- * @package     TYPO3
- * @subpackage  media
- * @author      Fabien Udriot <fabien.udriot@typo3.org>
  */
 class CheckboxViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
 
