@@ -75,6 +75,15 @@ class ColumnService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
+	 * Tells the opposition of isSystem()
+	 *
+	 * @return bool
+	 */
+	public function isNotSystem() {
+		return !$this->isSystem();
+	}
+
+	/**
 	 * Returns the configuration for a $field
 	 *
 	 * @throws \Exception
