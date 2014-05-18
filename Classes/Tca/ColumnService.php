@@ -338,20 +338,55 @@ class ColumnService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return string
 	 */
 	public function getLabelForItem($itemValue) {
-		$result = '';
+		$label = '';
 		$configuration = $this->getConfiguration();
 		if (!empty($configuration['items']) && is_array($configuration['items'])) {
 			foreach ($configuration['items'] as $item) {
 				if ($item[1] == $itemValue) {
-					$result = LocalizationUtility::translate($item[0], '');
-					if (empty($result)) {
-						$result = $item[0];
+					$label = LocalizationUtility::translate($item[0], '');
+					if (empty($label)) {
+						$label = $item[0];
 					}
 					break;
 				}
 			}
 		}
-		return $result;
+
+		// Try fetching a label from a possible itemsProcFunc
+		if (!$label) {
+			$items = $this->fetchItemsFromUserFunction();
+			if (!empty($items[$itemValue])) {
+				$label = $items[$itemValue];
+			}
+		}
+		return $label;
+	}
+
+	/**
+	 * Retrieve items from User Function.
+	 *
+	 * @return array
+	 */
+	protected function fetchItemsFromUserFunction() {
+		$values = array();
+
+		$configuration = $this->getConfiguration();
+		if (!empty($configuration['itemsProcFunc'])) {
+			$parts = explode('php:', $configuration['itemsProcFunc']);
+			if (!empty($parts[1])) {
+
+				list($class, $method) = explode('->', $parts[1]);
+
+				$parameters['items'] = array();
+				$object = GeneralUtility::makeInstance($class);
+				$object->$method($parameters);
+
+				foreach ($parameters['items'] as $items) {
+					$values[$items[0]] = $items[1];
+				}
+			}
+		}
+		return $values;
 	}
 
 	/**
