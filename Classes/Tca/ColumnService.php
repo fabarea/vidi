@@ -273,7 +273,8 @@ class ColumnService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @throws \Exception
 	 * @return string
 	 */
-	public function getFieldType() {
+	public function getType() {
+
 		if ($this->isSystem()) {
 			$result = TcaService::NUMBER;
 		} else {
@@ -303,6 +304,14 @@ class ColumnService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 			}
 		}
 		return $result;
+	}
+
+	/**
+	 * @return string
+	 * @deprecated in 0.4.0, will be removed two version later.
+	 */
+	public function getFieldType() {
+		return $this->getType();
 	}
 
 	/**
