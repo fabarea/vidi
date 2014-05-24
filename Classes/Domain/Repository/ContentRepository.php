@@ -249,7 +249,7 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 		if ($matcher->getSearchTerm()) {
 
 			$tcaTableService = TcaService::table($this->dataType);
-			$fields = explode(',', $tcaTableService->getSearchFields());
+			$fields = GeneralUtility::trimExplode(',', $tcaTableService->getSearchFields(), TRUE);
 
 			$constraints = array();
 			$likeClause = sprintf('%%%s%%', $matcher->getSearchTerm());
