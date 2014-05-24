@@ -118,27 +118,6 @@ class VidiDbBackend {
 	}
 
 	/**
-	 * Fetches row data from the database
-	 *
-	 * @param string $tableName
-	 * @param array $identifier The Identifier of the row to fetch
-	 * @return array|boolean
-	 */
-	public function getRowByIdentifier($tableName, array $identifier) {
-		$statement = 'SELECT * FROM ' . $tableName . ' WHERE ' . $this->parseIdentifier($identifier);
-		$this->replacePlaceholders($statement, $identifier, $tableName);
-		// debug($statement,-2);
-		$res = $this->databaseHandle->sql_query($statement);
-		$this->checkSqlErrors($statement);
-		$row = $this->databaseHandle->sql_fetch_assoc($res);
-		if ($row !== FALSE) {
-			return $row;
-		} else {
-			return FALSE;
-		}
-	}
-
-	/**
 	 * @param array $identifier
 	 * @return string
 	 */
@@ -154,7 +133,7 @@ class VidiDbBackend {
 	/**
 	 * Returns the result of the query
 	 */
-	public function getResult() {
+	public function fetchResult() {
 
 		$parameters = array();
 		$statementParts = $this->parseQuery($this->query, $parameters);
@@ -405,11 +384,10 @@ class VidiDbBackend {
 				$sql['where'][] = '1<>1';
 			} else {
 				// @todo check if this case is really used.
-				$className = $source->getNodeTypeName();
-				$tableName = $className;
+				$tableName = $this->query->getType();
 				$propertyName = $operand1->getPropertyName();
 				while (strpos($propertyName, '.') !== FALSE) {
-					$this->addUnionStatement($className, $tableName, $propertyName, $sql);
+					$this->addUnionStatement($tableName, $propertyName, $sql);
 				}
 				$columnName = $propertyName;
 				$columnMap = $propertyName;
@@ -497,10 +475,9 @@ class VidiDbBackend {
 			$propertyName = $operand->getPropertyName();
 			if ($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface) {
 				// FIXME Only necessary to differ from  Join
-				$className = $source->getNodeTypeName();
-				$tableName = $className;
+				$tableName = $this->query->getType();
 				while (strpos($propertyName, '.') !== FALSE) {
-					$this->addUnionStatement($className, $tableName, $propertyName, $sql);
+					$this->addUnionStatement($tableName, $propertyName, $sql);
 				}
 			} elseif ($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface) {
 				$tableName = $source->getJoinCondition()->getSelector1Name();
@@ -518,7 +495,6 @@ class VidiDbBackend {
 	}
 
 	/**
-	 * @param string &$className
 	 * @param string &$tableName
 	 * @param array &$propertyPath
 	 * @param array &$sql
@@ -526,52 +502,42 @@ class VidiDbBackend {
 	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidRelationConfigurationException
 	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\MissingColumnMapException
 	 */
-	protected function addUnionStatement(&$className, &$tableName, &$propertyPath, array &$sql) {
+	protected function addUnionStatement(&$tableName, &$propertyPath, array &$sql) {
 
-		$tcaTableService = TcaService::table($this->query->getType());
-
+		$table = TcaService::table($tableName);
 
 		$explodedPropertyPath = explode('.', $propertyPath, 2);
-		$propertyName = $explodedPropertyPath[0];
+		$fieldName = $explodedPropertyPath[0];
 
 		// Field of type "group" are special because property path must contain the table name
 		// to determine the relation type. Example for sys_category, property path will look like "items.sys_file"
-		if ($tcaTableService->field($propertyName)->isGroup()) {
-
+		if ($table->field($fieldName)->isGroup()) {
 			$parts = explode('.', $propertyPath, 3);
 			$explodedPropertyPath[0] = $parts[0] . '.' . $parts[1];
 			$explodedPropertyPath[1] = $parts[2];
-			$propertyName = $explodedPropertyPath[0];
+			$fieldName = $explodedPropertyPath[0];
 		}
 
-		$columnName = $propertyName;
-		$tableName = $className;
-
-		# @changed
-		$parentKeyFieldName = $tcaTableService->field($propertyName)->getForeignField();
-
-		#$childTableName = $columnMap->getChildTableName();
-		$childTableName = $tcaTableService->field($propertyName)->getForeignTable();
+		$parentKeyFieldName = $table->field($fieldName)->getForeignField();
+		$childTableName = $table->field($fieldName)->getForeignTable();
 
 		if ($childTableName === NULL) {
-			throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidRelationConfigurationException('The relation information for property "' . $propertyName . '" of class "' . $className . '" is missing.', 1353170925);
+			throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidRelationConfigurationException('The relation information for property "' . $fieldName . '" of class "' . $tableName . '" is missing.', 1353170925);
 		}
 
-		if ($tcaTableService->field($propertyName)->hasRelationOne()) {
+		if ($table->field($fieldName)->hasRelationOne()) {
 			if (isset($parentKeyFieldName)) {
-				#$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.uid=' . $childTableName . '.' . $parentKeyFieldName;
-				// line was copied from else part below.
-				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.' . $columnName . '=' . $childTableName . '.uid';
-			} else {
-				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.' . $columnName . '=' . $childTableName . '.uid';
-			}
-		} elseif ($tcaTableService->field($propertyName)->hasRelationManyToMany()) {
-			$relationTableName = $tcaTableService->field($propertyName)->getManyToManyTable();
+				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.uid=' . $childTableName . '.' . $parentKeyFieldName;
 
-			// @todo "isOppositeRelation" is certainly not sufficient for telling relation direction. But works for now...
-			$parentKeyFieldName = $tcaTableService->field($propertyName)->isOppositeRelation() ? 'uid_foreign' : 'uid_local';
-			$childKeyFieldName = !$tcaTableService->field($propertyName)->isOppositeRelation() ? 'uid_foreign' : 'uid_local';
-			$tableNameCondition = $tcaTableService->field($propertyName)->getAdditionalTableNameCondition();
+			} else {
+				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.' . $fieldName . '=' . $childTableName . '.uid';
+			}
+		} elseif ($table->field($fieldName)->hasRelationManyToMany()) {
+			$relationTableName = $table->field($fieldName)->getManyToManyTable();
+
+			$parentKeyFieldName = $table->field($fieldName)->isOppositeRelation() ? 'uid_foreign' : 'uid_local';
+			$childKeyFieldName = !$table->field($fieldName)->isOppositeRelation() ? 'uid_foreign' : 'uid_local';
+			$tableNameCondition = $table->field($fieldName)->getAdditionalTableNameCondition();
 
 			$sql['unions'][$relationTableName] = 'LEFT JOIN ' . $relationTableName . ' ON ' . $tableName . '.uid=' . $relationTableName . '.' . $parentKeyFieldName;
 			$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $relationTableName . '.' . $childKeyFieldName . '=' . $childTableName . '.uid';
@@ -580,16 +546,17 @@ class VidiDbBackend {
 				$sql['unions'][$relationTableName] .= ' AND ' . $relationTableName . '.tablenames = \'' . $tableNameCondition . '\'';
 				$sql['unions'][$childTableName] .= ' AND ' . $relationTableName . '.tablenames = \'' . $tableNameCondition . '\'';
 			}
-		} elseif ($tcaTableService->field($propertyName)->hasRelationMany()) {
+		} elseif ($table->field($fieldName)->hasRelationMany()) {
 			if (isset($parentKeyFieldName)) {
 				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.uid=' . $childTableName . '.' . $parentKeyFieldName;
 			} else {
-				$onStatement = '(FIND_IN_SET(' . $childTableName . '.uid, ' . $tableName . '.' . $columnName . '))';
+				$onStatement = '(FIND_IN_SET(' . $childTableName . '.uid, ' . $tableName . '.' . $fieldName . '))';
 				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $onStatement;
 			}
 		} else {
 			throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception('Could not determine type of relation.', 1252502725);
 		}
+
 		// TODO check if there is another solution for this
 		$sql['keywords']['distinct'] = 'DISTINCT';
 		$propertyPath = $explodedPropertyPath[1];
@@ -810,6 +777,7 @@ class VidiDbBackend {
 	 * @param string $tableName The database table name
 	 * @param array &$sql The query parts
 	 * @param array $storagePageIds list of storage page ids
+	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\InconsistentQuerySettingsException
 	 * @return void
 	 */
 	protected function addPageIdStatement($tableName, array &$sql, array $storagePageIds) {
@@ -845,26 +813,20 @@ class VidiDbBackend {
 	protected function parseOrderings(array $orderings, \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface $source, array &$sql) {
 		foreach ($orderings as $propertyName => $order) {
 			switch ($order) {
-				case \TYPO3\CMS\Extbase\Persistence\Generic\Qom\QueryObjectModelConstantsInterface::JCR_ORDER_ASCENDING:
-
 				case \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING:
 					$order = 'ASC';
 					break;
-				case \TYPO3\CMS\Extbase\Persistence\Generic\Qom\QueryObjectModelConstantsInterface::JCR_ORDER_DESCENDING:
-
 				case \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING:
 					$order = 'DESC';
 					break;
 				default:
 					throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedOrderException('Unsupported order encountered.', 1242816074);
 			}
-			$className = '';
 			$tableName = '';
 			if ($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface) {
-				$className = $source->getNodeTypeName();
-				$tableName = $className;
+				$tableName = $this->query->getType();
 				while (strpos($propertyName, '.') !== FALSE) {
-					$this->addUnionStatement($className, $tableName, $propertyName, $sql);
+					$this->addUnionStatement($tableName, $propertyName, $sql);
 				}
 			} elseif ($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface) {
 				$tableName = $source->getLeft()->getSelectorName();

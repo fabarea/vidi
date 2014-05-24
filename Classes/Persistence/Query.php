@@ -236,7 +236,7 @@ class Query implements \TYPO3\CMS\Extbase\Persistence\QueryInterface {
 	public function execute($returnRawQueryResult = FALSE) {
 		/** @var \TYPO3\CMS\Vidi\Persistence\Storage\VidiDbBackend $backend */
 		$backend = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\Storage\VidiDbBackend', $this);
-		return $backend->getResult();
+		return $backend->fetchResult();
 	}
 
 	/**

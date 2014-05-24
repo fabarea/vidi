@@ -239,7 +239,7 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 *
 	 * @param \TYPO3\CMS\Vidi\Persistence\Query $query
 	 * @param Matcher $matcher
-	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\Constraint|NULL
+	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface|NULL
 	 */
 	protected function computeSearchTermConstraint(\TYPO3\CMS\Vidi\Persistence\Query $query, Matcher $matcher) {
 
@@ -248,14 +248,14 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 		// Search term case
 		if ($matcher->getSearchTerm()) {
 
-			$tcaTableService = TcaService::table($this->dataType);
-			$fields = GeneralUtility::trimExplode(',', $tcaTableService->getSearchFields(), TRUE);
+			$table = TcaService::table($this->dataType);
+			$fields = GeneralUtility::trimExplode(',', $table->getSearchFields(), TRUE);
 
 			$constraints = array();
 			$likeClause = sprintf('%%%s%%', $matcher->getSearchTerm());
 			foreach ($fields as $fieldName) {
-				if ($tcaTableService->field($fieldName)->hasRelation()) {
-					$foreignTable = $tcaTableService->field($fieldName)->getForeignTable();
+				if ($table->hasField($fieldName) && $table->field($fieldName)->hasRelation()) {
+					$foreignTable = $table->field($fieldName)->getForeignTable();
 					$foreignTcaTableService = TcaService::table($foreignTable);
 					$fieldName = $fieldName . '.' . $foreignTcaTableService->getLabelField();
 				}
