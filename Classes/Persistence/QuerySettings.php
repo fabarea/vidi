@@ -41,26 +41,4 @@ class QuerySettings extends \TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySet
 	 * @var boolean
 	 */
 	protected $respectStoragePage = FALSE;
-
-	/**
-	 * Will debug the query
-	 *
-	 * @var boolean
-	 */
-	protected $debugQuery = FALSE;
-
-	/**
-	 * @return boolean
-	 */
-	public function getDebugQuery() {
-		return $this->debugQuery;
-	}
-
-	/**
-	 * @param boolean $debugQuery
-	 */
-	public function setDebugQuery($debugQuery) {
-		$this->debugQuery = $debugQuery;
-		return $this;
-	}
 }

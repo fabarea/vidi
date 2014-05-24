@@ -166,7 +166,7 @@ class VidiDbBackend {
 			$tableName = $statementParts['tables'][0];
 		}
 		$this->replacePlaceholders($sql, $parameters, $tableName);
-		$this->debugQuery($sql);
+		#print $sql; // @debug
 
 		$result = $this->databaseHandle->sql_query($sql);
 		$this->checkSqlErrors($sql);
@@ -199,7 +199,7 @@ class VidiDbBackend {
 		if (!empty($statementParts['limit'])) {
 			$statement = $this->buildQuery($statementParts, $parameters);
 			$this->replacePlaceholders($statement, $parameters, current($statementParts['tables']));
-			$this->debugQuery($statement);
+			#print $statement; // @debug
 			$result = $this->databaseHandle->sql_query($statement);
 			$this->checkSqlErrors($statement);
 			$count = $this->databaseHandle->sql_num_rows($result);
@@ -215,7 +215,7 @@ class VidiDbBackend {
 			$statement = $this->buildQuery($statementParts, $parameters);
 			$this->replacePlaceholders($statement, $parameters, current($statementParts['tables']));
 
-			$this->debugQuery($statement);
+			#print $statement; // @debug
 			$result = $this->databaseHandle->sql_query($statement);
 			$this->checkSqlErrors($statement);
 			$count = 0;
@@ -226,28 +226,6 @@ class VidiDbBackend {
 		}
 		$this->databaseHandle->sql_free_result($result);
 		return (integer) $count;
-	}
-
-	/**
-	 * Possible logging of query.
-	 *
-	 * @param string $sql
-	 */
-	public function debugQuery($sql) {
-
-		// Just for debugging the query
-		if ($this->query->getQuerySettings()->getDebugQuery()) {
-
-			// direct sql output
-			debug($sql, -2);
-			#print($sql);
-
-			/** @var $loggerManager \TYPO3\CMS\Core\Log\LogManager */
-			$loggerManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager');
-
-			/** @var $logger \TYPO3\CMS\Core\Log\Logger */
-			$loggerManager->getLogger(get_class($this))->debug($sql);
-		}
 	}
 
 	/**
