@@ -32,8 +32,7 @@ use TYPO3\CMS\Vidi\Tca\TcaService;
 	/**
  * A Storage backend
  */
-#implements \TYPO3\CMS\Extbase\Persistence\Generic\Storage\BackendInterface, \TYPO3\CMS\Core\SingletonInterface
-class DbBackend {
+class VidiDbBackend {
 
 	const OPERATOR_EQUAL_TO_NULL = 'operatorEqualToNull';
 	const OPERATOR_NOT_EQUAL_TO_NULL = 'operatorNotEqualToNull';

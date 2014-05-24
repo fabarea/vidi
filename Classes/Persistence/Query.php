@@ -234,10 +234,9 @@ class Query implements \TYPO3\CMS\Extbase\Persistence\QueryInterface {
 	 * @api
 	 */
 	public function execute($returnRawQueryResult = FALSE) {
-		/** @var \TYPO3\CMS\Vidi\Persistence\Storage\DbBackend $dbBackend */
-		$dbBackend = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\Storage\DbBackend', $this);
-
-		return $dbBackend->getResult();
+		/** @var \TYPO3\CMS\Vidi\Persistence\Storage\VidiDbBackend $backend */
+		$backend = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\Storage\VidiDbBackend', $this);
+		return $backend->getResult();
 	}
 
 	/**
@@ -539,11 +538,9 @@ class Query implements \TYPO3\CMS\Extbase\Persistence\QueryInterface {
 	 * @api
 	 */
 	public function count() {
-
-		/** @var \TYPO3\CMS\Vidi\Persistence\Storage\DbBackend $dbBackend */
-		$dbBackend = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\Storage\DbBackend', $this);
-
-		return $dbBackend->countResult();
+		/** @var \TYPO3\CMS\Vidi\Persistence\Storage\VidiDbBackend $backend */
+		$backend = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\Storage\VidiDbBackend', $this);
+		return $backend->countResult();
 	}
 
 	/**
