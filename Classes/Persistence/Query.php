@@ -147,16 +147,6 @@ class Query implements \TYPO3\CMS\Extbase\Persistence\QueryInterface {
 	}
 
 	/**
-	 * Injects the DataMapper to map nodes to objects
-	 *
-	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper $dataMapper
-	 * @return void
-	 */
-	public function injectDataMapper(\TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper $dataMapper) {
-		$this->dataMapper = $dataMapper;
-	}
-
-	/**
 	 * Injects the Query Object Model Factory
 	 *
 	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\Qom\QueryObjectModelFactory $qomFactory
@@ -232,7 +222,6 @@ class Query implements \TYPO3\CMS\Extbase\Persistence\QueryInterface {
 	 */
 	public function getSource() {
 		if ($this->source === NULL) {
-			#$this->source = $this->qomFactory->selector($this->getType(), $this->dataMapper->convertClassNameToTableName($this->getType()));
 			$this->source = $this->qomFactory->selector($this->getType());
 		}
 		return $this->source;

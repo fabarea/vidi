@@ -46,12 +46,6 @@ class DbBackend {
 	protected $databaseHandle;
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Persistence\Mapper\DataMapper
-	 * @inject
-	 */
-	protected $dataMapper;
-
-	/**
 	 * The TYPO3 page repository. Used for language and workspace overlay
 	 *
 	 * @var \TYPO3\CMS\Frontend\Page\PageRepository
@@ -461,11 +455,7 @@ class DbBackend {
 	 */
 	protected function parseSource(\TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface $source, array &$sql) {
 		if ($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface) {
-			$className = $source->getNodeTypeName();
-			$tableName = $className;
-			#$tableName = $this->dataMapper->getDataMap($className)->getTableName();
-			# @changed
-			#$this->addRecordTypeConstraint($className, $sql);
+			$tableName = $source->getNodeTypeName();
 			$sql['fields'][$tableName] = $tableName . '.*';
 			$sql['tables'][$tableName] = $tableName;
 			if ($this->query->getDistinct()) {
@@ -474,39 +464,6 @@ class DbBackend {
 			}
 		} elseif ($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface) {
 			$this->parseJoin($source, $sql);
-		}
-	}
-
-	/**
-	 * Add a constraint to ensure that the record type of the returned tuples is matching the data type of the repository.
-	 *
-	 * @param string $className The class name
-	 * @param array &$sql The query parts
-	 * @return void
-	 */
-	protected function addRecordTypeConstraint($className, &$sql) {
-		if ($className !== NULL) {
-			$dataMap = $this->dataMapper->getDataMap($className);
-			if ($dataMap->getRecordTypeColumnName() !== NULL) {
-				$recordTypes = array();
-				if ($dataMap->getRecordType() !== NULL) {
-					$recordTypes[] = $dataMap->getRecordType();
-				}
-				foreach ($dataMap->getSubclasses() as $subclassName) {
-					$subclassDataMap = $this->dataMapper->getDataMap($subclassName);
-					if ($subclassDataMap->getRecordType() !== NULL) {
-						$recordTypes[] = $subclassDataMap->getRecordType();
-					}
-				}
-				if (count($recordTypes) > 0) {
-					$recordTypeStatements = array();
-					foreach ($recordTypes as $recordType) {
-						$tableName = $dataMap->getTableName();
-						$recordTypeStatements[] = $tableName . '.' . $dataMap->getRecordTypeColumnName() . '=' . $this->databaseHandle->fullQuoteStr($recordType, $tableName);
-					}
-					$sql['additionalWhereClause'][] = '(' . implode(' OR ', $recordTypeStatements) . ')';
-				}
-			}
 		}
 	}
 
@@ -520,7 +477,6 @@ class DbBackend {
 	protected function parseJoin(\TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface $join, array &$sql) {
 		$leftSource = $join->getLeft();
 		$leftClassName = $leftSource->getNodeTypeName();
-		$this->addRecordTypeConstraint($leftClassName, $sql);
 		$leftTableName = $leftSource->getSelectorName();
 		// $sql['fields'][$leftTableName] = $leftTableName . '.*';
 		$rightSource = $join->getRight();
@@ -532,13 +488,12 @@ class DbBackend {
 			$rightTableName = $rightSource->getSelectorName();
 			$sql['fields'][$leftTableName] = $rightTableName . '.*';
 		}
-		$this->addRecordTypeConstraint($rightClassName, $sql);
 		$sql['tables'][$leftTableName] = $leftTableName;
 		$sql['unions'][$rightTableName] = 'LEFT JOIN ' . $rightTableName;
 		$joinCondition = $join->getJoinCondition();
 		if ($joinCondition instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\EquiJoinCondition) {
-			$column1Name = $this->dataMapper->convertPropertyNameToColumnName($joinCondition->getProperty1Name(), $leftClassName);
-			$column2Name = $this->dataMapper->convertPropertyNameToColumnName($joinCondition->getProperty2Name(), $rightClassName);
+			$column1Name = $joinCondition->getProperty1Name();
+			$column2Name = $joinCondition->getProperty2Name();
 			$sql['unions'][$rightTableName] .= ' ON ' . $joinCondition->getSelector1Name() . '.' . $column1Name . ' = ' . $joinCondition->getSelector2Name() . '.' . $column2Name;
 		}
 		if ($rightSource instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface) {
@@ -611,15 +566,15 @@ class DbBackend {
 			if ($operand2 === NULL) {
 				$sql['where'][] = '1<>1';
 			} else {
+				// @todo check if this case is really used.
 				$className = $source->getNodeTypeName();
-				$tableName = $this->dataMapper->convertClassNameToTableName($className);
+				$tableName = $className;
 				$propertyName = $operand1->getPropertyName();
 				while (strpos($propertyName, '.') !== FALSE) {
 					$this->addUnionStatement($className, $tableName, $propertyName, $sql);
 				}
-				$columnName = $this->dataMapper->convertPropertyNameToColumnName($propertyName, $className);
-				$dataMap = $this->dataMapper->getDataMap($className);
-				$columnMap = $dataMap->getColumnMap($propertyName);
+				$columnName = $propertyName;
+				$columnMap = $propertyName;
 				$typeOfRelation = $columnMap instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap ? $columnMap->getTypeOfRelation() : NULL;
 				if ($typeOfRelation === \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap::RELATION_HAS_AND_BELONGS_TO_MANY) {
 					$relationTableName = $columnMap->getRelationTableName();
@@ -705,14 +660,14 @@ class DbBackend {
 			if ($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface) {
 				// FIXME Only necessary to differ from  Join
 				$className = $source->getNodeTypeName();
-				$tableName = $this->dataMapper->convertClassNameToTableName($className);
+				$tableName = $className;
 				while (strpos($propertyName, '.') !== FALSE) {
 					$this->addUnionStatement($className, $tableName, $propertyName, $sql);
 				}
 			} elseif ($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface) {
 				$tableName = $source->getJoinCondition()->getSelector1Name();
 			}
-			$columnName = $this->dataMapper->convertPropertyNameToColumnName($propertyName, $className);
+			$columnName = $propertyName;
 			$operator = $this->resolveOperator($operator);
 			$constraintSQL = '';
 			if ($valueFunction === NULL) {
@@ -751,8 +706,8 @@ class DbBackend {
 			$propertyName = $explodedPropertyPath[0];
 		}
 
-		$columnName = $this->dataMapper->convertPropertyNameToColumnName($propertyName, $className);
-		$tableName = $this->dataMapper->convertClassNameToTableName($className);
+		$columnName = $propertyName;
+		$tableName = $className;
 
 		# @changed
 		$parentKeyFieldName = $tcaTableService->field($propertyName)->getForeignField();
@@ -772,7 +727,6 @@ class DbBackend {
 			} else {
 				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.' . $columnName . '=' . $childTableName . '.uid';
 			}
-			$className = $this->dataMapper->getType($className, $propertyName);
 		} elseif ($tcaTableService->field($propertyName)->hasRelationManyToMany()) {
 			$relationTableName = $tcaTableService->field($propertyName)->getManyToManyTable();
 
@@ -788,7 +742,6 @@ class DbBackend {
 				$sql['unions'][$relationTableName] .= ' AND ' . $relationTableName . '.tablenames = \'' . $tableNameCondition . '\'';
 				$sql['unions'][$childTableName] .= ' AND ' . $relationTableName . '.tablenames = \'' . $tableNameCondition . '\'';
 			}
-			$className = $this->dataMapper->getType($className, $propertyName);
 		} elseif ($tcaTableService->field($propertyName)->hasRelationMany()) {
 			if (isset($parentKeyFieldName)) {
 				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.uid=' . $childTableName . '.' . $parentKeyFieldName;
@@ -796,7 +749,6 @@ class DbBackend {
 				$onStatement = '(FIND_IN_SET(' . $childTableName . '.uid, ' . $tableName . '.' . $columnName . '))';
 				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $onStatement;
 			}
-			$className = $this->dataMapper->getType($className, $propertyName);
 		} else {
 			throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception('Could not determine type of relation.', 1252502725);
 		}
@@ -1072,14 +1024,14 @@ class DbBackend {
 			$tableName = '';
 			if ($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface) {
 				$className = $source->getNodeTypeName();
-				$tableName = $this->dataMapper->convertClassNameToTableName($className);
+				$tableName = $className;
 				while (strpos($propertyName, '.') !== FALSE) {
 					$this->addUnionStatement($className, $tableName, $propertyName, $sql);
 				}
 			} elseif ($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface) {
 				$tableName = $source->getLeft()->getSelectorName();
 			}
-			$columnName = $this->dataMapper->convertPropertyNameToColumnName($propertyName, $className);
+			$columnName = $propertyName;
 			if (strlen($tableName) > 0) {
 				$sql['orderings'][] = $tableName . '.' . $columnName . ' ' . $order;
 			} else {
