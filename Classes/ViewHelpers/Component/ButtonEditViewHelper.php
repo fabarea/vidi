@@ -24,12 +24,13 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
 ***************************************************************/
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Vidi\Domain\Model\Content;
 
 /**
  * View helper which renders a "edit" button to be placed in the grid.
  */
-class ButtonEditViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class ButtonEditViewHelper extends AbstractViewHelper {
 
 	/**
 	 * @var \TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper

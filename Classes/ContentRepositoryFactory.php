@@ -22,12 +22,13 @@ namespace TYPO3\CMS\Vidi;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Factory class to server instances of Content repositories.
  */
-class ContentRepositoryFactory implements \TYPO3\CMS\Core\SingletonInterface{
+class ContentRepositoryFactory implements SingletonInterface {
 
 	/**
 	 * @var array

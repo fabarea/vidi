@@ -22,11 +22,13 @@ namespace TYPO3\CMS\Vidi\ViewHelpers;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper which render an icon using sprites
  */
-class SpriteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class SpriteViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Returns an icon using sprites
@@ -35,6 +37,6 @@ class SpriteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelp
 	 * @return string
 	 */
 	public function render($name = NULL) {
-		return \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($name);
+		return IconUtility::getSpriteIcon($name);
 	}
 }

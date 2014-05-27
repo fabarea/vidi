@@ -23,10 +23,12 @@ namespace TYPO3\CMS\Vidi\ViewHelpers;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+
 /**
  * View helper which return the parameter prefix for a BE module.
  */
-class ParameterPrefixViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class ParameterPrefixViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Return the parameter prefix for a BE module.

@@ -22,11 +22,12 @@ namespace TYPO3\CMS\Vidi\ViewHelpers;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper which allows you to include a CSS File.
  */
-class CssViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class CssViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Compute a CSS tag and render it

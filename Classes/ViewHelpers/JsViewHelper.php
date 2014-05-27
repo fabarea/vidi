@@ -22,10 +22,12 @@ namespace TYPO3\CMS\Vidi\ViewHelpers;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+
 /**
  * View helper which allows you to include a JS File.
  */
-class JsViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class JsViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Compute a JS tag and render it

@@ -24,11 +24,12 @@ namespace TYPO3\CMS\Vidi\ViewHelpers;
 ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper which tells whether an argument exists.
  */
-class IsGPViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class IsGPViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Tells whether the argument exists or not.

@@ -22,13 +22,14 @@ namespace TYPO3\CMS\Vidi;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * Factory class to server instances related persistence object.
  */
-class PersistenceObjectFactory implements \TYPO3\CMS\Core\SingletonInterface{
+class PersistenceObjectFactory implements SingletonInterface {
 
 	/**
 	 * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
@@ -131,14 +132,14 @@ class PersistenceObjectFactory implements \TYPO3\CMS\Core\SingletonInterface{
 
 		// Set items per page
 		if (GeneralUtility::_GET('iDisplayLength') !== NULL) {
-			$limit = (int) GeneralUtility::_GET('iDisplayLength');
+			$limit = (int)GeneralUtility::_GET('iDisplayLength');
 			$pager->setLimit($limit);
 		}
 
 		// Set offset
 		$offset = 0;
 		if (GeneralUtility::_GET('iDisplayStart') !== NULL) {
-			$offset = (int) GeneralUtility::_GET('iDisplayStart');
+			$offset = (int)GeneralUtility::_GET('iDisplayStart');
 		}
 		$pager->setOffset($offset);
 

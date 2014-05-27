@@ -22,11 +22,12 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Form;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper which render a checkbox and mark whether the User belongs to the User Group.
  */
-class CheckboxViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class CheckboxViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Render a checkbox and mark whether the User belongs to the User Group.

@@ -22,12 +22,13 @@ namespace TYPO3\CMS\Vidi\ViewHelpers;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * View helper which returns the json serialization of the search fields.
  */
-class SearchFieldsViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class SearchFieldsViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Returns the json serialization of the search fields.

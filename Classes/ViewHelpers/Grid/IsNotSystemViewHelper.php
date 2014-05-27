@@ -22,12 +22,13 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * Tells about the column type of the grid whether the field is system.
  */
-class IsNotSystemViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class IsNotSystemViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Returns whether the given column name is system

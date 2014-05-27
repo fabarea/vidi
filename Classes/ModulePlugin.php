@@ -26,6 +26,7 @@ namespace TYPO3\CMS\Vidi;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -34,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * The plugin is requested by a GET parameter.
  * Example: tx_vidi_user_vidisysfilem1[plugins][]=imageEditor
  */
-class ModulePlugin implements \TYPO3\CMS\Core\SingletonInterface {
+class ModulePlugin implements SingletonInterface {
 
 	/**
 	 * @var \TYPO3\CMS\Vidi\ModuleLoader

@@ -22,11 +22,12 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper which renders a "csv export" menu item to be placed in the grid menu.
  */
-class MenuItemExportCsvViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class MenuItemExportCsvViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Renders a "csv export" menu item to be placed in the grid menu.
