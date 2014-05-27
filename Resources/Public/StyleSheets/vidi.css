@@ -10,11 +10,16 @@ body {
 	/* padding-top because of the nav bar */
 	/* height 97% because of the padding-top... */
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
+	font-size: 12px;
+}
+
+label, input, button, select, textarea {
+    font-size: 12px;
 }
 
 .modal-body {
 	background-color: #F8F8F8 !important;
+    font-size: 12px;
 }
 
 .modal-body select,
@@ -48,10 +53,29 @@ body {
 	font-weight: bold;
 }
 
-.btn,
-input,
-label {
-	font-size: 11px;
+.popover-title {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.relation-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.relation-list li {
+    line-height: 16px;
+}
+
+.relation-list label {
+    font-weight: normal;
+    line-height: 16px;
+    margin-bottom: 0;
+}
+
+.relation-list input[type="checkbox"] {
+    margin: 0 7px 0 0;
 }
 
 /* @todo include these styles into Scss and re-generate Css */
@@ -64,8 +88,12 @@ label {
 	border-bottom: 1px solid #cdcdcd;
 }
 
-.btn-group>.btn, .btn-group>.dropdown-menu {
+.btn-group>.dropdown-menu {
 	font-size: 11px;
+}
+
+.dropdown-menu li a {
+    text-decoration: none;
 }
 
 .container-fluid {
@@ -113,6 +141,14 @@ table {
 	height: 22px;
 }
 
+.typo3-dblist {
+    border: 1px solid #dddddd;
+}
+
+.typo3-dblist th, td {
+    border-left: 1px solid #dddddd;
+}
+
 .table-bordered thead:first-child tr:first-child th:first-child,
 .table-bordered tbody:first-child tr:first-child td:first-child,
 .table-bordered {
@@ -140,7 +176,7 @@ input[type="text"] {
 
 .dropdown-menu {
 	text-align: left;
-	width: 200px;
+	width: 250px;
 	color: #000;
 }
 
@@ -205,6 +241,11 @@ table .thumbnail {
 	padding-left: 10px;
 }
 
+.thumbnail {
+    border-radius: 0;
+    -webkit-border-radius: 0;
+}
+
 .btn-doc-header {
 	padding: 0 4px 2px 4px;
 	margin: 2px 0 !important;
@@ -252,6 +293,65 @@ table .thumbnail {
 /* Hide by default the search bar from DataTables which is replaced by VisualSearch */
 input[aria-controls=content-list] {
 	display: none;
+}
+
+/* Datatables */
+
+.table tbody tr.active td, .table tbody tr.active th {
+    background-color: #dfdfdf;
+    color: #333;
+}
+
+.table-striped tbody tr.active:nth-child(odd) td, .table-striped tbody tr.active:nth-child(odd) th {
+    background-color: #dfdfdf;
+    color: #333;
+}
+
+.dataTables_paginate li a {
+    color: #000;
+}
+
+.dataTables_paginate li.disabled a {
+    color: #ccc;
+}
+
+/* Form Elements */
+input,button,select,textarea{
+    font-family: Verdana,Arial,Helvetica,sans-serif !important;
+}
+
+
+/* Buttons */
+.btn-group>.btn,
+.btn {
+    border-radius: 2px;
+    cursor: pointer;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    text-decoration: none!important;
+    font-size: 12px;
+}
+
+/* VisualSearch */
+.VS-search .VS-search-box {
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    background-color: #fff;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+.VS-interface, .VS-search .dialog, .VS-search input {
+    font-family: Verdana,Arial,Helvetica,sans-serif !important;
+}
+
+.VS-search .search_facet.is_selected {
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
 }
 
 /* Hide border of fields in VisualSearch */
