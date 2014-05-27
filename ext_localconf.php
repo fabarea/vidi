@@ -12,4 +12,3 @@ if (version_compare(TYPO3_branch, '6.1', '<=')) {
 		'className' => 'TYPO3\CMS\Vidi\Override\Backend\View\ModuleMenuView'
 	);
 }
-?>

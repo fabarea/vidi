@@ -62,4 +62,3 @@ if (TYPO3_MODE == 'BE' && class_exists('TYPO3\CMS\Vidi\ModuleLoader')) {
 	),
 	$_EXTKEY
 );
-?>
