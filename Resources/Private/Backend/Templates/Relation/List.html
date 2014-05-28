@@ -20,10 +20,10 @@
 			{relatedContentTitle}
 		</label>
 		<div class="controls">
-			<ul>
+			<ul class="relation-list">
 				<f:for each="{relatedContents}" as="relatedContent">
 					<li>
-						<label style="font-weight: normal">
+						<label>
 							<v:form.checkbox content="{content}" relationProperty="{relationProperty}" relatedContent="{relatedContent}" />
 							<v:contentTitle content="{relatedContent}"/>
 						</label>

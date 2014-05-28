@@ -69,10 +69,10 @@
 
 			<f:format.raw>{gridTopComponents}</f:format.raw>
 
-			<table class="table table-striped table-bordered table-hover"
+			<table class="table table-striped table-hover typo3-dblist"
 			       id="content-list">
 				<thead>
-				<tr>
+				<tr class="t3-row-header">
 					<f:for each="{columns}" key="columnName" as="configuration">
 						<th>
 							<f:if condition="{configuration.html}">
@@ -92,14 +92,13 @@
 				<tr>
 					<th colspan="20">
 						<div class="btn-group dropup">
-							<a class="btn btn-mini dropdown-toggle mass-action disabled" data-toggle="dropdown" href="#"
+							<a class="btn dropdown-toggle mass-action disabled" data-toggle="dropdown" href="#"
 							   onclick="return false">
 								<span class="caret"></span>
 								Selected rows will be...
 							</a>
 							<ul class="dropdown-menu">
 								<f:format.raw>{gridMenuComponents}</f:format.raw>
-
 							</ul>
 						</div>
 					</th>
