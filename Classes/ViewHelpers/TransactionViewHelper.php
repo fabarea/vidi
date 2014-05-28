@@ -23,6 +23,8 @@ namespace TYPO3\CMS\Vidi\ViewHelpers;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * View helper a transaction number
  */
@@ -36,8 +38,8 @@ class TransactionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractVie
 	 */
 	public function render() {
 		$transaction = 0;
-		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('sEcho')) {
-			$transaction = (int)\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('sEcho') + 1;
+		if (GeneralUtility::_GET('sEcho')) {
+			$transaction = (int)GeneralUtility::_GET('sEcho') + 1;
 		}
 		return $transaction;
 	}

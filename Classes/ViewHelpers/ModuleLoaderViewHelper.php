@@ -22,10 +22,12 @@ namespace TYPO3\CMS\Vidi\ViewHelpers;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+
 /**
  * View helper which connects the Module Loader object.
  */
-class ModuleLoaderViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class ModuleLoaderViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Interface with the Module Loader

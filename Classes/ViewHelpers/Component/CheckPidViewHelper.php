@@ -23,13 +23,14 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * View helper which renders check.
  */
-class CheckPidViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class CheckPidViewHelper extends AbstractViewHelper {
 
 	/**
 	 * @var \TYPO3\CMS\Vidi\ModuleLoader

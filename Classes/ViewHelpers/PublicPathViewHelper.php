@@ -22,10 +22,12 @@ namespace TYPO3\CMS\Vidi\ViewHelpers;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+
 /**
  * Return the public path to Vidi extension.
  */
-class PublicPathViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class PublicPathViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Returns the public path to Vidi extension.

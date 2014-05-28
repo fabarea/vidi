@@ -22,11 +22,12 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper for rendering a checkbox.
  */
-class SystemCheckboxViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class SystemCheckboxViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Returns a checkbox for the grids.

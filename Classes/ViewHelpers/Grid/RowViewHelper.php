@@ -23,6 +23,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Vidi\ContentRepositoryFactory;
 use TYPO3\CMS\Vidi\Domain\Model\Content;
 use TYPO3\CMS\Vidi\Formatter\FormatterInterface;
@@ -31,7 +32,7 @@ use TYPO3\CMS\Vidi\Tca\TcaService;
 /**
  * View helper for rendering a row of a content object.
  */
-class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class RowViewHelper extends AbstractViewHelper {
 
 	/**
 	 * @var array
@@ -51,14 +52,13 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 	}
 
 	/**
-	 * Render a row per content object.
+	 * Render a row to be displayed in the Grid given an Content Object.
 	 *
 	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
 	 * @param int $offset
 	 * @return array
 	 */
 	public function render(Content $object, $offset) {
-
 
 		// Initialize returned array
 		$output = array();
@@ -71,13 +71,13 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 				$className = sprintf('TYPO3\CMS\Vidi\ViewHelpers\Grid\System%sViewHelper', ucfirst($systemFieldName));
 				if (class_exists($className)) {
 
-					/** @var \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper $systemColumnViewHelper */
+					/** @var AbstractViewHelper $systemColumnViewHelper */
 					$systemColumnViewHelper = $this->objectManager->get($className);
 					$output[$fieldName] = $systemColumnViewHelper->render($object, $offset);
 				}
 			} elseif (!in_array($fieldName, $this->columns) && !TcaService::grid()->isForce($fieldName)) {
 
-				// Show nothing if the column is not requested which is good for performance.
+				// Show nothing if the column is not requested for performance sake.
 				$output[$fieldName] = '';
 			} else {
 
@@ -163,7 +163,6 @@ class RowViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 				$this->relations[] = $foreignDataType . '_' . $object[$fieldName]['uid'];
 			} else {
 				// We must query the opposite side to get the identifier of the foreign object.
-				$foreignField = TcaService::table()->field($fieldName)->getForeignField();
 				$foreignDataType = TcaService::table()->field($fieldName)->getForeignTable();
 				$foreignField = TcaService::table()->field($fieldName)->getForeignField();
 				$foreignRepository = ContentRepositoryFactory::getInstance($foreignDataType);

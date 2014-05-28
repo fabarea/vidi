@@ -22,12 +22,13 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper for rendering the position number of an content object.
  * @todo Not working currently because $index is not given. Implement me if needed.
  */
-class SystemNumberViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class SystemNumberViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Renders the position number of an content object.

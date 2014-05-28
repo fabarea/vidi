@@ -22,11 +22,12 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper which renders a "mass edit" menu item to be placed in the grid menu.
  */
-class MenuItemMassEditViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class MenuItemMassEditViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Renders a "mass edit" menu item to be placed in the grid menu.

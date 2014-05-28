@@ -23,10 +23,13 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Be;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper;
+
 /**
  * Load resources from the Moduler Loader.
  */
-class ModuleResourcesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper {
+class ModuleResourcesViewHelper extends AbstractBackendViewHelper {
 
 	/**
 	 * Return the number of the transaction with the client
@@ -43,7 +46,7 @@ class ModuleResourcesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Be\Abstract
 		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\ModuleLoader');
 
 		/** @var \TYPO3\CMS\Fluid\ViewHelpers\Uri\ResourceViewHelper $resourceViewHelper */
-		$resourceViewHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Fluid\ViewHelpers\Uri\ResourceViewHelper');
+		$resourceViewHelper = GeneralUtility::makeInstance('TYPO3\CMS\Fluid\ViewHelpers\Uri\ResourceViewHelper');
 
 		foreach ($moduleLoader->getAdditionalStyleSheetFiles() as $addCssFile) {
 			$fileNameAndPath = $this->resolvePath($addCssFile);
@@ -63,7 +66,7 @@ class ModuleResourcesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Be\Abstract
 	 * @return string
 	 */
 	 protected function resolvePath($uri) {
-		$uri = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($uri);
+		$uri = GeneralUtility::getFileAbsFileName($uri);
 		$uri = substr($uri, strlen(PATH_site));
 		if (TYPO3_MODE === 'BE' && $uri !== FALSE) {
 			$uri = '../' . $uri;
