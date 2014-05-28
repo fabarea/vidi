@@ -7,7 +7,7 @@
  *
  * @type {Object}
  */
-Vidi.Table = {
+Vidi.Grid = {
 
 	/**
 	 * @return object
@@ -56,15 +56,30 @@ Vidi.Table = {
 				}
 				return state;
 			},
-			"fnServerData": function(sSource, aoData, fnCallback, oSettings) {
-				oSettings.jqXHR = $.ajax({
 
-					"dataType": 'json',
-					"type": "GET",
-					"url": sSource,
-					"data": aoData,
-					"success": fnCallback,
-					"error": function() {
+			/**
+			 * Override the default Ajax call of DataTable.
+			 *
+			 * @param sSource
+			 * @param aoData
+			 * @param fnCallback
+			 * @param oSettings
+			 */
+			'fnServerData': function(sSource, aoData, fnCallback, oSettings) {
+
+				// Store the parameters to be able to reconstruct the URL later on.
+				Vidi.Grid.stored = {
+					data: aoData,
+					url: sSource
+				};
+
+				oSettings.jqXHR = $.ajax({
+					'dataType': 'json',
+					'type': "GET",
+					'url': sSource,
+					'data': aoData,
+					'success': fnCallback,
+					'error': function() {
 						var message = 'Oups! Something went wrong in the Ajax request... Consider investigating the problem in the Network Monitor. <br />';
 						Vidi.FlashMessage.add(message, 'error');
 						var fadeOut = false;
@@ -82,6 +97,7 @@ Vidi.Table = {
 				'sSearch': '',
 				'sLengthMenu': '_MENU_'
 			},
+
 			/**
 			 * Add Ajax parameters from plug-ins
 			 *
@@ -122,7 +138,7 @@ Vidi.Table = {
 				// Get the parameter related to filter from the URL and "re-inject" them into the Ajax request
 				parameterPrefix = 'tx_vidi_' + Vidi.module.moduleCode.toLowerCase();
 
-				aoData.push({ 'name': parameterPrefix + '[action]', 'value': 'listRow' });
+				aoData.push({ 'name': parameterPrefix + '[action]', 'value': 'list' });
 				aoData.push({ 'name': parameterPrefix + '[controller]', 'value': 'Content' });
 				aoData.push({ 'name': parameterPrefix + '[format]', 'value': 'json' });
 
@@ -146,7 +162,7 @@ Vidi.Table = {
 				$('#content-list').css('opacity', 1);
 
 				// Possibly animate row
-				Vidi.Table.animateRow();
+				Vidi.Grid.animateRow();
 
 				// Add action for switching visibility of hidden elements when mouse is in table cell.
 				$('.dataTable tbody td')
@@ -166,8 +182,8 @@ Vidi.Table = {
 				/**
 				 * Bind handler for editable content for input.
 				 */
-				Vidi.table.$('td.editable-textarea').editable(
-					Vidi.Table.computeEditableUrl(),
+				Vidi.grid.$('td.editable-textarea').editable(
+					Vidi.Grid.computeEditableUrl(),
 					{
 						type: 'textarea',
 						placeholder: '',
@@ -185,8 +201,8 @@ Vidi.Table = {
 				/**
 				 * Bind handler for editable content for input.
 				 */
-				Vidi.table.$('td.editable-textfield').editable(
-					Vidi.Table.computeEditableUrl(),
+				Vidi.grid.$('td.editable-textfield').editable(
+					Vidi.Grid.computeEditableUrl(),
 					{
 						placeholder: '',
 						height: '20px',
@@ -199,8 +215,27 @@ Vidi.Table = {
 			}
 		};
 
-		config = this.setDefaultSearch(config);
+		config = this.initializeDefaultSearch(config);
 		return config;
+	},
+
+
+	/**
+	 * Returne selected row from the grid
+	 *
+	 * @return {array}
+	 */
+	getSelectedRows: function() {
+		var selectedRows = [];
+		$('#content-list')
+			.find('.checkbox-row')
+			.filter(':checked')
+			.each(function(index) {
+				var identifier = $(this).data('uid');
+				selectedRows.push(identifier);
+			});
+
+		return selectedRows;
 	},
 
 	/**
@@ -234,7 +269,7 @@ Vidi.Table = {
 	 * @return {array} config
 	 * @private
 	 */
-	setDefaultSearch: function(config) {
+	initializeDefaultSearch: function(config) {
 
 		var state = JSON.parse(Vidi.Session.get('dataTables'));
 

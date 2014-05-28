@@ -22,6 +22,8 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -35,6 +37,9 @@ class MenuItemMassEditViewHelper extends AbstractViewHelper {
 	 * @return string
 	 */
 	public function render() {
-		return '<li><a href="#" class="mass-edit">Edit (not implemented)</a></li>';
+		return sprintf('<li><a href="#" class="mass-edit">%s %s (not implemented)</a></li>',
+			IconUtility::getSpriteIcon('actions-document-open'),
+			LocalizationUtility::translate('edit', 'vidi')
+		);
 	}
 }

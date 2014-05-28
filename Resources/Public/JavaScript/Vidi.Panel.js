@@ -43,7 +43,7 @@ Vidi.Panel = {
 		this.togglePanel();
 
 		if (reloadTable) {
-			Vidi.table.fnDraw();
+			Vidi.grid.fnDraw();
 		}
 	},
 

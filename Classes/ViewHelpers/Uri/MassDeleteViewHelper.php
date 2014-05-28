@@ -23,11 +23,12 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * Render a mass delete URI.
  */
-class MassDeleteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class MassDeleteViewHelper extends AbstractViewHelper {
 
 	/**
 	 * @var \TYPO3\CMS\Vidi\ModuleLoader
@@ -45,7 +46,7 @@ class MassDeleteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
 		$parameterPrefix = $this->moduleLoader->getParameterPrefix();
 		$parameterPrefixEncoded = rawurlencode($parameterPrefix);
 
-		return sprintf('%s&%s[format]=json&%s[action]=massDelete&%s[controller]=Content',
+		return sprintf('%s&%s[format]=json&%s[action]=delete&%s[controller]=Content',
 			BackendUtility::getModuleUrl($this->moduleLoader->getModuleCode()),
 			$parameterPrefixEncoded,
 			$parameterPrefixEncoded,

@@ -276,7 +276,7 @@ class ColumnService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	public function getType() {
 
 		if ($this->isSystem()) {
-			$result = TcaService::NUMBER;
+			$fieldType = TcaService::NUMBER;
 		} else {
 			$configuration = $this->getConfiguration();
 
@@ -284,26 +284,27 @@ class ColumnService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 				throw new \Exception(sprintf('No field type found for "%s" in table "%s"', $this->fieldName, $this->tableName), 1385556627);
 			}
 
-			$result = $configuration['type'];
+			$fieldType = $configuration['type'];
 
 			if ($configuration['type'] === TcaService::SELECT && !empty($configuration['size']) && $configuration['size'] > 1) {
-				$result = TcaService::MULTI_SELECT;
-			}
-
-			if (!empty($configuration['eval'])) {
+				$fieldType = TcaService::MULTISELECT;
+			} elseif (!empty($configuration['foreign_table'])
+				&& ($configuration['foreign_table'] == 'sys_file_reference' || $configuration['foreign_table'] == 'sys_file')) {
+				$fieldType = TcaService::FILE;
+			} elseif (!empty($configuration['eval'])) {
 				$parts = GeneralUtility::trimExplode(',', $configuration['eval']);
 				if (in_array('datetime', $parts)) {
-					$result = TcaService::DATE_TIME;
+					$fieldType = TcaService::DATETIME;
 				} elseif (in_array('date', $parts)) {
-					$result = TcaService::DATE;
+					$fieldType = TcaService::DATE;
 				} elseif (in_array('email', $parts)) {
-					$result = TcaService::EMAIL;
+					$fieldType = TcaService::EMAIL;
 				} elseif (in_array('int', $parts)) {
-					$result = TcaService::NUMBER;
+					$fieldType = TcaService::NUMBER;
 				}
 			}
 		}
-		return $result;
+		return $fieldType;
 	}
 
 	/**
@@ -338,7 +339,13 @@ class ColumnService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return string
 	 */
 	public function getLabelForItem($itemValue) {
-		$label = '';
+		$label = ''; // initialize variable.
+
+		// Early return whether there is nothing to be translated as label.
+		if (is_string($itemValue) && $itemValue === '' || is_null($itemValue)) {
+			return $label;
+		}
+
 		$configuration = $this->getConfiguration();
 		if (!empty($configuration['items']) && is_array($configuration['items'])) {
 			foreach ($configuration['items'] as $item) {

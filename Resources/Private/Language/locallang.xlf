@@ -28,6 +28,9 @@
 			<trans-unit id="confirm-mass-delete-plural">
 				<source>Are you sure you want to delete {0} items?</source>
 			</trans-unit>
+			<trans-unit id="confirm-mass-delete-current-selection">
+				<source>Are you sure you want to delete the current selection?</source>
+			</trans-unit>
 			<trans-unit id="message-error">
 				<source>Transaction did not succeed</source>
 			</trans-unit>
@@ -70,7 +73,6 @@
 			<trans-unit id="items">
 				<source>item</source>
 			</trans-unit>
-
 			<trans-unit id="tstamp">
 				<source>Modification date</source>
 			</trans-unit>
@@ -79,6 +81,24 @@
 			</trans-unit>
 			<trans-unit id="visibility_abbreviation">
 				<source>Vis.</source>
+			</trans-unit>
+			<trans-unit id="selected_rows">
+				<source>Selected rows...</source>
+			</trans-unit>
+			<trans-unit id="for_selected_rows">
+				<source>For selected rows...</source>
+			</trans-unit>
+			<trans-unit id="for_all_rows">
+				<source>For all rows...</source>
+			</trans-unit>
+			<trans-unit id="export-csv">
+				<source>Export CSV</source>
+			</trans-unit>
+			<trans-unit id="export-xml">
+				<source>Export XML</source>
+			</trans-unit>
+			<trans-unit id="export-xls">
+				<source>Export XLS</source>
 			</trans-unit>
 		</body>
 	</file>

@@ -23,7 +23,8 @@ namespace TYPO3\CMS\Vidi\Controller\Backend;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use TYPO3\CMS\Vidi\ContentRepositoryFactory;
-use TYPO3\CMS\Vidi\PersistenceObjectFactory;
+use TYPO3\CMS\Vidi\Persistence\MatcherObjectFactory;
+use TYPO3\CMS\Vidi\Persistence\OrderObjectFactory;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
@@ -82,8 +83,8 @@ class RelationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		$relatedContentRepository = ContentRepositoryFactory::getInstance($relatedDataType);
 
 		// Initialize the matcher object.
-		$matcher = PersistenceObjectFactory::getInstance()->getMatcherObject($relatedDataType);
-		$order = PersistenceObjectFactory::getInstance()->getOrderObject($relatedDataType);
+		$matcher = MatcherObjectFactory::getInstance()->getMatcher(array(), $relatedDataType);
+		$order = OrderObjectFactory::getInstance()->getOrder($relatedDataType);
 
 		$relatedContents = $relatedContentRepository->findBy($matcher, $order);
 

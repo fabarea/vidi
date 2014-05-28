@@ -76,7 +76,7 @@ $(document).ready(function () {
 							Vidi.Session.set('lastEditedUid', contentUid);
 
 							// Reload data table.
-							Vidi.table.fnDraw();
+							Vidi.grid.fnDraw();
 						}
 					})
 				});

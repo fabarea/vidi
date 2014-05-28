@@ -27,12 +27,12 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
- * View helper which renders a "xml export" item to be placed in the menu.
+ * View helper which renders a "xls export" item to be placed in the menu.
  */
-class MenuItemExportXmlViewHelper extends AbstractViewHelper {
+class MenuItemExportXlsViewHelper extends AbstractViewHelper {
 
 	/**
-	 * Renders an "xml export" item to be placed in the menu.
+	 * Renders a "xls export" item to be placed in the menu.
 	 * Only the admin is allowed to export for now as security is not handled.
 	 *
 	 * @return string
@@ -40,9 +40,9 @@ class MenuItemExportXmlViewHelper extends AbstractViewHelper {
 	public function render() {
 		$result = '';
 		if ($this->getBackendUser()->isAdmin()) {
-			$result = sprintf('<li><a href="#" class="export-xml" data-format="xml">%s %s</a></li>',
-				IconUtility::getSpriteIcon('mimetypes-text-html'),
-				LocalizationUtility::translate('export-xml', 'vidi')
+			$result = sprintf('<li><a href="#" class="export-xls" data-format="xls">%s %s</a></li>',
+				IconUtility::getSpriteIcon('mimetypes-excel'),
+				LocalizationUtility::translate('export-xls', 'vidi')
 			);
 		}
 		return $result;

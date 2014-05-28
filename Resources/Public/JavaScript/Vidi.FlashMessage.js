@@ -62,7 +62,7 @@ Vidi.FlashMessage = {
 	 */
 	show: function (message, severity, fadeOut) {
 
-		if (typeof fadeOut === undefined) {
+		if (typeof fadeOut === "undefined") {
 			fadeOut = true;
 		}
 

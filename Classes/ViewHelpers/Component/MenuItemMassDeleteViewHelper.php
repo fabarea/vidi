@@ -23,6 +23,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -42,9 +43,10 @@ class MenuItemMassDeleteViewHelper extends AbstractViewHelper {
 	 * @return string
 	 */
 	public function render() {
-		return sprintf('<li><a href="%s" class="mass-delete" >%s Delete</a>',
+		return sprintf('<li><a href="%s" class="mass-delete" >%s %s</a>',
 			$this->uriMassDeleteViewHelper->render(),
-			IconUtility::getSpriteIcon('actions-edit-delete')
+			IconUtility::getSpriteIcon('actions-edit-delete'),
+			LocalizationUtility::translate('delete', 'vidi')
 		);
 	}
 }

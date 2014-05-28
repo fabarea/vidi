@@ -55,10 +55,10 @@ class RowViewHelper extends AbstractViewHelper {
 	 * Render a row to be displayed in the Grid given an Content Object.
 	 *
 	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
-	 * @param int $offset
+	 * @param int $index
 	 * @return array
 	 */
-	public function render(Content $object, $offset) {
+	public function render(Content $object, $index) {
 
 		// Initialize returned array
 		$output = array();
@@ -73,7 +73,7 @@ class RowViewHelper extends AbstractViewHelper {
 
 					/** @var AbstractViewHelper $systemColumnViewHelper */
 					$systemColumnViewHelper = $this->objectManager->get($className);
-					$output[$fieldName] = $systemColumnViewHelper->render($object, $offset);
+					$output[$fieldName] = $systemColumnViewHelper->render($object, $index);
 				}
 			} elseif (!in_array($fieldName, $this->columns) && !TcaService::grid()->isForce($fieldName)) {
 
@@ -107,7 +107,7 @@ class RowViewHelper extends AbstractViewHelper {
 					$result = $object[$fieldName] instanceof Content ? $object[$fieldName]['uid'] : $object[$fieldName]; // AccessArray object
 
 					// Avoid bad surprise, converts characters to HTML.
-					$fieldType = TcaService::table($object->getDataType())->field($fieldName)->getFieldType();
+					$fieldType = TcaService::table($object->getDataType())->field($fieldName)->getType();
 					if ($fieldType === TcaService::RADIO || $fieldType === TcaService::SELECT) {
 
 						// Attempt to convert the value into a label for radio and select fields.

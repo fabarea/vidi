@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Tca;
 /***************************************************************
 *  Copyright notice
 *
@@ -23,22 +23,23 @@ namespace TYPO3\CMS\Vidi\ViewHelpers;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Vidi\Domain\Model\Content;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * View helper which returns the title of a content object.
  */
-class ContentTitleViewHelper extends AbstractViewHelper {
+class TitleViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Returns the title of a content object.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
+	 * @param Content $content
 	 * @return string
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $content) {
-		$tcaTableService = TcaService::table($content->getDataType());
-		return $content[$tcaTableService->getLabelField()];
+	public function render(Content $content) {
+		$table = TcaService::table($content->getDataType());
+		return $content[$table->getLabelField()];
 	}
 
 }

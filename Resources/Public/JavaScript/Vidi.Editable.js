@@ -28,7 +28,7 @@ Vidi.Editable = {
 		uidParameter = '{0}[content][uid]'.format(Vidi.module.parameterPrefix);
 
 		// Get needed values
-		columnPosition = Vidi.table.fnGetPosition(this)[2];
+		columnPosition = Vidi.grid.fnGetPosition(this)[2];
 		dataType = Vidi._columns[columnPosition]['dataType'];
 
 		classes = this.parentNode.getAttribute('class').split(' ');
@@ -62,7 +62,7 @@ Vidi.Editable = {
 		var contentParameter, columnPosition, fieldName;
 
 		// Define dynamically the name of the field which will be used as POST parameter
-		columnPosition = Vidi.table.fnGetPosition(this)[2];
+		columnPosition = Vidi.grid.fnGetPosition(this)[2];
 		fieldName = Vidi._columns[columnPosition]['mData'];
 		contentParameter = '{0}[content][{1}]'.format(Vidi.module.parameterPrefix, fieldName);
 

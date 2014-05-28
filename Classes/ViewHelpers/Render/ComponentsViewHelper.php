@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Render;
 /***************************************************************
 *  Copyright notice
 *
@@ -23,13 +23,12 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3\CMS\Vidi\Domain\Model\Content;
 use TYPO3\CMS\Vidi\ModuleLoader;
 
 /**
- * View helper for rendering buttons in the grids according to a Content object.
+ * View helper for rendering components
  */
-class SystemButtonsViewHelper extends AbstractViewHelper {
+class ComponentsViewHelper extends AbstractViewHelper {
 
 	/**
 	 * @var \TYPO3\CMS\Extbase\Object\ObjectManager
@@ -38,24 +37,29 @@ class SystemButtonsViewHelper extends AbstractViewHelper {
 	protected $objectManager;
 
 	/**
-	 * Rendering buttons in the grids given a Content object.
+	 * Renders the position number of an content object.
 	 *
-	 * @param Content $object
+	 * @param  string $part
 	 * @return string
 	 */
-	public function render(Content $object) {
+	public function render($part) {
 
 		/** @var ModuleLoader $moduleLoader */
 		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\ModuleLoader');
-		$components = $moduleLoader->getGridButtonsComponents();
+
+		$getComponents = 'get' . ucfirst($part) . 'Components';
+		$components = $moduleLoader->$getComponents();
 
 		$result = '';
 		foreach ($components as $component) {
 			$viewHelper = $this->objectManager->get($component);
-			$result .= $viewHelper->render($object);
+
+			// Get possible arguments but remove first one.
+			$arguments = func_get_args();
+			array_shift($arguments);
+			$result .= call_user_func_array(array($viewHelper, 'render'), $arguments);
 		}
 
 		return $result;
 	}
-
 }

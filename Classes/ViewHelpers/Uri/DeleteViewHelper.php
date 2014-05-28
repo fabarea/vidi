@@ -23,11 +23,13 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Vidi\Domain\Model\Content;
 
 /**
  * Render a delete URI given an object.
  */
-class DeleteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class DeleteViewHelper extends AbstractViewHelper {
 
 	/**
 	 * @var \TYPO3\CMS\Vidi\ModuleLoader
@@ -35,19 +37,18 @@ class DeleteViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelp
 	 */
 	protected $moduleLoader;
 
-
 	/**
 	 * Render a delete URI given an object.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param Content $object
 	 * @return string
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object) {
+	public function render(Content $object) {
 
 		$parameterPrefix = $this->moduleLoader->getParameterPrefix();
 		$parameterPrefixEncoded = rawurlencode($parameterPrefix);
 
-		return sprintf('%s&%s[content]=%s&%s[format]=json&%s[action]=delete&%s[controller]=Content',
+		return sprintf('%s&%s[matches][uid]=%s&%s[format]=json&%s[action]=delete&%s[controller]=Content',
 			BackendUtility::getModuleUrl($this->moduleLoader->getModuleCode()),
 			$parameterPrefixEncoded,
 			$object->getUid(),

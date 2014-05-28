@@ -32,7 +32,7 @@ use TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException;
  */
 class ModuleLoader {
 
-	const NAVIGATION = 'navigation';
+	const DOC_HEADER = 'doc-header';
 
 	const TOP = 'top';
 
@@ -46,7 +46,9 @@ class ModuleLoader {
 
 	const BUTTONS = 'buttons';
 
-	const MENU = 'menu';
+	const MENU_SELECTED_ROWS = 'selected-rows';
+
+	const MENU_ALL_ROWS = 'all-rows';
 
 	/**
 	 * The type of data being listed (which corresponds to a table name in TCA)
@@ -106,7 +108,7 @@ class ModuleLoader {
 	 * @var array
 	 */
 	protected $components = array(
-		self::NAVIGATION => array(
+		self::DOC_HEADER => array(
 			self::TOP => array(
 				self::LEFT => array(),
 				self::RIGHT => array(),
@@ -128,15 +130,24 @@ class ModuleLoader {
 				'TYPO3\CMS\Vidi\ViewHelpers\Component\ButtonEditViewHelper',
 				'TYPO3\CMS\Vidi\ViewHelpers\Component\ButtonDeleteViewHelper',
 			),
-			self::MENU => array(
-				'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemExportXmlViewHelper',
-				'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemExportCsvViewHelper',
-				'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemDividerViewHelper',
-				'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemMassEditViewHelper',
-				'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemMassDeleteViewHelper',
-			),
 			self::BOTTOM => array(),
-		)
+		),
+		self::MENU_SELECTED_ROWS => array(
+			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemExportXlsViewHelper',
+			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemExportXmlViewHelper',
+			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemExportCsvViewHelper',
+			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemDividerViewHelper',
+			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemMassDeleteViewHelper',
+			#'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemMassEditViewHelper',
+		),
+		self::MENU_ALL_ROWS => array(
+			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemExportXlsViewHelper',
+			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemExportXmlViewHelper',
+			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemExportCsvViewHelper',
+			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemDividerViewHelper',
+			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemMassDeleteViewHelper',
+			#'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemMassEditViewHelper',
+		),
 	);
 
 	/**
@@ -172,7 +183,7 @@ class ModuleLoader {
 			$subModuleName,
 			$this->position,
 			array(
-				'Content' => 'list, listRow, delete, massDelete, update',
+				'Content' => 'index, list, delete, update',
 				'FacetValue' => 'list',
 			),
 			array(
@@ -379,121 +390,193 @@ class ModuleLoader {
 	/**
 	 * @return $array
 	 */
-	public function getNavigationTopLeftComponents() {
+	public function getDocHeaderTopLeftComponents() {
 		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][self::NAVIGATION][self::TOP][self::LEFT];
+		return $configuration['components'][self::DOC_HEADER][self::TOP][self::LEFT];
 	}
 
 	/**
-	 * @param array $viewHelpers
+	 * @param array $components
 	 * @return $this
 	 */
-	public function setNavigationTopLeftComponents(array $viewHelpers) {
-		$this->components[self::NAVIGATION][self::TOP][self::LEFT] = $viewHelpers;
+	public function setDocHeaderTopLeftComponents(array $components) {
+		$this->components[self::DOC_HEADER][self::TOP][self::LEFT] = $components;
 		return $this;
 	}
 
 	/**
-	 * @param string|array $viewHelpers
+	 * @param string|array $components
 	 * @return $this
 	 */
-	public function addNavigationTopLeftComponents($viewHelpers) {
-		if (is_string($viewHelpers)) {
-			$viewHelpers = array($viewHelpers);
+	public function addDocHeaderTopLeftComponents($components) {
+		if (is_string($components)) {
+			$components = array($components);
 		}
-		$currentViewHelpers = $this->components[self::NAVIGATION][self::TOP][self::LEFT];
-		$this->components[self::NAVIGATION][self::TOP][self::LEFT] = array_merge($currentViewHelpers, $viewHelpers);
+		$currentViewHelpers = $this->components[self::DOC_HEADER][self::TOP][self::LEFT];
+		$this->components[self::DOC_HEADER][self::TOP][self::LEFT] = array_merge($currentViewHelpers, $components);
 		return $this;
+	}
+
+	/**
+	 * @param array $components
+	 * @return $this
+	 * @deprecated will be removed in 0.4.0 + 2 version.
+	 */
+	public function setNavigationTopLeftComponents(array $components) {
+		return $this->setDocHeaderTopLeftComponents($components);
+	}
+
+	/**
+	 * @param array $components
+	 * @return $this
+	 * @deprecated will be removed in 0.4.0 + 2 version.
+	 */
+	public function addNavigationTopLeftComponents(array $components) {
+		return $this->addDocHeaderTopLeftComponents($components);
 	}
 
 	/**
 	 * @return $array
 	 */
-	public function getNavigationTopRightComponents() {
+	public function getDocHeaderTopRightComponents() {
 		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][self::NAVIGATION][self::TOP][self::RIGHT];
+		return $configuration['components'][self::DOC_HEADER][self::TOP][self::RIGHT];
 	}
 
 	/**
-	 * @param array $viewHelpers
+	 * @param array $components
 	 * @return $this
 	 */
-	public function setNavigationTopRightComponents(array $viewHelpers) {
-		$this->components[self::NAVIGATION][self::TOP][self::RIGHT] = $viewHelpers;
+	public function setDocHeaderTopRightComponents(array $components) {
+		$this->components[self::DOC_HEADER][self::TOP][self::RIGHT] = $components;
 		return $this;
 	}
 
 	/**
-	 * @param string|array $viewHelpers
+	 * @param string|array $components
 	 * @return $this
 	 */
-	public function addNavigationTopRightComponents($viewHelpers) {
-		if (is_string($viewHelpers)) {
-			$viewHelpers = array($viewHelpers);
+	public function addDocHeaderTopRightComponents($components) {
+		if (is_string($components)) {
+			$components = array($components);
 		}
-		$currentViewHelpers = $this->components[self::NAVIGATION][self::TOP][self::RIGHT];
-		$this->components[self::NAVIGATION][self::TOP][self::RIGHT] = array_merge($currentViewHelpers, $viewHelpers);
+		$currentViewHelpers = $this->components[self::DOC_HEADER][self::TOP][self::RIGHT];
+		$this->components[self::DOC_HEADER][self::TOP][self::RIGHT] = array_merge($currentViewHelpers, $components);
 		return $this;
+	}
+
+	/**
+	 * @param array $components
+	 * @return $this
+	 * @deprecated will be removed in 0.4.0 + 2 version.
+	 */
+	public function setNavigationTopRightComponents(array $components) {
+		return $this->setDocHeaderTopRightComponents($components);
+	}
+
+	/**
+	 * @param array $components
+	 * @return $this
+	 * @deprecated will be removed in 0.4.0 + 2 version.
+	 */
+	public function addNavigationTopRightComponents(array $components) {
+		return $this->addDocHeaderTopRightComponents($components);
 	}
 
 	/**
 	 * @return $array
 	 */
-	public function getNavigationBottomLeftComponents() {
+	public function getDocHeaderBottomLeftComponents() {
 		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][self::NAVIGATION][self::BOTTOM][self::LEFT];
+		return $configuration['components'][self::DOC_HEADER][self::BOTTOM][self::LEFT];
 	}
 
 	/**
-	 * @param array $viewHelpers
+	 * @param array $components
 	 * @return $this
 	 */
-	public function setNavigationBottomLeftComponents(array $viewHelpers) {
-		$this->components[self::NAVIGATION][self::BOTTOM][self::LEFT] = $viewHelpers;
+	public function setDocHeaderBottomLeftComponents(array $components) {
+		$this->components[self::DOC_HEADER][self::BOTTOM][self::LEFT] = $components;
 		return $this;
 	}
 
 	/**
-	 * @param string|array $viewHelpers
+	 * @param string|array $components
 	 * @return $this
 	 */
-	public function addNavigationBottomLeftComponents($viewHelpers) {
-		if (is_string($viewHelpers)) {
-			$viewHelpers = array($viewHelpers);
+	public function addDocHeaderBottomLeftComponents($components) {
+		if (is_string($components)) {
+			$components = array($components);
 		}
-		$currentViewHelpers = $this->components[self::NAVIGATION][self::BOTTOM][self::LEFT];
-		$this->components[self::NAVIGATION][self::BOTTOM][self::LEFT] = array_merge($currentViewHelpers, $viewHelpers);
+		$currentViewHelpers = $this->components[self::DOC_HEADER][self::BOTTOM][self::LEFT];
+		$this->components[self::DOC_HEADER][self::BOTTOM][self::LEFT] = array_merge($currentViewHelpers, $components);
 		return $this;
+	}
+
+	/**
+	 * @param array $components
+	 * @return $this
+	 * @deprecated will be removed in 0.4.0 + 2 version.
+	 */
+	public function setNavigationBottomLeftComponents(array $components) {
+		return $this->setDocHeaderBottomLeftComponents($components);
+	}
+
+	/**
+	 * @param array $components
+	 * @return $this
+	 * @deprecated will be removed in 0.4.0 + 2 version.
+	 */
+	public function addNavigationBottomLeftComponents(array $components) {
+		return $this->addDocHeaderBottomLeftComponents($components);
 	}
 
 	/**
 	 * @return $array
 	 */
-	public function getNavigationBottomRightComponents() {
+	public function getDocHeaderBottomRightComponents() {
 		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][self::NAVIGATION][self::BOTTOM][self::RIGHT];
+		return $configuration['components'][self::DOC_HEADER][self::BOTTOM][self::RIGHT];
 	}
 
 	/**
-	 * @param array $viewHelpers
+	 * @param array $components
 	 * @return $this
 	 */
-	public function setNavigationBottomRightComponents(array $viewHelpers) {
-		$this->components[self::NAVIGATION][self::BOTTOM][self::RIGHT] = $viewHelpers;
+	public function setDocHeaderBottomRightComponents(array $components) {
+		$this->components[self::DOC_HEADER][self::BOTTOM][self::RIGHT] = $components;
 		return $this;
 	}
 
 	/**
-	 * @param string|array $viewHelpers
+	 * @param string|array $components
 	 * @return $this
 	 */
-	public function addNavigationBottomRightComponents($viewHelpers) {
-		if (is_string($viewHelpers)) {
-			$viewHelpers = array($viewHelpers);
+	public function addDocHeaderBottomRightComponents($components) {
+		if (is_string($components)) {
+			$components = array($components);
 		}
-		$currentViewHelpers = $this->components[self::NAVIGATION][self::BOTTOM][self::RIGHT];
-		$this->components[self::NAVIGATION][self::BOTTOM][self::RIGHT] = array_merge($currentViewHelpers, $viewHelpers);
+		$currentViewHelpers = $this->components[self::DOC_HEADER][self::BOTTOM][self::RIGHT];
+		$this->components[self::DOC_HEADER][self::BOTTOM][self::RIGHT] = array_merge($currentViewHelpers, $components);
 		return $this;
+	}
+
+	/**
+	 * @param array $components
+	 * @return $this
+	 * @deprecated will be removed in 0.4.0 + 2 version.
+	 */
+	public function setNavigationBottomRightComponents(array $components) {
+		return $this->setDocHeaderBottomRightComponents($components);
+	}
+
+	/**
+	 * @param array $components
+	 * @return $this
+	 * @deprecated will be removed in 0.4.0 + 2 version.
+	 */
+	public function addNavigationBottomRightComponents(array $components) {
+		return $this->addDocHeaderBottomRightComponents($components);
 	}
 
 	/**
@@ -505,24 +588,24 @@ class ModuleLoader {
 	}
 
 	/**
-	 * @param array $viewHelpers
+	 * @param array $components
 	 * @return $this
 	 */
-	public function setGridTopComponents(array $viewHelpers) {
-		$this->components[self::GRID][self::TOP] = $viewHelpers;
+	public function setGridTopComponents(array $components) {
+		$this->components[self::GRID][self::TOP] = $components;
 		return $this;
 	}
 
 	/**
-	 * @param string|array $viewHelpers
+	 * @param string|array $components
 	 * @return $this
 	 */
-	public function addGridTopComponents($viewHelpers) {
-		if (is_string($viewHelpers)) {
-			$viewHelpers = array($viewHelpers);
+	public function addGridTopComponents($components) {
+		if (is_string($components)) {
+			$components = array($components);
 		}
 		$currentViewHelpers = $this->components[self::GRID][self::TOP];
-		$this->components[self::GRID][self::TOP] = array_merge($currentViewHelpers, $viewHelpers);
+		$this->components[self::GRID][self::TOP] = array_merge($currentViewHelpers, $components);
 		return $this;
 	}
 
@@ -535,24 +618,24 @@ class ModuleLoader {
 	}
 
 	/**
-	 * @param array $viewHelpers
+	 * @param array $components
 	 * @return $this
 	 */
-	public function setGridBottomComponents(array $viewHelpers) {
-		$this->components[self::GRID][self::BOTTOM] = $viewHelpers;
+	public function setGridBottomComponents(array $components) {
+		$this->components[self::GRID][self::BOTTOM] = $components;
 		return $this;
 	}
 
 	/**
-	 * @param string|array $viewHelpers
+	 * @param string|array $components
 	 * @return $this
 	 */
-	public function addGridBottomComponents($viewHelpers) {
-		if (is_string($viewHelpers)) {
-			$viewHelpers = array($viewHelpers);
+	public function addGridBottomComponents($components) {
+		if (is_string($components)) {
+			$components = array($components);
 		}
 		$currentViewHelpers = $this->components[self::GRID][self::BOTTOM];
-		$this->components[self::GRID][self::BOTTOM] = array_merge($currentViewHelpers, $viewHelpers);
+		$this->components[self::GRID][self::BOTTOM] = array_merge($currentViewHelpers, $components);
 		return $this;
 	}
 
@@ -565,54 +648,102 @@ class ModuleLoader {
 	}
 
 	/**
-	 * @param array $viewHelpers
+	 * @param array $components
 	 * @return $this
 	 */
-	public function setGridButtonsComponents(array $viewHelpers) {
-		$this->components[self::GRID][self::BUTTONS] = $viewHelpers;
+	public function setGridButtonsComponents(array $components) {
+		$this->components[self::GRID][self::BUTTONS] = $components;
 		return $this;
 	}
 
 	/**
-	 * @param string|array $viewHelpers
+	 * @param string|array $components
 	 * @return $this
 	 */
-	public function addGridButtonsComponents($viewHelpers) {
-		if (is_string($viewHelpers)) {
-			$viewHelpers = array($viewHelpers);
+	public function addGridButtonsComponents($components) {
+		if (is_string($components)) {
+			$components = array($components);
 		}
 		$currentViewHelpers = $this->components[self::GRID][self::BUTTONS];
-		$this->components[self::GRID][self::BUTTONS] = array_merge($currentViewHelpers, $viewHelpers);
+		$this->components[self::GRID][self::BUTTONS] = array_merge($currentViewHelpers, $components);
 		return $this;
 	}
 
 	/**
 	 * @return $array
 	 */
-	public function getGridMenuComponents() {
+	public function getMenuSelectedRowsComponents() {
 		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][self::GRID][self::MENU];
+		return $configuration['components'][self::MENU_SELECTED_ROWS];
 	}
 
 	/**
-	 * @param array $viewHelpers
+	 * @param array $components
 	 * @return $this
 	 */
-	public function setGridMenuComponents(array $viewHelpers) {
-		$this->components[self::GRID][self::MENU] = $viewHelpers;
+	public function setMenuSelectedRowsComponents(array $components) {
+		$this->components[self::MENU_SELECTED_ROWS] = $components;
 		return $this;
 	}
 
 	/**
-	 * @param string|array $viewHelpers
+	 * @param string|array $components
 	 * @return $this
 	 */
-	public function addGridMenuComponents($viewHelpers) {
-		if (is_string($viewHelpers)) {
-			$viewHelpers = array($viewHelpers);
+	public function addMenuSelectedRowsComponents($components) {
+		if (is_string($components)) {
+			$components = array($components);
 		}
-		$currentViewHelpers = $this->components[self::GRID][self::MENU];
-		$this->components[self::GRID][self::MENU] = array_merge($currentViewHelpers, $viewHelpers);
+		$currentViewHelpers = $this->components[self::MENU_SELECTED_ROWS];
+		$this->components[self::MENU_SELECTED_ROWS] = array_merge($currentViewHelpers, $components);
+		return $this;
+	}
+
+	/**
+	 * @param array $components
+	 * @return $this
+	 * @deprecated will be removed in 0.4.0 + 2 version.
+	 */
+	public function setGridMenuComponents(array $components) {
+		return $this->setMenuSelectedRowsComponents($components);
+	}
+
+	/**
+	 * @param array $components
+	 * @return $this
+	 * @deprecated will be removed in 0.4.0 + 2 version.
+	 */
+	public function addGridMenuComponents(array $components) {
+		return $this->addMenuSelectedRowsComponents($components);
+	}
+
+	/**
+	 * @return $array
+	 */
+	public function getMenuAllRowsComponents() {
+		$configuration = $this->getModuleConfiguration();
+		return $configuration['components'][self::MENU_ALL_ROWS];
+	}
+
+	/**
+	 * @param array $components
+	 * @return $this
+	 */
+	public function setMenuAllRowsComponents(array $components) {
+		$this->components[self::MENU_ALL_ROWS] = $components;
+		return $this;
+	}
+
+	/**
+	 * @param string|array $components
+	 * @return $this
+	 */
+	public function addMenuAllRowsComponents($components) {
+		if (is_string($components)) {
+			$components = array($components);
+		}
+		$currentViewHelpers = $this->components[self::MENU_ALL_ROWS];
+		$this->components[self::MENU_ALL_ROWS] = array_merge($currentViewHelpers, $components);
 		return $this;
 	}
 

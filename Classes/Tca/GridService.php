@@ -23,6 +23,7 @@ namespace TYPO3\CMS\Vidi\Tca;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException;
 use TYPO3\CMS\Vidi\Grid\GenericRendererComponent;
@@ -323,5 +324,29 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 */
 	public function getTca() {
 		return $this->tca;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getExcludedFields() {
+		$excludedFields = array();
+		if (!empty($this->tca['export']['excluded_fields'])) {
+			$excludedFields = GeneralUtility::trimExplode(',', $this->tca['export']['excluded_fields'], TRUE);
+
+		}
+		return $excludedFields;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function areFilesIncludedInExport() {
+		$isIncluded = TRUE;
+
+		if (isset($this->tca['export']['include_files'])) {
+			$isIncluded = $this->tca['export']['include_files'];
+		}
+		return $isIncluded;
 	}
 }

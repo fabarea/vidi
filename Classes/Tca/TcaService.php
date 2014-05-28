@@ -25,15 +25,14 @@ namespace TYPO3\CMS\Vidi\Tca;
  ***************************************************************/
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Vidi\Exception\NotExistingClassException;
 
 /**
  * A class to handle TCA ctrl.
  */
 class TcaService implements SingletonInterface, TcaServiceInterface {
 
-	const TEXTFIELD = 'input';
-
-	const TEXTAREA = 'text';
+	const TEXT = 'text';
 
 	const NUMBER = 'number';
 
@@ -41,7 +40,9 @@ class TcaService implements SingletonInterface, TcaServiceInterface {
 
 	const DATE = 'date';
 
-	const DATE_TIME = 'datetime';
+	const DATETIME = 'datetime';
+
+	const TEXTAREA = 'textarea';
 
 	const SELECT = 'select';
 
@@ -49,7 +50,9 @@ class TcaService implements SingletonInterface, TcaServiceInterface {
 
 	const CHECKBOX = 'check';
 
-	const MULTI_SELECT = 'multiselect';
+	const FILE = 'file';
+
+	const MULTISELECT = 'multiselect';
 
 	const TREE = 'tree';
 
@@ -90,7 +93,7 @@ class TcaService implements SingletonInterface, TcaServiceInterface {
 	 * Returns a class instance of a corresponding TCA service.
 	 * If the class instance does not exist, create one.
 	 *
-	 * @throws \TYPO3\CMS\Vidi\Exception\NotExistingClassException
+	 * @throws NotExistingClassException
 	 * @param string $tableName
 	 * @param string $serviceType of the TCA. Typical values are: field, table, grid
 	 * @return TcaServiceInterface
@@ -107,7 +110,7 @@ class TcaService implements SingletonInterface, TcaServiceInterface {
 			$className = sprintf('TYPO3\CMS\Vidi\Tca\%sService', ucfirst($serviceType));
 
 			if (!class_exists($className)) {
-				throw new \TYPO3\CMS\Vidi\Exception\NotExistingClassException('Class does not exit: ' . $className, 1357060937);
+				throw new NotExistingClassException('Class does not exit: ' . $className, 1357060937);
 
 			}
 			$instance = GeneralUtility::makeInstance($className, $tableName, $serviceType);

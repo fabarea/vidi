@@ -52,17 +52,24 @@ class Matcher {
 	/**
 	 * @var array
 	 */
-	protected $supportedOperators = array('equals', 'like');
+	protected $supportedOperators = array('equals', 'in', 'like');
 
 	/**
-	 * Associative values used for equals operator ($fieldName => $value)
+	 * Associative values used for "equals" operator ($fieldName => $value)
 	 *
 	 * @var array
 	 */
 	protected $equalsCriteria = array();
 
 	/**
-	 * Associative values used for like operator ($fieldName => $value)
+	 * Associative values used for "in" operator ($fieldName => $value)
+	 *
+	 * @var array
+	 */
+	protected $inCriteria = array();
+
+	/**
+	 * Associative values used for "like" operator ($fieldName => $value)
 	 *
 	 * @var array
 	 */
@@ -71,29 +78,35 @@ class Matcher {
 	/**
 	 * Default logical operator for like.
 	 *
-	 * @var array
+	 * @var string
 	 */
 	protected $defaultLogicalSeparator = self::LOGICAL_AND;
 
 	/**
-	 * Default logical operator for like.
-	 *
-	 * @var array
-	 */
-	protected $logicalSeparatorForLike = self::LOGICAL_AND;
-
-
-	/**
 	 * Default logical operator for equals.
 	 *
-	 * @var array
+	 * @var string
 	 */
 	protected $logicalSeparatorForEquals = self::LOGICAL_AND;
 
 	/**
+	 * Default logical operator for equals.
+	 *
+	 * @var string
+	 */
+	protected $logicalSeparatorForIn = self::LOGICAL_AND;
+
+	/**
+	 * Default logical operator for like.
+	 *
+	 * @var string
+	 */
+	protected $logicalSeparatorForLike = self::LOGICAL_AND;
+
+	/**
 	 * Default logical operator for the search term.
 	 *
-	 * @var array
+	 * @var string
 	 */
 	protected $logicalSeparatorForSearchTerm = self::LOGICAL_OR;
 
@@ -154,6 +167,23 @@ class Matcher {
 	 * @param $operand
 	 * @return $this
 	 */
+	public function in($propertyName, $operand) {
+		$this->inCriteria[] = array('propertyName' => $propertyName, 'operand' => $operand);
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getInCriteria() {
+		return $this->inCriteria;
+	}
+
+	/**
+	 * @param $propertyName
+	 * @param $operand
+	 * @return $this
+	 */
 	public function likes($propertyName, $operand) {
 		$this->likeCriteria[] = array('propertyName' => $propertyName, 'operand' => '%' . $operand . '%');
 		return $this;
@@ -178,22 +208,6 @@ class Matcher {
 	/**
 	 * @return string
 	 */
-	public function getLogicalSeparatorForLike() {
-		return $this->logicalSeparatorForLike;
-	}
-
-	/**
-	 * @param string $logicalSeparatorForLike
-	 * @return $this
-	 */
-	public function setLogicalSeparatorForLike($logicalSeparatorForLike) {
-		$this->logicalSeparatorForLike = $logicalSeparatorForLike;
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
 	public function getLogicalSeparatorForEquals() {
 		return $this->logicalSeparatorForEquals;
 	}
@@ -204,6 +218,38 @@ class Matcher {
 	 */
 	public function setLogicalSeparatorForEquals($logicalSeparatorForEquals) {
 		$this->logicalSeparatorForEquals = $logicalSeparatorForEquals;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getLogicalSeparatorForIn() {
+		return $this->logicalSeparatorForIn;
+	}
+
+	/**
+	 * @param string $logicalSeparatorForIn
+	 * @return $this
+	 */
+	public function setLogicalSeparatorForIn($logicalSeparatorForIn) {
+		$this->logicalSeparatorForIn = $logicalSeparatorForIn;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getLogicalSeparatorForLike() {
+		return $this->logicalSeparatorForLike;
+	}
+
+	/**
+	 * @param string $logicalSeparatorForLike
+	 * @return $this
+	 */
+	public function setLogicalSeparatorForLike($logicalSeparatorForLike) {
+		$this->logicalSeparatorForLike = $logicalSeparatorForLike;
 		return $this;
 	}
 

@@ -1,0 +1,2 @@
+{v:result.toXml()}
+{namespace v=TYPO3\CMS\Vidi\ViewHelpers}

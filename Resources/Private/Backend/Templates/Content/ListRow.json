@@ -1,8 +1,0 @@
-{
-	"sEcho": "{v:transaction()}",
-	"iTotalRecords": "{numberOfContents}",
-	"iTotalDisplayRecords": "{numberOfContents}",
-	"iNumberOfRecords": "{contents->f:count()}",
-	"aaData": <v:grid.rows objects="{contents}" columns="{columns}" />
-}
-{namespace v=TYPO3\CMS\Vidi\ViewHelpers}

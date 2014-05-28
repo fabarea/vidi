@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi;
+namespace TYPO3\CMS\Vidi\Persistence;
 /***************************************************************
  *  Copyright notice
  *
@@ -24,39 +24,74 @@ namespace TYPO3\CMS\Vidi;
  ***************************************************************/
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Vidi\ModuleLoader;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
- * Factory class to server instances related persistence object.
+ * Factory class related to Matcher object.
  */
-class PersistenceObjectFactory implements SingletonInterface {
-
-	/**
-	 * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-	 * @inject
-	 */
-	protected $objectManager;
+class MatcherObjectFactory implements SingletonInterface {
 
 	/**
 	 * Gets a singleton instance of this class.
 	 *
-	 * @return \TYPO3\CMS\Vidi\PersistenceObjectFactory
+	 * @return \TYPO3\CMS\Vidi\Persistence\MatcherObjectFactory
 	 */
 	static public function getInstance() {
-		$objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
-		return $objectManager->get('TYPO3\CMS\Vidi\PersistenceObjectFactory');
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\MatcherObjectFactory');
 	}
 
 	/**
 	 * Returns a matcher object.
 	 *
+	 * @param array $matches
 	 * @param string $dataType
-	 * @return \TYPO3\CMS\Vidi\Persistence\Matcher
+	 * @return Matcher
 	 */
-	public function getMatcherObject($dataType = '') {
+	public function getMatcher($matches = array(), $dataType = '') {
 
-		/** @var $matcher \TYPO3\CMS\Vidi\Persistence\Matcher */
+		/** @var $matcher Matcher */
 		$matcher = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher', array(), $dataType);
+
+		$matcher = $this->applyCriteriaFromDataTablesPlugin($matcher, $dataType);
+		$matcher = $this->applyCriteriaFromMatchesArgument($matcher, $matches);
+
+		// Trigger signal for post processing Matcher Object.
+		$this->emitPostProcessMatcherObjectSignal($matcher);
+
+		return $matcher;
+	}
+
+	/**
+	 * Apply criteria specific to jQuery plugin Datatable.
+	 *
+	 * @param Matcher $matcher
+	 * @param array $matches
+	 * @return Matcher $matcher
+	 */
+	protected function applyCriteriaFromMatchesArgument(Matcher $matcher, $matches) {
+
+		foreach ($matches as $propertyName => $value) {
+			// CSV values should be considered as "in" operator in Query, otherwise "equals".
+			$explodedValues = GeneralUtility::trimExplode(',', $value, TRUE);
+			if (count($explodedValues) > 1) {
+				$matcher->in($propertyName, $explodedValues);
+			} else {
+				$matcher->equals($propertyName, $explodedValues[0]);
+			}
+		}
+
+		return $matcher;
+	}
+
+	/**
+	 * Apply criteria specific to jQuery plugin DataTable.
+	 *
+	 * @param Matcher $matcher
+	 * @param string $dataType
+	 * @return Matcher $matcher
+	 */
+	protected function applyCriteriaFromDataTablesPlugin(Matcher $matcher, $dataType) {
 
 		// Special case for Grid in the BE using jQuery DataTables plugin.
 		// Retrieve a possible search term from GP.
@@ -89,82 +124,21 @@ class PersistenceObjectFactory implements SingletonInterface {
 				$matcher->setSearchTerm($searchTerm);
 			}
 		}
-
-		// Trigger signal for post processing Matcher Object.
-		$this->emitPostProcessMatcherObjectSignal($matcher);
-
 		return $matcher;
-	}
-
-	/**
-	 * Returns an order object.
-	 *
-	 * @param string $dataType
-	 * @return \TYPO3\CMS\Vidi\Persistence\Order
-	 */
-	public function getOrderObject($dataType = '') {
-
-		// Default ordering
-		$order = Tca\TcaService::table($dataType)->getDefaultOrderings();
-
-		// Retrieve a possible id of the column from the request
-		$columnPosition = GeneralUtility::_GP('iSortCol_0');
-		if ($columnPosition > 0) {
-			$field = Tca\TcaService::grid()->getFieldNameByPosition($columnPosition);
-
-			$direction = GeneralUtility::_GP('sSortDir_0');
-			$order = array(
-				$field => strtoupper($direction)
-			);
-		}
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Order', $order);
-	}
-
-	/**
-	 * Returns a pager object.
-	 *
-	 * @return \TYPO3\CMS\Vidi\Persistence\Pager
-	 */
-	public function getPagerObject() {
-
-		/** @var $pager \TYPO3\CMS\Vidi\Persistence\Pager */
-		$pager = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Pager');
-
-		// Set items per page
-		if (GeneralUtility::_GET('iDisplayLength') !== NULL) {
-			$limit = (int)GeneralUtility::_GET('iDisplayLength');
-			$pager->setLimit($limit);
-		}
-
-		// Set offset
-		$offset = 0;
-		if (GeneralUtility::_GET('iDisplayStart') !== NULL) {
-			$offset = (int)GeneralUtility::_GET('iDisplayStart');
-		}
-		$pager->setOffset($offset);
-
-		// set page
-		$page = 1;
-		if ($pager->getLimit() > 0) {
-			$page = round($pager->getOffset() / $pager->getLimit());
-		}
-		$pager->setPage($page);
-
-		return $pager;
 	}
 
 	/**
 	 * Signal that is called for post-processing a matcher object.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Persistence\Matcher $matcher
+	 * @param Matcher $matcher
 	 * @signal
 	 */
-	protected function emitPostProcessMatcherObjectSignal(\TYPO3\CMS\Vidi\Persistence\Matcher $matcher) {
+	protected function emitPostProcessMatcherObjectSignal(Matcher $matcher) {
 
 		if (strlen($matcher->getDataType()) <= 0) {
 
 			/** @var ModuleLoader $moduleLoader */
-			$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\ModuleLoader');
+			$moduleLoader = $this->getObjectManager()->get('TYPO3\CMS\Vidi\ModuleLoader');
 			$matcher->setDataType($moduleLoader->getDataType());
 		}
 
@@ -177,7 +151,14 @@ class PersistenceObjectFactory implements SingletonInterface {
 	 * @return \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
 	 */
 	protected function getSignalSlotDispatcher() {
-		return $this->objectManager->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+		return $this->getObjectManager()->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Extbase\Object\ObjectManager
+	 */
+	protected function getObjectManager() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
 	}
 
 }

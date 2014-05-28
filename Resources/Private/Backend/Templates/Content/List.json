@@ -1,0 +1,2 @@
+{v:result.toJson()}
+{namespace v=TYPO3\CMS\Vidi\ViewHelpers}

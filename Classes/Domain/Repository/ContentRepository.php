@@ -26,6 +26,8 @@ namespace TYPO3\CMS\Vidi\Domain\Repository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Vidi\Exception\MissingUidException;
 use TYPO3\CMS\Vidi\Persistence\Matcher;
+use TYPO3\CMS\Vidi\Persistence\Order;
+use TYPO3\CMS\Vidi\Persistence\Query;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
@@ -60,6 +62,11 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * @var \TYPO3\CMS\Vidi\Persistence\QuerySettings
 	 */
 	protected $querySettings;
+
+	/**
+	 * @var array
+	 */
+	protected $errorMessage = array();
 
 	/**
 	 * Constructor
@@ -113,7 +120,7 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	}
 
 	/**
-	 * Returns all objects with unique value for a given property.
+	 * Returns all "distinct" values for a given property.
 	 *
 	 * @param string $propertyName
 	 * @param Matcher $matcher
@@ -123,15 +130,19 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 		$query = $this->createQuery();
 		$query->setDistinct($propertyName);
 
-		// Default constraint
+		// Remove empty values from selection.
 		$constraint = $query->logicalNot($query->equals($propertyName, ''));
 
-		// Add some more constraints
-		$constraints = NULL;
+		// Add some additional constraints from the Matcher object.
+		$matcherConstraint = NULL;
 		if (!is_null($matcher)) {
-			$constraints = $this->computeConstraints($query, $matcher);
-			$query->logicalAnd($constraints, $constraint);
-			$query->matching($query->logicalAnd($constraints, $constraint));
+			$matcherConstraint = $this->computeConstraints($query, $matcher);
+		}
+
+		// Assemble the final constraints or not.
+		if ($matcherConstraint) {
+			$query->logicalAnd($matcherConstraint, $constraint);
+			$query->matching($query->logicalAnd($matcherConstraint, $constraint));
 		} else {
 			$query->matching($constraint);
 		}
@@ -167,12 +178,12 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * Finds all Contents given specified matches.
 	 *
 	 * @param Matcher $matcher
-	 * @param \TYPO3\CMS\Vidi\Persistence\Order $order The order
+	 * @param Order $order The order
 	 * @param int $limit
 	 * @param int $offset
 	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content[]
 	 */
-	public function findBy(Matcher $matcher, \TYPO3\CMS\Vidi\Persistence\Order $order = NULL, $limit = NULL, $offset = NULL) {
+	public function findBy(Matcher $matcher, Order $order = NULL, $limit = NULL, $offset = NULL) {
 
 		$query = $this->createQuery();
 
@@ -200,11 +211,11 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	/**
 	 * Get the constraints
 	 *
-	 * @param \TYPO3\CMS\Vidi\Persistence\Query $query
+	 * @param Query $query
 	 * @param Matcher $matcher
-	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\Constraint|NULL
+	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface|NULL
 	 */
-	protected function computeConstraints(\TYPO3\CMS\Vidi\Persistence\Query $query, Matcher $matcher) {
+	protected function computeConstraints(Query $query, Matcher $matcher) {
 
 		$result = NULL;
 
@@ -228,7 +239,7 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 			$result = $query->$logical($constraints);
 		} elseif(!empty($constraints)) {
 
-			// true means there is one constraint only
+			// true means there is one constraint only and should become the result
 			$result = current($constraints);
 		}
 		return $result;
@@ -237,11 +248,11 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	/**
 	 * Computes the search constraint and returns it.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Persistence\Query $query
+	 * @param Query $query
 	 * @param Matcher $matcher
 	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface|NULL
 	 */
-	protected function computeSearchTermConstraint(\TYPO3\CMS\Vidi\Persistence\Query $query, Matcher $matcher) {
+	protected function computeSearchTermConstraint(Query $query, Matcher $matcher) {
 
 		$result = NULL;
 
@@ -271,12 +282,12 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	/**
 	 * Computes the constraint for matches and returns it.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Persistence\Query $query
+	 * @param Query $query
 	 * @param Matcher $matcher
 	 * @param string $operator
-	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\Constraint|NULL
+	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface|NULL
 	 */
-	protected function computeConstraint(\TYPO3\CMS\Vidi\Persistence\Query $query, Matcher $matcher, $operator) {
+	protected function computeConstraint(Query $query, Matcher $matcher, $operator) {
 		$result = NULL;
 
 		$operatorName = ucfirst($operator);
@@ -346,7 +357,8 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 			$tce->start(array(), $cmd);
 			$tce->process_datamap();
 			$tce->process_cmdmap();
-			$result = TRUE;
+			$this->errorMessage = '<ul><li>' . implode('<li></li>', $tce->errorLog) . '</li></ul>';
+			$result = empty($tce->errorLog);
 		}
 		return $result;
 	}
@@ -379,11 +391,11 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	/**
 	 * Returns a query for objects of this repository
 	 *
-	 * @return \TYPO3\CMS\Vidi\Persistence\Query
+	 * @return Query
 	 * @api
 	 */
 	public function createQuery() {
-		/** @var \TYPO3\CMS\Vidi\Persistence\Query $query */
+		/** @var Query $query */
 		$query = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\Query', $this->dataType);
 
 		// Initialize and pass the query settings at this level.
@@ -540,5 +552,12 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 */
 	public function setDefaultQuerySettings(\TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $defaultQuerySettings) {
 		throw new \BadMethodCallException('Repository does not support the setDefaultQuerySettings() method.', 1375805597);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getErrorMessage() {
+		return $this->errorMessage;
 	}
 }

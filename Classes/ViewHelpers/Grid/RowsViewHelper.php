@@ -30,21 +30,21 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 class RowsViewHelper extends AbstractViewHelper {
 
 	/**
-	 * Render rows of contents and output them in JSON format.
+	 * Returns rows of content as array.
 	 *
 	 * @param array $objects
 	 * @param array $columns
 	 * @return string
 	 */
 	public function render(array $objects = array(), array $columns = array()) {
+		$rows = array();
 
-		$result = array();
 		/** @var RowViewHelper $rowViewHelper */
 		$rowViewHelper = $this->objectManager->get('TYPO3\CMS\Vidi\ViewHelpers\Grid\RowViewHelper', $columns);
-
-		foreach ($objects as $offset => $object) {
-			$result[] = $rowViewHelper->render($object, $offset);
+		foreach ($objects as $index => $object) {
+			$rows[] = $rowViewHelper->render($object, $index);
 		}
-		return json_encode($result);
+
+		return $rows;
 	}
 }

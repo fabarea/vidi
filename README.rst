@@ -1,5 +1,5 @@
 Vidi for TYPO3 CMS
-========================
+==================
 
 Vidi stands for "versatile and interactive display" and is the code name of a list component
 designed for listing all kind of records along with advanced filtering capabilities. By default the
@@ -10,7 +10,7 @@ Veni, vidi, vici!
 .. image:: https://raw.github.com/TYPO3-extensions/vidi/master/Documentation/List-01.png
 
 Project info and releases
------------------------------------
+-------------------------
 
 Stable version (not yet released):
 http://typo3.org/extensions/repository/view/vidi
@@ -30,7 +30,7 @@ http://twitter.com/fudriot
 
 
 Installation and requirement
-==============================
+============================
 
 The extension **requires TYPO3 6.1**. In case, a fresh TYPO3 set-up is available at http://get.typo3.org/.
 The extension is not yet released on the TER_. Download the source from the `master branch`_ and
@@ -53,12 +53,12 @@ install the extension as normal in the Extension Manager::
 
 
 Configuration
-=================
+=============
 
 Configuration is mainly provided in the Extension Manager and is pretty much self-explanatory. Check possible options there.
 
 User TSconfig
----------------
+-------------
 
 A pid (page id) is necessary to be defined when creating a new record for the need of TCEmain_.
 This is not true for all records as some of them can be on the root level and consequently have a pid 0.
@@ -81,7 +81,7 @@ be fine grained::
 .. _TCEmain: http://docs.typo3.org/TYPO3/CoreApiReference/ApiOverview/Typo3CoreEngine/UsingTcemain/Index.html
 
 Start a new BE module for a custom data type
-===================================================
+============================================
 
 Loading a BE module for a custom data type can be summed up with:
 
@@ -92,12 +92,9 @@ Loading a BE module for a custom data type can be summed up with:
 The best way to get started is to install the Vidi Starter extension which is the ideal companion of Vidi
 aiming to facilitate the initial steps. More info https://github.com/fudriot/vidi_starter.
 
-Module Loader API was designed upon the work of `Steffen Ritter`_ .
 
-.. _Steffen Ritter: http://forge.typo3.org/users/446
-
-Grid TCA
-===================================================
+TCA Grid
+========
 
 A Grid is an interactive list displayed in a BE module. TCA was extended to describe how a grid and its
 columns should be rendered. Take inspiration of `this example`_ below for your own data type::
@@ -132,10 +129,21 @@ columns should be rendered. Take inspiration of `this example`_ below for your o
 
 .. _this example: https://github.com/TYPO3-extensions/vidi/blob/master/Configuration/TCA/fe_users.php
 
-Grid TCA configuration
-------------------------------
+TCA "grid.columns"
+------------------
 
-Key and values that can be used in TCA Grid
+Configuration of ``$GLOBALS['TCA']['tx_foo']['grid']['columns']['field_name']`` as example::
+
+	'grid' => array(
+		'columns' => array(
+			'username' => array(
+				'visible' => TRUE,
+				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:username',
+			),
+		),
+	),
+
+Possible key and values that can be assigned for a field name:
 
 .. ...............................................................
 .. container:: table-row
@@ -293,7 +301,7 @@ Default
 	NULL
 
 System columns
------------------
+--------------
 
 There a few columns that are considered as "system" which means they don't correspond to a property of an object
 but are display to control the record. By convention, theses columns are prefixed with a double underscore e.g "__":
@@ -330,8 +338,101 @@ Description
 	Display "edit", "deleted", ... buttons to control the row
 
 
+TCA "grid.facets"
+-----------------
+
+Configuration of ``$GLOBALS['TCA']['tx_foo']['grid']['facets']`` as example::
+
+	'grid' => array(
+
+		'facets' => array(
+			'uid',
+			'username',
+			....
+		),
+	),
+
+
+List of fields considered as facets.
+
+TCA "grid.export"
+-----------------
+
+Configuration of ``$GLOBALS['TCA']['tx_foo']['grid']['export']`` as example::
+
+	'grid' => array(
+		'export' => array(
+			'excluded_fields' => 'lockToDomain, TSconfig, felogin_redirectPid, felogin_forgotHash',
+			'include_files' => FALSE,
+		),
+	),
+
+Possible key and values that can be assigned for key ``export``
+
+.. container:: table-row
+
+Key
+	**excluded_fields**
+
+
+Description
+	Whenever there are fields to be excluded from the CSV, XML, ... export
+
+
+.. container:: table-row
+
+Key
+	**include_files**
+
+Description
+	Whether to zip files along with the CSV, XML, ... file
+
+Default
+	TRUE
+
+.. container:: table-row
+
+Key
+	**show_wizard** (not implemented)
+
+Description
+	Display a pop up windows where it is possible to select what fields are being exported.
+
+TCA "vidi"
+----------
+
+Special key for Vidi configuration if needed.
+
+Configuration of ``$GLOBALS['TCA']['tx_foo']['vidi']`` as example::
+
+	'vidi' => array(
+		'mappings' => array(
+			// field_name => propertyName
+			'TSconfig' => 'tsConfig',
+			'felogin_redirectPid' => 'feLoginRedirectPid',
+			'felogin_forgotHash' => 'feLoginForgotHash',
+		),
+	),
+
+Possible key and values that can be assigned for key ``vidi``
+
+.. container:: table-row
+
+Key
+	**mappings**
+
+Description
+	Mapping rules when the field name does not follow the underscore name conventions filed_name -> propertyName
+	Vidi needs a bit of help to find the equivalence.
+
+	Example:
+
+		"WeirdField_Name" => 'weirdFieldName'
+
+
+
 Grid Renderer
-------------------
+-------------
 
 By default the value of the column is displayed without further processing except the HTML entities conversion.
 In some cases, it is wanted to customize the output for instance whenever displaying relations.
@@ -368,7 +469,7 @@ Multiple Grid Renderers with options::
 
 
 Grid Formatter
-------------------
+--------------
 
 You can format the value of a column by using one of the built-in formatter of vidi or a custom formatter.
 
@@ -395,7 +496,7 @@ Example, using the custom FancyDate formatter from the Acme Package::
 
 
 Content Repository Factory
-===========================
+==========================
 
 Each Content type (e.g. fe_users, fe_groups) has its own Content repository instance which is manged internally by the Repository Factory.
 For getting the adequate instance, the repository can be fetched by this code::
@@ -411,7 +512,7 @@ For getting the adequate instance, the repository can be fetched by this code::
 
 
 TCA Service API
-=================
+===============
 
 This API enables to fetch info related to TCA in a programmatic way. Since TCA covers a very large set of data, the service is divided in types.
 There are are four parts being addressed: table, field, grid and form. The "grid" TCA is not official and is extending the TCA for the needs of Vidi.
@@ -439,7 +540,7 @@ The API is meant to be generic and can be re-use for every data type within TYPO
 	...
 
 Command line
-===================================================
+============
 
 To check whether TCA is well configured, Vidi provides a Command that will scan the configuration and report potential problem. This feature is still experimental::
 
@@ -452,7 +553,7 @@ To check whether TCA is well configured, Vidi provides a Command that will scan 
 
 
 Example of TCA
----------------
+--------------
 
 @todo writing review is necessary.
 
@@ -562,7 +663,7 @@ Legacy Many to Many relation with comma separated values (should be avoided in f
 
 
 Tutorial: display a custom widget within the BE module
-=======================================================
+======================================================
 
 @todo put this into EXT:vidi_starter as a implemented option.
 

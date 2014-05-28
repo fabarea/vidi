@@ -25,12 +25,13 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * Render a create URI given a data type.
  */
-class CreateViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class CreateViewHelper extends AbstractViewHelper {
 
 	/**
 	 * @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
@@ -47,7 +48,7 @@ class CreateViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelp
 	 */
 	public function initialize() {
 		$this->backendUser = $GLOBALS['BE_USER'];
-		$this->moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
+		$this->moduleLoader = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
 	}
 
 	/**

@@ -2,7 +2,7 @@
 
 /** @namespace Vidi */
 
-$(document).ready(function () {
+$(document).ready(function() {
 
 	// Initialize Session
 	Vidi.Session.initialize();
@@ -10,7 +10,7 @@ $(document).ready(function () {
 	/**
 	 * Enable the hide / show column
 	 */
-	$('.check-visible-toggle').click(function () {
+	$('.check-visible-toggle').click(function() {
 		var iCol = $(this).val();
 
 		/* Get the DataTables object again - this is not a recreation, just a get of the object */
@@ -19,14 +19,14 @@ $(document).ready(function () {
 		var loadingMessage = '<img src="' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" width="16" height="" alt="" />';
 		var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
 		oTable.fnSetColumnVis(iCol, bVis ? false : true);
-		if (! bVis) {
+		if (!bVis) {
 
 			// look for the nth-child which corresponds to a visible column
 			var columnIndex = 1;
-			for(var index = 1; index < oTable.fnSettings().aoColumns.length && index <= iCol; index ++) {
+			for (var index = 1; index < oTable.fnSettings().aoColumns.length && index <= iCol; index++) {
 				var column = oTable.fnSettings().aoColumns[index];
 				if (column.bVisible) {
-					columnIndex ++;
+					columnIndex++;
 				}
 			}
 			$('#content-list tbody td:nth-child(' + columnIndex + ')').html(loadingMessage);
@@ -36,74 +36,139 @@ $(document).ready(function () {
 	/**
 	 * Select or deselect all rows at once.
 	 */
-	$('.checkbox-row-top').click(function () {
+	$('.checkbox-row-top').click(function() {
 		var checkboxes;
 		checkboxes = $('#content-list').find('.checkbox-row');
 		if ($(this).is(':checked')) {
 			checkboxes.filter(':not(:checked)').click();
-			$('.mass-action').removeClass('disabled');
+			$('.menu-selected-rows').removeClass('disabled');
 		} else {
 			checkboxes.filter(':checked').click();
-			$('.mass-action').addClass('disabled');
+			$('.menu-selected-rows').addClass('disabled');
 		}
+	});
+
+	/**
+	 * Export data for current selection.
+	 */
+	$('.action-all-rows').find('.export-xml, .export-csv, .export-xls').click(function(e) {
+
+		e.preventDefault();
+
+		// Create Uri object which will receive the parameters.
+		var baseUrl = window.location.protocol + '//' + window.location.hostname + '/typo3/';
+		var uri = new Uri(Vidi.Grid.stored.url);
+
+		// Feed the Uri with parameter
+		var formatParameterName = Vidi.module.parameterPrefix + '[format]';
+		for (var index in Vidi.Grid.stored.data) {
+			var parameter = Vidi.Grid.stored.data[index];
+
+			if (parameter.name === formatParameterName) {
+				parameter.value = $(this).data('format');
+			} else if (parameter.name === 'iDisplayLength' || parameter.name === 'iDisplayStart') {
+				parameter.value = 0;
+			}
+
+			uri.addQueryParam(parameter.name, parameter.value);
+		}
+		var url = baseUrl + uri.toString();
+		window.open(url);
+	});
+
+	/**
+	 * Mass edit action
+	 */
+	$('.action-all-rows').find('.mass-edit').click(function(e) {
+		e.preventDefault();
+
+		// @todo implement me!
 	});
 
 	/**
 	 * Mass delete action
 	 */
-	$('.mass-delete').click(function (e) {
+	$('.action-all-rows').find('.mass-delete').click(function(e) {
+		e.preventDefault();
+
+		var uri = new Uri(Vidi.Grid.stored.url);
+
+		// Feed the Uri with parameter
+		var formatParameterName = Vidi.module.parameterPrefix + '[action]';
+		for (var index in Vidi.Grid.stored.data) {
+			var parameter = Vidi.Grid.stored.data[index];
+
+			if (parameter.name === formatParameterName) {
+				parameter.value = 'delete';
+			} else if (parameter.name === 'iDisplayLength' || parameter.name === 'iDisplayStart') {
+				parameter.value = 0;
+			}
+			uri.addQueryParam(parameter.name, parameter.value);
+		}
+
+		var message = Vidi.translate('confirm-mass-delete-current-selection');
+
+		// Trigger mass-delete action against current selection.
+		Vidi.Action.massRemove(message, uri.toString());
+	});
+
+
+	/**
+	 * Export data for selected rows.
+	 */
+	$('.action-selected-rows').find('.export-xml, .export-csv, .export-xls').click(function(e) {
+
+		e.preventDefault();
+
+		// Create Uri object which will receive the parameters.
+		var baseUrl = window.location.protocol + '//' + window.location.hostname + '/typo3/';
+		var uri = new Uri(Vidi.Grid.stored.url);
+
+		// Add parameters to the Uri object.
+		uri.addQueryParam(Vidi.module.parameterPrefix + '[action]', 'list');
+		uri.addQueryParam(Vidi.module.parameterPrefix + '[controller]', 'Content');
+		uri.addQueryParam(Vidi.module.parameterPrefix + '[format]', $(this).data('format'));
+		uri.addQueryParam(Vidi.module.parameterPrefix + '[matches][uid]', Vidi.Grid.getSelectedRows().join(','));
+
+		var url = baseUrl + uri.toString();
+		window.open(url);
+	});
+
+	/**
+	 * Mass edit action
+	 */
+	$('.action-selected-rows').find('.mass-edit').click(function(e) {
+		e.preventDefault();
+
+		// @todo implement me!
+	});
+
+	/**
+	 * Mass delete action
+	 */
+	$('.action-selected-rows').find('.mass-delete').click(function(e) {
 		var selectedRows, message, url, uid;
+
+		// Get selected rows
+		selectedRows = Vidi.Grid.getSelectedRows();
 
 		e.preventDefault();
 		url = $(this).attr('href');
+		url = url + '&' + Vidi.module.parameterPrefix + '[matches][uid]=' + selectedRows.join(',');
 
-		selectedRows = [];
-		$('#content-list')
-			.find('.checkbox-row')
-			.filter(':checked')
-			.each(function (index) {
-				uid = $(this).data('uid');
-				selectedRows.push(uid);
-				url += '&{0}[contents][{1}]={2}'.format(Vidi.module.parameterPrefix, index, uid);
-			});
-
-
-		message = Vidi.format("confirm-mass-delete-plural", selectedRows.length);
+		message = Vidi.format('confirm-mass-delete-plural', selectedRows.length);
 		if (selectedRows.length <= 1) {
-			message = Vidi.format("confirm-mass-delete-singular", selectedRows.length);
+			message = Vidi.format('confirm-mass-delete-singular', selectedRows.length);
 		}
 
-		bootbox.dialog(message, [
-			{
-				'label': Vidi.translate('cancel')
-			},
-			{
-				'label': Vidi.translate('delete'),
-				'class': "btn-danger",
-				'callback': function () {
-					$.get(url,
-						function (data) {
-							message = Vidi.format('message-mass-deleted-plural', selectedRows.length);
-							if (selectedRows.length <= 1) {
-								message = Vidi.format('message-mass-deleted-singular', selectedRows.length);
-							}
-							Vidi.FlashMessage.add(message, 'success');
-							Vidi.FlashMessage.showAll();
-							$('.checkbox-row-top').removeAttr('checked'); // un-check the top checkbox.
-							
-							// Reload data table
-							Vidi.table.fnDraw();
-						}
-					);
-				}
-			}
-		]);
+		// Trigger mass-delete action against selected rows.
+		Vidi.Action.massRemove(message, url);
 	});
 
 	/**
 	 * Add Access Key for switching back to the Grid with key escape
 	 */
-	$(document).keyup(function (e) {
+	$(document).keyup(function(e) {
 		// escape
 		var ESCAPE_KEY = 27;
 		if (e.keyCode == ESCAPE_KEY) {
@@ -119,7 +184,7 @@ $(document).ready(function () {
 	/**
 	 * Initialize Grid
 	 */
-	Vidi.table = $('#content-list').dataTable(Vidi.Table.getOptions());
+	Vidi.grid = $('#content-list').dataTable(Vidi.Grid.getOptions());
 
 	// Add place holder for the search
 	$('.dataTables_filter input').attr('placeholder', Vidi.translate('search'));
@@ -134,7 +199,7 @@ $(document).ready(function () {
  *
  * @param {string} key
  */
-Vidi.format = function (key) {
+Vidi.format = function(key) {
 	var s = Vidi.translate(key),
 		i = arguments.length + 1;
 
@@ -149,7 +214,7 @@ Vidi.format = function (key) {
  *
  * @param {string} key
  */
-Vidi.translate = function (key) {
+Vidi.translate = function(key) {
 	return Vidi.Label.get(key);
 };
 
@@ -160,7 +225,7 @@ Vidi.translate = function (key) {
  * @param {object} set2
  * @return {object}
  */
-Vidi.merge = function (set1, set2) {
+Vidi.merge = function(set1, set2) {
 	for (var key in set2) {
 		if (set2.hasOwnProperty(key))
 			set1[key] = set2[key]
@@ -177,7 +242,7 @@ Vidi.merge = function (set1, set2) {
  * @return {string}
  * @private
  */
-Vidi.computeUrl = function (actionName, controllerName) {
+Vidi.computeUrl = function(actionName, controllerName) {
 
 	// list of parameters used to call the right controller / action.
 	var parameters = {
@@ -187,7 +252,7 @@ Vidi.computeUrl = function (actionName, controllerName) {
 	};
 
 	var urlParts = [Vidi.module.moduleUrl];
-	$.each(parameters, function (index, value) {
+	$.each(parameters, function(index, value) {
 		var element = '{0}[{1}]={2}'.format(Vidi.module.parameterPrefix, index, value);
 		urlParts.push(element);
 	});

@@ -23,7 +23,7 @@ namespace TYPO3\CMS\Vidi\Controller\Backend;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use TYPO3\CMS\Vidi\ContentRepositoryFactory;
-use TYPO3\CMS\Vidi\PersistenceObjectFactory;
+use TYPO3\CMS\Vidi\Persistence\MatcherObjectFactory;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
@@ -53,7 +53,7 @@ class FacetValueController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			$tcaTableService = TcaService::table($foreignTable);
 
 			// Initialize the matcher object.
-			$matcher = PersistenceObjectFactory::getInstance()->getMatcherObject($foreignTable);
+			$matcher = MatcherObjectFactory::getInstance()->getMatcher(array(), $foreignTable);
 
 			$numberOfValues = $contentRepository->countBy($matcher);
 			if ($numberOfValues <= $this->getSuggestionLimit()) {
@@ -76,7 +76,7 @@ class FacetValueController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			$contentRepository = ContentRepositoryFactory::getInstance();
 
 			// Initialize some objects related to the query
-			$matcher = PersistenceObjectFactory::getInstance()->getMatcherObject();
+			$matcher = MatcherObjectFactory::getInstance()->getMatcher();
 
 			// Query the repository
 			$contents = $contentRepository->findDistinctValues($facet, $matcher);

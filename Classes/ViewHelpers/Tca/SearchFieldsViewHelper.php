@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Tca;
 /***************************************************************
 *  Copyright notice
 *
@@ -23,22 +23,30 @@ namespace TYPO3\CMS\Vidi\ViewHelpers;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
- * View helper which tells whether the user is admin or not.
+ * View helper which returns the json serialization of the search fields.
  */
-class IsAdminViewHelper extends AbstractViewHelper {
+class SearchFieldsViewHelper extends AbstractViewHelper {
 
 	/**
-	 * Tells whether the user is admin or not.
+	 * Returns the json serialization of the search fields.
 	 *
 	 * @return boolean
 	 */
 	public function render() {
-		// @todo make this code FE friendly!
-		/** @var $user \TYPO3\CMS\Core\Authentication\BackendUserAuthentication */
-		$user = $GLOBALS['BE_USER'];
-		return $user->isAdmin();
-	}
 
+		$labels = array();
+		foreach (TcaService::grid()->getFacets() as $fieldName => $configuration) {
+			if (is_int($fieldName)) {
+				$fieldName = $configuration;
+			}
+			// @todo keep no label field for now.
+			#$label = $tcaFieldService->getLabel($field);
+			#$labels[] = str_replace(':', '', $label);
+			$labels[] = $fieldName;
+		}
+		return json_encode($labels);
+	}
 }

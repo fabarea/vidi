@@ -5,7 +5,21 @@ $tca = array(
 	'ctrl' => array(
 		'searchFields' => $GLOBALS['TCA']['fe_users']['ctrl']['searchFields'] . ',usergroup',
 	),
+	'vidi' => array(
+		// Special case when the field name does not follow the conventions.
+		// Vidi needs a bit of help to find the equivalence fieldName <-> propertyName.
+		'mappings' => array(
+			'lockToDomain' => 'lockToDomain',
+			'TSconfig' => 'tsConfig',
+			'felogin_redirectPid' => 'feLoginRedirectPid',
+			'felogin_forgotHash' => 'feLoginForgotHash',
+		),
+	),
 	'grid' => array(
+		'export' => array(
+			'excluded_fields' => 'lockToDomain, TSconfig, felogin_redirectPid, felogin_forgotHash',
+			'include_files' => FALSE,
+		),
 		'facets' => array(
 			'uid',
 			'username',

@@ -25,6 +25,7 @@ namespace TYPO3\CMS\Vidi\Domain\Model;
  ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException;
+use TYPO3\CMS\Vidi\Service\FileReferenceService;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
@@ -73,10 +74,13 @@ class Content implements \ArrayAccess {
 		// Merge the other fields allowed for this data type.
 		$fields = array_merge($fields, $table->getFields());
 
+		// Fetch excluded fields from the grid.
+		$excludedFields = TcaService::grid($this->dataType)->getExcludedFields();
+
 		// Get column to be displayed
 		foreach ($fields as $fieldName) {
-			if (isset($contentData[$fieldName])) {
-				$propertyName = $this->convertFieldNameToPropertyName($fieldName);
+			if (isset($contentData[$fieldName]) && !in_array($fieldName, $excludedFields)) {
+				$propertyName = $table->convertToPropertyName($fieldName);
 				$this->$propertyName = $contentData[$fieldName];
 			}
 		}
@@ -91,17 +95,6 @@ class Content implements \ArrayAccess {
 	 */
 	protected function convertFieldNameToPropertyName($fieldName) {
 		return GeneralUtility::underscoredToLowerCamelCase($fieldName);
-	}
-
-	/**
-	 * Convert a property name to a field name.
-	 * Example: converts blogExample to blog_example
-	 *
-	 * @param $propertyName
-	 * @return string
-	 */
-	protected function convertPropertyNameToFieldName($propertyName) {
-		return GeneralUtility::camelCaseToLowerCaseUnderscored($propertyName);
 	}
 
 	/**
@@ -139,7 +132,7 @@ class Content implements \ArrayAccess {
 	 * @return bool
 	 */
 	protected function hasRelation($propertyName) {
-		$fieldName = $this->convertPropertyNameToFieldName($propertyName);
+		$fieldName = GeneralUtility::camelCaseToLowerCaseUnderscored($propertyName);
 		return $this->getTcaFieldService($fieldName)->hasRelation();
 	}
 
@@ -164,7 +157,7 @@ class Content implements \ArrayAccess {
 	protected function resolveRelation($propertyName) {
 
 		// Convert property name to field name and get the foreign data type.
-		$fieldName = $this->convertPropertyNameToFieldName($propertyName);
+		$fieldName = GeneralUtility::camelCaseToLowerCaseUnderscored($propertyName);
 		$foreignDataType = $this->getTcaFieldService($fieldName)->relationDataType();
 
 		// Get the foreign repository instance form the factory
@@ -283,13 +276,88 @@ class Content implements \ArrayAccess {
 	 */
 	public function toArray() {
 		$result['uid'] = $this->uid;
-		$properties = json_decode(json_encode($this), true);
+		$propertiesAndValues = json_decode(json_encode($this), TRUE);
 
-		foreach ($properties as $propertyName => $value) {
-			$fieldName = $this->convertPropertyNameToFieldName($propertyName);
+		foreach ($propertiesAndValues as $propertyName => $value) {
+			$fieldName = GeneralUtility::camelCaseToLowerCaseUnderscored($propertyName);
 			$result[$fieldName] = $value;
 		}
 
 		return $result;
 	}
+
+	/**
+	 * Convert this object to an array containing the resolved values.
+	 *
+	 * @return array
+	 */
+	public function toValues() {
+		$result['uid'] = $this->uid;
+		$propertiesAndValues = json_decode(json_encode($this), TRUE);
+
+		foreach ($propertiesAndValues as $propertyName => $value) {
+			$fieldName = TcaService::table($this->dataType)->convertToFieldName($propertyName);
+
+			$field = TcaService::table($this->dataType)->field($fieldName);
+			$fieldType = $field->getType();
+			if ($fieldType === TcaService::RADIO || $fieldType === TcaService::SELECT) {
+
+				// Attempt to convert the value into a label for radio and select fields.
+				$label = TcaService::table($this->getDataType())->field($fieldName)->getLabelForItem($value);
+				if ($label) {
+					$value = $label;
+				}
+			} elseif ($fieldType === TcaService::FILE) {
+
+				if ($field->hasRelationMany()) {
+					$files = FileReferenceService::getInstance()->findReferencedBy($propertyName, $this);
+
+					$value = array();
+					foreach ($files as $file) {
+						$value[] = $file->getIdentifier();
+					}
+				} else {
+					$files = FileReferenceService::getInstance()->findReferencedBy($propertyName, $this);
+					if (!empty($files)) {
+						$value = current($files)->getIdentifier();
+					}
+				}
+			}
+			$result[$fieldName] = $value;
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Return the properties of this object.
+	 *
+	 * @return array
+	 */
+	public function toProperties() {
+		$result[] = 'uid';
+		$propertiesAndValues = json_decode(json_encode($this), TRUE);
+
+		foreach ($propertiesAndValues as $propertyName => $value) {
+			$result[] = $propertyName;
+		}
+		return $result;
+	}
+
+	/**
+	 * Return the properties of this object.
+	 *
+	 * @return array
+	 */
+	public function toFields() {
+		$result[] = 'uid';
+		$propertiesAndValues = json_decode(json_encode($this), TRUE);
+
+		foreach ($propertiesAndValues as $propertyName => $value) {
+			$result[] = TcaService::table($this->dataType)->convertToFieldName($propertyName);
+		}
+
+		return $result;
+	}
+
 }

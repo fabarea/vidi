@@ -23,14 +23,14 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper which renders an URI for the Ajax dispatcher
  *
  * @deprecated use the BE module hiding technique introduced in 6.2.
  */
-class AjaxDispatcherViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class AjaxDispatcherViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Renders an URI for the Ajax dispatcher
