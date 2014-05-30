@@ -54,24 +54,24 @@ class Content implements \ArrayAccess {
 		$this->dataType = $dataType;
 		$this->uid = empty($contentData['uid']) ? NULL : $contentData['uid'];
 
-		/** @var \TYPO3\CMS\Vidi\Tca\TableService $tcaTableService */
-		$tcaTableService = TcaService::table($dataType);
+		/** @var \TYPO3\CMS\Vidi\Tca\TableService $table */
+		$table = TcaService::table($dataType);
 
 		// Initialize the array containing the allowed fields to be filled-in.
 		$fields = array('pid');
 
 		// If a creation time stamp has been defined for this data type.
-		if ($tcaTableService->getTimeCreationField()) {
-			$fields[] = $tcaTableService->getTimeCreationField();
+		if ($table->getTimeCreationField()) {
+			$fields[] = $table->getTimeCreationField();
 		}
 
 		// If an update time stamp has been defined for this data type.
-		if ($tcaTableService->getTimeModificationField()) {
-			$fields[] = $tcaTableService->getTimeModificationField();
+		if ($table->getTimeModificationField()) {
+			$fields[] = $table->getTimeModificationField();
 		}
 
-		// Fetch the other fields allowed for this data type.
-		$fields += $tcaTableService->getFields();
+		// Merge the other fields allowed for this data type.
+		$fields = array_merge($fields, $table->getFields());
 
 		// Get column to be displayed
 		foreach ($fields as $fieldName) {
