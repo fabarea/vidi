@@ -63,6 +63,16 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
+	 * Tell whether the table has a label field.
+	 *
+	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
+	 * @return string
+	 */
+	public function hasLabelField() {
+		return $this->has('label');
+	}
+
+	/**
 	 * Get the label name of table name.
 	 *
 	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
@@ -100,6 +110,24 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 			$result = $this->get('title');
 		}
 		return $result;
+	}
+
+	/**
+	 * Tells whether the table is hidden.
+	 *
+	 * @return bool
+	 */
+	public function isHidden() {
+		return isset($this->tca['hideTable']) ? $this->tca['hideTable'] : FALSE;
+	}
+
+	/**
+	 * Tells whether the table is not hidden.
+	 *
+	 * @return bool
+	 */
+	public function isNotHidden() {
+		return !$this->isHidden();
 	}
 
 	/**
@@ -235,17 +263,23 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
+	 * Tells whether the $key exists.
+	 *
+	 * @param string $key
+	 * @return string
+	 */
+	public function has($key) {
+		return isset($this->tca[$key]);
+	}
+
+	/**
 	 * Return configuration value given a key.
 	 *
 	 * @param string $key
 	 * @return string
 	 */
 	public function get($key) {
-		$result = NULL;
-		if (isset($this->tca[$key])) {
-			$result = $this->tca[$key];
-		}
-		return $result;
+		return $this->has($key) ? $this->tca[$key] : NULL;
 	}
 
 	/**

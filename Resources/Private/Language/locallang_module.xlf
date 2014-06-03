@@ -4,13 +4,13 @@
 		<header/>
 		<body>
 			<trans-unit id="mlang_labels_tablabel">
-				<source>Vidi Backend</source>
+				<source>Listing module</source>
 			</trans-unit>
 			<trans-unit id="mlang_tabs_tab" xml:space="preserve">
-				<source>Vidi</source>
+				<source>List2</source>
 			</trans-unit>
 			<trans-unit id="mlang_labels_tabdescr" xml:space="preserve">
-				<source>Vidi module management</source>
+				<source>Listing module management</source>
 			</trans-unit>
 		</body>
 	</file>

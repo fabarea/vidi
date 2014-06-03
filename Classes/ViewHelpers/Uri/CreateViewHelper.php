@@ -26,6 +26,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Vidi\Module\Parameter;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
@@ -58,7 +59,7 @@ class CreateViewHelper extends AbstractViewHelper {
 	 */
 	public function render() {
 		return sprintf('alt_doc.php?returnUrl=%s&edit[%s][%s]=new',
-			rawurlencode(BackendUtility::getModuleUrl(GeneralUtility::_GP('M'))),
+			rawurlencode($this->getModuleLoader()->getModuleUrl()),
 			rawurlencode($this->moduleLoader->getDataType()),
 			$this->getPid()
 		);
@@ -70,8 +71,9 @@ class CreateViewHelper extends AbstractViewHelper {
 	 * @return int
 	 */
 	public function getPid() {
-		$isRootLevel = TcaService::table()->get('rootLevel');
-		if ($isRootLevel) {
+		if (GeneralUtility::_GP(Parameter::PID)) {
+			$pid = GeneralUtility::_GP(Parameter::PID);
+		} elseif (TcaService::table()->get('rootLevel')) {
 			$pid = 0;
 		} else {
 			// Get configuration from User TSconfig if any
@@ -85,5 +87,14 @@ class CreateViewHelper extends AbstractViewHelper {
 			}
 		}
 		return $pid;
+	}
+
+	/**
+	 * Get the Vidi Module Loader.
+	 *
+	 * @return \TYPO3\CMS\Vidi\ModuleLoader
+	 */
+	protected function getModuleLoader() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
 	}
 }

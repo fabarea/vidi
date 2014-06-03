@@ -1,3 +1,6 @@
+# cat=basic//; type=boolean; label= Acticvate "beta" features: If checked, the "list2" module is activated.
+activate_beta_features = 1
+
 # cat=basic//; type=user[EXT:vidi/Classes/Backend/ExtensionManager.php:TYPO3\CMS\Vidi\Backend\ExtensionManager->renderDataTypes]; label= Data types to show: Selected data types to have their BE module. To display custom data type, refer to the Module Loader documentation of the extension.
 data_types = fe_users,fe_groups
 

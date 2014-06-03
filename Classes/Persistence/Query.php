@@ -31,6 +31,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidNumberOfConstraintsEx
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
 /**
  * The Query class used to run queries against the database
@@ -177,14 +178,29 @@ class Query implements QueryInterface {
 	/**
 	 * Returns the Query Settings.
 	 *
-	 * @throws Exception
+	 * @throws \Exception
 	 * @return \TYPO3\CMS\Vidi\Persistence\QuerySettings $querySettings The Query Settings
 	 * @api This method is not part of FLOW3 API
 	 */
 	public function getQuerySettings() {
 		if (!$this->querySettings instanceof \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface) {
-			throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception('Tried to get the query settings without seting them before.', 1248689115);
+			throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception('Tried to get the query settings without setting them before.', 1248689115);
 		}
+
+		// Apply possible settings to the query.
+		if ($this->isBackendMode()) {
+			/** @var \TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager $backendConfigurationManager */
+			$backendConfigurationManager = $this->objectManager->get('TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager');
+			$configuration = $backendConfigurationManager->getTypoScriptSetup();
+			$querySettings = array('respectSysLanguage');
+			foreach ($querySettings as $setting) {
+				if (isset($configuration['config.']['tx_vidi.']['persistence.']['backend.'][$this->type . '.'][$setting])) {
+					$value = (bool)$configuration['config.']['tx_vidi.']['persistence.']['backend.'][$this->type . '.'][$setting];
+					ObjectAccess::setProperty($this->querySettings, $setting, $value);
+				}
+			}
+		}
+
 		return $this->querySettings;
 	}
 
@@ -598,5 +614,14 @@ class Query implements QueryInterface {
 	 */
 	public function getStatement() {
 		return $this->statement;
+	}
+
+	/**
+	 * Returns whether the current mode is Backend.
+	 *
+	 * @return bool
+	 */
+	protected function isBackendMode() {
+		return TYPO3_MODE == 'BE';
 	}
 }

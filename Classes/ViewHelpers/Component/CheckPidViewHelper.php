@@ -23,8 +23,10 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Frontend\Page\PageRepository;
+use TYPO3\CMS\Vidi\Module\Parameter;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
@@ -134,7 +136,7 @@ EOF;
 	}
 
 	/**
-	 * Check if pid is 0 and given table is allowed on root level
+	 * Check if pid is 0 and given table is allowed on root level.
 	 *
 	 * @return void
 	 */
@@ -211,13 +213,18 @@ EOF;
 	 */
 	protected function getConfiguredPid() {
 
-		// Get pid from User TSconfig if any
-		$tsConfigPath = sprintf('tx_vidi.dataType.%s.storagePid', $this->dataType);
-		$result = $this->getBackendUser()->getTSConfig($tsConfigPath);
-		$configuredPid = (int)$result['value'];
+		if (GeneralUtility::_GP(Parameter::PID)) {
+			$pid = GeneralUtility::_GP(Parameter::PID);
+		} else {
 
-		// If no pid is configured, use default pid from Module Loader
-		$pid = ($configuredPid) ?: $this->moduleLoader->getDefaultPid();
+			// Get pid from User TSConfig if any.
+			$tsConfigPath = sprintf('tx_vidi.dataType.%s.storagePid', $this->dataType);
+			$result = $this->getBackendUser()->getTSConfig($tsConfigPath);
+			$configuredPid = (int)$result['value'];
+
+			// If no pid is configured, use default pid from Module Loader
+			$pid = ($configuredPid) ?: $this->moduleLoader->getDefaultPid();
+		}
 
 		return $pid;
 	}

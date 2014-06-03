@@ -22,10 +22,8 @@ namespace TYPO3\CMS\Vidi\Grid;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Converter\PropertyConverter;
 
 /**
  * Class for editing mm relation between objects
@@ -52,7 +50,7 @@ class RelationEditRenderer extends GridRendererAbstract {
 		);
 
 		$result = sprintf($template,
-			BackendUtility::getModuleUrl(GeneralUtility::_GP('M'), $urlParameters),
+			$this->getModuleLoader()->getModuleUrl($urlParameters),
 			$this->object->getUid(),
 			IconUtility::getSpriteIcon('actions-edit-add')
 		);

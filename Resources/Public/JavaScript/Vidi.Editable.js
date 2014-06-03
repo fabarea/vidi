@@ -90,5 +90,29 @@ Vidi.Editable = {
 			Vidi.FlashMessage.showAll(fadeOut);
 			$(this).html('Something went wrong...');
 		}
+	},
+
+	/**
+	 * Computed the URL used for editable content.
+	 *
+	 * @return {string}
+	 * @private
+	 */
+	getUrl: function() {
+
+		// list of parameters used to call the right controller / action.
+		var parameters = {
+			format: 'json',
+			action: 'update',
+			controller: 'Content'
+		};
+
+		var urlParts = [Vidi.module.moduleUrl];
+		$.each(parameters, function(index, value) {
+			var element = '{0}[{1}]={2}'.format(Vidi.module.parameterPrefix, index, value);
+			urlParts.push(element);
+		});
+
+		return urlParts.join('&');
 	}
 };

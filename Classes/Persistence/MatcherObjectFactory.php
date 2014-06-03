@@ -55,10 +55,24 @@ class MatcherObjectFactory implements SingletonInterface {
 
 		$matcher = $this->applyCriteriaFromDataTablesPlugin($matcher, $dataType);
 		$matcher = $this->applyCriteriaFromMatchesArgument($matcher, $matches);
+		$matcher = $this->applyCriteriaFromUrl($matcher);
 
 		// Trigger signal for post processing Matcher Object.
 		$this->emitPostProcessMatcherObjectSignal($matcher);
 
+		return $matcher;
+	}
+
+	/**
+	 * Apply criteria given by some parameter in the URL.
+	 *
+	 * @param Matcher $matcher
+	 * @return Matcher $matcher
+	 */
+	protected function applyCriteriaFromUrl(Matcher $matcher) {
+		if (GeneralUtility::_GP('id')) {
+			$matcher->equals('pid', GeneralUtility::_GP('id'));
+		}
 		return $matcher;
 	}
 

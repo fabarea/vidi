@@ -17,6 +17,10 @@ if (TYPO3_MODE == 'BE' && class_exists('TYPO3\CMS\Vidi\ModuleLoader')) {
 
 	// Loop around the data types and register them to be displayed within a BE module.
 	if ($configuration['data_types']['value']) {
+
+		/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
+		$moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
+
 		$dataTypes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['data_types']['value']);
 		foreach ($dataTypes as $dataType) {
 
@@ -28,6 +32,23 @@ if (TYPO3_MODE == 'BE' && class_exists('TYPO3\CMS\Vidi\ModuleLoader')) {
 				->setDefaultPid($configuration['default_pid']['value'])
 				->register();
 		}
+	}
+
+	// Register List2 only if beta feature is enabled.
+	if ($configuration['activate_beta_features']['value']) {
+		\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+			$_EXTKEY, 'web', // Make newsletter module a submodule of 'user'
+			'm1', // Submodule key
+			'after:list', // Position
+			array(
+				'Content' => 'index, list, delete, update, edit',
+				'FacetValue' => 'list',
+			), array(
+				'access' => 'user,group',
+				'icon' => 'EXT:vidi/Resources/Public/Images/list.png',
+				'labels' => 'LLL:EXT:vidi/Resources/Private/Language/locallang_module.xlf',
+			)
+		);
 	}
 }
 

@@ -1,9 +1,9 @@
 <?php
-namespace TYPO3\CMS\Vidi;
+namespace TYPO3\CMS\Vidi\Module;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Fabien Udriot <fabien.udriot@typo3.org>
+ *  (c) 2014 Fabien Udriot <fabien.udriot@typo3.org>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,12 +22,16 @@ namespace TYPO3\CMS\Vidi;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Type\Enumeration;
 
 /**
- * Service class used in other extensions to register a vidi based backend module.
- *
- * @deprecated use \TYPO3\CMS\Vidi\Module\ModuleLoader instead, will be removed in Vidi 0.4.0 + 2 version
+ * Enumeration object for parameter module.
  */
-class ModuleLoader extends \TYPO3\CMS\Vidi\Module\ModuleLoader {
+class Parameter extends Enumeration {
 
+	const PID = 'id';
+
+	const SUBMODULE = 'vidiModuleCode';
+
+	const MODULE = 'M';
 }

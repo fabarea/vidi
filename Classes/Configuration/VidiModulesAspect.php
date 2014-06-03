@@ -1,9 +1,9 @@
 <?php
-namespace TYPO3\CMS\Vidi\Converter;
+namespace TYPO3\CMS\Vidi\Configuration;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2014 Fabien Udriot <fabien.udriot@typo3.org>
+ *  (c) 2013 Fabien Udriot <fabien.udriot@typo3.org>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,32 +22,34 @@ namespace TYPO3\CMS\Vidi\Converter;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Database\TableConfigurationPostProcessingHookInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Domain\Model\Content;
 
 /**
- * Convert a property name to field.
+ * Initialize Vidi modules
  */
-class PropertyConverter {
+class VidiModulesAspect implements TableConfigurationPostProcessingHookInterface {
 
 	/**
-	 * @param string|Content $tableNameOrContentObject
-	 * @param string $fieldName
-	 * @return string
+	 * Initialize and populate TBE_MODULES_EXT with default data.
+	 *
+	 * @return void
 	 */
-	static public function toProperty($tableNameOrContentObject, $fieldName) {
+	public function processData() {
 
-		// Resolve the table name.
-		$tableName = $tableNameOrContentObject instanceof Content ? $tableNameOrContentObject->getDataType() : $tableNameOrContentObject;
+		/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
+		$moduleLoader = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
 
-		// Special case when the field name does not follow the conventions "field_name" => "fieldName".
-		// Rely on mapping for those cases.
-		if (!empty($GLOBALS['TCA'][$tableName]['vidi']['mappings'][$fieldName])) {
-			$propertyName = $GLOBALS['TCA'][$tableName]['vidi']['mappings'][$fieldName];
-		} else {
-			$propertyName = GeneralUtility::underscoredToLowerCamelCase($fieldName);
+		// Each data data can be displayed in a Vidi module
+		foreach ($GLOBALS['TCA'] as $dataType => $configuration) {
+			if (!$moduleLoader->isRegistered($dataType)) {
+
+				// @todo some modules have TSConfig configuration for not being displayed. Should be respected!
+				$moduleLoader->setDataType($dataType)
+					->isShown(FALSE)
+					->register();
+			}
 		}
-		return $propertyName;
 	}
 
 }

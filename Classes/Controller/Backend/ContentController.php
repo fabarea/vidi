@@ -24,9 +24,7 @@ namespace TYPO3\CMS\Vidi\Controller\Backend;
  ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Vidi\Converter\ContentConverter;
 use TYPO3\CMS\Vidi\ContentRepositoryFactory;
-use TYPO3\CMS\Vidi\Converter\FieldConverter;
 use TYPO3\CMS\Vidi\Domain\Model\Content;
 use TYPO3\CMS\Vidi\Persistence\MatcherObjectFactory;
 use TYPO3\CMS\Vidi\Persistence\OrderObjectFactory;

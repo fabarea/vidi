@@ -41,4 +41,15 @@ class QuerySettings extends \TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySet
 	 * @var boolean
 	 */
 	protected $respectStoragePage = FALSE;
+
+	/**
+	 * As long as we use a feature flag ignoreAllEnableFieldsInBe to determine the default behavior, the
+	 * initializeObject is responsible for handling that.
+	 */
+	public function initializeObject() {
+		parent::initializeObject();
+
+		// Read configuration
+		$this->setRespectSysLanguage(false);
+	}
 }

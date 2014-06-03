@@ -80,7 +80,7 @@ Vidi.Grid = {
 					'data': aoData,
 					'success': fnCallback,
 					'error': function() {
-						var message = 'Oups! Something went wrong in the Ajax request... Consider investigating the problem in the Network Monitor. <br />';
+						var message = 'Oups! Something went wrong with the Ajax request... Investigate the problem in the Network Monitor. <br />';
 						Vidi.FlashMessage.add(message, 'error');
 						var fadeOut = false;
 						Vidi.FlashMessage.showAll(fadeOut);
@@ -105,18 +105,27 @@ Vidi.Grid = {
 			 * @return void
 			 */
 			'fnServerParams': function(aoData) {
-				var uri, parameterPrefix;
-				parameterPrefix = Vidi.module.parameterPrefix;
 
 				// Get the parameter related to filter from the URL and "re-inject" them into the Ajax request
-				uri = new Uri(window.location.href);
+				var uri = new Uri(window.location.href);
 				for (var index = 0; index < uri.queryPairs.length; index++) {
 					var queryPair = uri.queryPairs[index];
 					var parameterName = queryPair[0];
 					var parameterValue = queryPair[1];
-					var regularExpression = new RegExp(parameterPrefix);
+
+					// Transmit filter parameter.
+					var regularExpression = new RegExp(Vidi.module.parameterPrefix);
 					if (regularExpression.test(parameterName)) {
 						aoData.push({ 'name': decodeURI(parameterName), 'value': parameterValue });
+					}
+
+					// Transmit a few other parameters as well.
+					var transmittedParameters = ['vidiModuleCode', 'id'];
+					for (var parameterIndex = 0; parameterIndex < transmittedParameters.length; parameterIndex++) {
+						var transmittedParameter = transmittedParameters[parameterIndex];
+						if (transmittedParameter === parameterName) {
+							aoData.push({ 'name': decodeURI(parameterName), 'value': parameterValue });
+						}
 					}
 				}
 
@@ -124,19 +133,19 @@ Vidi.Grid = {
 				var columns = $(this).dataTable().fnSettings().aoColumns;
 				$.each(columns, function(index, column) {
 					if (column['bVisible']) {
-						aoData.push({ 'name': parameterPrefix + '[columns][]', 'value': column['mData'] });
+						aoData.push({ 'name': Vidi.module.parameterPrefix + '[columns][]', 'value': column['mData'] });
 					}
 				});
 
 				// Handle the search term parameter
 				$.each(aoData, function(index, object) {
 					if (object['name'] === 'sSearch') {
-						aoData.push({ 'name': parameterPrefix + '[searchTerm]', 'value': object['value'] });
+						aoData.push({ 'name': Vidi.module.parameterPrefix + '[searchTerm]', 'value': object['value'] });
 					}
 				});
 
 				// Get the parameter related to filter from the URL and "re-inject" them into the Ajax request
-				parameterPrefix = 'tx_vidi_' + Vidi.module.moduleCode.toLowerCase();
+				var parameterPrefix = 'tx_vidi_' + Vidi.module.moduleCode.toLowerCase();
 
 				aoData.push({ 'name': parameterPrefix + '[action]', 'value': 'list' });
 				aoData.push({ 'name': parameterPrefix + '[controller]', 'value': 'Content' });
@@ -183,7 +192,7 @@ Vidi.Grid = {
 				 * Bind handler for editable content for input.
 				 */
 				Vidi.grid.$('td.editable-textarea').editable(
-					Vidi.Grid.computeEditableUrl(),
+					Vidi.Editable.getUrl(),
 					{
 						type: 'textarea',
 						placeholder: '',
@@ -200,7 +209,7 @@ Vidi.Grid = {
 				 * Bind handler for editable content for input.
 				 */
 				Vidi.grid.$('td.editable-textfield').editable(
-					Vidi.Grid.computeEditableUrl(),
+					Vidi.Editable.getUrl(),
 					{
 						placeholder: '',
 						height: '20px',
@@ -220,7 +229,7 @@ Vidi.Grid = {
 
 
 	/**
-	 * Returne selected row from the grid
+	 * Return selected row from the grid
 	 *
 	 * @return {array}
 	 */
@@ -235,30 +244,6 @@ Vidi.Grid = {
 			});
 
 		return selectedRows;
-	},
-
-	/**
-	 * Computed the URL used for editable content.
-	 *
-	 * @return {string}
-	 * @private
-	 */
-	computeEditableUrl: function() {
-
-		// list of parameters used to call the right controller / action.
-		var parameters = {
-			format: 'json',
-			action: 'update',
-			controller: 'Content'
-		};
-
-		var urlParts = [Vidi.module.moduleUrl];
-		$.each(parameters, function(index, value) {
-			var element = '{0}[{1}]={2}'.format(Vidi.module.parameterPrefix, index, value);
-			urlParts.push(element);
-		});
-
-		return urlParts.join('&');
 	},
 
 	/**

@@ -23,3 +23,9 @@ module.tx_vidi {
 		layoutRootPath = {$module.tx_vidi.view.layoutRootPath}
 	}
 }
+
+
+# Vidi persistence configuration
+config.tx_vidi.persistence.backend.pages_language_overlay {
+	respectSysLanguage = 0
+}

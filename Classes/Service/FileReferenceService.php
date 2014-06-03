@@ -143,6 +143,7 @@ class FileReferenceService implements SingletonInterface {
 	protected function getPageRepository() {
 		return $GLOBALS['TSFE']->sys_page;
 	}
+
 	/**
 	 * Returns a pointer to the database.
 	 *

@@ -25,8 +25,8 @@ namespace TYPO3\CMS\Vidi\Domain\Model;
  ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException;
-use TYPO3\CMS\Vidi\Converter\FieldConverter;
-use TYPO3\CMS\Vidi\Converter\PropertyConverter;
+use TYPO3\CMS\Vidi\Converter\Field;
+use TYPO3\CMS\Vidi\Converter\Property;
 use TYPO3\CMS\Vidi\Service\FileReferenceService;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
@@ -82,7 +82,7 @@ class Content implements \ArrayAccess {
 		// Get column to be displayed
 		foreach ($fields as $fieldName) {
 			if (array_key_exists($fieldName, $contentData) && !in_array($fieldName, $excludedFields)) {
-				$propertyName = PropertyConverter::toProperty($dataType, $fieldName);
+				$propertyName = Field::name($fieldName)->of($dataType)->toProperty();
 				$this->$propertyName = $contentData[$fieldName];
 			}
 		}
@@ -172,7 +172,7 @@ class Content implements \ArrayAccess {
 			}
 
 			// Fetch values from repository.
-			$foreignPropertyName = PropertyConverter::toProperty($this, $foreignFieldName);
+			$foreignPropertyName = Field::name($foreignFieldName)->of($this)->toProperty();
 			$findByProperty = 'findBy' . ucfirst($foreignPropertyName);
 
 			// Date picker (type == group) are special fields because property path must contain the table name
@@ -215,8 +215,7 @@ class Content implements \ArrayAccess {
 	 * @return boolean true on success or false on failure.
 	 */
 	public function offsetExists($offset) {
-
-		$offset = PropertyConverter::toProperty($this, $offset);
+		$offset = Field::name($offset)->of($this)->toProperty();
 		return isset($this->$offset);
 	}
 
@@ -228,7 +227,7 @@ class Content implements \ArrayAccess {
 	 * @return mixed Can return all value types.
 	 */
 	public function offsetGet($offset) {
-		$offset = PropertyConverter::toProperty($this, $offset);
+		$offset = Field::name($offset)->of($this)->toProperty();
 		$getter = 'get' . ucfirst($offset);
 		return $this->$getter();
 	}
@@ -242,7 +241,7 @@ class Content implements \ArrayAccess {
 	 * @return $this
 	 */
 	public function offsetSet($offset, $value) {
-		$offset = PropertyConverter::toProperty($this, $offset);
+		$offset = Field::name($offset)->of($this)->toProperty();
 		$setter = 'set' . ucfirst($offset);
 		$this->$setter($value);
 		return $this;
@@ -271,7 +270,7 @@ class Content implements \ArrayAccess {
 		$propertiesAndValues = json_decode(json_encode($this), TRUE);
 
 		foreach ($propertiesAndValues as $propertyName => $value) {
-			$fieldName = FieldConverter::toField($this, $propertyName);
+			$fieldName = Property::name($propertyName)->of($this)->toField();
 			$result[$fieldName] = $value;
 		}
 
@@ -288,7 +287,7 @@ class Content implements \ArrayAccess {
 		$propertiesAndValues = json_decode(json_encode($this), TRUE);
 
 		foreach ($propertiesAndValues as $propertyName => $value) {
-			$fieldName = FieldConverter::toField($this, $propertyName);
+			$fieldName = Property::name($propertyName)->of($this)->toField();
 
 			$field = TcaService::table($this->dataType)->field($fieldName);
 			$fieldType = $field->getType();
@@ -346,7 +345,7 @@ class Content implements \ArrayAccess {
 		$propertiesAndValues = json_decode(json_encode($this), TRUE);
 
 		foreach ($propertiesAndValues as $propertyName => $value) {
-			$result[] = FieldConverter::toField($this, $propertyName);
+			$result[] = Property::name($propertyName)->of($this)->toField();
 		}
 
 		return $result;

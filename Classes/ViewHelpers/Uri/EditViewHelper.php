@@ -27,6 +27,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Vidi\Domain\Model\Content;
+use TYPO3\CMS\Vidi\Module\Parameter;
 
 /**
  * Render a "edit" URI given an object.
@@ -40,11 +41,20 @@ class EditViewHelper extends AbstractViewHelper {
 	 * @return string
 	 */
 	public function render(Content $object) {
-
 		return sprintf('alt_doc.php?returnUrl=%s&edit[%s][%s]=edit',
-			rawurlencode(BackendUtility::getModuleUrl(GeneralUtility::_GP('M'))),
+			rawurlencode($this->getModuleLoader()->getModuleUrl()),
 			rawurlencode($object->getDataType()),
 			$object->getUid()
 		);
 	}
+
+	/**
+	 * Get the Vidi Module Loader.
+	 *
+	 * @return \TYPO3\CMS\Vidi\ModuleLoader
+	 */
+	protected function getModuleLoader() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
+	}
 }
+
