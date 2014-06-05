@@ -23,18 +23,23 @@ namespace TYPO3\CMS\Vidi\Tca;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
- * A class to handle TCA field configuration
- * @deprecated Use the Column Service instead.
+ * A class to handle TCA field configuration.
  */
 class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 
 	/**
-	 * @var array
+	 * @var string
 	 */
-	protected $tca;
+	protected $fieldName;
+
+	/**
+	 * @var string
+	 */
+	protected $fieldNameAndPath;
 
 	/**
 	 * @var string
@@ -42,87 +47,92 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	protected $tableName;
 
 	/**
-	 * @throws InvalidKeyInArrayException
+	 * @var array
+	 */
+	protected $tca;
+
+	/**
+	 * @param string $fieldName
+	 * @param array $tca
 	 * @param string $tableName
+	 * @param string $fieldNameAndPath
 	 * @return \TYPO3\CMS\Vidi\Tca\FieldService
 	 */
-	public function __construct($tableName) {
+	public function __construct($fieldName, array $tca, $tableName, $fieldNameAndPath = '') {
+		$this->fieldName = $fieldName;
+		$this->tca = $tca;
 		$this->tableName = $tableName;
-		if (empty($GLOBALS['TCA'][$this->tableName])) {
-			throw new InvalidKeyInArrayException('No TCA existence for table name: ' . $this->tableName, 1356945107);
-		}
-		$this->tca = $GLOBALS['TCA'][$this->tableName];
+		$this->fieldNameAndPath = $fieldNameAndPath;
 	}
 
 	/**
-	 * Returns an array containing column names
+	 * Tells whether the field is considered as system field, e.g. uid, crdate, tstamp, etc...
 	 *
-	 * @return array
-	 * @deprecated
+	 * @return bool
 	 */
-	public function getFields() {
-		return $this->tca['columns'];
+	public function isSystem() {
+		return in_array($this->fieldName, TcaService::getSystemFields());
 	}
 
 	/**
-	 * Returns an array containing column names.
+	 * Tells the opposition of isSystem()
 	 *
-	 * @return array
+	 * @return bool
 	 */
-	public function getFieldNames() {
-		return array_keys($this->tca['columns']);
+	public function isNotSystem() {
+		return !$this->isSystem();
 	}
 
 	/**
 	 * Returns the configuration for a $field
 	 *
-	 * @param string $fieldName
 	 * @throws \Exception
 	 * @return array
 	 */
-	public function getConfiguration($fieldName) {
-
-		// In case field contains items.tx_table for field type "group"
-		if (strpos($fieldName, '.') !== FALSE) {
-			$fieldParts = explode('.', $fieldName, 2);
-			$fieldName = $fieldParts[0];
+	public function getConfiguration() {
+		if ($this->isSystem() && empty($this->tca['config'])) {
+			$this->tca['config'] = array();
+		} elseif (empty($this->tca['config'])) {
+			throw new \Exception(sprintf('No field configuration found for field "%s" in table "%s"', $this->fieldName, $this->tableName), 1385408686);
 		}
+		return $this->tca['config'];
+	}
 
-		$fields = $this->getFields();
-
-		if (empty($fields[$fieldName])) {
-			throw new \Exception(sprintf('No field "%s" was found in "%s".', $fieldName, $this->tableName), 1385408685);
-		}
-		if (empty($fields[$fieldName]['config'])) {
-			throw new \Exception(sprintf('No configuration available for field "%s".', $fieldName, $this->tableName), 1385408686);
-		}
-		return $fields[$fieldName]['config'];
+	/**
+	 * Returns a key of the configuration.
+	 * If the key can not to be found, returns NULL.
+	 *
+	 * @param string $key
+	 * @return mixed
+	 */
+	public function get($key) {
+		$configuration = $this->getConfiguration();
+		return empty($configuration[$key]) ? NULL : $configuration[$key];
 	}
 
 	/**
 	 * Returns the foreign field of a given field (opposite relational field).
 	 * If no relation exists, returns NULL.
 	 *
-	 * @param string $fieldName
 	 * @return string|NULL
 	 */
-	public function getForeignField($fieldName) {
+	public function getForeignField() {
 		$result = NULL;
-		$configuration = $this->getConfiguration($fieldName);
+		$configuration = $this->getConfiguration();
 
 		if (!empty($configuration['foreign_field'])) {
 			$result = $configuration['foreign_field'];
-		} elseif ($this->hasRelationManyToMany($fieldName)) {
+		} elseif ($this->hasRelationManyToMany()) {
 
-			$foreignTable = $this->getForeignTable($fieldName);
-			$manyToManyTable = $this->getManyToManyTable($fieldName);
+			$foreignTable = $this->getForeignTable();
+			$manyToManyTable = $this->getManyToManyTable();
 
 			// Load TCA service of foreign field.
-			$tcaForeignFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($foreignTable);
+			$tcaForeignTableService = TcaService::table($foreignTable);
 
 			// Look into the MM relations checking for the opposite field
-			foreach ($tcaForeignFieldService->getFieldNames() as $fieldName) {
-				if ($manyToManyTable == $tcaForeignFieldService->getManyToManyTable($fieldName)) {
+			foreach ($tcaForeignTableService->getFields() as $fieldName) {
+				if ($manyToManyTable == $tcaForeignTableService->field($fieldName)->getManyToManyTable()) {
 					$result = $fieldName;
 					break;
 				}
@@ -135,18 +145,81 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * Returns the foreign table of a given field (opposite relational table).
 	 * If no relation exists, returns NULL.
 	 *
-	 * @param string $fieldName
 	 * @return string|NULL
 	 */
-	public function getForeignTable($fieldName) {
+	public function getForeignTable() {
 		$result = NULL;
-		$configuration = $this->getConfiguration($fieldName);
+		$configuration = $this->getConfiguration();
 
 		if (!empty($configuration['foreign_table'])) {
 			$result = $configuration['foreign_table'];
-		} elseif ($this->isGroup($fieldName)) {
-			$fieldParts = explode('.', $fieldName, 2);
+		} elseif ($this->isGroup()) {
+			$fieldParts = explode('.', $this->fieldNameAndPath, 2);
 			$result = $fieldParts[1];
+		}
+		return $result;
+	}
+
+	/**
+	 * Returns the foreign clause.
+	 * If no foreign order exists, returns empty string.
+	 *
+	 * @return string
+	 */
+	public function getForeignClause() {
+		$result = '';
+		$configuration = $this->getConfiguration();
+
+		if (!empty($configuration['foreign_table_where'])) {
+			$parts = explode('ORDER BY', $configuration['foreign_table_where']);
+			if (!empty($parts[0])) {
+				$result = $parts[0];
+			}
+		}
+
+		// Substitute some variables
+		return $this->substituteKnownMarkers($result);
+	}
+
+	/**
+	 * Substitute some known markers from the where clause in the Frontend Context.
+	 *
+	 * @param string $clause
+	 * @return string
+	 */
+	protected function substituteKnownMarkers($clause) {
+		if ($clause && $this->isFrontendMode()) {
+
+			$searches = array(
+				'###CURRENT_PID###',
+				'###REC_FIELD_sys_language_uid###'
+			);
+
+			$replaces = array(
+				$this->getFrontendObject()->id,
+				$this->getFrontendObject()->sys_language_uid,
+			);
+
+			$clause = str_replace($searches, $replaces, $clause);
+		}
+		return $clause;
+	}
+
+	/**
+	 * Returns the foreign order of the current field.
+	 * If no foreign order exists, returns empty string.
+	 *
+	 * @return string
+	 */
+	public function getForeignOrder() {
+		$result = '';
+		$configuration = $this->getConfiguration();
+
+		if (!empty($configuration['foreign_table_where'])) {
+			$parts = explode('ORDER BY', $configuration['foreign_table_where']);
+			if (!empty($parts[1])) {
+				$result = $parts[1];
+			}
 		}
 		return $result;
 	}
@@ -155,11 +228,10 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * Returns the MM table of a field.
 	 * If no relation exists, returns NULL.
 	 *
-	 * @param string $fieldName
 	 * @return string|NULL
 	 */
-	public function getManyToManyTable($fieldName) {
-		$configuration = $this->getConfiguration($fieldName);
+	public function getManyToManyTable() {
+		$configuration = $this->getConfiguration();
 		return empty($configuration['MM']) ? NULL : $configuration['MM'];
 	}
 
@@ -167,17 +239,18 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * Returns the a possible additional table name used in MM relations.
 	 * If no table name exists, returns NULL.
 	 *
-	 * @param string $fieldName
 	 * @return string|NULL
 	 */
-	public function getAdditionalTableNameCondition($fieldName) {
+	public function getAdditionalTableNameCondition() {
 		$result = NULL;
-		$configuration = $this->getConfiguration($fieldName);
+		$configuration = $this->getConfiguration();
 
 		if (!empty($configuration['MM_match_fields']['tablenames'])) {
 			$result = $configuration['MM_match_fields']['tablenames'];
-		} elseif ($this->isGroup($fieldName)) {
-			$fieldParts = explode('.', $fieldName, 2);
+		} elseif ($this->isGroup()) {
+
+			// @todo check if $this->fieldName could be simply used as $result
+			$fieldParts = explode('.', $this->fieldNameAndPath, 2);
 			$result = $fieldParts[1];
 		}
 
@@ -187,53 +260,81 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns whether the field name is the opposite in MM relation.
 	 *
-	 * @param string $fieldName
 	 * @return bool
 	 */
-	public function isOppositeRelation($fieldName) {
-		$configuration = $this->getConfiguration($fieldName);
+	public function isOppositeRelation() {
+		$configuration = $this->getConfiguration();
 		return isset($configuration['MM_opposite_field']);
 	}
 
 	/**
 	 * Returns the configuration for a $field.
 	 *
-	 * @param string $fieldName
+	 * @throws \Exception
 	 * @return string
 	 */
-	public function getFieldType($fieldName) {
-		if (is_int(strpos($fieldName, '--palette--'))) {
-			return 'palette';
-		}
-		if (is_int(strpos($fieldName, '--widget--'))) {
-			return 'widget';
-		}
-		$configuration = $this->getConfiguration($fieldName);
-		$result = $configuration['type'];
+	public function getType() {
 
-		if (!empty($configuration['eval'])) {
-			$parts = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['eval']);
-			if (in_array('datetime', $parts)) {
-				$result = 'datetime';
+		if ($this->isSystem()) {
+			$fieldType = TcaService::NUMBER;
+		} else {
+			$configuration = $this->getConfiguration();
+
+			if (empty($configuration['type'])) {
+				throw new \Exception(sprintf('No field type found for "%s" in table "%s"', $this->fieldName, $this->tableName), 1385556627);
 			}
-			if (in_array('date', $parts)) {
-				$result = 'date';
+
+			$fieldType = $configuration['type'];
+
+			if ($configuration['type'] === TcaService::SELECT && !empty($configuration['size']) && $configuration['size'] > 1) {
+				$fieldType = TcaService::MULTISELECT;
+			} elseif (!empty($configuration['foreign_table'])
+				&& ($configuration['foreign_table'] == 'sys_file_reference' || $configuration['foreign_table'] == 'sys_file')) {
+				$fieldType = TcaService::FILE;
+			} elseif (!empty($configuration['eval'])) {
+				$parts = GeneralUtility::trimExplode(',', $configuration['eval']);
+				if (in_array('datetime', $parts)) {
+					$fieldType = TcaService::DATETIME;
+				} elseif (in_array('date', $parts)) {
+					$fieldType = TcaService::DATE;
+				} elseif (in_array('email', $parts)) {
+					$fieldType = TcaService::EMAIL;
+				} elseif (in_array('int', $parts)) {
+					$fieldType = TcaService::NUMBER;
+				}
+			}
+
+			// Do some legacy conversion
+			if ($fieldType === 'input') {
+				$fieldType = TcaService::TEXT;
+			} elseif ($fieldType === 'text') {
+				$fieldType = TcaService::TEXTAREA;
 			}
 		}
-		return $result;
+		return $fieldType;
+	}
+
+	/**
+	 * @return string
+	 * @deprecated in 0.4.0, will be removed two version later.
+	 */
+	public function getFieldType() {
+		return $this->getType();
 	}
 
 	/**
 	 * Get the translation of a label given a column.
 	 *
-	 * @param string $fieldName
 	 * @return string
 	 */
-	public function getLabel($fieldName) {
+	public function getLabel() {
 		$result = '';
-		if ($this->hasLabel($fieldName)) {
-			$field = $this->getField($fieldName);
-			$result = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($field['label'], '');
+		if ($this->hasLabel()) {
+			$result = LocalizationUtility::translate($this->tca['label'], '');
+
+			if (empty($result)) {
+				$result = $this->tca['label'];
+			}
 		}
 		return $result;
 	}
@@ -241,34 +342,76 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Get the translation of a label given a column.
 	 *
-	 * @param string $fieldName
 	 * @param string $itemValue the item value to search for.
 	 * @return string
 	 */
-	public function getLabelForItem($fieldName, $itemValue) {
-		$result = '';
-		$configuration = $this->getConfiguration($fieldName);
+	public function getLabelForItem($itemValue) {
+		$label = ''; // initialize variable.
+
+		// Early return whether there is nothing to be translated as label.
+		if (is_string($itemValue) && $itemValue === '' || is_null($itemValue)) {
+			return $label;
+		}
+
+		$configuration = $this->getConfiguration();
 		if (!empty($configuration['items']) && is_array($configuration['items'])) {
 			foreach ($configuration['items'] as $item) {
 				if ($item[1] == $itemValue) {
-					$result = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($item[0], '');
+					$label = LocalizationUtility::translate($item[0], '');
+					if (empty($label)) {
+						$label = $item[0];
+					}
 					break;
 				}
 			}
 		}
-		return $result;
+
+		// Try fetching a label from a possible itemsProcFunc
+		if (!$label) {
+			$items = $this->fetchItemsFromUserFunction();
+			if (!empty($items[$itemValue])) {
+				$label = $items[$itemValue];
+			}
+		}
+		return $label;
+	}
+
+	/**
+	 * Retrieve items from User Function.
+	 *
+	 * @return array
+	 */
+	protected function fetchItemsFromUserFunction() {
+		$values = array();
+
+		$configuration = $this->getConfiguration();
+		if (!empty($configuration['itemsProcFunc'])) {
+			$parts = explode('php:', $configuration['itemsProcFunc']);
+			if (!empty($parts[1])) {
+
+				list($class, $method) = explode('->', $parts[1]);
+
+				$parameters['items'] = array();
+				$object = GeneralUtility::makeInstance($class);
+				$object->$method($parameters);
+
+				foreach ($parameters['items'] as $items) {
+					$values[$items[0]] = $items[1];
+				}
+			}
+		}
+		return $values;
 	}
 
 	/**
 	 * Get a possible icon given a field name an an item.
 	 *
-	 * @param string $fieldName
 	 * @param string $itemValue the item value to search for.
 	 * @return string
 	 */
-	public function getIconForItem($fieldName, $itemValue) {
+	public function getIconForItem($itemValue) {
 		$result = '';
-		$configuration = $this->getConfiguration($fieldName);
+		$configuration = $this->getConfiguration();
 		if (!empty($configuration['items']) && is_array($configuration['items'])) {
 			foreach ($configuration['items'] as $item) {
 				if ($item[1] == $itemValue) {
@@ -283,27 +426,24 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns whether the field has a label.
 	 *
-	 * @param string $fieldName
 	 * @return bool
 	 */
-	public function hasLabel($fieldName) {
-		$field = $this->getField($fieldName);
-		return empty($field['label']) ? FALSE : TRUE;
+	public function hasLabel() {
+		return empty($this->tca['label']) ? FALSE : TRUE;
 	}
 
 	/**
 	 * Returns whether the field is numerical.
 	 *
-	 * @param string $fieldName
 	 * @return bool
 	 */
-	public function isNumerical($fieldName) {
-		$result = in_array($fieldName, array('uid', 'pid'));
+	public function isNumerical() {
+		$result = $this->isSystem();
 		if ($result === FALSE) {
-			$configuration = $this->getConfiguration($fieldName);
+			$configuration = $this->getConfiguration();
 			$parts = array();
 			if (!empty($configuration['eval'])) {
-				$parts = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['eval']);
+				$parts = GeneralUtility::trimExplode(',', $configuration['eval']);
 			}
 			$result = in_array('int', $parts) || in_array('float', $parts);
 		}
@@ -313,155 +453,120 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns whether the field is of type text area.
 	 *
-	 * @param string $fieldName
 	 * @return bool
 	 */
-	public function isTextArea($fieldName) {
-		$type = $this->getFieldType($fieldName);
-		return $type === 'text';
+	public function isTextArea() {
+		return $this->getFieldType() === 'text';
 	}
 
 	/**
 	 * Returns whether the field is of type select.
 	 *
-	 * @param string $fieldName
 	 * @return bool
 	 */
-	public function isSelect($fieldName) {
-		$type = $this->getFieldType($fieldName);
-		return $type === 'select';
+	public function isSelect() {
+		return $this->getFieldType() === 'select';
 	}
 
 	/**
 	 * Returns whether the field is of type db.
 	 *
-	 * @param string $fieldName
 	 * @return bool
 	 */
-	public function isGroup($fieldName) {
-		$type = $this->getFieldType($fieldName);
-		return $type === 'group';
+	public function isGroup() {
+		return $this->getFieldType() === 'group';
 	}
 
 	/**
 	 * Returns whether the field is required.
 	 *
-	 * @param string $fieldName
 	 * @return bool
 	 */
-	public function isRequired($fieldName) {
-		$configuration = $this->getConfiguration($fieldName);
-		$parts = array();
-		if (!empty($configuration['eval'])) {
-			$parts = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['eval']);
+	public function isRequired() {
+		$configuration = $this->getConfiguration();
+
+		$isRequired = FALSE;
+		if (isset($configuration['minitems'])) {
+			// is required of a select?
+			$isRequired = $configuration['minitems'] == 1 ? TRUE : FALSE;
+		} elseif (isset($configuration['eval'])) {
+			$parts = GeneralUtility::trimExplode(',', $configuration['eval'], TRUE);
+			$isRequired = in_array('required', $parts);
 		}
-		return in_array('required', $parts);
+		return $isRequired;
 	}
 
 	/**
-	 * Returns an array containing the configuration of an column.
+	 * Returns an array containing the configuration of a column.
 	 *
-	 * @param string $fieldName
 	 * @return array
 	 */
-	public function getField($fieldName) {
-		$result = NULL;
-		if ($this->hasField($fieldName)) {
-			$result = $this->tca['columns'][$fieldName];
-		}
-		return $result;
-	}
-
-	/**
-	 * Tell whether the field exists or not.
-	 *
-	 * @param string $fieldName
-	 * @return array
-	 */
-	public function hasField($fieldName) {
-		// @todo naive implementation, improve me according to the needs. Check if info is not yet in cache.
-		return isset($this->tca['columns'][$fieldName]) || in_array($fieldName, array('uid'));
-	}
-
-	/**
-	 * Tell whether the field does not exist.
-	 *
-	 * @param string $fieldName
-	 * @return array
-	 */
-	public function hasNotField($fieldName) {
-		return !$this->hasField($fieldName);
+	public function getField() {
+		return $this->tca;
 	}
 
 	/**
 	 * Returns the relation type
 	 *
-	 * @param string $fieldName
 	 * @return string
 	 */
-	public function relationDataType($fieldName) {
-		$configuration = $this->getConfiguration($fieldName);
-		return $configuration['foreign_table'];
+	public function relationDataType() {
+		$configuration = $this->getConfiguration();
+		return empty($configuration['foreign_table']) ? '' : $configuration['foreign_table'];
 	}
 
 	/**
 	 * Returns whether the field has relation (one to many, many to many)
 	 *
-	 * @param string $fieldName
 	 * @return bool
 	 */
-	public function hasRelation($fieldName) {
-		return NULL !== $this->getForeignTable($fieldName);
+	public function hasRelation() {
+		return NULL !== $this->getForeignTable();
 	}
 
 	/**
 	 * Returns whether the field has no relation (one to many, many to many)
 	 *
-	 * @param string $fieldName
 	 * @return bool
 	 */
-	public function hasNoRelation($fieldName) {
-		return !$this->hasRelation($fieldName);
+	public function hasNoRelation() {
+		return !$this->hasRelation();
 	}
 
 	/**
 	 * Returns whether the field has relation "many" regarless of many-to-many or one-to-many.
 	 *
-	 * @param string $fieldName
 	 * @return bool
 	 */
-	public function hasRelationMany($fieldName) {
-		$configuration = $this->getConfiguration($fieldName);
-		return $this->hasRelation($fieldName) && $configuration['maxitems'] > 1;
+	public function hasRelationMany() {
+		$configuration = $this->getConfiguration();
+		return $this->hasRelation() && ($configuration['maxitems'] > 1 || isset($configuration['foreign_table_field']));
 	}
 
 	/**
 	 * Returns whether the field has relation "one" regarless of one-to-many or one-to-one.
 	 *
-	 * @param string $fieldName
 	 * @return bool
 	 */
-	public function hasRelationOne($fieldName) {
-		$configuration = $this->getConfiguration($fieldName);
-		return $this->hasRelation($fieldName) && $configuration['maxitems'] == 1;
+	public function hasRelationOne() {
+		$configuration = $this->getConfiguration();
+		return $this->hasRelation() && $configuration['maxitems'] == 1;
 	}
 
 	/**
 	 * Returns whether the field has one-to-many relation.
 	 *
-	 * @param string $fieldName
 	 * @return bool
 	 */
-	public function hasRelationOneToMany($fieldName) {
+	public function hasRelationOneToMany() {
 		$result = FALSE;
 
-		$foreignField = $this->getForeignField($fieldName);
+		$foreignField = $this->getForeignField();
 		if (!empty($foreignField)) {
 
 			// Load TCA service of foreign field..
-			$foreignTable = $this->getForeignTable($fieldName);
-			$tcaForeignFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($foreignTable);
-			$result = $this->hasRelationOne($fieldName) && $tcaForeignFieldService->hasRelationMany($foreignField);
+			$foreignTable = $this->getForeignTable();
+			$result = $this->hasRelationOne() && TcaService::table($foreignTable)->field($foreignField)->hasRelationMany();
 		}
 		return $result;
 	}
@@ -469,19 +574,17 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns whether the field has many-to-one relation.
 	 *
-	 * @param string $fieldName
 	 * @return bool
 	 */
-	public function hasRelationManyToOne($fieldName) {
+	public function hasRelationManyToOne() {
 		$result = FALSE;
 
-		$foreignField = $this->getForeignField($fieldName);
+		$foreignField = $this->getForeignField();
 		if (!empty($foreignField)) {
 
 			// Load TCA service of foreign field..
-			$foreignTable = $this->getForeignTable($fieldName);
-			$tcaForeignFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($foreignTable);
-			$result = $this->hasRelationMany($fieldName) && $tcaForeignFieldService->hasRelationOne($foreignField);
+			$foreignTable = $this->getForeignTable();
+			$result = $this->hasRelationMany() && TcaService::table($foreignTable)->field($foreignField)->hasRelationOne();
 		}
 		return $result;
 	}
@@ -489,19 +592,17 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns whether the field has one-to-one relation.
 	 *
-	 * @param string $fieldName
 	 * @return bool
 	 */
-	public function hasRelationOneToOne($fieldName) {
+	public function hasRelationOneToOne() {
 		$result = FALSE;
 
-		$foreignField = $this->getForeignField($fieldName);
+		$foreignField = $this->getForeignField();
 		if (!empty($foreignField)) {
 
 			// Load TCA service of foreign field.
-			$foreignTable = $this->getForeignTable($fieldName);
-			$tcaForeignFieldService = \TYPO3\CMS\Vidi\Tca\TcaServiceFactory::getFieldService($foreignTable);
-			$result = $this->hasRelationOne($fieldName) && $tcaForeignFieldService->hasRelationOne($foreignField);
+			$foreignTable = $this->getForeignTable();
+			$result = $this->hasRelationOne() && TcaService::table($foreignTable)->field($foreignField)->hasRelationOne();
 		}
 		return $result;
 	}
@@ -509,23 +610,21 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns whether the field has many to many relation.
 	 *
-	 * @param string $fieldName
 	 * @return bool
 	 */
-	public function hasRelationManyToMany($fieldName) {
-		$configuration = $this->getConfiguration($fieldName);
-		return $this->hasRelation($fieldName) && isset($configuration['MM']);
+	public function hasRelationManyToMany() {
+		$configuration = $this->getConfiguration();
+		return $this->hasRelation() && (isset($configuration['MM']) || isset($configuration['foreign_table_field']));
 	}
 
 	/**
 	 * Returns whether the field has many to many relation using comma separated values (legacy).
 	 *
-	 * @param string $fieldName
 	 * @return bool
 	 */
-	public function hasRelationWithCommaSeparatedValues($fieldName) {
-		$configuration = $this->getConfiguration($fieldName);
-		return $this->hasRelation($fieldName) && !isset($configuration['MM']) && !isset($configuration['foreign_field']) && $configuration['maxitems'] > 1;
+	public function hasRelationWithCommaSeparatedValues() {
+		$configuration = $this->getConfiguration();
+		return $this->hasRelation() && !isset($configuration['MM']) && !isset($configuration['foreign_field']) && $configuration['maxitems'] > 1;
 	}
 
 	/**
@@ -534,4 +633,38 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	public function getTca() {
 		return $this->tca['columns'];
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getFieldNameAndPath() {
+		return $this->fieldNameAndPath;
+	}
+
+	/**
+	 * @param string $fieldNameAndPath
+	 */
+	public function setFieldNameAndPath($fieldNameAndPath) {
+		$this->fieldNameAndPath = $fieldNameAndPath;
+	}
+
+	/**
+	 * Returns whether the current mode is Frontend
+	 *
+	 * @return bool
+	 */
+	protected function isFrontendMode() {
+		return TYPO3_MODE == 'FE';
+	}
+
+	/**
+	 * Returns an instance of the Frontend object.
+	 *
+	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected function getFrontendObject() {
+		return $GLOBALS['TSFE'];
+	}
+
+
 }

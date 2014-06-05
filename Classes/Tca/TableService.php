@@ -299,7 +299,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * @param string $fieldName
 	 * @throws \Exception
-	 * @return \TYPO3\CMS\Vidi\Tca\ColumnService
+	 * @return \TYPO3\CMS\Vidi\Tca\FieldService
 	 */
 	public function field($fieldName) {
 
@@ -312,7 +312,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 
 			// Special when field has been instantiated without the field name and path.
 			if (!empty($this->instances[$fieldName])) {
-				/** @var ColumnService $fieldTcaService */
+				/** @var FieldService $fieldTcaService */
 				$fieldTcaService = $this->instances[$fieldName];
 				$fieldTcaService->setFieldNameAndPath($fieldNameAndPath);
 			}
@@ -328,7 +328,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 
 
 		if (empty($this->instances[$fieldName])) {
-			$className = 'TYPO3\CMS\Vidi\Tca\ColumnService';
+			$className = 'TYPO3\CMS\Vidi\Tca\FieldService';
 			$instance = GeneralUtility::makeInstance($className, $fieldName, $this->columnTca[$fieldName], $this->tableName, $fieldNameAndPath);
 			$this->instances[$fieldName] = $instance;
 		}

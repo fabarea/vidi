@@ -140,7 +140,7 @@ class Content implements \ArrayAccess {
 	 * Return the TCA Table Service.
 	 *
 	 * @param string $fieldName
-	 * @return \TYPO3\CMS\Vidi\Tca\ColumnService
+	 * @return \TYPO3\CMS\Vidi\Tca\FieldService
 	 */
 	protected function getTcaFieldService($fieldName) {
 		return TcaService::table($this->dataType)->field($fieldName);
