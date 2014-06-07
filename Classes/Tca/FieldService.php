@@ -346,11 +346,12 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return string
 	 */
 	public function getLabelForItem($itemValue) {
-		$label = ''; // initialize variable.
 
 		// Early return whether there is nothing to be translated as label.
-		if (is_string($itemValue) && $itemValue === '' || is_null($itemValue)) {
-			return $label;
+		if (is_null($itemValue)) {
+			return '';
+		} elseif (is_string($itemValue) && $itemValue === '') {
+			return $itemValue;
 		}
 
 		$configuration = $this->getConfiguration();
@@ -367,13 +368,15 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 		}
 
 		// Try fetching a label from a possible itemsProcFunc
-		if (!$label) {
+		if (!isset($label)) {
 			$items = $this->fetchItemsFromUserFunction();
 			if (!empty($items[$itemValue])) {
 				$label = $items[$itemValue];
 			}
 		}
-		return $label;
+
+		// Returns a label if it has been found, otherwise returns the item value as fallback.
+		return isset($label) ? $label : $itemValue;
 	}
 
 	/**
