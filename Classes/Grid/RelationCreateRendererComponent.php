@@ -25,14 +25,9 @@ namespace TYPO3\CMS\Vidi\Grid;
 
 /**
  * Class for configuring a "Create Relation" Grid Renderer in the Grid TCA.
+ *
+ * @deprecated will be removed in 0.4.0 + 2 version. Use RelationEditRenderer instead.
  */
-class RelationCreateRendererComponent extends GenericRendererComponent {
+class RelationCreateRendererComponent extends RelationEditRendererComponent {
 
-	/**
-	 * Constructor for a "Create Relation" Grid Renderer Component.
-	 */
-	public function __construct() {
-		$className = 'TYPO3\CMS\Vidi\Grid\RelationCreateRenderer';
-		parent::__construct($className, array());
-	}
 }

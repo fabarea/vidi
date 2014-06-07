@@ -262,42 +262,6 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 
 	/**
 	 * @param string $fieldName
-	 * @return string
-	 */
-	public function convertToPropertyName($fieldName) {
-		// Special case when the field name does not follow the conventions "field_name" => "fieldName".
-		// Rely on mapping for those cases.
-		if (!empty($GLOBALS['TCA'][$this->tableName]['vidi']['mappings'][$fieldName])) {
-			$propertyName = $GLOBALS['TCA'][$this->tableName]['vidi']['mappings'][$fieldName];
-		} else {
-			$propertyName = GeneralUtility::underscoredToLowerCamelCase($fieldName);
-		}
-		return $propertyName;
-	}
-
-	/**
-	 * @param string $propertyName
-	 * @return string
-	 */
-	public function convertToFieldName($propertyName) {
-
-		// Default case
-		$fieldName = GeneralUtility::camelCaseToLowerCaseUnderscored($propertyName);
-
-		// Special case in case the field name does not follow the conventions "field_name" => "fieldName"
-		// There is the chance to make some mapping
-		if (!empty($GLOBALS['TCA'][$this->tableName]['vidi']['mappings'])) {
-			$key = array_search($propertyName, $GLOBALS['TCA'][$this->tableName]['vidi']['mappings']);
-			if ($key !== FALSE) {
-				$fieldName = $key;
-			}
-		}
-
-		return $fieldName;
-	}
-
-	/**
-	 * @param string $fieldName
 	 * @throws \Exception
 	 * @return \TYPO3\CMS\Vidi\Tca\FieldService
 	 */

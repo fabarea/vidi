@@ -59,7 +59,7 @@ class RelationCountRenderer extends GridRendererAbstract {
 	public function render() {
 
 		// Get TCA Field service
-		$tcaTableService = TcaService::table($this->object->getDataType());
+		$table = TcaService::table($this->object);
 
 		$numberOfObjects = count($this->object[$this->fieldName]);
 
@@ -77,14 +77,14 @@ class RelationCountRenderer extends GridRendererAbstract {
 
 		$template = '<a href="%s&returnUrl=%s&search=%s&query=%s:%s">%s %s<span class="invisible" style="padding-left: 5px">%s</span></a>';
 
-		$search = json_encode(array(array($tcaTableService->field($this->fieldName)->getForeignField() => $this->object->getUid())));
+		$search = json_encode(array(array($table->field($this->fieldName)->getForeignField() => $this->object->getUid())));
 
 		$moduleTarget = empty($this->gridRendererConfiguration['targetModule']) ? '' : $this->gridRendererConfiguration['targetModule'];
 		return sprintf($template,
 			BackendUtility::getModuleUrl($moduleTarget),
 			rawurlencode(BackendUtility::getModuleUrl($this->gridRendererConfiguration['sourceModule'])),
 			rawurlencode($search),
-			rawurlencode($tcaTableService->field($this->fieldName)->getForeignField()),
+			rawurlencode($table->field($this->fieldName)->getForeignField()),
 			rawurlencode($this->object->getUid()),
 			htmlspecialchars($numberOfObjects),
 			htmlspecialchars(LocalizationUtility::translate($label, '')),

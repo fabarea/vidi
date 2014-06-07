@@ -183,7 +183,7 @@ class ModuleLoader {
 			$subModuleName,
 			$this->position,
 			array(
-				'Content' => 'index, list, delete, update',
+				'Content' => 'index, list, delete, update, edit',
 				'FacetValue' => 'list',
 			),
 			array(
@@ -777,10 +777,10 @@ class ModuleLoader {
 	 * @return \string[]
 	 */
 	public function getAdditionalStyleSheetFiles() {
-		if (empty($this->addStyleSheetFiles)) {
-			$this->addStyleSheetFiles = $this->getModuleConfiguration('additionalStyleSheetFiles');
+		if (empty($this->additionalStyleSheetFiles)) {
+			$this->additionalStyleSheetFiles = $this->getModuleConfiguration('additionalStyleSheetFiles');
 		}
-		return $this->addStyleSheetFiles;
+		return $this->additionalStyleSheetFiles;
 	}
 
 	/**

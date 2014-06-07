@@ -29,6 +29,9 @@ namespace TYPO3\CMS\Vidi\Grid;
 abstract class GridRendererAbstract implements GridRendererInterface {
 
 	/**
+	 * The content object.
+	 * @todo rename me to contentObject for the sake of clarity.
+	 *
 	 * @var \TYPO3\CMS\Vidi\Domain\Model\Content
 	 */
 	 protected $object;

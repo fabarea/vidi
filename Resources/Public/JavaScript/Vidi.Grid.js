@@ -191,10 +191,8 @@ Vidi.Grid = {
 						submit: 'OK',
 						indicator: Vidi.Editable.indicator,
 						data: Vidi.Editable.data,
-						submitdata: Vidi.Editable.submitData
-//						callback: function (sValue, settings) {
-//							console.log(sValue);
-//						}
+						submitdata: Vidi.Editable.submitData,
+						callback: Vidi.Editable.submitCallBack
 					}
 				);
 
@@ -209,7 +207,8 @@ Vidi.Grid = {
 						submit: 'OK',
 						indicator: Vidi.Editable.indicator,
 						data: Vidi.Editable.data,
-						submitdata: Vidi.Editable.submitData
+						submitdata: Vidi.Editable.submitData,
+						callback: Vidi.Editable.submitCallBack
 					}
 				);
 			}

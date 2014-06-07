@@ -20,12 +20,11 @@ Vidi.Editable = {
 	 * @returns {object}
 	 */
 	submitData: function (value, settings) {
-		var uidParameter, uid, dataTypeParameter, dataType, columnPosition, classes, expression;
+		var uidParameter, uid, dataType, columnPosition, classes, expression;
 		var data = {};
 
 		// Compute parameter which must be defined at this level.
-		dataTypeParameter = '{0}[dataType]'.format(Vidi.module.parameterPrefix);
-		uidParameter = '{0}[content][uid]'.format(Vidi.module.parameterPrefix);
+		uidParameter = '{0}[matches][uid]'.format(Vidi.module.parameterPrefix);
 
 		// Get needed values
 		columnPosition = Vidi.grid.fnGetPosition(this)[2];
@@ -48,7 +47,6 @@ Vidi.Editable = {
 		}
 
 		// ... And return as array
-		data[dataTypeParameter] = dataType;
 		data[uidParameter] = uid;
 		return data;
 	},
@@ -68,5 +66,29 @@ Vidi.Editable = {
 
 		settings.name = contentParameter;
 		return value;
+	},
+
+	/**
+	 * Callback after submit action.
+	 *
+	 * @param {string} data
+	 * @param {object} settings
+	 * @returns {string}
+	 */
+	submitCallBack: function(data, settings) {
+
+		// dataType = html is hardcoded in jEditable -> so convert to JSON first
+		// And take the first element as THE response since we are not in a multi editing context.
+		var response = JSON.parse(data)[0];
+
+		if (response.status === true) {
+			var updatedField = response.updatedField;
+			$(this).html(response.object[updatedField]); // re-inject the value in the Cell
+		} else {
+			Vidi.FlashMessage.add(response.message, 'error');
+			var fadeOut = false;
+			Vidi.FlashMessage.showAll(fadeOut);
+			$(this).html('Something went wrong...');
+		}
 	}
 };

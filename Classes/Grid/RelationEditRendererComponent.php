@@ -1,6 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Utility;
-
+namespace TYPO3\CMS\Vidi\Grid;
 /***************************************************************
  *  Copyright notice
  *
@@ -25,21 +24,15 @@ namespace TYPO3\CMS\Vidi\Utility;
  ***************************************************************/
 
 /**
- * A class for handling logger
+ * Class for configuring a "Edit Relation" Grid Renderer in the Grid TCA.
  */
-class Logger implements \TYPO3\CMS\Core\SingletonInterface {
+class RelationEditRendererComponent extends GenericRendererComponent {
 
 	/**
-	 * Returns a logger class instance.
-	 *
-	 * @param mixed $instance
-	 * @return \TYPO3\CMS\Core\Log\Logger
+	 * Constructor for a "Edit Relation" Grid Renderer Component.
 	 */
-	static public function getInstance($instance) {
-		/** @var $loggerManager \TYPO3\CMS\Core\Log\LogManager */
-		$loggerManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager');
-
-		/** @var $logger \TYPO3\CMS\Core\Log\Logger */
-		return $loggerManager->getLogger(get_class($instance));
+	public function __construct() {
+		$className = 'TYPO3\CMS\Vidi\Grid\RelationEditRenderer';
+		parent::__construct($className, array());
 	}
 }

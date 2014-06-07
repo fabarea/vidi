@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Form;
+namespace TYPO3\CMS\Vidi\ViewHelpers;
 /***************************************************************
 *  Copyright notice
 *
@@ -25,28 +25,33 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Form;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
- * View helper which render a checkbox and mark whether the User belongs to the User Group.
+ * View helper for telling whether a Content is related to another Content.
+ * e.g a User belongs to a User Group.
  */
-class CheckboxViewHelper extends AbstractViewHelper {
+class IsRelatedToViewHelper extends AbstractViewHelper {
 
 	/**
-	 * Render a checkbox and mark whether the User belongs to the User Group.
+	 * Tells whether a Content is related to another content.
+	 * The $fieldName corresponds to the relational field name
+	 * between the first content object and the second.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
-	 * @param string $relationProperty
 	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $relatedContent
 	 * @return boolean
 	 */
-	public function render($content, $relationProperty, $relatedContent) {
+	public function render($relatedContent) {
 
-		/** @var \TYPO3\CMS\Vidi\ViewHelpers\BelongsToViewHelper $belongsToViewHelper */
-		$belongsToViewHelper = $this->objectManager->get('TYPO3\CMS\Vidi\ViewHelpers\BelongsToViewHelper');
+		/** @var \TYPO3\CMS\Vidi\Domain\Model\Content $content */
+		$content = $this->templateVariableContainer->get('content');
+		$fieldName = $this->templateVariableContainer->get('fieldName');
 
-		$template = '<input type="checkbox" name="arguments[relatedContents][]" value="%s" %s/>';
+		// Build an array of user group uids
+		$relatedContentsIdentifiers = array();
 
-		return sprintf($template,
-			$relatedContent->getUid(),
-			$belongsToViewHelper->render($content, $relationProperty, $relatedContent) ? 'checked="checked"' : ''
-		);
+		/** @var \TYPO3\CMS\Vidi\Domain\Model\Content $contentObject */
+		foreach ($content[$fieldName] as $contentObject) {
+			$relatedContentsIdentifiers[] = $contentObject->getUid();
+		}
+
+		return in_array($relatedContent->getUid(), $relatedContentsIdentifiers);
 	}
 }

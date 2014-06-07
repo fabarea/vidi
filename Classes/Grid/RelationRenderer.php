@@ -52,12 +52,12 @@ class RelationRenderer extends GridRendererAbstract {
 		$result = '';
 
 		// Get TCA table service.
-		$tcaTableService = TcaService::table($this->object->getDataType());
+		$table = TcaService::table($this->object);
 
 		// Get label of the foreign table.
 		$foreignLabelField = $this->getForeignTableLabelField($this->fieldName);
 
-		if ($tcaTableService->field($this->fieldName)->hasRelationOne()) {
+		if ($table->field($this->fieldName)->hasRelationOne()) {
 
 			$foreignObject = $this->object[$this->fieldName];
 
@@ -70,7 +70,7 @@ class RelationRenderer extends GridRendererAbstract {
 					$foreignObject[$foreignLabelField]
 				);
 			}
-		} elseif ($tcaTableService->field($this->fieldName)->hasRelationMany()) {
+		} elseif ($table->field($this->fieldName)->hasRelationMany()) {
 
 			if (!empty($this->object[$this->fieldName])) {
 				$template = '<li><a href="%s" data-uid="%s" class="btn-edit invisible">%s</a><span>%s</span></li>';
@@ -98,10 +98,10 @@ class RelationRenderer extends GridRendererAbstract {
 	protected function getForeignTableLabelField($fieldName) {
 
 		// Get TCA table service.
-		$tcaTableService = TcaService::table($this->object->getDataType());
+		$table = TcaService::table($this->object);
 
 		// Compute the label of the foreign table.
-		$relationDataType = $tcaTableService->field($fieldName)->relationDataType();
+		$relationDataType = $table->field($fieldName)->relationDataType();
 		return TcaService::table($relationDataType)->getLabelField();
 	}
 }

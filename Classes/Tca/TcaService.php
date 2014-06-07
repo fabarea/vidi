@@ -25,6 +25,7 @@ namespace TYPO3\CMS\Vidi\Tca;
  ***************************************************************/
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Vidi\Domain\Model\Content;
 use TYPO3\CMS\Vidi\Exception\NotExistingClassException;
 
 /**
@@ -121,24 +122,13 @@ class TcaService implements SingletonInterface, TcaServiceInterface {
 
 	/**
 	 * Returns a class instance of a corresponding TCA service.
-	 * This is a shorthand method for "field" (AKA "columns").
-	 *
-	 * @param string $tableName
-	 * @return \TYPO3\CMS\Vidi\Tca\FieldService
-	 * @deprecated will be removed by another syntax. TcaService::table($tableName)->field($tableName)->get*;
-	 */
-	static public function field($tableName = '') {
-		return self::getService($tableName, self::TYPE_FIELD);
-	}
-
-	/**
-	 * Returns a class instance of a corresponding TCA service.
 	 * This is a shorthand method for "grid".
 	 *
-	 * @param string $tableName
+	 * @param string|Content $tableNameOrContentObject
 	 * @return \TYPO3\CMS\Vidi\Tca\GridService
 	 */
-	static public function grid($tableName = '') {
+	static public function grid($tableNameOrContentObject = '') {
+		$tableName = $tableNameOrContentObject instanceof Content ? $tableNameOrContentObject->getDataType() : $tableNameOrContentObject;
 		return self::getService($tableName, self::TYPE_GRID);
 	}
 
@@ -146,10 +136,11 @@ class TcaService implements SingletonInterface, TcaServiceInterface {
 	 * Returns a class instance of a corresponding TCA service.
 	 * This is a shorthand method for "table" (AKA "ctrl").
 	 *
-	 * @param string $tableName
+	 * @param string|Content $tableNameOrContentObject
 	 * @return \TYPO3\CMS\Vidi\Tca\TableService
 	 */
-	static public function table($tableName = '') {
+	static public function table($tableNameOrContentObject = '') {
+		$tableName = $tableNameOrContentObject instanceof Content ? $tableNameOrContentObject->getDataType() : $tableNameOrContentObject;
 		return self::getService($tableName, self::TYPE_TABLE);
 	}
 

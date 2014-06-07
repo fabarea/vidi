@@ -22,15 +22,15 @@ namespace TYPO3\CMS\Vidi\Grid;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Vidi\Converter\PropertyConverter;
 
 /**
- * Class rendering relation
- *
- * @deprecated will be removed in 0.4.0 + 2 version. Use RelationEditRenderer instead.
+ * Class for editing mm relation between objects
  */
-class RelationCreateRenderer extends RelationEditRenderer {
+class RelationEditRenderer extends GridRendererAbstract {
 
 	/**
 	 * Render a representation of the relation on the GUI.
@@ -38,6 +38,34 @@ class RelationCreateRenderer extends RelationEditRenderer {
 	 * @return string
 	 */
 	public function render() {
-		return parent::render();
+
+		$template = '<div style="text-align: right" class="pull-right invisible"><a href="%s" data-uid="%s" class="btn-edit-relation">%s</a></div>';
+
+		// Initialize url parameters array.
+		$urlParameters = array(
+			$this->getModuleLoader()->getParameterPrefix() => array(
+				'controller' => 'Content',
+				'action' => 'edit',
+				'contentIdentifier' => $this->object->getUid(),
+				'fieldName' => $this->getFieldName(),
+			),
+		);
+
+		$result = sprintf($template,
+			BackendUtility::getModuleUrl(GeneralUtility::_GP('M'), $urlParameters),
+			$this->object->getUid(),
+			IconUtility::getSpriteIcon('actions-edit-add')
+		);
+
+		return $result;
+	}
+
+	/**
+	 * Get the Vidi Module Loader.
+	 *
+	 * @return \TYPO3\CMS\Vidi\ModuleLoader
+	 */
+	protected function getModuleLoader() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
 	}
 }

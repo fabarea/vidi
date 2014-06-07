@@ -25,19 +25,21 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Uri;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Vidi\Domain\Model\Content;
 
 /**
  * Render a "edit" URI given an object.
  */
-class EditViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class EditViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Render an edit URI given an object.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param Content $object
 	 * @return string
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object) {
+	public function render(Content $object) {
 
 		return sprintf('alt_doc.php?returnUrl=%s&edit[%s][%s]=edit',
 			rawurlencode(BackendUtility::getModuleUrl(GeneralUtility::_GP('M'))),

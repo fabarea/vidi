@@ -27,12 +27,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper;
 
 /**
- * Load resources from the Moduler Loader.
+ * Load the assets (JavaScript, CSS) for this Vidi module.
  */
-class ModuleResourcesViewHelper extends AbstractBackendViewHelper {
+class AssetsViewHelper extends AbstractBackendViewHelper {
 
 	/**
-	 * Return the number of the transaction with the client
+	 * Load the assets (JavaScript, CSS) for this Vidi module.
 	 *
 	 * @return void
 	 * @api
@@ -44,9 +44,6 @@ class ModuleResourcesViewHelper extends AbstractBackendViewHelper {
 
 		/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
 		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\ModuleLoader');
-
-		/** @var \TYPO3\CMS\Fluid\ViewHelpers\Uri\ResourceViewHelper $resourceViewHelper */
-		$resourceViewHelper = GeneralUtility::makeInstance('TYPO3\CMS\Fluid\ViewHelpers\Uri\ResourceViewHelper');
 
 		foreach ($moduleLoader->getAdditionalStyleSheetFiles() as $addCssFile) {
 			$fileNameAndPath = $this->resolvePath($addCssFile);

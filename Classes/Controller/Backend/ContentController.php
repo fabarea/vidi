@@ -22,8 +22,12 @@ namespace TYPO3\CMS\Vidi\Controller\Backend;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Vidi\Converter\ContentConverter;
 use TYPO3\CMS\Vidi\ContentRepositoryFactory;
+use TYPO3\CMS\Vidi\Converter\FieldConverter;
+use TYPO3\CMS\Vidi\Domain\Model\Content;
 use TYPO3\CMS\Vidi\Persistence\MatcherObjectFactory;
 use TYPO3\CMS\Vidi\Persistence\OrderObjectFactory;
 use TYPO3\CMS\Vidi\Persistence\PagerObjectFactory;
@@ -89,45 +93,145 @@ class ContentController extends ActionController {
 	}
 
 	/**
+	 * Update content objects given matching criteria and returns a json result.
+	 * Only set argument $dataType if the data type to be edited does not correspond of the expected data type of the module.
+	 * This case can be seen in File: sys_file <-> sys_file_metadata <-> sys_category.
+	 * The data type will be for many cases "sys_file_metadata" for the main "sys_file" module.
+	 *
+	 * Possible values for $matches:
+	 * -----------------------------
+	 *
+	 * $matches = array(uid => 1), will be taken as $query->equals
+	 * $matches = array(uid => 1,2,3), will be taken as $query->in
+	 * $matches = array(field_name1 => bar, field_name2 => bax), will be separated by AND.
+	 *
+	 * Possible values for $content:
+	 * -----------------------------
+	 *
+	 * $content = array(field_name => bar)
+	 * $content = array(field_name => array(value1, value2)) <-- will be CSV converted by "value1,value2"
+	 *
 	 * @param array $content
+	 * @param array $matches
 	 * @param string $dataType
 	 * @return string
 	 */
-	public function updateAction(array $content = array(), $dataType = '') {
+	public function updateAction(array $content, array $matches, $dataType = NULL) {
 
-		$dataType = empty($dataType) ? $this->getModuleLoader()->getDataType() : $dataType;
+		$dataType = is_null($dataType) ? $this->getModuleLoader()->getDataType() : $dataType;
 
-		/** @var \TYPO3\CMS\Vidi\Domain\Validator\ContentValidator $contentValidator */
-		$contentValidator = $this->objectManager->get('TYPO3\CMS\Vidi\Domain\Validator\ContentValidator');
-		$contentValidator->validate($content, $dataType);
+		// Instantiate the Matcher object according different rules.
+		$matcher = MatcherObjectFactory::getInstance()->getMatcher($matches, $dataType);
 
 		// Fetch the adequate repository.
 		$contentRepository = ContentRepositoryFactory::getInstance($dataType);
 
-		// Instantiate Content object.
-		/** @var \TYPO3\CMS\Vidi\Domain\Model\Content $object */
-		$object = $this->objectManager->get('TYPO3\CMS\Vidi\Domain\Model\Content', $dataType, $content);
-		$contentRepository->update($object);
+		// Query the repository given a matcher object.
+		$objects = $contentRepository->findBy($matcher);
 
-		// Reload the updated object from repository.
-		$object = $contentRepository->findByUid($object->getUid());
+		// Assume (naively) the first field in content is the "main" field
+		// to be edited and will be returned in the JSON response.
+		$updatedField = key($content);
 
-		// Extract keys of content.
-		$keys = array_keys($content);
+		$result = array();
+		foreach ($objects as $object) {
 
-		// Assuming the field name is the first parameter of content.
-		$fieldName = array_shift($keys);
-		return $object[$fieldName];
+			// Add identifier to content data.
+			$content['uid'] = $object->getUid();
+
+			/** @var Content $dataObject */
+			$dataObject = $this->objectManager->get('TYPO3\CMS\Vidi\Domain\Model\Content', $object->getDataType(), $content);
+
+			$_result = array();
+			$_result['status'] = $contentRepository->update($dataObject);
+			$_result['message'] = $contentRepository->getErrorMessage();
+			$_result['updatedField'] = $updatedField;
+			$_result['action'] = 'update';
+			if ($_result['status']) {
+
+				// Reload the updated object from repository.
+				$updatedObject = $contentRepository->findByUid($object->getUid());
+
+				// Fetch the updated result.
+				$updatedResult = $updatedObject[$updatedField];
+				if (is_array($updatedResult)) {
+					$updatedResult = array(); // reset result set.
+					/** @var Content $contentObject */
+					foreach ($updatedObject[$updatedField] as $contentObject) {
+						$labelField = TcaService::table($contentObject)->getLabelField();
+						$values = array(
+							'uid' => $contentObject->getUid(),
+							$labelField => $contentObject[$labelField],
+						);
+						$updatedResult[] = $values;
+					}
+				}
+
+				$_result['object'] = array(
+					'uid' => $object->getUid(),
+					$updatedField => $updatedResult,
+				);
+			}
+			$result[] = $_result;
+		}
+
+		# Json header is not automatically sent in the BE...
+		$this->response->setHeader('Content-Type', 'application/json');
+		$this->response->sendHeaders();
+		return json_encode($result);
 	}
 
 	/**
-	 * Delete a row given an object uid.
-	 * This action is expected to have a parameter format = json
+	 * Returns an editing form for a given field name of a Content object.
+	 * Argument $fieldName corresponds to the field name to be edited.
+	 *
+	 * @param int $contentIdentifier
+	 * @param string $fieldName
+	 * @param string $dataType
+	 * @throws \Exception
+	 */
+	public function editAction($contentIdentifier, $fieldName, $dataType = NULL) {
+
+		$dataType = is_null($dataType) ? $this->getModuleLoader()->getDataType() : $dataType;
+		$contentRepository = ContentRepositoryFactory::getInstance($dataType);
+		$content = $contentRepository->findByUid($contentIdentifier);
+
+		if (!$content) {
+			$message = sprintf('I could not retrieved content object of type "%s" with identifier %s.', $dataType, $contentIdentifier);
+			throw new \Exception($message, 1402350182);
+		}
+
+		$relatedDataType = TcaService::table($dataType)->field($fieldName)->getForeignTable();
+		$relatedContentRepository = ContentRepositoryFactory::getInstance($relatedDataType);
+
+		// Initialize the matcher object.
+		$matcher = MatcherObjectFactory::getInstance()->getMatcher(array(), $relatedDataType);
+		$order = OrderObjectFactory::getInstance()->getOrder($relatedDataType);
+
+		$relatedContents = $relatedContentRepository->findBy($matcher, $order);
+
+		$this->view->assign('dataType', $dataType);
+		$this->view->assign('content', $content);
+		$this->view->assign('fieldName', $fieldName);
+		$this->view->assign('relatedContents', $relatedContents);
+		$this->view->assign('relatedDataType', $relatedDataType);
+		$this->view->assign('relatedContentTitle', TcaService::table($relatedDataType)->getTitle());
+	}
+
+	/**
+	 * Delete rows given matching criteria and returns a json result.
+	 *
+	 * Possible values for $matches:
+	 * -----------------------------
+	 *
+	 * $matches = array(uid => 1), will be taken as $query->equals
+	 * $matches = array(uid => 1,2,3), will be taken as $query->in
+	 * $matches = array(field_name1 => bar, field_name2 => bax), will be separated by AND.
 	 *
 	 * @param array $matches
 	 * @return string
 	 */
-	public function deleteAction(array $matches = array()) {
+	public function deleteAction(array $matches) {
 
 		$matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
 
@@ -170,6 +274,6 @@ class ContentController extends ActionController {
 	 * @return \TYPO3\CMS\Vidi\ModuleLoader
 	 */
 	protected function getModuleLoader() {
-		return $this->objectManager->get('TYPO3\CMS\Vidi\ModuleLoader');
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
 	}
 }

@@ -66,7 +66,7 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	/**
 	 * @var array
 	 */
-	protected $errorMessage = array();
+	protected $errorMessages = array();
 
 	/**
 	 * Constructor
@@ -85,20 +85,29 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
 	 * @throws \TYPO3\CMS\Vidi\Exception\MissingUidException
 	 * @throws \Exception
-	 * @return void
+	 * @return bool
 	 */
 	public function update($content) {
+
+		// Security check.
 		if ($content->getUid() <= 0) {
 			throw new MissingUidException('Missing Uid', 1351605542);
 		}
 
-		$values = $content->toArray();
+		$values = array();
+
 		// Check the field to be updated exists
-		foreach ($values as $fieldName => $value) {
+		foreach ($content->toArray() as $fieldName => $value) {
 			if (TcaService::table($content->getDataType())->hasNotField($fieldName)) {
 				$message = sprintf('It looks field "%s" does not exist for data type "%s"', $fieldName, $content->getDataType());
 				throw new \Exception($message, 1390668497);
 			}
+
+			// Flatten value if array given which is required for the DataHandler.
+			if (is_array($value)) {
+				$value = implode(',', $value);
+			}
+			$values[$fieldName] = $value;
 		}
 
 		$data[$content->getDataType()][$content->getUid()] = $values;
@@ -107,6 +116,10 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 		$tce = $this->objectManager->get('TYPO3\CMS\Core\DataHandling\DataHandler');
 		$tce->start($data, array());
 		$tce->process_datamap();
+		$this->errorMessages = $tce->errorLog;
+
+		// Returns TRUE is log does not contain errors.
+		return empty($tce->errorLog);
 	}
 
 	/**
@@ -346,21 +359,19 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * @return boolean
 	 */
 	public function remove($content) {
-		$result = FALSE;
-		if ($content) {
 
-			// Build command
-			$cmd[$content->getDataType()][$content->getUid()]['delete'] = 1;
+		// Build command
+		$cmd[$content->getDataType()][$content->getUid()]['delete'] = 1;
 
-			/** @var $tce \TYPO3\CMS\Core\DataHandling\DataHandler */
-			$tce = $this->objectManager->get('TYPO3\CMS\Core\DataHandling\DataHandler');
-			$tce->start(array(), $cmd);
-			$tce->process_datamap();
-			$tce->process_cmdmap();
-			$this->errorMessage = '<ul><li>' . implode('<li></li>', $tce->errorLog) . '</li></ul>';
-			$result = empty($tce->errorLog);
-		}
-		return $result;
+		/** @var $tce \TYPO3\CMS\Core\DataHandling\DataHandler */
+		$tce = $this->objectManager->get('TYPO3\CMS\Core\DataHandling\DataHandler');
+		$tce->start(array(), $cmd);
+		$tce->process_datamap();
+		$tce->process_cmdmap();
+		$this->errorMessages = $tce->errorLog;
+
+		// Returns TRUE is log does not contain errors.
+		return empty($tce->errorLog);
 	}
 
 	/**
@@ -558,6 +569,10 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * @return array
 	 */
 	public function getErrorMessage() {
-		return $this->errorMessage;
+		$message = '';
+		if (!empty($this->errorMessages)) {
+			$message = '<ul><li>' . implode('<li></li>', $this->errorMessages) . '</li></ul>';
+		}
+		return $message;
 	}
 }

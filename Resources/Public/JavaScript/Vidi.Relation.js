@@ -2,36 +2,20 @@ $(document).ready(function () {
 	"use strict";
 
 	/**
-	 * Create relation action
+	 * Load the generic "edit relation" form for mm relations.
 	 */
-	$(document).on('click', '.dataTable tbody .btn-relation', function (e) {
-		var contentUid, contentDataType, relatedDataType, relationProperty, $currentCell;
+	$(document).on('click', '.dataTable tbody .btn-edit-relation', function (e) {
 
-		contentUid = $(this).data('uid');
-		contentDataType = $(this).data('type');
-		relatedDataType = $(this).data('related-type');
-		relationProperty = $(this).data('relation-property');
-		$currentCell = $(this).closest('td');
+		e.preventDefault();
 
+		var contentIdentifier = $(this).data('uid');
+		var $currentCell = $(this).closest('td');
 
-		// Get content by ajax for the modal...
+		// Load content by ajax for the modal window.
 		$.ajax(
 			{
 				type: 'get',
-				url: '/typo3/ajax.php',
-				data: {
-					ajaxID: 'vidiAjaxDispatcher',
-					extensionName: 'vidi',
-					pluginName: 'Pi1',
-					controllerName: 'Relation',
-					actionName: 'list',
-					arguments: {
-						content: contentUid,
-						dataType: contentDataType,
-						relationProperty: relationProperty,
-						relatedDataType: relatedDataType
-					}
-				}
+				url: $(this).attr('href')
 			})
 			.done(function (data) {
 				$('.modal-body').html(data);
@@ -69,14 +53,25 @@ $(document).ready(function () {
 						 */
 						success: function (data) {
 
-							// Hide modal.
+							// Hide the modal window
 							bootbox.hideAll();
 
-							// Store in session the last edited uid
-							Vidi.Session.set('lastEditedUid', contentUid);
+							// Take the first element of the response as THE response since we are not in a multi editing context.
+							var response = data[0];
 
-							// Reload data table.
-							Vidi.grid.fnDraw();
+							if (response.status === false) {
+								Vidi.FlashMessage.add(response.message, 'error');
+								var fadeOut = false;
+								Vidi.FlashMessage.showAll(fadeOut);
+								$(this).html('Something went wrong...');
+							} else {
+
+								// Store in session the last edited uid
+								Vidi.Session.set('lastEditedUid', contentIdentifier);
+
+								// Reload data table.
+								Vidi.grid.fnDraw();
+							}
 						}
 					})
 				});
@@ -87,7 +82,8 @@ $(document).ready(function () {
 				console.log(data);
 			});
 
-		// Display modal box with default loading icon.
+		// Display the empty modal box with default loading icon.
+		// Its content is going to be replaced by the content of the Ajax request.
 		var template = '<div style="text-align: center">' +
 			'<img src="' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" width="" height="" alt="" />' +
 			'</div>';
@@ -112,9 +108,8 @@ $(document).ready(function () {
 			}
 		], {
 			onEscape: function () {
-				// required to have escape keystroke hiding modal window.
+				// Empty but required function to have escape keystroke hiding the modal window.
 			}
 		});
-		e.preventDefault()
 	});
 });

@@ -43,12 +43,12 @@ class ContentRepositoryFactory implements SingletonInterface {
 	 * @param string $dataType
 	 * @return \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository
 	 */
-	static public function getInstance($dataType = '') {
+	static public function getInstance($dataType = NULL) {
 
 		/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
-		if ($dataType == '') {
+		if (is_null($dataType)) {
 
-			// Try to get the data type from the module loader
+			// Try to get the data type from the module loader.
 			$moduleLoader = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
 			$dataType = $moduleLoader->getDataType();
 		}

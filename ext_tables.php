@@ -29,30 +29,6 @@ if (TYPO3_MODE == 'BE' && class_exists('TYPO3\CMS\Vidi\ModuleLoader')) {
 				->register();
 		}
 	}
-
-	// Register Backend Ajax dispatcher.
-	$TYPO3_CONF_VARS['BE']['AJAX']['vidiAjaxDispatcher'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('vidi') . 'Classes/AjaxDispatcher.php:TYPO3\CMS\Vidi\AjaxDispatcher->initAndDispatch';
-
-	$controllerActions = array(
-		'Relation' => 'list, update',
-	);
-
-	/**
-	 * Register some controllers for the Backend (Ajax)
-	 * Special case for FE User and FE Group
-	 */
-	\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-		$_EXTKEY,
-		'Pi1',
-		$controllerActions,
-		$controllerActions
-	);
-
-	\TYPO3\CMS\Vidi\AjaxDispatcher::addAllowedActions(
-		$_EXTKEY,
-		'Pi1',
-		$controllerActions
-	);
 }
 
 // Add new sprite icon.
