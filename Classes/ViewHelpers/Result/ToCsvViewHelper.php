@@ -93,7 +93,7 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper {
 				if (is_array($value)) {
 					$flattenValues[$fieldName] = implode(', ', $value);
 				} else {
-					$flattenValues[$fieldName] = $value;
+					$flattenValues[$fieldName] = str_replace("\n", "\r", $value); // for Excel purpose.
 				}
 			}
 
