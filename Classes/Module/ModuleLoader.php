@@ -189,7 +189,6 @@ class ModuleLoader {
 	 */
 	public function isRegistered($dataType) {
 		$internalModuleCode = $this->getInternalModuleCode($dataType);
-		var_dump($internalModuleCode);
 		return !empty($GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleCode]);
 	}
 
