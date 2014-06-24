@@ -35,7 +35,7 @@ use TYPO3\CMS\Vidi\Tca\TcaService;
 class CheckPidViewHelper extends AbstractViewHelper {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\ModuleLoader
+	 * @var \TYPO3\CMS\Vidi\Module\ModuleLoader
 	 * @inject
 	 */
 	protected $moduleLoader;

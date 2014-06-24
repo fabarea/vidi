@@ -38,7 +38,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ModulePlugin implements SingletonInterface {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\ModuleLoader
+	 * @var \TYPO3\CMS\Vidi\Module\ModuleLoader
 	 * @inject
 	 */
 	protected $moduleLoader;
@@ -46,11 +46,11 @@ class ModulePlugin implements SingletonInterface {
 	/**
 	 * Gets a singleton instance of this class.
 	 *
-	 * @return \TYPO3\CMS\Vidi\ModulePlugin
+	 * @return \TYPO3\CMS\Vidi\Module\ModulePlugin
 	 */
 	static public function getInstance() {
 		$objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
-		return $objectManager->get('TYPO3\CMS\Vidi\ModulePlugin');
+		return $objectManager->get('TYPO3\CMS\Vidi\Module\ModulePlugin');
 	}
 
 	/**

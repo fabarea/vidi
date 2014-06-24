@@ -37,8 +37,8 @@ class VidiModulesAspect implements TableConfigurationPostProcessingHookInterface
 	 */
 	public function processData() {
 
-		/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
-		$moduleLoader = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
+		/** @var \TYPO3\CMS\Vidi\Module\ModuleLoader $moduleLoader */
+		$moduleLoader = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
 
 		// Each data data can be displayed in a Vidi module
 		foreach ($GLOBALS['TCA'] as $dataType => $configuration) {

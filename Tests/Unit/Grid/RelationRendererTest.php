@@ -46,7 +46,7 @@ class RelationRendererTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	private $moduleCode = 'user_VidiFeUsersM1';
 
 	public function setUp() {
-		$moduleLoader = new \TYPO3\CMS\Vidi\ModuleLoader($this->dataType);
+		$moduleLoader = new \TYPO3\CMS\Vidi\Module\ModuleLoader($this->dataType);
 		$moduleLoader->register();
 		$GLOBALS['_GET']['M'] = $this->moduleCode;
 		$this->fixture = new \TYPO3\CMS\Vidi\Grid\RelationRenderer();

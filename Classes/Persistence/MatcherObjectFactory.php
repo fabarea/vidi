@@ -24,7 +24,7 @@ namespace TYPO3\CMS\Vidi\Persistence;
  ***************************************************************/
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\ModuleLoader;
+use TYPO3\CMS\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
@@ -152,7 +152,7 @@ class MatcherObjectFactory implements SingletonInterface {
 		if (strlen($matcher->getDataType()) <= 0) {
 
 			/** @var ModuleLoader $moduleLoader */
-			$moduleLoader = $this->getObjectManager()->get('TYPO3\CMS\Vidi\ModuleLoader');
+			$moduleLoader = $this->getObjectManager()->get('TYPO3\CMS\Vidi\Module\ModuleLoader');
 			$matcher->setDataType($moduleLoader->getDataType());
 		}
 

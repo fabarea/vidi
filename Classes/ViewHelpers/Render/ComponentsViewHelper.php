@@ -23,7 +23,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Render;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3\CMS\Vidi\ModuleLoader;
+use TYPO3\CMS\Vidi\Module\ModuleLoader;
 
 /**
  * View helper for rendering components
@@ -45,7 +45,7 @@ class ComponentsViewHelper extends AbstractViewHelper {
 	public function render($part) {
 
 		/** @var ModuleLoader $moduleLoader */
-		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\ModuleLoader');
+		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\Module\ModuleLoader');
 
 		$getComponents = 'get' . ucfirst($part) . 'Components';
 		$components = $moduleLoader->$getComponents();

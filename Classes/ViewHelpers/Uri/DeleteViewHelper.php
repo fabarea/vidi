@@ -32,7 +32,7 @@ use TYPO3\CMS\Vidi\Domain\Model\Content;
 class DeleteViewHelper extends AbstractViewHelper {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\ModuleLoader
+	 * @var \TYPO3\CMS\Vidi\Module\ModuleLoader
 	 * @inject
 	 */
 	protected $moduleLoader;

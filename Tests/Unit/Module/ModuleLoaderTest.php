@@ -26,12 +26,12 @@ namespace TYPO3\CMS\Vidi;
  ***************************************************************/
 
 /**
- * Test case for class \TYPO3\CMS\Vidi\ModuleLoader.
+ * Test case for class \TYPO3\CMS\Vidi\Module\ModuleLoader.
  */
 class ModuleLoaderTest extends \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCase {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\ModuleLoader
+	 * @var \TYPO3\CMS\Vidi\Module\ModuleLoader
 	 */
 	private $fixture;
 
@@ -47,7 +47,7 @@ class ModuleLoaderTest extends \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCase {
 
 
 	public function setUp() {
-		$this->fixture = new \TYPO3\CMS\Vidi\ModuleLoader($this->dataType);
+		$this->fixture = new \TYPO3\CMS\Vidi\Module\ModuleLoader($this->dataType);
 		$this->fixture->register();
 	}
 
@@ -99,7 +99,7 @@ class ModuleLoaderTest extends \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCase {
 	 * @test
 	 */
 	public function getModuleConfigurationReturnsArrayWithSomeKeys() {
-		$moduleLoader = new \TYPO3\CMS\Vidi\ModuleLoader($this->dataType);
+		$moduleLoader = new \TYPO3\CMS\Vidi\Module\ModuleLoader($this->dataType);
 		$moduleLoader->register();
 		$GLOBALS['_GET']['M'] = $this->moduleCode;
 
@@ -114,7 +114,7 @@ class ModuleLoaderTest extends \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCase {
 	 * @test
 	 */
 	public function getModuleConfigurationWithParameterDataTypeReturnsDataType() {
-		$moduleLoader = new \TYPO3\CMS\Vidi\ModuleLoader($this->dataType);
+		$moduleLoader = new \TYPO3\CMS\Vidi\Module\ModuleLoader($this->dataType);
 		$moduleLoader->register();
 		$GLOBALS['_GET']['M'] = $this->moduleCode;
 		$this->assertEquals($this->dataType, $moduleLoader->getModuleConfiguration('dataType'));

@@ -31,7 +31,7 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 class MassDeleteViewHelper extends AbstractViewHelper {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\ModuleLoader
+	 * @var \TYPO3\CMS\Vidi\Module\ModuleLoader
 	 * @inject
 	 */
 	protected $moduleLoader;

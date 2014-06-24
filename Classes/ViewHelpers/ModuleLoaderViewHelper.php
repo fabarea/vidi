@@ -38,8 +38,8 @@ class ModuleLoaderViewHelper extends AbstractViewHelper {
 	public function render($key) {
 		$getter = 'get' . ucfirst($key);
 
-		/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
-		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\ModuleLoader');
+		/** @var \TYPO3\CMS\Vidi\Module\ModuleLoader $moduleLoader */
+		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\Module\ModuleLoader');
 		return $moduleLoader->$getter();
 	}
 

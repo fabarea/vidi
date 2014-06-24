@@ -40,7 +40,7 @@ class CreateViewHelper extends AbstractViewHelper {
 	protected $backendUser;
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\ModuleLoader
+	 * @var \TYPO3\CMS\Vidi\Module\ModuleLoader
 	 */
 	protected $moduleLoader;
 
@@ -49,7 +49,7 @@ class CreateViewHelper extends AbstractViewHelper {
 	 */
 	public function initialize() {
 		$this->backendUser = $GLOBALS['BE_USER'];
-		$this->moduleLoader = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
+		$this->moduleLoader = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
 	}
 
 	/**
@@ -92,9 +92,9 @@ class CreateViewHelper extends AbstractViewHelper {
 	/**
 	 * Get the Vidi Module Loader.
 	 *
-	 * @return \TYPO3\CMS\Vidi\ModuleLoader
+	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
 	 */
 	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
 	}
 }

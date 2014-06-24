@@ -102,8 +102,8 @@ class TcaService implements SingletonInterface, TcaServiceInterface {
 	static public function getService($tableName = '', $serviceType) {
 		if (TYPO3_MODE == 'BE' && empty($tableName)) {
 
-			/** @var \TYPO3\CMS\Vidi\ModuleLoader $moduleLoader */
-			$moduleLoader = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ModuleLoader');
+			/** @var \TYPO3\CMS\Vidi\Module\ModuleLoader $moduleLoader */
+			$moduleLoader = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
 			$tableName = $moduleLoader->getDataType();
 		}
 

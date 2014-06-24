@@ -24,7 +24,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 ***************************************************************/
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Vidi\ModuleLoader;
+use TYPO3\CMS\Vidi\Module\ModuleLoader;
 
 /**
  * View helper for rendering buttons in the grids according to a Content object.
@@ -46,7 +46,7 @@ class SystemButtonsViewHelper extends AbstractViewHelper {
 	public function render(Content $object) {
 
 		/** @var ModuleLoader $moduleLoader */
-		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\ModuleLoader');
+		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\Module\ModuleLoader');
 		$components = $moduleLoader->getGridButtonsComponents();
 
 		$result = '';
