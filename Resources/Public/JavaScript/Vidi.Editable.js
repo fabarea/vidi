@@ -20,19 +20,16 @@ Vidi.Editable = {
 	 * @returns {object}
 	 */
 	submitData: function (value, settings) {
-		var uidParameter, uid, dataType, columnPosition, classes, expression;
-		var data = {};
+		var data = {}; // initialize empty
+		var uid = 0;
 
-		// Compute parameter which must be defined at this level.
-		uidParameter = '{0}[matches][uid]'.format(Vidi.module.parameterPrefix);
+		// Get needed values to be added to the Ajax request.
+		var columnPosition = Vidi.grid.fnGetPosition(this)[2];
+		var dataType = Vidi._columns[columnPosition]['dataType'];
 
-		// Get needed values
-		columnPosition = Vidi.grid.fnGetPosition(this)[2];
-		dataType = Vidi._columns[columnPosition]['dataType'];
-
-		classes = this.parentNode.getAttribute('class').split(' ');
-		expression = new RegExp(dataType + '_[0-9]+', 'ig');
-		uid = 0;
+		// Retrieves the identifier (AKA uid) of the record from the row.
+		var classes = this.parentNode.getAttribute('class').split(' ');
+		var expression = new RegExp(dataType + '_[0-9]+', 'ig');
 		$.each(classes, function(index, value) {
 
 			var match = value.match(expression);
@@ -46,8 +43,13 @@ Vidi.Editable = {
 			console.log('Vidi: I could not found a valid uid. Update will not succeed! #1390668840')
 		}
 
-		// ... And return as array
-		data[uidParameter] = uid;
+		// Compute parameter names...
+		var parameterNameUid = '{0}[matches][uid]'.format(Vidi.module.parameterPrefix);
+		var parameterNameDataType = '{0}[dataType]'.format(Vidi.module.parameterPrefix);
+
+		// ... and return the data array.
+		data[parameterNameUid] = uid;
+		data[parameterNameDataType] = dataType;
 		return data;
 	},
 
