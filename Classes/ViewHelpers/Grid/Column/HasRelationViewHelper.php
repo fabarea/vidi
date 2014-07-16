@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
 /***************************************************************
 *  Copyright notice
 *
@@ -22,22 +22,32 @@ namespace TYPO3\CMS\Vidi\ViewHelpers;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
- * View helper which tells whether an argument exists.
+ * Tells whether the current field name has a relation to the main content (given by the Module Loader implicitly).
  */
-class GPViewHelper extends AbstractViewHelper {
+class HasRelationViewHelper extends AbstractViewHelper {
 
 	/**
-	 * Tells whether the argument exists or not.
+	 * Return whether the current field name has a relation to the main content.
 	 *
-	 * @param string $argument
 	 * @return boolean
 	 */
-	public function render($argument) {
-		return urlencode(GeneralUtility::_GP($argument));
+	public function render() {
+		$fieldNameAndPath = $this->templateVariableContainer->get('columnName');
+		$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
+		$fieldName = $this->getFieldPathResolver()->stripPath($fieldNameAndPath);
+		$hasRelation = TcaService::table($dataType)->field($fieldName)->hasRelation();
+		return $hasRelation;
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 */
+	protected function getFieldPathResolver () {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
 	}
 }

@@ -28,6 +28,24 @@ Vidi.FlashMessage = {
 	},
 
 	/**
+	 * Tell whether the stack contains messages.
+	 *
+	 * @return bool
+	 */
+	containsMessages: function () {
+		return this.count() > 0;
+	},
+
+	/**
+	 * Count the number of message whitin the stack.
+	 *
+	 * @return int
+	 */
+	count: function () {
+		return this.stack.length;
+	},
+
+	/**
 	 * Returns the last element of the stack and pops it out
 	 *
 	 * @return {Object}

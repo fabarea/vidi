@@ -73,7 +73,7 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Get the translation of a label given a column name.
 	 *
-	 * @param string $fieldName the name of the column
+	 * @param string $fieldName
 	 * @return string
 	 */
 	public function getLabel($fieldName) {
@@ -93,7 +93,7 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Tell whether the column is internal or not.
 	 *
-	 * @param string $fieldName the name of the column
+	 * @param string $fieldName
 	 * @return boolean
 	 */
 	public function isSystem($fieldName) {
@@ -119,7 +119,7 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Tell whether the column is not internal.
 	 *
-	 * @param string $fieldName the name of the column
+	 * @param string $fieldName
 	 * @return boolean
 	 */
 	public function isNotSystem($fieldName) {
@@ -129,7 +129,7 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns an array containing the configuration of an column.
 	 *
-	 * @param string $fieldName the name of the column
+	 * @param string $fieldName
 	 * @return array
 	 */
 	public function getField($fieldName) {
@@ -197,7 +197,7 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns whether the column is sortable or not.
 	 *
-	 * @param string $fieldName the name of the column
+	 * @param string $fieldName
 	 * @return bool
 	 */
 	public function isSortable($fieldName) {
@@ -208,7 +208,7 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns whether the column has a renderer.
 	 *
-	 * @param string $fieldName the name of the column
+	 * @param string $fieldName
 	 * @return bool
 	 */
 	public function hasRenderers($fieldName) {
@@ -219,7 +219,7 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns a renderer.
 	 *
-	 * @param string $fieldName the name of the column
+	 * @param string $fieldName
 	 * @return array
 	 */
 	public function getRenderers($fieldName) {
@@ -254,7 +254,7 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns whether the column is visible or not.
 	 *
-	 * @param string $fieldName the name of the column
+	 * @param string $fieldName
 	 * @return bool
 	 */
 	public function isVisible($fieldName) {
@@ -267,7 +267,7 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * There is a mechanism that only necessary columns are rendered to improve performance.
 	 * The "force" flag can by pass this mechanism.
 	 *
-	 * @param string $fieldName the name of the column
+	 * @param string $fieldName
 	 * @return bool
 	 */
 	public function isForce($fieldName) {
@@ -278,7 +278,7 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns whether the column is editable or not.
 	 *
-	 * @param string $fieldName the name of the column
+	 * @param string $fieldName
 	 * @return bool
 	 */
 	public function isEditable($fieldName) {
@@ -289,7 +289,7 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns the class names applied to a cell
 	 *
-	 * @param string $fieldName the name of the column
+	 * @param string $fieldName
 	 * @return bool
 	 */
 	public function getClass($fieldName) {
@@ -298,20 +298,9 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
-	 * Returns the class names applied to a cell
-	 *
-	 * @param string $fieldName the name of the column
-	 * @return bool
-	 */
-	public function getDataType($fieldName) {
-		$field = $this->getField($fieldName);
-		return isset($field['dataType']) ? $field['dataType'] : $this->tableName;
-	}
-
-	/**
 	 * Returns whether the column has a label.
 	 *
-	 * @param string $fieldName the name of the column
+	 * @param string $fieldName
 	 * @return bool
 	 */
 	public function hasLabel($fieldName) {
@@ -349,4 +338,5 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 		}
 		return $isIncluded;
 	}
+
 }

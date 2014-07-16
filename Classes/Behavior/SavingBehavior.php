@@ -1,10 +1,9 @@
 <?php
-namespace TYPO3\CMS\Vidi\Domain\Validator;
-
+namespace TYPO3\CMS\Vidi\Behavior;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Fabien Udriot <fabien.udriot@typo3.org>
+ *  (c) 2014 Fabien Udriot <fabien.udriot@typo3.org>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -23,27 +22,17 @@ namespace TYPO3\CMS\Vidi\Domain\Validator;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use TYPO3\CMS\Core\Type\Enumeration;
 
 /**
- * Validate "matches" to be used to filter the repository.
+ * Enumeration object for saving behavior.
  */
-class MatchesValidator extends AbstractValidator {
+class SavingBehavior extends Enumeration {
 
-	/**
-	 * Check if $matches is valid. If it is not valid, throw an exception.
-	 *
-	 * @param mixed $matches
-	 * @return void
-	 */
-	public function isValid($matches) {
+	const REMOVE = 'remove';
 
-		foreach ($matches as $fieldName => $value) {
-			if (TcaService::table()->hasNotField($fieldName)) {
-				$message = sprintf('Field "%s" is not allowed. Actually, it is not configured in the TCA.', $fieldName);
-				$this->addError($message, 1380019718);
-			}
-		}
-	}
+	const APPEND = 'append';
+
+	const REPLACE = 'replace';
+
 }

@@ -7,7 +7,7 @@
  *
  * @type {Object}
  */
-Vidi.Editable = {
+Vidi.EditInline = {
 
 	/**
 	 * Loading indicator
@@ -21,35 +21,18 @@ Vidi.Editable = {
 	 */
 	submitData: function (value, settings) {
 		var data = {}; // initialize empty
-		var uid = 0;
 
-		// Get needed values to be added to the Ajax request.
+		// Get needed values to be added to the Ajax request. this corresponds to a "td"
 		var columnPosition = Vidi.grid.fnGetPosition(this)[2];
-		var dataType = Vidi._columns[columnPosition]['dataType'];
 
-		// Retrieves the identifier (AKA uid) of the record from the row.
-		var classes = this.parentNode.getAttribute('class').split(' ');
-		var expression = new RegExp(dataType + '_[0-9]+', 'ig');
-		$.each(classes, function(index, value) {
+		// Compute "matches" parameter...
+		var parameterName;
+		parameterName = '{0}[matches][uid]'.format(Vidi.module.parameterPrefix);
+		data[parameterName] = Vidi.Grid.getRowIdentifier(this);
 
-			var match = value.match(expression);
-			if (match) {
-				var matches = match[0].split('_');
-				uid = matches[matches.length - 1];
-			}
-		});
-
-		if (uid == 0) {
-			console.log('Vidi: I could not found a valid uid. Update will not succeed! #1390668840')
-		}
-
-		// Compute parameter names...
-		var parameterNameUid = '{0}[matches][uid]'.format(Vidi.module.parameterPrefix);
-		var parameterNameDataType = '{0}[dataType]'.format(Vidi.module.parameterPrefix);
-
-		// ... and return the data array.
-		data[parameterNameUid] = uid;
-		data[parameterNameDataType] = dataType;
+		// Compute "fieldNameAndPath" parameter...
+		parameterName= '{0}[fieldNameAndPath]'.format(Vidi.module.parameterPrefix);
+		data[parameterName] = Vidi._columns[columnPosition]['columnName'];
 		return data;
 	},
 
@@ -58,7 +41,7 @@ Vidi.Editable = {
 	 * @param {object} settings
 	 * @returns {string}
 	 */
-	data: function (value, settings) {
+	getParameters: function (value, settings) {
 		var contentParameter, columnPosition, fieldName;
 
 		// Define dynamically the name of the field which will be used as POST parameter
@@ -77,7 +60,7 @@ Vidi.Editable = {
 	 * @param {object} settings
 	 * @returns {string}
 	 */
-	submitCallBack: function(data, settings) {
+	submitDataCallBack: function(data, settings) {
 
 		// dataType = html is hardcoded in jEditable -> so convert to JSON first
 		// And take the first element as THE response since we are not in a multi editing context.

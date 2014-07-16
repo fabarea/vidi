@@ -23,12 +23,13 @@ namespace TYPO3\CMS\Vidi\Domain\Validator;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * Validate "columns" to be displayed in the BE module.
  */
-class ColumnsValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator {
+class ColumnsValidator extends AbstractValidator {
 
 	/**
 	 * Check if $columns is valid. If it is not valid, throw an exception.

@@ -1,30 +1,44 @@
-<f:form action="update" controller="Content" id="form-create-relation" object="{content}" method="post">
+<f:form action="update" controller="Content" id="form-edit" method="post"
+        arguments="{fieldNameAndPath: '{fieldNameAndPath}', matches: '{matches}'}">
 
 	<!-- additional parameters -->
-	<f:form.hidden name="matches[uid]" value="{content.uid}"/>
 	<f:form.hidden name="dataType" value="{dataType}"/>
 
-	<!-- @todo display records in two flex columns? -->
+	<!-- @todo display records in two flex columns if many records or display with indentation if tree widget is configured? -->
 	<div class="control-group create-one">
 
-		<label class="control-label">
-			<v:sprite name="{v:tca.table(key: \"typeicon_classes|default\", dataType: \"{relatedDataType}\")}"/>
-			{relatedContentTitle}
-		</label>
+		<h5 class="modal-title">
+			<f:if condition="{editWholeSelection}">
+				<f:then>
+					<f:translate key="update_all" arguments="{0: '{numberOfObjects}'}"/>
+				</f:then>
+				<f:else>
+					<f:if condition="{numberOfObjects} > 1">
+						<f:then>
+							<f:translate key="update_selected_rows" arguments="{0: '{numberOfObjects}'}"/>
+						</f:then>
+						<f:else>
+							<f:translate key="update_selected_row"/>
+						</f:else>
+					</f:if>
+				</f:else>
+			</f:if>
+		</h5>
 
-		<div class="controls">
-			<f:form.checkbox name="content[{fieldName}][]" value="" style="display: none"/>
-			<ul class="relation-list">
-				<f:for each="{relatedContents}" as="relatedContent">
-					<li>
-						<label>
-							<f:form.checkbox name="content[{fieldName}][]" value="{relatedContent.uid}" checked="{v:isRelatedTo(relatedContent: '{relatedContent}')}"/>
-							<v:tca.title content="{relatedContent}"/>
-						</label>
-					</li>
-				</f:for>
-			</ul>
-		</div>
+		<hr/>
+
+		<f:if condition="{numberOfObjects} > 300">
+			<div class="alert">
+				<strong>
+					<f:translate key="attention"/>
+				</strong>
+				<f:translate key="editing_many_rows_takes_time"/>
+			</div>
+		</f:if>
+
+		<input type="hidden" name="sSearch" value="{v:GP(argument: 'sSearch')}" />
+		<f:render section="{fieldType}" partial="Edit/{fieldType}" arguments="{_all}"/>
+
 	</div>
 
 	<!-- HIDDEN SUBMIT BUTTON -->

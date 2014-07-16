@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Tca;
 /***************************************************************
 *  Copyright notice
 *
@@ -11,8 +11,8 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 *  it under the terms of the GNU General Public License as published by
 *  the Free Software Foundation; either version 2 of the License, or
 *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
+*
+*  The GNU General Public License can be found at
 *  http://www.gnu.org/copyleft/gpl.html.
 *
 *  This script is distributed in the hope that it will be useful,
@@ -26,18 +26,19 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
- * View helper for rendering a column title in the grid.
+ * View helper which returns the label of a field.
  */
 class LabelViewHelper extends AbstractViewHelper {
 
 	/**
-	 * Returns a column title.
+	 * Returns the label of a field
 	 *
-	 * @param string $column name
+	 * @param string $dataType
+	 * @param string $fieldName
 	 * @return string
 	 */
-	public function render($column) {
-		return TcaService::grid()->getLabel($column);
+	public function render($dataType, $fieldName) {
+		return TcaService::table($dataType)->field($fieldName)->getLabel();
 	}
 
 }

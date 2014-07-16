@@ -50,6 +50,31 @@ if (TYPO3_MODE == 'BE' && class_exists('TYPO3\CMS\Vidi\Module\ModuleLoader')) {
 			)
 		);
 	}
+
+	/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+	$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+
+	/** @var $signalSlotDispatcher \TYPO3\CMS\Extbase\SignalSlot\Dispatcher */
+	$signalSlotDispatcher = $objectManager->get('TYPO3\CMS\Extbase\SignalSlot\Dispatcher');
+
+
+	// Connect "processContentData" signal slot with the "ContentObjectProcessor".
+	$signalSlotDispatcher->connect(
+		'TYPO3\CMS\Vidi\Controller\Backend\ContentController',
+		'processContentData',
+		'TYPO3\CMS\Vidi\Processor\ContentObjectProcessor',
+		'processRelations',
+		TRUE
+	);
+
+	// Connect "processContentData" signal with the "MarkerProcessor".
+	$signalSlotDispatcher->connect(
+		'TYPO3\CMS\Vidi\Controller\Backend\ContentController',
+		'processContentData',
+		'TYPO3\CMS\Vidi\Processor\MarkerProcessor',
+		'processMarkers',
+		TRUE
+	);
 }
 
 // Add new sprite icon.

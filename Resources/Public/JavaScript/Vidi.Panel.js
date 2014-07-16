@@ -43,7 +43,7 @@ Vidi.Panel = {
 		this.togglePanel();
 
 		if (reloadTable) {
-			Vidi.grid.fnDraw();
+			Vidi.grid.fnDraw(false); // false = for keeping the pagination.
 		}
 	},
 

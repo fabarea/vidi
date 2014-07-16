@@ -37,21 +37,20 @@ class RelationEditRenderer extends GridRendererAbstract {
 	 */
 	public function render() {
 
-		$template = '<div style="text-align: right" class="pull-right invisible"><a href="%s" data-uid="%s" class="btn-edit-relation">%s</a></div>';
+		$template = '<div style="text-align: right" class="pull-right invisible"><a href="%s" class="btn-edit-relation">%s</a></div>';
 
 		// Initialize url parameters array.
 		$urlParameters = array(
 			$this->getModuleLoader()->getParameterPrefix() => array(
 				'controller' => 'Content',
 				'action' => 'edit',
-				'contentIdentifier' => $this->object->getUid(),
-				'fieldName' => $this->getFieldName(),
+				'matches' => array('uid' => $this->object->getUid()),
+				'fieldNameAndPath' => $this->getFieldName(),
 			),
 		);
 
 		$result = sprintf($template,
 			$this->getModuleLoader()->getModuleUrl($urlParameters),
-			$this->object->getUid(),
 			IconUtility::getSpriteIcon('actions-edit-add')
 		);
 

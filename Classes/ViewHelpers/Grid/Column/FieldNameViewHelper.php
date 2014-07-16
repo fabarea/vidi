@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
 /***************************************************************
 *  Copyright notice
 *
@@ -26,18 +26,25 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
- * Tells about the column type of the grid whether the field is visible.
+ * Computes the final field name in the context of the Grid.
  */
-class IsVisibleViewHelper extends AbstractViewHelper {
+class FieldNameViewHelper extends AbstractViewHelper {
 
 	/**
-	 * Returns whether the column is visible
+	 * Return the final field name in the context of the Grid.
 	 *
-	 * @param string $fieldName the column Name
-	 * @return boolean
+	 * @return string
 	 */
-	public function render($fieldName) {
-		return TcaService::grid()->isVisible($fieldName);
+	public function render() {
+
+		$fieldName = $this->templateVariableContainer->get('columnName');
+		$configuration = $this->templateVariableContainer->get('configuration');
+
+		if (isset($configuration['dataType'])) {
+			$fieldName = $configuration['dataType'] . '.' . $fieldName;
+		}
+
+		return $fieldName;
 	}
 
 }

@@ -26,7 +26,7 @@ namespace TYPO3\CMS\Vidi\Backend;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Utility\ConfigurationUtility;
+use TYPO3\CMS\Vidi\Configuration\ConfigurationUtility;
 
 /**
  * Display custom fields in the Extension Manager.

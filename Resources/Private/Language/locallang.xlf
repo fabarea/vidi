@@ -100,6 +100,30 @@
 			<trans-unit id="export-xls">
 				<source>Export XLS</source>
 			</trans-unit>
+			<trans-unit id="remove_relation">
+				<source>Remove relation</source>
+			</trans-unit>
+			<trans-unit id="append_relation">
+				<source>Append relation</source>
+			</trans-unit>
+			<trans-unit id="replace_relation">
+				<source>Replace relation</source>
+			</trans-unit>
+			<trans-unit id="update_all">
+				<source>Update all rows (%s)</source>
+			</trans-unit>
+			<trans-unit id="update_selected_rows">
+				<source>Update selected rows (%s)</source>
+			</trans-unit>
+			<trans-unit id="update_selected_row">
+				<source>Update the current selected row</source>
+			</trans-unit>
+			<trans-unit id="editing_many_rows_takes_time">
+				<source>Editing more than 300 records is resource consuming and will take some time.</source>
+			</trans-unit>
+			<trans-unit id="attention">
+				<source>Attention!</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

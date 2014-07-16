@@ -1,0 +1,51 @@
+<div xmlns="http://www.w3.org/1999/xhtml" lang="en"
+     xmlns:f="http://typo3.org/ns/fluid/ViewHelpers"
+     xmlns:v="http://typo3.org/ns/TYPO3/CMS/vidi/ViewHelpers">
+
+	<f:section name="Multiselect">
+
+		<f:if condition="{numberOfObjects} > 1">
+			<div class="control-group hidden" style="margin-bottom: 20px">
+				<div>
+					<strong>
+						Saving behavior
+					</strong>
+				</div>
+				<label class="radio inline">
+					<f:form.radio id="savingBehaviorRemove" name="savingBehavior" value="remove"/>
+					<f:translate key="remove_relation"/>
+				</label>
+				<label class="radio inline">
+					<f:form.radio id="savingBehaviorAppend" name="savingBehavior" value="append"/>
+					<f:translate key="append_relation"/>
+				</label>
+				<label class="radio inline">
+					<f:form.radio id="savingBehaviorReplace" name="savingBehavior" value="replace" checked="true"/>
+					<f:translate key="replace_relation"/>
+				</label>
+			</div>
+		</f:if>
+
+		<div style="margin-bottom: 10px">
+			<strong>
+				<v:sprite name="{v:tca.table(key: \"typeicon_classes|default\", dataType: \"{relatedDataType}\")}"/>
+				{relatedContentTitle}
+			</strong>
+		</div>
+
+		<div class="controls">
+			<f:form.checkbox name="content[{fieldName}][]" value="" style="display: none"/>
+			<ul class="relation-list">
+				<f:for each="{relatedContents}" as="relatedContent">
+					<li>
+						<label>
+							<f:form.checkbox name="content[{fieldName}][]" value="{relatedContent.uid}" checked="{v:isRelatedTo(relatedContent: '{relatedContent}')}"/>
+							<v:tca.title content="{relatedContent}"/>
+						</label>
+					</li>
+				</f:for>
+			</ul>
+		</div>
+
+	</f:section>
+</div>

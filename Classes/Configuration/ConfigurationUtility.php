@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Utility;
+namespace TYPO3\CMS\Vidi\Configuration;
 
 /***************************************************************
  *  Copyright notice
@@ -44,16 +44,16 @@ class ConfigurationUtility implements SingletonInterface {
 	/**
 	 * Returns a class instance.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Utility\ConfigurationUtility
+	 * @return \TYPO3\CMS\Vidi\Configuration\ConfigurationUtility
 	 */
 	static public function getInstance() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Utility\ConfigurationUtility');
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Configuration\ConfigurationUtility');
 	}
 
 	/**
 	 * Constructor
 	 *
-	 * @return \TYPO3\CMS\Vidi\Utility\ConfigurationUtility
+	 * @return \TYPO3\CMS\Vidi\Configuration\ConfigurationUtility
 	 */
 	public function __construct() {
 

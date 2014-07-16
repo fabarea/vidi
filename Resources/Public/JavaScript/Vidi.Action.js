@@ -143,7 +143,7 @@ Vidi.Action = {
 								$('.checkbox-row-top').removeAttr('checked');
 
 								// Reload data table
-								Vidi.grid.fnDraw();
+								Vidi.grid.fnDraw(false); // false = for keeping the pagination.
 							}
 
 							// Display flash message
