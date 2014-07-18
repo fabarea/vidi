@@ -1,0 +1,7 @@
+{
+	"name": "fab/vidi",
+	"type": "typo3-cms-extension",
+	"description": "Generic listing of records with versatile ways of interacting with the data. Veni, vidi, vici!",
+	"homepage": "https://forge.typo3.org/projects/extension-vidi",
+	"license": ["GPL-2.0+"]
+}
