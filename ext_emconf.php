@@ -10,7 +10,7 @@
 
 $EM_CONF[$_EXTKEY] = array (
   'title' => 'Versatile and Interactive Display',
-  'description' => 'Generic listing of records with versatile ways of interacting with the data. Veni, vidi, vici!',
+  'description' => 'Generic listing of records with versatile ways of interacting with the data, e.g. advanced filter, inline editing, mass editing, ... Veni, vidi, vici!',
   'category' => 'module',
   'author' => 'Fabien Udriot',
   'author_email' => 'fabien.udriot@typo3.org',
