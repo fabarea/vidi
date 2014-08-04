@@ -504,11 +504,11 @@ For getting the adequate instance, the repository can be fetched by this code::
 
 	// Fetch the adequate repository for a known data type.
 	$dataType = 'fe_users';
-	$contentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance($dataType);
+	$contentRepository = \TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory::getInstance($dataType);
 
 	// The data type can be omitted in the context of a BE module
 	// Internally, the Factory ask the Module Loader to retrieve the main data type of the BE module.
-	$contentRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance();
+	$contentRepository = \TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory::getInstance();
 
 
 TCA Service API
