@@ -24,6 +24,7 @@ namespace TYPO3\CMS\Vidi\Domain\Repository;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException;
 use TYPO3\CMS\Extbase\Persistence\RepositoryInterface;
 use TYPO3\CMS\Vidi\Converter\Property;
@@ -303,24 +304,61 @@ class ContentRepository implements RepositoryInterface {
 		// Search term case
 		if ($matcher->getSearchTerm()) {
 
-			$table = TcaService::table($this->dataType);
-			$fields = GeneralUtility::trimExplode(',', $table->getSearchFields(), TRUE);
+			$fields = GeneralUtility::trimExplode(',', TcaService::table($this->dataType)->getSearchFields(), TRUE);
 
 			$constraints = array();
 			$likeClause = sprintf('%%%s%%', $matcher->getSearchTerm());
-			foreach ($fields as $fieldName) {
-				if ($table->hasField($fieldName) && $table->field($fieldName)->hasRelation()) {
-					$foreignTable = $table->field($fieldName)->getForeignTable();
-					$foreignTcaTableService = TcaService::table($foreignTable);
-					$fieldName = $fieldName . '.' . $foreignTcaTableService->getLabelField();
+			foreach ($fields as $fieldNameAndPath) {
+				if ($this->isSuitableForLike($fieldNameAndPath, $matcher->getSearchTerm())) {
+
+					$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
+					$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
+
+					if (TcaService::table($dataType)->hasField($fieldName) && TcaService::table($dataType)->field($fieldName)->hasRelation()) {
+						$foreignTable = TcaService::table($dataType)->field($fieldName)->getForeignTable();
+						$fieldNameAndPath = $fieldNameAndPath . '.' . TcaService::table($foreignTable)->getLabelField();
+					}
+					$constraints[] = $query->like($fieldNameAndPath, $likeClause);
 				}
-				$constraints[] = $query->like($fieldName, $likeClause);
 			}
 			$logical = $matcher->getLogicalSeparatorForSearchTerm();
 			$result = $query->$logical($constraints);
 		}
 
 		return $result;
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 */
+	protected function getFieldPathResolver () {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+	}
+
+	/**
+	 * It does not make sense to have a "like" in presence of numerical field, e.g "uid".
+	 * Tell whether the given value makes sense for a "like" clause.
+	 *
+	 * @param string $fieldNameAndPath
+	 * @param string $value
+	 * @return bool
+	 */
+	protected function isSuitableForLike($fieldNameAndPath, $value) {
+		$isSuitable = TRUE;
+
+		// TRUE means it is a string
+		if (! MathUtility::canBeInterpretedAsInteger($value)) {
+
+			$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
+			$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
+
+			if (TcaService::table($dataType)->field($fieldName)->isNumerical()
+				&& !TcaService::table($dataType)->field($fieldName)->hasRelation()) {
+				$isSuitable = FALSE;
+			}
+		}
+
+		return $isSuitable;
 	}
 
 	/**
