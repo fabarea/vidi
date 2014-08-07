@@ -532,45 +532,27 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
-	 * Returns whether the field has relation "many" regarless of many-to-many or one-to-many.
+	 * Returns whether the field has a "many" objects connected including "many-to-many" or "one-to-many".
 	 *
 	 * @return bool
 	 */
-	public function hasRelationMany() {
+	public function hasMany() {
 		$configuration = $this->getConfiguration();
 		return $this->hasRelation() && ($configuration['maxitems'] > 1 || isset($configuration['foreign_table_field']));
 	}
 
 	/**
-	 * Returns whether the field has relation "one" regarless of one-to-many or one-to-one.
+	 * Returns whether the field has relation "one" object connected including of "one-to-one" or "many-to-one".
 	 *
 	 * @return bool
 	 */
-	public function hasRelationOne() {
+	public function hasOne() {
 		$configuration = $this->getConfiguration();
 		return $this->hasRelation() && $configuration['maxitems'] == 1;
 	}
 
 	/**
 	 * Returns whether the field has one-to-many relation.
-	 *
-	 * @return bool
-	 */
-	public function hasRelationOneToMany() {
-		$result = FALSE;
-
-		$foreignField = $this->getForeignField();
-		if (!empty($foreignField)) {
-
-			// Load TCA service of foreign field..
-			$foreignTable = $this->getForeignTable();
-			$result = $this->hasRelationOne() && TcaService::table($foreignTable)->field($foreignField)->hasRelationMany();
-		}
-		return $result;
-	}
-
-	/**
-	 * Returns whether the field has many-to-one relation.
 	 *
 	 * @return bool
 	 */
@@ -582,7 +564,25 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 
 			// Load TCA service of foreign field..
 			$foreignTable = $this->getForeignTable();
-			$result = $this->hasRelationMany() && TcaService::table($foreignTable)->field($foreignField)->hasRelationOne();
+			$result = $this->hasOne() && TcaService::table($foreignTable)->field($foreignField)->hasMany();
+		}
+		return $result;
+	}
+
+	/**
+	 * Returns whether the field has many-to-one relation.
+	 *
+	 * @return bool
+	 */
+	public function hasRelationOneToMany() {
+		$result = FALSE;
+
+		$foreignField = $this->getForeignField();
+		if (!empty($foreignField)) {
+
+			// Load TCA service of foreign field..
+			$foreignTable = $this->getForeignTable();
+			$result = $this->hasMany() && TcaService::table($foreignTable)->field($foreignField)->hasOne();
 		}
 		return $result;
 	}
@@ -600,7 +600,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 
 			// Load TCA service of foreign field.
 			$foreignTable = $this->getForeignTable();
-			$result = $this->hasRelationOne() && TcaService::table($foreignTable)->field($foreignField)->hasRelationOne();
+			$result = $this->hasOne() && TcaService::table($foreignTable)->field($foreignField)->hasOne();
 		}
 		return $result;
 	}

@@ -26,6 +26,7 @@ namespace TYPO3\CMS\Vidi\Domain\Repository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException;
 use TYPO3\CMS\Extbase\Persistence\RepositoryInterface;
+use TYPO3\CMS\Vidi\Converter\Property;
 use TYPO3\CMS\Vidi\Exception\MissingUidException;
 use TYPO3\CMS\Vidi\Persistence\Matcher;
 use TYPO3\CMS\Vidi\Persistence\Order;
@@ -484,25 +485,27 @@ class ContentRepository implements RepositoryInterface {
 	/**
 	 * Handle the magic call by properly creating a Query object and returning its result.
 	 *
-	 * @param string $field
+	 * @param string $propertyName
 	 * @param string $value
 	 * @param string $flag
 	 * @return array
 	 */
-	protected function processMagicCall($field, $value, $flag = '') {
+	protected function processMagicCall($propertyName, $value, $flag = '') {
+
+		$fieldName = Property::name($propertyName)->of($this->dataType)->toFieldName();
 
 		/** @var $matcher Matcher */
 		$matcher = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher', array(), $this->getDataType());
 
 		$tcaTableService = TcaService::table($this->dataType);
-		if ($tcaTableService->field($field)->isGroup()) {
+		if ($tcaTableService->field($fieldName)->isGroup()) {
 
 			$valueParts = explode('.', $value, 2);
-			$field = $field . '.' . $valueParts[0];
+			$fieldName = $fieldName . '.' . $valueParts[0];
 			$value = $valueParts[1];
 		}
 
-		$matcher->equals($field, $value);
+		$matcher->equals($fieldName, $value);
 
 		if ($flag == 'count') {
 			$result = $this->countBy($matcher);

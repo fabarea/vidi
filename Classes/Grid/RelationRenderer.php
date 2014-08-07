@@ -23,6 +23,7 @@ namespace TYPO3\CMS\Vidi\Grid;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
@@ -39,7 +40,7 @@ class RelationRenderer extends GridRendererAbstract {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->editViewHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper');
+		$this->editViewHelper = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper');
 	}
 
 	/**
@@ -57,7 +58,7 @@ class RelationRenderer extends GridRendererAbstract {
 		// Get label of the foreign table.
 		$foreignLabelField = $this->getForeignTableLabelField($this->fieldName);
 
-		if ($table->field($this->fieldName)->hasRelationOne()) {
+		if ($table->field($this->fieldName)->hasOne()) {
 
 			$foreignObject = $this->object[$this->fieldName];
 
@@ -70,7 +71,7 @@ class RelationRenderer extends GridRendererAbstract {
 					$foreignObject[$foreignLabelField]
 				);
 			}
-		} elseif ($table->field($this->fieldName)->hasRelationMany()) {
+		} elseif ($table->field($this->fieldName)->hasMany()) {
 
 			if (!empty($this->object[$this->fieldName])) {
 				$template = '<li><a href="%s" data-uid="%s" class="btn-edit invisible">%s</a><span>%s</span></li>';

@@ -67,7 +67,7 @@ class ContentObjectProcessor implements SingletonInterface {
 
 			$resolvedObject = $this->getContentObjectResolver()->getObject($object, $fieldNameAndPath, $fieldName);
 
-			if (TcaService::table($resolvedObject)->field($fieldName)->hasRelationMany()) {
+			if (TcaService::table($resolvedObject)->field($fieldName)->hasMany()) {
 
 				// TRUE means CSV values must be converted to array.
 				if (!is_array($values)) {

@@ -229,7 +229,8 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 			$renderers = $this->convertRendererToArray($field['renderer']);
 		} elseif (!empty($field['renderers']) && is_array($field['renderers'])) {
 			foreach ($field['renderers'] as $renderer) {
-				$renderers = $renderers + $this->convertRendererToArray($renderer);
+				$rendererNameAndConfiguration = $this->convertRendererToArray($renderer);
+				$renderers = array_merge($renderers, $rendererNameAndConfiguration);
 			}
 		}
 

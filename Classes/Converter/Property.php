@@ -70,7 +70,7 @@ class Property {
 	/**
 	 * @return string
 	 */
-	public function toField() {
+	public function toFieldName() {
 
 		$propertyName = $this->getPropertyName();
 		$tableName = $this->getTableName();
@@ -96,6 +96,14 @@ class Property {
 		}
 
 		return $this->storage[$tableName][$propertyName];
+	}
+
+	/**
+	 * @return string
+	 * @deprecated use toFieldName. Will be removed in 0.3.0 + 2 version.
+	 */
+	public function toField() {
+		return $this->toFieldName();
 	}
 
 	/**

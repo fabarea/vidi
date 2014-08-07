@@ -22,12 +22,13 @@ namespace TYPO3\CMS\Vidi\Command;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * Command Controller which handles actions related to Vidi.
  */
-class VidiCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandController {
+class VidiCommandController extends CommandController {
 
 	/**
 	 * Check TCA configuration for relations used in grid.
@@ -42,19 +43,19 @@ class VidiCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandCon
 			if ($table != '' && $table !== $tableName) {
 				continue;
 			}
-			$tcaGridService = TcaService::grid($tableName);
 
-			$fields = $tcaGridService->getFields();
+			$fields = TcaService::grid($tableName)->getFields();
 			if (!empty($fields)) {
-				$this->outputLine('--------------------------------------------------------------------');
-				$this->outputLine();
-				$this->outputLine(sprintf('Grid for "%s"', $tableName));
-				$this->outputLine();
 
-				$hasRelation = $this->checkRelationForTable($tableName);
-				if (!$hasRelation) {
-					$this->outputLine('No relation to show in this grid!');
+				$relations = $this->checkRelationForTable($tableName);
+				if (!empty($relations)) {
+
 					$this->outputLine();
+					$this->outputLine('--------------------------------------------------------------------');
+					$this->outputLine();
+					$this->outputLine(sprintf('Relations for "%s"', $tableName));
+					$this->outputLine();
+					$this->outputLine(implode("\n", $relations));
 				}
 			}
 		}
@@ -64,51 +65,53 @@ class VidiCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandCon
 	 * Check relation for table
 	 *
 	 * @param $tableName
-	 * @return bool
+	 * @return array
 	 */
 	protected function checkRelationForTable($tableName){
 
-		$tcaGridService = TcaService::grid($tableName);
+		$relations = array();
 		$tcaTableService = TcaService::table($tableName);
 
-		$hasRelation = FALSE;
-		foreach ($tcaGridService->getFields() as $fieldName => $configuration) {
+		$missingOppositionRelationMessage =<<<EOF
 
-			if ($tcaTableService->hasField($fieldName) && $tcaTableService->field($fieldName)->hasRelationMany()) {
+  Could not define relation precisely. This is not necessary a problem
+  if the opposite relation is not needed. But consider adding the opposite
+  TCA configuration if so.';
+EOF;
 
-				$hasRelation = TRUE;
+		foreach (TcaService::grid($tableName)->getFields() as $fieldName => $configuration) {
 
-				if ($tcaTableService->field($fieldName)->hasRelationWithCommaSeparatedValues()) {
-					$this->printRelation($tableName, $fieldName, 'comma separated values');
-				} elseif ($tcaTableService->field($fieldName)->hasRelationManyToMany()) {
-					$this->printRelationManyToMany($tableName, $fieldName);
+			if ($tcaTableService->hasField($fieldName)) {
+				if ($tcaTableService->field($fieldName)->hasMany()) {
+					if ($tcaTableService->field($fieldName)->hasRelationWithCommaSeparatedValues()) {
+						$_relations = $this->checkRelationOf($tableName, $fieldName, 'comma separated values');
+						$relations = array_merge($relations, $_relations);
+					} elseif ($tcaTableService->field($fieldName)->hasRelationManyToMany()) {
+						$_relations = $this->checkRelationManyToMany($tableName, $fieldName);
+						$relations = array_merge($relations, $_relations);
 
-				} elseif ($tcaTableService->field($fieldName)->hasRelationManyToOne()) {
-					$this->printRelation($tableName, $fieldName, 'many-to-one');
-				} else {
-					$output = sprintf('* NOTICE: %s (many-to-?). Could not define relation type precisely. Missing opposite TCA configuration?', $fieldName);
-					$this->outputLine($output);
-				}
-			} elseif ($tcaTableService->hasField($fieldName) && $tcaTableService->field($fieldName)->hasRelationOne()) {
+					} elseif ($tcaTableService->field($fieldName)->hasRelationOneToMany()) {
+						$_relations = $this->checkRelationOf($tableName, $fieldName, 'one-to-many');
+						$relations = array_merge($relations, $_relations);
+					} else {
+						$relations[] = '* WARNING!';
+						$relations[] = sprintf('  ?-to-many "%s"%s', $fieldName, $missingOppositionRelationMessage);
+					}
+				} elseif ($tcaTableService->field($fieldName)->hasOne()) {
 
-				$hasRelation = TRUE;
-
-				if ($tcaTableService->field($fieldName)->hasRelationOneToOne()) {
-					$output = sprintf('* %s (one-to-one)', $fieldName);
-					$this->outputLine($output);
-				} elseif ($tcaTableService->field($fieldName)->hasRelationOneToMany()) {
-					$this->printRelation($tableName, $fieldName, 'one-to-many');
-				} else {
-					$output = sprintf('* NOTICE: %s (one-to-?). Could not define relation type precisely. Missing opposite TCA configuration?', $fieldName);
-					$this->outputLine($output);
+					if ($tcaTableService->field($fieldName)->hasRelationOneToOne()) {
+						$relations[] = sprintf('* one-to-one "%s"', $fieldName);
+					} elseif ($tcaTableService->field($fieldName)->hasRelationManyToOne()) {
+						$_relations = $this->checkRelationOf($tableName, $fieldName, 'many-to-one');
+						$relations = array_merge($relations, $_relations);
+					} else {
+						$relations[] = '* WARNING!';
+						$relations[] = sprintf('  ?-to-one "%s"%s', $fieldName, $missingOppositionRelationMessage);
+					}
 				}
 			}
 		}
-
-		if ($hasRelation) {
-			$this->outputLine();
-		}
-		return $hasRelation;
+		return $relations;
 	}
 
 	/**
@@ -116,30 +119,31 @@ class VidiCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandCon
 	 *
 	 * @param string $tableName
 	 * @param string $fieldName
-	 * @return void
+	 * @return array
 	 */
-	protected function printRelationManyToMany($tableName, $fieldName) {
+	protected function checkRelationManyToMany($tableName, $fieldName) {
+
+		$output = array();
 
 		$tcaTableService = TcaService::table($tableName);
-		$output = sprintf('* %s (many-to-many)', $fieldName);
-		$this->outputLine($output);
+		$output[] = sprintf('* %s (many-to-many)', $fieldName);
 
 		$foreignTable = $tcaTableService->field($fieldName)->getForeignTable();
 		$manyToManyTable = $tcaTableService->field($fieldName)->getManyToManyTable();
 		$foreignField = $tcaTableService->field($fieldName)->getForeignField();
 
 		if (!$foreignField) {
-			$output = sprintf('  ERROR: can not found foreign field for "%s". Perhaps missing opposite configuration?', $fieldName);
+			$output[] = sprintf('  ERROR! Can not found foreign field for "%s". Perhaps missing opposite configuration?', $fieldName);
 		} elseif (!$foreignTable) {
-			$output = sprintf('  ERROR: can not found foreign table for "%s". Perhaps missing opposite configuration?', $fieldName);
+			$output[] = sprintf('  ERROR! Can not found foreign table for "%s". Perhaps missing opposite configuration?', $fieldName);
 		} elseif (!$manyToManyTable) {
-			$output = sprintf('  ERROR: can not found relation table (MM) for "%s". Perhaps missing opposite configuration?', $fieldName);
+			$output = sprintf('  ERROR! Can not found relation table (MM) for "%s". Perhaps missing opposite configuration?', $fieldName);
 		} else {
-			$output = sprintf('  %s.%s --> %s --> %s.%s', $tableName, $fieldName, $manyToManyTable, $foreignTable, $foreignField);
+			$output[] = sprintf('  %s.%s --> %s --> %s.%s', $tableName, $fieldName, $manyToManyTable, $foreignTable, $foreignField);
 		}
 
-		$this->outputLine($output);
-		$this->outputLine();
+		$output[] = '';
+		return $output;
 	}
 
 	/**
@@ -148,19 +152,21 @@ class VidiCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandCon
 	 * @param string $tableName
 	 * @param string $fieldName
 	 * @param string $relationType
-	 * @return void
+	 * @return array
 	 */
-	protected function printRelation($tableName, $fieldName, $relationType) {
+	protected function checkRelationOf($tableName, $fieldName, $relationType) {
+
+		$output = array();
 
 		$tcaTableService = TcaService::table($tableName);
-		$output = sprintf('* %s (%s)', $fieldName, $relationType);
-		$this->outputLine($output);
+		$output[] = sprintf('* %s "%s" ', $relationType, $fieldName);
 
 		$foreignTable = $tcaTableService->field($fieldName)->getForeignTable();
 		$foreignField = $tcaTableService->field($fieldName)->getForeignField();
-		$output = sprintf('  %s.%s --> %s.%s', $tableName, $fieldName, $foreignTable, $foreignField);
-		$this->outputLine($output);
-		$this->outputLine();
+		$output[] = sprintf('  %s.%s --> %s.%s', $tableName, $fieldName, $foreignTable, $foreignField);
+		$output[] = '';
+
+		return $output;
 	}
 
 	/**

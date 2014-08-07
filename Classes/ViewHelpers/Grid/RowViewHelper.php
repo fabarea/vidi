@@ -58,71 +58,70 @@ class RowViewHelper extends AbstractViewHelper {
 		// Initialize returned array
 		$output = array();
 
-		foreach(TcaService::grid()->getFields() as $fieldName => $configuration) {
+		foreach(TcaService::grid()->getFields() as $fieldNameAndPath => $configuration) {
 
-			$strippedFieldName = $this->getFieldPathResolver()->stripPath($fieldName);
+			$fieldName = $this->getFieldPathResolver()->stripPath($fieldNameAndPath);
 
-			if (TcaService::grid()->isSystem($fieldName)) {
+			if (TcaService::grid()->isSystem($fieldNameAndPath)) {
 
-				$systemFieldName = substr($fieldName, 2);
+				$systemFieldName = substr($fieldNameAndPath, 2);
 				$className = sprintf('TYPO3\CMS\Vidi\ViewHelpers\Grid\System%sViewHelper', ucfirst($systemFieldName));
 				if (class_exists($className)) {
 
 					/** @var AbstractViewHelper $systemColumnViewHelper */
 					$systemColumnViewHelper = $this->objectManager->get($className);
-					$output[$strippedFieldName] = $systemColumnViewHelper->render($object, $index);
+					$output[$fieldName] = $systemColumnViewHelper->render($object, $index);
 				}
-			} elseif (!in_array($fieldName, $this->columns) && !TcaService::grid()->isForce($fieldName)) {
+			} elseif (!in_array($fieldNameAndPath, $this->columns) && !TcaService::grid()->isForce($fieldNameAndPath)) {
 
 				// For performance sake, show nothing if the column is not required.
-				$output[$strippedFieldName] = '';
+				$output[$fieldName] = '';
 			} else {
 
 				// Fetch value
-				if (TcaService::grid()->hasRenderers($fieldName)) {
+				if (TcaService::grid()->hasRenderers($fieldNameAndPath)) {
 
-					$result = '';
-					$renderers = TcaService::grid()->getRenderers($fieldName);
+					$value = '';
+					$renderers = TcaService::grid()->getRenderers($fieldNameAndPath);
 
 					// if is relation has one
 					foreach ($renderers as $rendererClassName => $rendererConfiguration) {
 
 						/** @var $rendererObject \TYPO3\CMS\Vidi\Grid\GridRendererInterface */
 						$rendererObject = GeneralUtility::makeInstance($rendererClassName);
-						$result .= $rendererObject
+						$value .= $rendererObject
 							->setObject($object)
-							->setFieldName($fieldName)
+							->setFieldName($fieldNameAndPath)
 							->setFieldConfiguration($configuration)
 							->setGridRendererConfiguration($rendererConfiguration)
 							->render();
 					}
 				} else {
 
-					// Retrieve the content from the field.
-					$result = $object[$fieldName] instanceof Content ? $object[$fieldName]['uid'] : $object[$fieldName]; // AccessArray object
+					$value = $this->resolveValue($object, $fieldNameAndPath);
 
-					// Avoid bad surprise, converts characters to HTML.
-					$fieldType = TcaService::table($object->getDataType())->field($fieldName)->getType();
+					// Resolve the identifier in case of "select" or "radio button".
+					$fieldType = TcaService::table($object->getDataType())->field($fieldNameAndPath)->getType();
 					if ($fieldType === TcaService::RADIO || $fieldType === TcaService::SELECT) {
 
 						// Attempt to convert the value into a label for radio and select fields.
-						$label = TcaService::table($object->getDataType())->field($fieldName)->getLabelForItem($result);
+						$label = TcaService::table($object->getDataType())->field($fieldNameAndPath)->getLabelForItem($value);
 						if ($label) {
-							$result = $label;
+							$value = $label;
 						}
 					} elseif ($fieldType !== TcaService::TEXTAREA) {
-						$result = htmlspecialchars($result);
-					} elseif ($fieldType === TcaService::TEXTAREA && !$this->isClean($result)) {
-						$result = htmlspecialchars($result);
-					} elseif ($fieldType === TcaService::TEXTAREA && !$this->hasHtml($result)) {
-						$result = nl2br($result);
+						$value = htmlspecialchars($value);
+					} elseif ($fieldType === TcaService::TEXTAREA && !$this->isClean($value)) {
+						$value = htmlspecialchars($value); // Avoid bad surprise, converts characters to HTML.
+					} elseif ($fieldType === TcaService::TEXTAREA && !$this->hasHtml($value)) {
+						$value = nl2br($value);
 					}
 				}
 
-				$result = $this->format($result, $configuration);
-				$result = $this->wrap($result, $configuration);
+				$value = $this->format($value, $configuration);
+				$value = $this->wrap($value, $configuration);
 
-				$output[$strippedFieldName] = $result;
+				$output[$fieldName] = $value;
 			}
 		}
 
@@ -133,16 +132,50 @@ class RowViewHelper extends AbstractViewHelper {
 	}
 
 	/**
+	 * Compute the value for the Content object according to a field name.
+	 *
+	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param string $fieldNameAndPath
+	 * @return string
+	 */
+	protected function resolveValue(Content $object, $fieldNameAndPath) {
+
+		// Get the first part of the field name and
+		$fieldName = $this->getFieldPathResolver()->stripFieldName($fieldNameAndPath);
+
+		$value = $object[$fieldName];
+
+		// Relation but contains no data.
+		if (is_array($value) && empty($value)) {
+			$value = '';
+		} elseif ($value instanceof Content) {
+
+			$fieldNameOfForeignTable = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
+
+			// TRUE means the field name does not contains a path. "title" vs "metadata.title"
+			// Fetch the default label
+			if ($fieldNameOfForeignTable === $fieldName) {
+				$foreignTable = TcaService::table($object->getDataType())->field($fieldName)->getForeignTable();
+				$fieldNameOfForeignTable = TcaService::table($foreignTable)->getLabelField();
+			}
+
+			$value = $object[$fieldName][$fieldNameOfForeignTable];
+		}
+
+		return $value;
+	}
+
+	/**
 	 * Check whether a string contains HTML tags.
 	 *
-	 * @param string $content the content to be analyzed
+	 * @param string $string the content to be analyzed
 	 * @return boolean
 	 */
-	protected function hasHtml($content) {
+	protected function hasHtml($string) {
 		$result = FALSE;
 
 		// We compare the length of the string with html tags and without html tags.
-		if (strlen($content) != strlen(strip_tags($content))) {
+		if (strlen($string) != strlen(strip_tags($string))) {
 			$result = TRUE;
 		}
 		return $result;
@@ -151,10 +184,10 @@ class RowViewHelper extends AbstractViewHelper {
 	/**
 	 * Check whether a string contains potential XSS.
 	 *
-	 * @param string $content the content to be analyzed
+	 * @param string $string the content to be analyzed
 	 * @return boolean
 	 */
-	protected function isClean($content) {
+	protected function isClean($string) {
 
 		// @todo implement me!
 		$result = TRUE;

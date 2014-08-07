@@ -135,7 +135,7 @@ EOF;
 
 		foreach ($tcaGridService->getFields() as $fieldName => $configuration) {
 
-			if ($tcaGridService->isNotSystem($fieldName) && $tcaTableService->field($fieldName)->hasRelationMany()) {
+			if ($tcaGridService->isNotSystem($fieldName) && $tcaTableService->field($fieldName)->hasMany()) {
 				if ($tcaTableService->field($fieldName)->hasRelationManyToMany()) {
 
 					$foreignTable = $tcaTableService->field($fieldName)->getForeignTable();
