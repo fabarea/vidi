@@ -88,7 +88,7 @@ class VidiDbBackend {
 	protected $environmentService;
 
 	/**
-	 * @var \TYPO3\CMS\Extbase\Persistence\QueryInterface
+	 * @var \TYPO3\CMS\Vidi\Persistence\Query
 	 */
 	protected $query;
 
@@ -145,7 +145,7 @@ class VidiDbBackend {
 			$tableName = $statementParts['tables'][0];
 		}
 		$this->replacePlaceholders($sql, $parameters, $tableName);
-		#print $sql; #exit(); // @debug
+		#print $sql; exit(); // @debug
 
 		$result = $this->databaseHandle->sql_query($sql);
 		$this->checkSqlErrors($sql);
@@ -173,12 +173,11 @@ class VidiDbBackend {
 		// Reset $statementParts for valid table return
 		reset($statementParts);
 
-
 		// if limit is set, we need to count the rows "manually" as COUNT(*) ignores LIMIT constraints
 		if (!empty($statementParts['limit'])) {
 			$statement = $this->buildQuery($statementParts, $parameters);
 			$this->replacePlaceholders($statement, $parameters, current($statementParts['tables']));
-			#print $statement; // @debug
+			#print $statement; exit(); // @debug
 			$result = $this->databaseHandle->sql_query($statement);
 			$this->checkSqlErrors($statement);
 			$count = $this->databaseHandle->sql_num_rows($result);
@@ -188,13 +187,14 @@ class VidiDbBackend {
 			$statementParts['orderings'] = array();
 			if (isset($statementParts['keywords']['distinct'])) {
 				unset($statementParts['keywords']['distinct']);
-				$statementParts['fields'] = array('COUNT(DISTINCT ' . reset($statementParts['tables']) . '.uid)');
+				$distinctField = $this->query->getDistinct() ? $this->query->getDistinct() : 'uid';
+				$statementParts['fields'] = array('COUNT(DISTINCT ' . reset($statementParts['tables']) . '.' . $distinctField . ')');
 			}
 
 			$statement = $this->buildQuery($statementParts, $parameters);
 			$this->replacePlaceholders($statement, $parameters, current($statementParts['tables']));
 
-			#print $statement; // @debug
+			#print $statement; exit(); // @debug
 			$result = $this->databaseHandle->sql_query($statement);
 			$this->checkSqlErrors($statement);
 			$count = 0;

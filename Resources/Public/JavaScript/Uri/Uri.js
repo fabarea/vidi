@@ -135,7 +135,6 @@
         if (typeof val !== 'undefined') {
             this.queryPairs = parseQuery(val);
         }
-	    console.log(this.queryPairs);
 
         for (i = 0; i < this.queryPairs.length; i++) {
             param = this.queryPairs[i];

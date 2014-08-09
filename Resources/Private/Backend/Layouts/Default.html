@@ -20,17 +20,18 @@
 		// Declare namespace
 		window.Vidi = {};
 
-		// "Live" variables taking into consideration Fluid parign which would be confused with a different syntax.
+		// "Live" variables in a Fluid syntax friendliness.
 		Vidi.module = {};
 		Vidi.module.publicPath = '{v:publicPath()}';
 		Vidi.module.dataType = '{v:moduleLoader(key: "dataType")}';
 		Vidi.module.parameterPrefix = '{v:parameterPrefix()}';
 		Vidi.module.moduleUrl = '{v:moduleLoader(key: "moduleUrl") -> f:format.raw()}';
 		Vidi.module.moduleCode = '{v:moduleLoader(key: "moduleCode")}';
-		Vidi.module.tca = {};
-		Vidi.module.tca.ctrl = {};
-		Vidi.module.tca.ctrl.searchFields = {v:tca.searchFields()};
-		Vidi.module.tca.ctrl.label = '{v:tca.table(key: "label")}';
+		Vidi.module.grid = {};
+		Vidi.module.grid.facets = {v:grid.facets()};
+		Vidi.module.grid.suggestions = {v:grid.suggestions()};
+		Vidi.module.table = {};
+		Vidi.module.table.label = '{v:tca.table(key: "label")}';
 
 		Vidi._columns = [];
 		{v:grid.column.configuration()}

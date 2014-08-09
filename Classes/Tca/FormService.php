@@ -27,7 +27,7 @@ namespace TYPO3\CMS\Vidi\Tca;
 /**
  * A class to handle TCA form configuration
  */
-class FormService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
+class FormService implements TcaServiceInterface {
 
 	/**
 	 * @var array

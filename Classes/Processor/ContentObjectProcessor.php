@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Vidi\Behavior\SavingBehavior;
 use TYPO3\CMS\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Vidi\Signal\ContentDataSignalArguments;
+use TYPO3\CMS\Vidi\Signal\ProcessContentDataSignalArguments;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
@@ -36,10 +36,10 @@ use TYPO3\CMS\Vidi\Tca\TcaService;
 class ContentObjectProcessor implements SingletonInterface {
 
 	/**
-	 * @param ContentDataSignalArguments $signalArguments
-	 * @return ContentDataSignalArguments
+	 * @param ProcessContentDataSignalArguments $signalArguments
+	 * @return array
 	 */
-	public function processRelations(ContentDataSignalArguments $signalArguments) {
+	public function processRelations(ProcessContentDataSignalArguments $signalArguments) {
 
 		$contentObject = $signalArguments->getContentObject();
 		$fieldNameAndPath = $signalArguments->getFieldNameAndPath();

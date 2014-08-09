@@ -39,7 +39,7 @@ class GenericRendererComponent implements RendererComponentInterface {
 	protected $configuration = array();
 
 	/**
-	 * Constructor a Generic Component in Quick Form.
+	 * Constructor of a Generic component in Vidi.
 	 *
 	 * @param string $className
 	 * @param array $configuration

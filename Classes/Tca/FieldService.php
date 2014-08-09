@@ -29,7 +29,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 /**
  * A class to handle TCA field configuration.
  */
-class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
+class FieldService implements TcaServiceInterface {
 
 	/**
 	 * @var string
@@ -463,7 +463,16 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return bool
 	 */
 	public function isSelect() {
-		return $this->getType() === 'select';
+		return $this->getType() === TcaService::SELECT;
+	}
+
+	/**
+	 * Returns whether the field is of type select.
+	 *
+	 * @return bool
+	 */
+	public function isCheckBox() {
+		return $this->getType() === TcaService::CHECKBOX;
 	}
 
 	/**

@@ -121,8 +121,7 @@ class TcaService implements SingletonInterface, TcaServiceInterface {
 	}
 
 	/**
-	 * Returns a class instance of a corresponding TCA service.
-	 * This is a shorthand method for "grid".
+	 * Returns a "grid" service instance.
 	 *
 	 * @param string|Content $tableNameOrContentObject
 	 * @return \TYPO3\CMS\Vidi\Tca\GridService
@@ -133,8 +132,7 @@ class TcaService implements SingletonInterface, TcaServiceInterface {
 	}
 
 	/**
-	 * Returns a class instance of a corresponding TCA service.
-	 * This is a shorthand method for "table" (AKA "ctrl").
+	 * Returns a "table" service instance ("ctrl" part of the TCA).
 	 *
 	 * @param string|Content $tableNameOrContentObject
 	 * @return \TYPO3\CMS\Vidi\Tca\TableService

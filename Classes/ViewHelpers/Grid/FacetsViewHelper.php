@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Tca;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 /***************************************************************
 *  Copyright notice
 *
@@ -28,7 +28,7 @@ use TYPO3\CMS\Vidi\Tca\TcaService;
 /**
  * View helper which returns the json serialization of the search fields.
  */
-class SearchFieldsViewHelper extends AbstractViewHelper {
+class FacetsViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Returns the json serialization of the search fields.
@@ -37,16 +37,13 @@ class SearchFieldsViewHelper extends AbstractViewHelper {
 	 */
 	public function render() {
 
-		$labels = array();
-		foreach (TcaService::grid()->getFacets() as $fieldName => $configuration) {
-			if (is_int($fieldName)) {
-				$fieldName = $configuration;
-			}
-			// @todo keep no label field for now.
-			#$label = $tcaFieldService->getLabel($field);
-			#$labels[] = str_replace(':', '', $label);
-			$labels[] = $fieldName;
+		$facets = array();
+		foreach (TcaService::grid()->getFacets() as $facetName) {
+			$name = TcaService::grid()->facet($facetName)->getName();
+			$facets[$name] = TcaService::grid()->facet($facetName)->getLabel();
 		}
-		return json_encode($labels);
+
+		return json_encode($facets);
 	}
+
 }

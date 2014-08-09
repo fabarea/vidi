@@ -36,21 +36,11 @@ class FieldPathResolver implements SingletonInterface {
 	 *
 	 * @param string $fieldNameAndPath
 	 * @return string
-	 * @deprecated used stripFieldPath, will be removed in Vidi 0.3.0 + 2.
-	 */
-	public function stripPath($fieldNameAndPath) {
-		return $this->stripFieldPath($fieldNameAndPath);
-	}
-
-	/**
-	 * Remove the prefixing path from the file name.
-	 *
-	 * @param string $fieldNameAndPath
-	 * @return string
 	 */
 	public function stripFieldPath($fieldNameAndPath) {
 		$fieldName = $fieldNameAndPath;
 		if ($this->containsPath($fieldName)) {
+
 			// Corresponds to the field name of the foreign table.
 			$fieldParts = GeneralUtility::trimExplode('.', $fieldNameAndPath);
 			$fieldName = $fieldParts[1];

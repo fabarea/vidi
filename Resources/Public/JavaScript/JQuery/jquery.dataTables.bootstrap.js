@@ -10,7 +10,7 @@
  */
 $.extend(true, $.fn.dataTable.defaults, {
 
-	"sDom": "<'row-fluid'<'span10 search_box_container'><'span1'f><'span1'l>>rt<'row-fluid'<'span6'i><'span6'p>>",
+	"sDom": "<'row-fluid'<'span10 visual-search-container'><'span1'f><'span1'l>>rt<'row-fluid'<'span6'i><'span6'p>>",
 	"sPaginationType": "bootstrap",
 	"oLanguage": {
 		"sLengthMenu": "_MENU_ records per page"

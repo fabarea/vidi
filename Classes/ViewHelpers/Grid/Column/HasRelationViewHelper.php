@@ -39,7 +39,7 @@ class HasRelationViewHelper extends AbstractViewHelper {
 	public function render() {
 		$fieldNameAndPath = $this->templateVariableContainer->get('columnName');
 		$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
-		$fieldName = $this->getFieldPathResolver()->stripPath($fieldNameAndPath);
+		$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
 		$hasRelation = TcaService::table($dataType)->field($fieldName)->hasRelation();
 		return $hasRelation;
 	}

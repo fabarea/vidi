@@ -60,7 +60,7 @@ class RowViewHelper extends AbstractViewHelper {
 
 		foreach(TcaService::grid()->getFields() as $fieldNameAndPath => $configuration) {
 
-			$fieldName = $this->getFieldPathResolver()->stripPath($fieldNameAndPath);
+			$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
 
 			if (TcaService::grid()->isSystem($fieldNameAndPath)) {
 

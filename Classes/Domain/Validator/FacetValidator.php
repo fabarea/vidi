@@ -39,7 +39,7 @@ class FacetValidator extends AbstractValidator {
 	 */
 	public function isValid($facet) {
 
-		if (TcaService::grid()->hasNotFacet($facet)) {
+		if (! TcaService::grid()->hasFacet($facet)) {
 			$message = sprintf('Facet "%s" is not allowed. Actually, it was not configured to be displayed in the grid.', $facet);
 			$this->addError($message, 1380019719);
 		}

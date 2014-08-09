@@ -24,7 +24,7 @@ namespace TYPO3\CMS\Vidi\Processor;
  ***************************************************************/
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Signal\ContentDataSignalArguments;
+use TYPO3\CMS\Vidi\Signal\ProcessContentDataSignalArguments;
 
 /**
  * Marker Utility class for replacing "known" markers within an expression.
@@ -42,10 +42,10 @@ class MarkerProcessor implements SingletonInterface {
 	);
 
 	/**
-	 * @param ContentDataSignalArguments $signalArguments
-	 * @return ContentDataSignalArguments
+	 * @param ProcessContentDataSignalArguments $signalArguments
+	 * @return array
 	 */
-	public function processMarkers(ContentDataSignalArguments $signalArguments) {
+	public function processMarkers(ProcessContentDataSignalArguments $signalArguments) {
 
 		$contentData = $signalArguments->getContentData();
 

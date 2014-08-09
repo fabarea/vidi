@@ -37,6 +37,14 @@ $tca = array(
 			'country',
 			'company',
 			'usergroup',
+			new \TYPO3\CMS\Vidi\Facet\StandardFacet(
+				'disable',
+				'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:active',
+				array(
+					'0' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:active.0',
+					'1' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:active.1'
+				)
+			),
 		),
 		'columns' => array(
 			'__checkbox' => array(
@@ -86,7 +94,7 @@ $tca = array(
 			),
 			'disable' => array(
 				'renderer' => 'TYPO3\CMS\Vidi\Grid\VisibilityRenderer',
-				'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:visibility_abbreviation',
+				'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:active',
 				'width' => '3%',
 			),
 			'__buttons' => array(

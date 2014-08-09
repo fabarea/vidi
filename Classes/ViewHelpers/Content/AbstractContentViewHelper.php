@@ -29,7 +29,7 @@ use TYPO3\CMS\Vidi\Persistence\Order;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
- * View helper which returns a list of record.
+ * Abstract View helper for handling Content display mainly on the Frontend.
  */
 abstract class AbstractContentViewHelper extends AbstractViewHelper {
 
