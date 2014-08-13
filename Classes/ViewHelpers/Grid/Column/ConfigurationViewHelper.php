@@ -41,11 +41,11 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 	public function render() {
 		$output = '';
 
-		foreach(TcaService::grid()->getFields() as $fieldName => $configuration) {
+		foreach(TcaService::grid()->getFields() as $fieldNameAndPath => $configuration) {
 
 			// Early failure if field does not exist.
-			if (!$this->isAllowed($fieldName)) {
-				$message = sprintf('Property "%s" does not exist!', $fieldName);
+			if (!$this->isAllowed($fieldNameAndPath)) {
+				$message = sprintf('Property "%s" does not exist!', $fieldNameAndPath);
 				throw new NotExistingFieldException($message, 1375369594);
 			}
 
@@ -54,13 +54,13 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 			// mData: internal name of DataTable plugin and can not contains a path, e.g. metadata.title
 			// columnName: whole field name with path
 			$output .= sprintf('Vidi._columns.push({ "mData": "%s", "bSortable": %s, "bVisible": %s, "sWidth": "%s", "sClass": "%s %s", "columnName": "%s" });' . PHP_EOL,
-				$this->getFieldPathResolver()->stripPath($fieldName), // Suitable field name for the DataTable plugin.
-				TcaService::grid()->isSortable($fieldName) ? 'true' : 'false',
-				TcaService::grid()->isVisible($fieldName) ? 'true' : 'false',
+				$this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath), // Suitable field name for the DataTable plugin.
+				TcaService::grid()->isSortable($fieldNameAndPath) ? 'true' : 'false',
+				TcaService::grid()->isVisible($fieldNameAndPath) ? 'true' : 'false',
 				empty($configuration['width']) ? 'auto' : $configuration['width'],
-				$this->computeEditableClass($fieldName, $configuration),
-				TcaService::grid()->getClass($fieldName),
-				$fieldName
+				$this->computeEditableClass($fieldNameAndPath),
+				TcaService::grid()->getClass($fieldNameAndPath),
+				$fieldNameAndPath
 			);
 		}
 
@@ -71,20 +71,17 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 	 * Return the editable class name for jeditable plugin.
 	 *
 	 * @param string $fieldNameAndPath
-	 * @param array $configuration
 	 * @return boolean
 	 */
-	protected function computeEditableClass($fieldNameAndPath, array $configuration) {
+	protected function computeEditableClass($fieldNameAndPath) {
 		$result = FALSE;
 		$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
-		$fieldPath = $this->getFieldPathResolver()->stripFieldName($fieldNameAndPath);
-		$fieldName = $this->getFieldPathResolver()->stripPath($fieldNameAndPath);
+		$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
 
-		if (TcaService::grid()->isEditable($fieldPath)
+		if (TcaService::grid()->isEditable($fieldNameAndPath)
 			&& TcaService::table($dataType)->hasField($fieldName)
 			&& TcaService::table($dataType)->field($fieldName)->hasNoRelation() // relation are editable through Renderer only.
 		) {
-			$dataType = $this->getFieldPathResolver()->getDataType($fieldPath);
 			$result = TcaService::table($dataType)->field($fieldName)->isTextArea() ? 'editable-textarea' : 'editable-textfield';
 		}
 		return $result;
