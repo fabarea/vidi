@@ -26,7 +26,7 @@ use TYPO3\CMS\Vidi\Domain\Model\Selection;
 use TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory;
 
 /**
- * View helper which returns a list of record.
+ * View helper which returns a list of records.
  */
 class FindViewHelper extends AbstractContentViewHelper {
 

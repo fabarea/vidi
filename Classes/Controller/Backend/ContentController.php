@@ -27,10 +27,12 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Vidi\Behavior\SavingBehavior;
 use TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory;
 use TYPO3\CMS\Vidi\Domain\Model\Content;
+use TYPO3\CMS\Vidi\Persistence\Matcher;
 use TYPO3\CMS\Vidi\Persistence\MatcherObjectFactory;
 use TYPO3\CMS\Vidi\Persistence\OrderObjectFactory;
 use TYPO3\CMS\Vidi\Persistence\PagerObjectFactory;
-use TYPO3\CMS\Vidi\Signal\ContentDataSignalArguments;
+use TYPO3\CMS\Vidi\Signal\AfterFindContentObjectsSignalArguments;
+use TYPO3\CMS\Vidi\Signal\ProcessContentDataSignalArguments;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
@@ -76,12 +78,20 @@ class ContentController extends ActionController {
 		$order = OrderObjectFactory::getInstance()->getOrder();
 		$pager = PagerObjectFactory::getInstance()->getPager();
 
-		// Fetch the adequate repository.
-		$contentRepository = ContentRepositoryFactory::getInstance();
-
 		// Query the repository.
-		$objects = $contentRepository->findBy($matcher, $order, $pager->getLimit(), $pager->getOffset());
-		$numberOfContents = $contentRepository->countBy($matcher);
+		$objects = ContentRepositoryFactory::getInstance()->findBy($matcher, $order, $pager->getLimit(), $pager->getOffset());
+		$signalResult = $this->emitAfterFindContentObjectsSignal($objects, $matcher, $pager->getLimit(), $pager->getOffset());
+
+		// Reset objects variable after possible signal / slot processing.
+		$objects = $signalResult->getContentObjects();
+
+		// Count number of content objects.
+		if ($signalResult->getHasBeenProcessed()) {
+			$numberOfContents = $signalResult->getNumberOfObjects();
+		} else {
+			$numberOfContents = ContentRepositoryFactory::getInstance()->countBy($matcher);
+		}
+
 		$pager->setCount($numberOfContents);
 
 		// Assign values.
@@ -125,8 +135,12 @@ class ContentController extends ActionController {
 
 		// Query the repository given a matcher object.
 		$objects = ContentRepositoryFactory::getInstance()->findBy($matcher, $order);
+		$signalResult = $this->emitAfterFindContentObjectsSignal($objects, $matcher);
 
-		$updatedFieldName = $this->getFieldPathResolver()->stripPath($fieldNameAndPath);
+		// Reset objects variable after possible signal / slot processing.
+		$objects = $signalResult->getContentObjects();
+
+		$updatedFieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
 
 		$numberOfObjects = count($objects);
 		foreach ($objects as $counter => $object) {
@@ -205,10 +219,18 @@ class ContentController extends ActionController {
 		$matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
 
 		// Query the repository given a matcher object.
-		$numberOfObjects = ContentRepositoryFactory::getInstance()->countBy($matcher);
+		$objects = ContentRepositoryFactory::getInstance()->findBy($matcher);
+		$signalResult = $this->emitAfterFindContentObjectsSignal($objects, $matcher);
+
+		if ($signalResult->getHasBeenProcessed()) {
+			$numberOfObjects = $signalResult->getNumberOfObjects();
+		} else {
+			// @todo find out whether it is faster a double query as find + count in PHP.
+			$numberOfObjects = ContentRepositoryFactory::getInstance()->countBy($matcher);
+		}
 
 		$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
-		$fieldName = $this->getFieldPathResolver()->stripPath($fieldNameAndPath);
+		$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
 
 		$fieldType = TcaService::table($dataType)->field($fieldName)->getType();
 		$this->view->assign('fieldType', ucfirst($fieldType));
@@ -268,11 +290,12 @@ class ContentController extends ActionController {
 
 		$matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
 
-		// Fetch the adequate repository
-		$contentRepository = ContentRepositoryFactory::getInstance();
-
 		// Query the repository.
-		$objects = $contentRepository->findBy($matcher);
+		$objects = ContentRepositoryFactory::getInstance()->findBy($matcher);
+		$signalResult = $this->emitAfterFindContentObjectsSignal($objects, $matcher);
+
+		// Reset objects variable after possible signal / slot processing.
+		$objects = $signalResult->getContentObjects();
 
 		// Compute the label field name of the table.
 		$tableTitleField = TcaService::table()->getLabelField();
@@ -283,8 +306,8 @@ class ContentController extends ActionController {
 			$tableTitleValue = $object[$tableTitleField];
 
 			$_result = array();
-			$_result['status'] = $contentRepository->remove($object);
-			$_result['message'] = $contentRepository->getErrorMessage();
+			$_result['status'] = ContentRepositoryFactory::getInstance()->remove($object);
+			$_result['message'] = ContentRepositoryFactory::getInstance()->getErrorMessage();
 			$_result['action'] = 'delete';
 			if ($_result['status']) {
 				$_result['object'] = array(
@@ -325,6 +348,31 @@ class ContentController extends ActionController {
 	}
 
 	/**
+	 * Signal that is called after the content objects have been found.
+	 *
+	 * @param array $contentObjects
+	 * @param \TYPO3\CMS\Vidi\Persistence\Matcher $matcher
+	 * @param int $limit
+	 * @param int $offset
+	 * @return AfterFindContentObjectsSignalArguments
+	 * @signal
+	 */
+	protected function emitAfterFindContentObjectsSignal($contentObjects, Matcher $matcher, $limit = 0, $offset = 0) {
+
+		/** @var \TYPO3\CMS\Vidi\Signal\AfterFindContentObjectsSignalArguments $signalArguments */
+		$signalArguments = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Signal\AfterFindContentObjectsSignalArguments');
+		$signalArguments->setDataType($this->getModuleLoader()->getDataType())
+			->setContentObjects($contentObjects)
+			->setMatcher($matcher)
+			->setLimit($limit)
+			->setOffset($offset)
+			->setHasBeenProcessed(FALSE);
+
+		$signalResult = $this->getSignalSlotDispatcher()->dispatch('TYPO3\CMS\Vidi\Controller\Backend\ContentController', 'afterFindContentObjects', array($signalArguments));
+		return $signalResult[0];
+	}
+
+	/**
 	 * Signal that is called for post-processing content data send to the server for update.
 	 *
 	 * @param Content $contentObject
@@ -332,13 +380,13 @@ class ContentController extends ActionController {
 	 * @param $contentData
 	 * @param $counter
 	 * @param $savingBehavior
-	 * @return ContentDataSignalArguments
+	 * @return ProcessContentDataSignalArguments
 	 * @signal
 	 */
 	protected function emitProcessContentDataSignal(Content $contentObject, $fieldNameAndPath, $contentData, $counter, $savingBehavior) {
 
-		/** @var \TYPO3\CMS\Vidi\Signal\ContentDataSignalArguments $signalArguments */
-		$signalArguments = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Signal\ContentDataSignalArguments');
+		/** @var \TYPO3\CMS\Vidi\Signal\ProcessContentDataSignalArguments $signalArguments */
+		$signalArguments = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Signal\ProcessContentDataSignalArguments');
 		$signalArguments->setContentObject($contentObject)
 			->setFieldNameAndPath($fieldNameAndPath)
 			->setContentData($contentData)

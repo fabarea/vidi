@@ -37,27 +37,12 @@ class VisibilityRenderer extends GridRendererAbstract {
 	 */
 	public function render() {
 
-		$result = 'No hidden field for this data type';
-		$getter = $this->formatGetter();
+		$result = '';
+		$hiddenField = TcaService::table()->getHiddenField();
 
-		if ($getter) {
-			$spriteName = $this->object->$getter() ? 'actions-edit-unhide' : 'actions-edit-hide';
+		if ($hiddenField) {
+			$spriteName = $this->object[$hiddenField] ? 'actions-edit-unhide' : 'actions-edit-hide';
 			$result = IconUtility::getSpriteIcon($spriteName);
-		}
-		return $result;
-	}
-
-	/**
-	 * Return a getter for the hidden field
-	 *
-	 * @return string
-	 */
-	protected function formatGetter() {
-		$result = NULL;
-		if (TcaService::table()->hasField('hidden')) {
-			$result = 'getHidden';
-		} elseif (TcaService::table()->hasField('disable')) {
-			$result = 'getDisable';
 		}
 		return $result;
 	}

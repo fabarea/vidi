@@ -36,4 +36,6 @@ interface TcaServiceInterface {
 	const TYPE_GRID = 'grid';
 
 	const TYPE_FORM = 'form';
+
+	const TYPE_FACET = 'facet';
 }

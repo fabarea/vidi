@@ -26,7 +26,7 @@ namespace TYPO3\CMS\Vidi\Persistence;
 use TYPO3\CMS\Core\SingletonInterface;
 
 /**
- * Class for storing result set.
+ * Class for storing result set to improve performance.
  */
 class ResultSetStorage implements SingletonInterface{
 

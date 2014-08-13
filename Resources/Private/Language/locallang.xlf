@@ -82,6 +82,15 @@
 			<trans-unit id="visibility_abbreviation">
 				<source>Vis.</source>
 			</trans-unit>
+			<trans-unit id="active">
+				<source>Active</source>
+			</trans-unit>
+			<trans-unit id="active.0">
+				<source>Yes</source>
+			</trans-unit>
+			<trans-unit id="active.1">
+				<source>No</source>
+			</trans-unit>
 			<trans-unit id="selected_rows">
 				<source>Selected rows...</source>
 			</trans-unit>

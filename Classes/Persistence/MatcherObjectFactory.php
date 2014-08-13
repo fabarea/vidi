@@ -118,22 +118,27 @@ class MatcherObjectFactory implements SingletonInterface {
 
 		if (strlen($searchTerm) > 0) {
 
-			$table = TcaService::table($dataType);
-
-			// try to parse a json query
+			// Parse the json query coming from the Visual Search.
 			$searchTerm = rawurldecode($searchTerm);
 			$terms = json_decode($searchTerm, TRUE);
 
 			if (is_array($terms)) {
 				foreach ($terms as $term) {
-					$fieldName = key($term);
-					$value = current($term);
-					if ($fieldName === 'text') {
-						$matcher->setSearchTerm($value);
-					} elseif ($this->isOperatorEquals($fieldName, $dataType, $value)) {
-						$matcher->equals($fieldName, $value);
-					} else {
-						$matcher->likes($fieldName, $value);
+					$fieldNameAndPath = key($term);
+
+					$resolvedDataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
+					$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
+
+					// Only process if field really exists.
+					if (TcaService::table($resolvedDataType)->hasField($fieldName)) {
+						$value = current($term);
+						if ($fieldNameAndPath === 'text') {
+							$matcher->setSearchTerm($value);
+						} elseif ($this->isOperatorEquals($fieldNameAndPath, $dataType, $value)) {
+							$matcher->equals($fieldNameAndPath, $value);
+						} else {
+							$matcher->likes($fieldNameAndPath, $value);
+						}
 					}
 				}
 			} else {
@@ -197,6 +202,13 @@ class MatcherObjectFactory implements SingletonInterface {
 	 */
 	protected function getModuleLoader() {
 		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 */
+	protected function getFieldPathResolver () {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
 	}
 
 }

@@ -247,7 +247,7 @@ class ModuleLoader {
 				$this->position,
 				array(
 					'Content' => 'index, list, delete, update, edit',
-					'FacetValue' => 'list',
+					'Facet' => 'suggest',
 				),
 				$moduleConfiguration
 

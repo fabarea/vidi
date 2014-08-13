@@ -26,12 +26,14 @@ namespace TYPO3\CMS\Vidi\Tca;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException;
+use TYPO3\CMS\Vidi\Facet\StandardFacet;
+use TYPO3\CMS\Vidi\Facet\FacetInterface;
 use TYPO3\CMS\Vidi\Grid\GenericRendererComponent;
 
 /**
  * A class to handle TCA grid configuration
  */
-class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
+class GridService implements TcaServiceInterface {
 
 	/**
 	 * @var array
@@ -42,6 +44,11 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @var string
 	 */
 	protected $tableName;
+
+	/**
+	 * @var array
+	 */
+	protected $instances;
 
 	/**
 	 * __construct
@@ -73,21 +80,28 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Get the translation of a label given a column name.
 	 *
-	 * @param string $fieldName
+	 * @param string $fieldNameAndPath
 	 * @return string
 	 */
-	public function getLabel($fieldName) {
-		$result = '';
-		if ($this->hasLabel($fieldName)) {
-			$field = $this->getField($fieldName);
-			$result = LocalizationUtility::translate($field['label'], '');
-			if (is_null($result)) {
-				$result = $field['label'];
+	public function getLabel($fieldNameAndPath) {
+		$label = '';
+		if ($this->hasLabel($fieldNameAndPath)) {
+			$field = $this->getField($fieldNameAndPath);
+			$label = LocalizationUtility::translate($field['label'], '');
+			if (is_null($label)) {
+				$label = $field['label'];
 			}
-		} elseif ($this->isNotSystem($fieldName) && TcaService::table($this->tableName)->field($fieldName)->hasLabel()) {
-			$result = TcaService::table($this->tableName)->field($fieldName)->getLabel($fieldName);
+		} elseif ($this->isNotSystem($fieldNameAndPath)) {
+
+			// Important to notice the label can contains a path, e.g. metadata.categories and must be resolved.
+			$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
+			$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
+
+			if (TcaService::table($dataType)->field($fieldName)->hasLabel()) {
+				$label = TcaService::table($dataType)->field($fieldName)->getLabel();
+			}
 		}
-		return $result;
+		return $label;
 	}
 
 	/**
@@ -168,21 +182,24 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Tell whether the facet exists in the grid or not.
 	 *
-	 * @param string $fieldName
+	 * @param string $facetName
 	 * @return bool
 	 */
-	public function hasFacet($fieldName) {
-		return isset($this->tca['facets'][$fieldName]) || in_array($fieldName, $this->tca['facets']);
-	}
+	public function hasFacet($facetName) {
 
-	/**
-	 * Tell whether the facet does not exist.
-	 *
-	 * @param string $fieldName
-	 * @return bool
-	 */
-	public function hasNotFacet($fieldName) {
-		return !$this->hasFacet($fieldName);
+		$hasFacet = FALSE;
+		foreach ($this->getFacets() as $facet) {
+			if ($facet instanceof FacetInterface) {
+				$facet = $facet->getName();
+			}
+
+			if ($facet === $facetName) {
+				$hasFacet = TRUE;
+				break;
+			}
+		}
+
+		return $hasFacet;
 	}
 
 	/**
@@ -340,4 +357,40 @@ class GridService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 		return $isIncluded;
 	}
 
+	/**
+	 * Returns a "facet" service instance.
+	 *
+	 * @param string|FacetInterface $facet
+	 * @return \TYPO3\CMS\Vidi\Tca\FacetService
+	 */
+	public function facet($facet = '') {
+
+		if (! $facet instanceof StandardFacet) {
+			$label = TcaService::grid($this->tableName)->getLabel($facet);
+
+			/** @var StandardFacet $facet */
+			$facet = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Facet\StandardFacet', $facet, $label);
+		}
+
+		if (empty($this->instances[$facet->getName()])) {
+
+			/** @var \TYPO3\CMS\Vidi\Tca\FacetService $instance */
+			$instance = GeneralUtility::makeInstance(
+				'TYPO3\CMS\Vidi\Tca\FacetService',
+				$facet,
+				$this->tableName
+			);
+
+			$this->instances[$facet->getName()] = $instance;
+		}
+
+		return $this->instances[$facet->getName()];
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 */
+	protected function getFieldPathResolver () {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+	}
 }

@@ -113,6 +113,51 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
+	 * Return the "disabled" field.
+	 *
+	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
+	 * @return string|NULL
+	 */
+	public function getHiddenField() {
+		$hiddenField = NULL;
+		$enableColumns = $this->get('enablecolumns');
+		if (is_array($enableColumns) && !empty($enableColumns['disabled'])) {
+			$hiddenField = $enableColumns['disabled'];
+		}
+		return $hiddenField;
+	}
+
+	/**
+	 * Return the "starttime" field.
+	 *
+	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
+	 * @return string|NULL
+	 */
+	public function getStartTimeField() {
+		$startTimeField = NULL;
+		$enableColumns = $this->get('enablecolumns');
+		if (is_array($enableColumns) && !empty($enableColumns['starttime'])) {
+			$startTimeField = $enableColumns['starttime'];
+		}
+		return $startTimeField;
+	}
+
+	/**
+	 * Return the "endtime" field.
+	 *
+	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
+	 * @return string|NULL
+	 */
+	public function getEndTimeField() {
+		$endTimeField = NULL;
+		$enableColumns = $this->get('enablecolumns');
+		if (is_array($enableColumns) && !empty($enableColumns['endtime'])) {
+			$endTimeField = $enableColumns['endtime'];
+		}
+		return $endTimeField;
+	}
+
+	/**
 	 * Tells whether the table is hidden.
 	 *
 	 * @return bool
@@ -131,11 +176,11 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
-	 * Get the delete field for the table.
+	 * Get the "deleted" field for the table.
 	 *
 	 * @return string
 	 */
-	public function getDeleteField() {
+	public function getDeletedField() {
 		return $this->get('delete');
 	}
 
@@ -276,7 +321,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * Return configuration value given a key.
 	 *
 	 * @param string $key
-	 * @return string
+	 * @return string|NULL
 	 */
 	public function get($key) {
 		return $this->has($key) ? $this->tca[$key] : NULL;
@@ -326,8 +371,15 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 
 
 		if (empty($this->instances[$fieldName])) {
-			$className = 'TYPO3\CMS\Vidi\Tca\FieldService';
-			$instance = GeneralUtility::makeInstance($className, $fieldName, $this->columnTca[$fieldName], $this->tableName, $fieldNameAndPath);
+
+			$instance = GeneralUtility::makeInstance(
+				'TYPO3\CMS\Vidi\Tca\FieldService',
+				$fieldName,
+				$this->columnTca[$fieldName],
+				$this->tableName,
+				$fieldNameAndPath
+			);
+
 			$this->instances[$fieldName] = $instance;
 		}
 		return $this->instances[$fieldName];

@@ -22,12 +22,13 @@ namespace TYPO3\CMS\Vidi\Signal;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use TYPO3\CMS\Vidi\Domain\Model\Content;
 
 /**
- * Class for storing arguments of a post-processing content data signal.
+ * Class for storing arguments of a "post processing content data" signal.
  */
-class ContentDataSignalArguments {
+class ProcessContentDataSignalArguments {
 
 	/**
 	 * @var Content

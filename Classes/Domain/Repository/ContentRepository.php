@@ -167,6 +167,38 @@ class ContentRepository implements RepositoryInterface {
 		return $query->execute();
 	}
 
+
+	/**
+	 * Returns all "distinct" values for a given property.
+	 *
+	 * @param string $propertyName
+	 * @param Matcher $matcher
+	 * @return int
+	 */
+	public function countDistinctValues($propertyName, Matcher $matcher = NULL) {
+		$query = $this->createQuery();
+		$query->setDistinct($propertyName);
+
+		// Remove empty values from selection.
+		$constraint = $query->logicalNot($query->equals($propertyName, ''));
+
+		// Add some additional constraints from the Matcher object.
+		$matcherConstraint = NULL;
+		if (!is_null($matcher)) {
+			$matcherConstraint = $this->computeConstraints($query, $matcher);
+		}
+
+		// Assemble the final constraints or not.
+		if ($matcherConstraint) {
+			$query->logicalAnd($matcherConstraint, $constraint);
+			$query->matching($query->logicalAnd($matcherConstraint, $constraint));
+		} else {
+			$query->matching($constraint);
+		}
+
+		return $query->count();
+	}
+
 	/**
 	 * Finds an object matching the given identifier.
 	 *

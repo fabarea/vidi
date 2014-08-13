@@ -350,8 +350,8 @@ input,button,select,textarea{
 }
 
 /* Hide border of fields in VisualSearch */
-.search_box_container textarea:focus,
-.search_box_container input:focus {
+.visual-search-container textarea:focus,
+.visual-search-container input:focus {
 	box-shadow: none !important;
 }
 

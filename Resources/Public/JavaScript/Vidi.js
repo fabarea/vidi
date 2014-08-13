@@ -251,30 +251,3 @@ Vidi.merge = function(set1, set2) {
 	}
 	return set1
 };
-
-
-/**
- * Computed the URL with a parameter-able action.
- *
- * @param {string} actionName
- * @param {string} controllerName
- * @return {string}
- * @private
- */
-Vidi.computeUrl = function(actionName, controllerName) {
-
-	// list of parameters used to call the right controller / action.
-	var parameters = {
-		format: 'json',
-		action: actionName,
-		controller: controllerName
-	};
-
-	var urlParts = [Vidi.module.moduleUrl];
-	$.each(parameters, function(index, value) {
-		var element = '{0}[{1}]={2}'.format(Vidi.module.parameterPrefix, index, value);
-		urlParts.push(element);
-	});
-
-	return urlParts.join('&');
-}

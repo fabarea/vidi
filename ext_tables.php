@@ -68,7 +68,6 @@ if (TYPO3_MODE == 'BE' && class_exists('TYPO3\CMS\Vidi\Module\ModuleLoader')) {
 	/** @var $signalSlotDispatcher \TYPO3\CMS\Extbase\SignalSlot\Dispatcher */
 	$signalSlotDispatcher = $objectManager->get('TYPO3\CMS\Extbase\SignalSlot\Dispatcher');
 
-
 	// Connect "processContentData" signal slot with the "ContentObjectProcessor".
 	$signalSlotDispatcher->connect(
 		'TYPO3\CMS\Vidi\Controller\Backend\ContentController',

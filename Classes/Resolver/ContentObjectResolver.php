@@ -67,11 +67,11 @@ class ContentObjectResolver implements SingletonInterface {
 		$resolvedValue = '';
 
 		// Important to notice the field name can contains a path, e.g. metadata.title and must be sanitized.
-		$filePath = $this->getFieldPathResolver()->stripFieldName($fieldNameAndPath); // ex: metadata.title -> metadata
+		$fieldPath = $this->getFieldPathResolver()->stripFieldName($fieldNameAndPath); // ex: metadata.title -> metadata
 
 		// Handle case when field name leads to a relation.
-		if ($object[$filePath] instanceof Content) {
-			$resolvedValue = $object[$filePath][$fieldName];
+		if ($object[$fieldPath] instanceof Content) {
+			$resolvedValue = $object[$fieldPath][$fieldName];
 		} elseif (TcaService::table($object)->hasField($fieldName)) {
 			$resolvedValue = $object[$fieldName];
 		}
@@ -93,11 +93,11 @@ class ContentObjectResolver implements SingletonInterface {
 		$resolvedObject = '';
 
 		// Important to notice the field name can contains a path, e.g. metadata.title and must be sanitized.
-		$filePath = $this->getFieldPathResolver()->stripFieldName($fieldNameAndPath); // ex: metadata.title -> metadata
+		$fieldPath = $this->getFieldPathResolver()->stripFieldName($fieldNameAndPath); // ex: metadata.title -> metadata
 
 		// Handle case when field name leads to a relation.
-		if ($object[$filePath] instanceof Content) {
-			$resolvedObject = $object[$filePath];
+		if ($object[$fieldPath] instanceof Content) {
+			$resolvedObject = $object[$fieldPath];
 		} elseif (TcaService::table($object)->hasField($fieldName)) {
 			$resolvedObject = $object;
 		}
