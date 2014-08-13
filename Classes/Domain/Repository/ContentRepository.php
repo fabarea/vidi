@@ -61,14 +61,14 @@ class ContentRepository implements RepositoryInterface {
 	protected $objectManager;
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Persistence\QuerySettings
-	 */
-	protected $querySettings;
-
-	/**
 	 * @var array
 	 */
 	protected $errorMessages = array();
+
+	/**
+	 * @var \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface
+	 */
+	protected $defaultQuerySettings;
 
 	/**
 	 * Constructor
@@ -439,24 +439,23 @@ class ContentRepository implements RepositoryInterface {
 		/** @var Query $query */
 		$query = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\Query', $this->dataType);
 
-		// Initialize and pass the query settings at this level.
-		$this->querySettings = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\QuerySettings');
+		if ($this->defaultQuerySettings) {
+			$query->setQuerySettings($this->defaultQuerySettings);
+		} else {
 
-		// Default choice for the BE.
-		$this->querySettings->setIgnoreEnableFields(TRUE);
-		$query->setQuerySettings($this->querySettings);
+			// Initialize and pass the query settings at this level.
+			/** @var \TYPO3\CMS\Vidi\Persistence\QuerySettings $querySettings */
+			$querySettings = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\QuerySettings');
+
+			// Default choice for the BE.
+			if ($this->isBackendMode()) {
+				$querySettings->setIgnoreEnableFields(TRUE);
+			}
+
+			$query->setQuerySettings($querySettings);
+		}
 
 		return $query;
-	}
-
-	/**
-	 * Returns a matcher object for this repository
-	 *
-	 * @return Matcher
-	 * @return object
-	 */
-	public function createMatch() {
-		return $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\Matcher', array(), $this->dataType);
 	}
 
 	/**
@@ -593,7 +592,7 @@ class ContentRepository implements RepositoryInterface {
 	 * @api
 	 */
 	public function setDefaultQuerySettings(\TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $defaultQuerySettings) {
-		throw new \BadMethodCallException('Repository does not support the setDefaultQuerySettings() method.', 1375805597);
+		$this->defaultQuerySettings = $defaultQuerySettings;
 	}
 
 	/**
@@ -605,5 +604,14 @@ class ContentRepository implements RepositoryInterface {
 			$message = '<ul><li>' . implode('<li></li>', $this->errorMessages) . '</li></ul>';
 		}
 		return $message;
+	}
+
+	/**
+	 * Returns whether the current mode is Backend
+	 *
+	 * @return bool
+	 */
+	protected function isBackendMode() {
+		return TYPO3_MODE == 'BE';
 	}
 }

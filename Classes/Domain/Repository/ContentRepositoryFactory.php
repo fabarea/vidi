@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi;
+namespace TYPO3\CMS\Vidi\Domain\Repository;
 /***************************************************************
  *  Copyright notice
  *

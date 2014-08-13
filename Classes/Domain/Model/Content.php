@@ -25,7 +25,7 @@ namespace TYPO3\CMS\Vidi\Domain\Model;
  ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException;
-use TYPO3\CMS\Vidi\ContentRepositoryFactory;
+use TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory;
 use TYPO3\CMS\Vidi\Converter\Field;
 use TYPO3\CMS\Vidi\Converter\Property;
 use TYPO3\CMS\Vidi\Service\FileReferenceService;
@@ -198,8 +198,8 @@ class Content implements \ArrayAccess {
 				// e.g. in case of one-to-one relation.
 
 				// We must query the opposite side to get the identifier of the foreign object.
-				$foreignDataType = TcaService::table()->field($fieldName)->getForeignTable();
-				$foreignField = TcaService::table()->field($fieldName)->getForeignField();
+				$foreignDataType = TcaService::table($this->dataType)->field($fieldName)->getForeignTable();
+				$foreignField = TcaService::table($this->dataType)->field($fieldName)->getForeignField();
 				$foreignRepository = ContentRepositoryFactory::getInstance($foreignDataType);
 				$find = 'findOneBy' . GeneralUtility::underscoredToUpperCamelCase($foreignField);
 

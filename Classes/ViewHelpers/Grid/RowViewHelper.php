@@ -24,7 +24,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3\CMS\Vidi\ContentRepositoryFactory;
+use TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory;
 use TYPO3\CMS\Vidi\Domain\Model\Content;
 use TYPO3\CMS\Vidi\Formatter\FormatterInterface;
 use TYPO3\CMS\Vidi\Tca\TcaService;

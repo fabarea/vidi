@@ -8,6 +8,17 @@ if (!defined('TYPO3_MODE')) {
 // Make sure the class exists to avoid a Runtime Error
 if (TYPO3_MODE == 'BE' && class_exists('TYPO3\CMS\Vidi\Module\ModuleLoader')) {
 
+	// Register Selection table
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_vidi_domain_model_selection');
+
+	// Add sprite icons.
+	\TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons(
+		array(
+			'selection' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('vidi') . 'Resources/Public/Images/tx_vidi_domain_model_selection.png',
+		),
+		'vidi'
+	);
+
 	/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
 	$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
 

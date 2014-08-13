@@ -22,7 +22,7 @@ namespace TYPO3\CMS\Vidi\Controller\Backend;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Vidi\ContentRepositoryFactory;
+use TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory;
 use TYPO3\CMS\Vidi\Persistence\MatcherObjectFactory;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
