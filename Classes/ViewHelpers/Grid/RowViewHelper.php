@@ -40,11 +40,6 @@ class RowViewHelper extends AbstractViewHelper {
 	protected $columns = array();
 
 	/**
-	 * @var array
-	 */
-	protected $relations = array();
-
-	/**
 	 * @param array $columns
 	 */
 	public function __construct($columns = array()){
@@ -65,6 +60,8 @@ class RowViewHelper extends AbstractViewHelper {
 
 		foreach(TcaService::grid()->getFields() as $fieldName => $configuration) {
 
+			$strippedFieldName = $this->getFieldPathResolver()->stripPath($fieldName);
+
 			if (TcaService::grid()->isSystem($fieldName)) {
 
 				$systemFieldName = substr($fieldName, 2);
@@ -73,15 +70,13 @@ class RowViewHelper extends AbstractViewHelper {
 
 					/** @var AbstractViewHelper $systemColumnViewHelper */
 					$systemColumnViewHelper = $this->objectManager->get($className);
-					$output[$fieldName] = $systemColumnViewHelper->render($object, $index);
+					$output[$strippedFieldName] = $systemColumnViewHelper->render($object, $index);
 				}
 			} elseif (!in_array($fieldName, $this->columns) && !TcaService::grid()->isForce($fieldName)) {
 
-				// Show nothing if the column is not requested for performance sake.
-				$output[$fieldName] = '';
+				// For performance sake, show nothing if the column is not required.
+				$output[$strippedFieldName] = '';
 			} else {
-
-				$this->handleRelation($object, $fieldName);
 
 				// Fetch value
 				if (TcaService::grid()->hasRenderers($fieldName)) {
@@ -126,54 +121,15 @@ class RowViewHelper extends AbstractViewHelper {
 
 				$result = $this->format($result, $configuration);
 				$result = $this->wrap($result, $configuration);
-				$output[$fieldName] = $result;
+
+				$output[$strippedFieldName] = $result;
 			}
 		}
 
 		$output['DT_RowId'] = 'row-' . $object->getUid();
-		$output['DT_RowClass'] = sprintf('%s_%s %s',
-			$object->getDataType(),
-			$object->getUid(),
-			implode(' ', $this->relations)
-		);
+		$output['DT_RowClass'] = sprintf('%s_%s', $object->getDataType(), $object->getUid());
 
 		return $output;
-	}
-
-	/**
-	 * Handle if the field to be outputted has a relation.
-	 * Collect this relations along the way to be displayed in the final JSON.
-	 *
-	 * @param Content $object
-	 * @param string $fieldName
-	 * @return void
-	 */
-	protected function handleRelation(Content $object, $fieldName) {
-
-		// It must be resolved.
-		$dataType = TcaService::grid()->getDataType($fieldName);
-		if ($object->getDataType() == $dataType
-			&& TcaService::table()->hasField($fieldName)
-			&& TcaService::table()->field($fieldName)->hasRelationOneToOne()) {
-
-			$foreignDataType = TcaService::table()->field($fieldName)->getForeignTable();
-
-			// Check if the relation is handle on this side or on the opposite side.
-			if (!empty($object[$fieldName])) {
-				$this->relations[] = $foreignDataType . '_' . $object[$fieldName]['uid'];
-			} else {
-				// We must query the opposite side to get the identifier of the foreign object.
-				$foreignDataType = TcaService::table()->field($fieldName)->getForeignTable();
-				$foreignField = TcaService::table()->field($fieldName)->getForeignField();
-				$foreignRepository = ContentRepositoryFactory::getInstance($foreignDataType);
-				$find = 'findOneBy' . GeneralUtility::underscoredToUpperCamelCase($foreignField);
-
-				/** @var Content $foreignObject */
-				$foreignObject = $foreignRepository->$find($object->getUid());
-				$this->relations[] = $foreignDataType . '_' . $foreignObject->getUid();
-				$object[$fieldName] = $foreignObject;
-			}
-		}
 	}
 
 	/**
@@ -247,5 +203,12 @@ class RowViewHelper extends AbstractViewHelper {
 			$value = implode($value, $parts);
 		}
 		return $value;
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 */
+	protected function getFieldPathResolver () {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
 	}
 }

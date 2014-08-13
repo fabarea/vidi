@@ -70,6 +70,8 @@ $tca = array(
 					'TYPO3\CMS\Vidi\Grid\RelationCreateRenderer',
 					'TYPO3\CMS\Vidi\Grid\RelationRenderer',
 				),
+				'editable' => TRUE,
+				'sortable' => FALSE,
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:usergroup',
 			),
 			'tstamp' => array(

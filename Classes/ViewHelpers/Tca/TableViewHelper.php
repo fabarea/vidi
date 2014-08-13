@@ -26,12 +26,12 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
- * View helper which connects the Tca Table service.
+ * View helper which wraps the TCA Table service.
  */
 class TableViewHelper extends AbstractViewHelper {
 
 	/**
-	 * Interface with the Tca Table service.
+	 * Returns a value from the TCA Table service according to a key.
 	 *
 	 * @param string $key
 	 * @param string $dataType

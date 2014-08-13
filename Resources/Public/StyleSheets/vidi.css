@@ -49,10 +49,6 @@ label, input, button, select, textarea {
 	margin-bottom: 0;
 }
 
-.modal-body label {
-	font-weight: bold;
-}
-
 .popover-title {
     font-size: 12px;
     font-weight: bold;
@@ -69,7 +65,6 @@ label, input, button, select, textarea {
 }
 
 .relation-list label {
-    font-weight: normal;
     line-height: 16px;
     margin-bottom: 0;
 }
@@ -383,4 +378,21 @@ select#menu-dataType {
 	font-size: 12px;
 	height: 18px;
 	text-align: left;
+}
+
+.mass-edit {
+	position: relative;
+	bottom: 3px;
+}
+
+.accordion-heading .accordion-toggle {
+	padding: 8px 0;
+}
+
+.accordion-group {
+	border: 0px solid #E5E5E5;
+}
+
+#form-edit .radio {
+	width: 180px;
 }

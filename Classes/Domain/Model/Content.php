@@ -25,6 +25,7 @@ namespace TYPO3\CMS\Vidi\Domain\Model;
  ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException;
+use TYPO3\CMS\Vidi\ContentRepositoryFactory;
 use TYPO3\CMS\Vidi\Converter\Field;
 use TYPO3\CMS\Vidi\Converter\Property;
 use TYPO3\CMS\Vidi\Service\FileReferenceService;
@@ -123,7 +124,7 @@ class Content implements \ArrayAccess {
 	 * @return bool
 	 */
 	protected function hasRelation($propertyName) {
-		$fieldName = GeneralUtility::camelCaseToLowerCaseUnderscored($propertyName);
+		$fieldName = Property::name($propertyName)->of($this)->toField();
 		return $this->getTcaFieldService($fieldName)->hasRelation();
 	}
 
@@ -148,12 +149,12 @@ class Content implements \ArrayAccess {
 	protected function resolveRelation($propertyName) {
 
 		// Convert property name to field name and get the foreign data type.
-		$fieldName = GeneralUtility::camelCaseToLowerCaseUnderscored($propertyName);
+		$fieldName = Property::name($propertyName)->of($this)->toField();
 		$foreignDataType = $this->getTcaFieldService($fieldName)->relationDataType();
 
 		// Get the foreign repository instance form the factory
 		/** @var \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository $foreignRepository */
-		$foreignRepository = \TYPO3\CMS\Vidi\ContentRepositoryFactory::getInstance($foreignDataType);
+		$foreignRepository = ContentRepositoryFactory::getInstance($foreignDataType);
 
 		if ($this->getTcaFieldService($fieldName)->hasRelationWithCommaSeparatedValues()) {
 
@@ -187,8 +188,25 @@ class Content implements \ArrayAccess {
 
 		} elseif ($this->getTcaFieldService($fieldName)->hasRelationOne()) {
 
-			// Fetch value from repository
-			$this->$propertyName = $foreignRepository->findByUid($this->$propertyName);
+			$fieldConfiguration = $this->getTcaFieldService($fieldName)->getConfiguration();
+
+			// First case, we are on the "good side" of the relation, just query the repository
+			if (empty($fieldConfiguration['foreign_field'])) {
+				$this->$propertyName = $foreignRepository->findByUid($this->$propertyName);
+			} else {
+				// Second case, we are the "bad side" of the relation, query the foreign repository
+				// e.g. in case of one-to-one relation.
+
+				// We must query the opposite side to get the identifier of the foreign object.
+				$foreignDataType = TcaService::table()->field($fieldName)->getForeignTable();
+				$foreignField = TcaService::table()->field($fieldName)->getForeignField();
+				$foreignRepository = ContentRepositoryFactory::getInstance($foreignDataType);
+				$find = 'findOneBy' . GeneralUtility::underscoredToUpperCamelCase($foreignField);
+
+				/** @var Content $foreignObject */
+				$this->$propertyName = $foreignRepository->$find($this->getUid());
+			}
+
 		}
 		return $this->$propertyName;
 	}

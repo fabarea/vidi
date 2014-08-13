@@ -6,6 +6,25 @@ $(document).ready(function() {
 
 	// Initialize Session
 	Vidi.Session.initialize();
+	Vidi.Edit.initialize();
+
+	/**
+	 * Add handler when clicking the reload button
+	 */
+	$('.btn-reload').click(function(e) {
+		e.preventDefault();
+		Vidi.grid.fnDraw(false); // false = for keeping the pagination.
+	});
+
+	/**
+	 * Pencil icon on the top of the Grid.
+	 */
+	$('#content-list').find('th').hover(function() {
+			$('.mass-edit', this).fadeTo( 100, 1);
+		}, function() {
+			$('.mass-edit', this).fadeTo( 100, 0);
+		}
+	);
 
 	/**
 	 * Enable the hide / show column
@@ -21,7 +40,7 @@ $(document).ready(function() {
 		oTable.fnSetColumnVis(iCol, bVis ? false : true);
 		if (!bVis) {
 
-			// look for the nth-child which corresponds to a visible column
+			// look for the nth-child which corresponds to a visible column.
 			var columnIndex = 1;
 			for (var index = 1; index < oTable.fnSettings().aoColumns.length && index <= iCol; index++) {
 				var column = oTable.fnSettings().aoColumns[index];
@@ -93,12 +112,12 @@ $(document).ready(function() {
 
 		var uri = new Uri(Vidi.Grid.stored.url);
 
-		// Feed the Uri with parameter
-		var formatParameterName = Vidi.module.parameterPrefix + '[action]';
+		// Add parameters to the Uri being built.
+		var actionParameterName = Vidi.module.parameterPrefix + '[action]';
 		for (var index in Vidi.Grid.stored.data) {
 			var parameter = Vidi.Grid.stored.data[index];
 
-			if (parameter.name === formatParameterName) {
+			if (parameter.name === actionParameterName) {
 				parameter.value = 'delete';
 			} else if (parameter.name === 'iDisplayLength' || parameter.name === 'iDisplayStart') {
 				parameter.value = 0;
@@ -128,7 +147,7 @@ $(document).ready(function() {
 		uri.addQueryParam(Vidi.module.parameterPrefix + '[action]', 'list');
 		uri.addQueryParam(Vidi.module.parameterPrefix + '[controller]', 'Content');
 		uri.addQueryParam(Vidi.module.parameterPrefix + '[format]', $(this).data('format'));
-		uri.addQueryParam(Vidi.module.parameterPrefix + '[matches][uid]', Vidi.Grid.getSelectedRows().join(','));
+		uri.addQueryParam(Vidi.module.parameterPrefix + '[matches][uid]', Vidi.Grid.getSelectedIdentifiers().join(','));
 
 		var url = baseUrl + uri.toString();
 		window.open(url);
@@ -147,18 +166,18 @@ $(document).ready(function() {
 	 * Mass delete action
 	 */
 	$('.action-selected-rows').find('.mass-delete').click(function(e) {
-		var selectedRows, message, url, uid;
+		var selectedIdentifiers, message, url, uid;
 
-		// Get selected rows
-		selectedRows = Vidi.Grid.getSelectedRows();
+		// Get selected rows.
+		selectedIdentifiers = Vidi.Grid.getSelectedIdentifiers();
 
 		e.preventDefault();
 		url = $(this).attr('href');
-		url = url + '&' + Vidi.module.parameterPrefix + '[matches][uid]=' + selectedRows.join(',');
+		url = url + '&' + Vidi.module.parameterPrefix + '[matches][uid]=' + selectedIdentifiers.join(',');
 
-		message = Vidi.format('confirm-mass-delete-plural', selectedRows.length);
-		if (selectedRows.length <= 1) {
-			message = Vidi.format('confirm-mass-delete-singular', selectedRows.length);
+		message = Vidi.format('confirm-mass-delete-plural', selectedIdentifiers.length);
+		if (selectedIdentifiers.length <= 1) {
+			message = Vidi.format('confirm-mass-delete-singular', selectedIdentifiers.length);
 		}
 
 		// Trigger mass-delete action against selected rows.

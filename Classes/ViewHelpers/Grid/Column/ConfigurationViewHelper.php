@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
 /***************************************************************
 *  Copyright notice
 *
@@ -22,10 +22,10 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Vidi\Exception\NotExistingFieldException;
 use TYPO3\CMS\Vidi\Tca\TcaService;
-use TYPO3\CMS\Vidi\Tca\TcaServiceFactory;
 
 /**
  * View helper for rendering configuration that will be consumed by Javascript
@@ -49,14 +49,18 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 				throw new NotExistingFieldException($message, 1375369594);
 			}
 
-			$output .= sprintf('Vidi._columns.push({ "mData": "%s", "bSortable": %s, "bVisible": %s, "sWidth": "%s", "sClass": "%s %s", "dataType": "%s" });' . PHP_EOL,
-				$fieldName,
+			// mData vs columnName
+			// -------------------
+			// mData: internal name of DataTable plugin and can not contains a path, e.g. metadata.title
+			// columnName: whole field name with path
+			$output .= sprintf('Vidi._columns.push({ "mData": "%s", "bSortable": %s, "bVisible": %s, "sWidth": "%s", "sClass": "%s %s", "columnName": "%s" });' . PHP_EOL,
+				$this->getFieldPathResolver()->stripPath($fieldName), // Suitable field name for the DataTable plugin.
 				TcaService::grid()->isSortable($fieldName) ? 'true' : 'false',
 				TcaService::grid()->isVisible($fieldName) ? 'true' : 'false',
 				empty($configuration['width']) ? 'auto' : $configuration['width'],
-				$this->computeEditableClass($fieldName),
+				$this->computeEditableClass($fieldName, $configuration),
 				TcaService::grid()->getClass($fieldName),
-				TcaService::grid()->getDataType($fieldName)
+				$fieldName
 			);
 		}
 
@@ -67,12 +71,20 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 	 * Return the editable class name for jeditable plugin.
 	 *
 	 * @param string $fieldName
+	 * @param array $configuration
 	 * @return boolean
 	 */
-	protected function computeEditableClass($fieldName) {
+	protected function computeEditableClass($fieldName, array $configuration) {
 		$result = FALSE;
-		if (TcaService::grid()->isEditable($fieldName)) {
-			$dataType = TcaService::grid()->getDataType($fieldName);
+		$fieldPath = $fieldName;
+		$dataType = $this->getFieldPathResolver()->getDataType($fieldPath);
+		$fieldName = $this->getFieldPathResolver()->stripPath($fieldPath);
+
+		if (TcaService::grid()->isEditable($fieldPath)
+			&& TcaService::table($dataType)->hasField($fieldName)
+			&& TcaService::table($dataType)->field($fieldName)->hasNoRelation() // relation are editable through Renderer only.
+		) {
+			$dataType = $this->getFieldPathResolver()->getDataType($fieldPath);
 			$result = TcaService::table($dataType)->field($fieldName)->isTextArea() ? 'editable-textarea' : 'editable-textfield';
 		}
 		return $result;
@@ -85,7 +97,6 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 	 * @return boolean
 	 */
 	protected function isAllowed($fieldName){
-
 		$result = FALSE;
 		if (TcaService::grid()->isSystem($fieldName)
 			|| TcaService::grid()->hasRenderers($fieldName)
@@ -97,4 +108,19 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 		return $result;
 	}
 
+	/**
+	 * Get the Vidi Module Loader.
+	 *
+	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 */
+	protected function getModuleLoader() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 */
+	protected function getFieldPathResolver () {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+	}
 }

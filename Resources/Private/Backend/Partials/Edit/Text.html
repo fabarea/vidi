@@ -1,0 +1,50 @@
+<div xmlns="http://www.w3.org/1999/xhtml" lang="en"
+     xmlns:f="http://typo3.org/ns/fluid/ViewHelpers"
+     xmlns:v="http://typo3.org/ns/TYPO3/CMS/vidi/ViewHelpers">
+
+	<f:section name="Text">
+
+		<label>{v:tca.label(dataType: '{dataType}', fieldName: '{fieldName}')}</label>
+		<f:form.textfield name="content[{fieldName}]" style="width: 100%"/>
+
+		<div class="accordion" id="accordion2">
+			<div class="accordion-group">
+				<div class="accordion-heading">
+					<a class="accordion-toggle" href="#collapseOne" onclick="$('#collapseOne').toggle(); return false;">
+						<span class="icon-chevron-down"></span>Available markers
+					</a>
+				</div>
+				<div id="collapseOne" class="accordion-body" style="display: none">
+					<div class="accordion-inner">
+
+						<![CDATA[
+						<p class="help-block" style="margin-top: 10px">
+							Markers can be used within the field to replace content:
+						</p>
+						<ul class="help-block">
+							<li>
+								{*} symbolise the current content
+							</li>
+							<li>
+								{counter} counter when looping around the records
+							</li>
+							<li>
+								{date} date of day
+							</li>
+							<li>
+								{creation_date} creation date of the record - if available.
+							</li>
+						</ul>
+
+						<div class="help-block">
+							Example when combining: {counter} - {*} ({date})
+						</div>
+						]]>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</f:section>
+</div>

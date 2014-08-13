@@ -1,4 +1,4 @@
-<v:be.container pageTitle="Vidi" enableJumpToUrl="false" enableClickMenu="false" loadPrototype="false"
+<f:be.container pageTitle="Vidi" enableClickMenu="false" loadPrototype="false"
                  loadScriptaculous="false" loadExtJs="false" loadExtJsTheme="true"
                  includeCssFiles="{
 		0:'{f:uri.resource(path:\'StyleSheets/bootstrap.css\')}',
@@ -33,7 +33,7 @@
 		Vidi.module.tca.ctrl.label = '{v:tca.table(key: "label")}';
 
 		Vidi._columns = [];
-		{v:grid.configuration()}
+		{v:grid.column.configuration()}
 
 		// Just initialize variable with empty value.
 		Vidi.icons = {}
@@ -60,16 +60,16 @@
 	<v:js name="Encoder.js"/>
 
 	<v:js name="Vidi.js"/>
-	<v:js name="Vidi.Relation.js"/>
 	<v:js name="Vidi.VisualSearch.js"/>
-	<v:js name="Vidi.Editable.js"/>
 	<v:js name="Vidi.Panel.js"/>
 	<v:js name="Vidi.Grid.js"/>
 	<v:js name="Vidi.Action.js"/>
+	<v:js name="Vidi.Edit.js"/>
+	<v:js name="Vidi.EditInline.js"/>
 	<v:js name="Vidi.Session.js"/>
 	<v:js name="Vidi.FlashMessage.js"/>
 	<v:js name="Vidi.Label.js"/>
 
-</v:be.container>
+</f:be.container>
 {namespace v=TYPO3\CMS\Vidi\ViewHelpers}
 

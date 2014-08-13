@@ -133,7 +133,7 @@ Vidi.Grid = {
 				var columns = $(this).dataTable().fnSettings().aoColumns;
 				$.each(columns, function(index, column) {
 					if (column['bVisible']) {
-						aoData.push({ 'name': Vidi.module.parameterPrefix + '[columns][]', 'value': column['mData'] });
+						aoData.push({ 'name': Vidi.module.parameterPrefix + '[columns][]', 'value': column['columnName'] });
 					}
 				});
 
@@ -192,16 +192,16 @@ Vidi.Grid = {
 				 * Bind handler for editable content for input.
 				 */
 				Vidi.grid.$('td.editable-textarea').editable(
-					Vidi.Editable.getUrl(),
+					Vidi.EditInline.getUrl(),
 					{
 						type: 'textarea',
 						placeholder: '',
 						cancel: 'Cancel',
 						submit: 'OK',
-						indicator: Vidi.Editable.indicator,
-						data: Vidi.Editable.data,
-						submitdata: Vidi.Editable.submitData,
-						callback: Vidi.Editable.submitCallBack
+						indicator: Vidi.EditInline.indicator,
+						data: Vidi.EditInline.getParameters,
+						submitdata: Vidi.EditInline.submitData,
+						callback: Vidi.EditInline.submitDataCallBack
 					}
 				);
 
@@ -209,15 +209,15 @@ Vidi.Grid = {
 				 * Bind handler for editable content for input.
 				 */
 				Vidi.grid.$('td.editable-textfield').editable(
-					Vidi.Editable.getUrl(),
+					Vidi.EditInline.getUrl(),
 					{
 						placeholder: '',
 						height: '20px',
 						submit: 'OK',
-						indicator: Vidi.Editable.indicator,
-						data: Vidi.Editable.data,
-						submitdata: Vidi.Editable.submitData,
-						callback: Vidi.Editable.submitCallBack
+						indicator: Vidi.EditInline.indicator,
+						data: Vidi.EditInline.getParameters,
+						submitdata: Vidi.EditInline.submitData,
+						callback: Vidi.EditInline.submitDataCallBack
 					}
 				);
 			}
@@ -227,23 +227,53 @@ Vidi.Grid = {
 		return config;
 	},
 
-
 	/**
-	 * Return selected row from the grid
+	 * Return identifiers corresponding to selected rows in the Grid.
 	 *
-	 * @return {array}
+	 * @return {Array}
 	 */
-	getSelectedRows: function() {
-		var selectedRows = [];
+	getSelectedIdentifiers: function() {
+		var selectedIdentifiers = [];
 		$('#content-list')
 			.find('.checkbox-row')
 			.filter(':checked')
 			.each(function(index) {
 				var identifier = $(this).data('uid');
-				selectedRows.push(identifier);
+				selectedIdentifiers.push(identifier);
 			});
 
-		return selectedRows;
+		return selectedIdentifiers;
+	},
+
+	/**
+	 * Return the selected rows in the Grid.
+	 *
+	 * @return {object}
+	 */
+	getSelectedRows: function() {
+		return $('#content-list')
+			.find('.checkbox-row')
+			.filter(':checked')
+			.closest('tr');
+	},
+
+	/**
+	 * Return the row identifier / uid which corresponds at the same time to the content identifier.
+	 *
+	 * @param {object} element
+	 * @return {int}
+	 */
+	getRowIdentifier: function(element) {
+		return $(element).closest('tr').get(0).id.replace('row-', '') - 0;
+	},
+
+	/**
+	 * Tells whether the Grid has selected rows.
+	 *
+	 * @return {bool}
+	 */
+	hasSelectedRows: function() {
+		return Vidi.Grid.getSelectedIdentifiers().length > 0;
 	},
 
 	/**

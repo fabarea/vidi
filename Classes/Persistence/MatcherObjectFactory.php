@@ -50,6 +50,10 @@ class MatcherObjectFactory implements SingletonInterface {
 	 */
 	public function getMatcher($matches = array(), $dataType = '') {
 
+		if (empty($dataType)) {
+			$dataType = $this->getModuleLoader()->getDataType();
+		}
+
 		/** @var $matcher Matcher */
 		$matcher = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher', array(), $dataType);
 
@@ -113,7 +117,7 @@ class MatcherObjectFactory implements SingletonInterface {
 
 		if (strlen($searchTerm) > 0) {
 
-			$tcaTableService = TcaService::table($dataType);
+			$table = TcaService::table($dataType);
 
 			// try to parse a json query
 			$searchTerm = rawurldecode($searchTerm);
@@ -126,8 +130,8 @@ class MatcherObjectFactory implements SingletonInterface {
 					$value = current($term);
 					if ($fieldName === 'text') {
 						$matcher->setSearchTerm($value);
-					} elseif (($tcaTableService->field($fieldName)->hasRelation() && is_numeric($value))
-						|| $tcaTableService->field($fieldName)->isNumerical()
+					} elseif (($table->field($fieldName)->hasRelation() && is_numeric($value))
+						|| $table->field($fieldName)->isNumerical()
 					) {
 						$matcher->equals($fieldName, $value);
 					} else {
@@ -173,6 +177,15 @@ class MatcherObjectFactory implements SingletonInterface {
 	 */
 	protected function getObjectManager() {
 		return GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+	}
+
+	/**
+	 * Get the Vidi Module Loader.
+	 *
+	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 */
+	protected function getModuleLoader() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
 	}
 
 }

@@ -145,7 +145,7 @@ class VidiDbBackend {
 			$tableName = $statementParts['tables'][0];
 		}
 		$this->replacePlaceholders($sql, $parameters, $tableName);
-		#print $sql; // @debug
+		#print $sql; exit(); // @debug
 
 		$result = $this->databaseHandle->sql_query($sql);
 		$this->checkSqlErrors($sql);
@@ -871,7 +871,7 @@ class VidiDbBackend {
 				// @todo evaluate this code.
 //				if (TYPO3_MODE == 'FE' && $GLOBALS['TSFE']->sys_language_uid > 0) {
 //
-//					$overlay = \TYPO3\CMS\Vidi\Utility\Overlays::getOverlayRecords($this->query->getType(), array($row['uid']), $GLOBALS['TSFE']->sys_language_uid);
+//					$overlay = \TYPO3\CMS\Vidi\Language\Overlays::getOverlayRecords($this->query->getType(), array($row['uid']), $GLOBALS['TSFE']->sys_language_uid);
 //					if (!empty($overlay[$row['uid']])) {
 //						$key = key($overlay[$row['uid']]);
 //						$row = $overlay[$row['uid']][$key];

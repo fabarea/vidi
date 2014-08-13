@@ -24,6 +24,8 @@ namespace TYPO3\CMS\Vidi\Domain\Repository;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException;
+use TYPO3\CMS\Extbase\Persistence\RepositoryInterface;
 use TYPO3\CMS\Vidi\Exception\MissingUidException;
 use TYPO3\CMS\Vidi\Persistence\Matcher;
 use TYPO3\CMS\Vidi\Persistence\Order;
@@ -33,7 +35,7 @@ use TYPO3\CMS\Vidi\Tca\TcaService;
 /**
  * Repository for accessing Content
  */
-class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInterface {
+class ContentRepository implements RepositoryInterface {
 
 	/**
 	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
@@ -222,6 +224,34 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	}
 
 	/**
+	 * Find one Content object given specified matches.
+	 *
+	 * @param Matcher $matcher
+	 * @internal param \TYPO3\CMS\Vidi\Persistence\Order $order The order
+	 * @internal param int $limit
+	 * @internal param int $offset
+	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content
+	 */
+	public function findOneBy(Matcher $matcher) {
+
+		$query = $this->createQuery();
+
+		$constraints = $this->computeConstraints($query, $matcher);
+
+		if ($constraints) {
+			$query->matching($constraints);
+		}
+
+		$query->setLimit(1); // only take one!
+
+		$resultSet = $query->execute();
+		if ($resultSet) {
+			$resultSet = current($resultSet);
+		}
+		return $resultSet;
+	}
+
+	/**
 	 * Get the constraints
 	 *
 	 * @param Query $query
@@ -379,7 +409,7 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 *
 	 * @param string $methodName The name of the magic method
 	 * @param string $arguments The arguments of the magic method
-	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException
+	 * @throws UnsupportedMethodException
 	 * @return mixed
 	 * @api
 	 */
@@ -394,7 +424,7 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 			$propertyName = strtolower(substr(substr($methodName, 7), 0, 1)) . substr(substr($methodName, 7), 1);
 			$result = $this->processMagicCall($propertyName, $arguments[0], 'count');
 		} else {
-			throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException('The method "' . $methodName . '" is not supported by the repository.', 1360838010);
+			throw new UnsupportedMethodException('The method "' . $methodName . '" is not supported by the repository.', 1360838010);
 		}
 		return $result;
 	}
@@ -502,7 +532,8 @@ class ContentRepository implements \TYPO3\CMS\Extbase\Persistence\RepositoryInte
 	 * @api
 	 */
 	public function countAll() {
-		// TODO: Implement countAll() method.
+		$query = $this->createQuery();
+		return $query->count();
 	}
 
 	/**

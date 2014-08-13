@@ -40,18 +40,27 @@ class IsRelatedToViewHelper extends AbstractViewHelper {
 	 */
 	public function render($relatedContent) {
 
-		/** @var \TYPO3\CMS\Vidi\Domain\Model\Content $content */
-		$content = $this->templateVariableContainer->get('content');
-		$fieldName = $this->templateVariableContainer->get('fieldName');
+		$isChecked = FALSE;
 
-		// Build an array of user group uids
-		$relatedContentsIdentifiers = array();
+		// Only computes whether the object is checked if one row is beeing edited.
+		$numberOfObjects = $this->templateVariableContainer->get('numberOfObjects');
+		if ($numberOfObjects === 1) {
 
-		/** @var \TYPO3\CMS\Vidi\Domain\Model\Content $contentObject */
-		foreach ($content[$fieldName] as $contentObject) {
-			$relatedContentsIdentifiers[] = $contentObject->getUid();
+			/** @var \TYPO3\CMS\Vidi\Domain\Model\Content $content */
+			$content = $this->templateVariableContainer->get('content');
+			$fieldName = $this->templateVariableContainer->get('fieldName');
+
+			// Build an array of user group uids
+			$relatedContentsIdentifiers = array();
+
+			/** @var \TYPO3\CMS\Vidi\Domain\Model\Content $contentObject */
+			foreach ($content[$fieldName] as $contentObject) {
+				$relatedContentsIdentifiers[] = $contentObject->getUid();
+			}
+
+			$isChecked = in_array($relatedContent->getUid(), $relatedContentsIdentifiers);
 		}
 
-		return in_array($relatedContent->getUid(), $relatedContentsIdentifiers);
+		return $isChecked;
 	}
 }

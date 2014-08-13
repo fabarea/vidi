@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
 /***************************************************************
 *  Copyright notice
 *
@@ -15,6 +15,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 *  The GNU General Public License can be found at
 *  http://www.gnu.org/copyleft/gpl.html.
 *
+ *
 *  This script is distributed in the hope that it will be useful,
 *  but WITHOUT ANY WARRANTY; without even the implied warranty of
 *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -26,18 +27,18 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
- * Tells about the column type of the grid whether the field is system.
+ * Tells whether the field name is visible in the Grid.
  */
-class IsNotSystemViewHelper extends AbstractViewHelper {
+class IsVisibleViewHelper extends AbstractViewHelper {
 
 	/**
-	 * Returns whether the given column name is system
+	 * Returns whether the column is visible.
 	 *
-	 * @param string $fieldName the column Name
-	 * @return boolean
+	 * @param string $name the column Name
+	 * @return bool
 	 */
-	public function render($fieldName) {
-		return TcaService::grid()->isNotSystem($fieldName);
+	public function render($name) {
+		return TcaService::grid()->isVisible($name);
 	}
 
 }

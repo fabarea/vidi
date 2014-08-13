@@ -25,6 +25,10 @@
 					</div>
 					<div class="span6 toolbar-right">
 
+						<a href="#" class="btn-reload">
+							<v:sprite name="actions-system-refresh" />
+						</a>
+
 						<div class="btn-group pull-right" style="margin-top: 1px;">
 							<a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#" style="padding: 0 4px;">
 								<span class="caret"></span>
@@ -32,9 +36,9 @@
 							<ul class="dropdown-menu">
 								<f:for each="{columns}" key="columnName" as="configuration" iteration="iterator">
 									<li>
-										<f:if condition="{v:grid.isNotSystem(fieldName: '{columnName}')}">
+										<f:if condition="{v:grid.column.isNotSystem(name: '{columnName}')}">
 											<label class="checkbox inline">
-												<f:if condition="{v:grid.isVisible(fieldName: '{columnName}')}">
+												<f:if condition="{v:grid.column.isVisible(name: '{columnName}')}">
 													<f:then>
 														<input class="check-visible-toggle" type="checkbox" name=""
 														       value="{iterator.index}"
@@ -45,7 +49,7 @@
 														       value="{iterator.index}"/>
 													</f:else>
 												</f:if>
-												<v:grid.label column="{columnName}"/>
+												<v:grid.column.title />
 											</label>
 										</f:if>
 									</li>
@@ -80,7 +84,15 @@
 									<f:format.raw>{configuration.html}</f:format.raw>
 								</f:then>
 								<f:else>
-									<v:grid.label column="{columnName}"/>
+									<v:grid.column.title />
+									<f:if condition="{v:grid.column.isEditable(name: '{columnName}')}">
+										<f:link.action action="edit"
+										               class="mass-edit {f:if(condition: '{v:grid.column.hasRelation()}', then: 'mass-edit-relation', else: 'mass-edit-scalar')}"
+										               arguments="{fieldNameAndPath: '{v:grid.column.fieldName()}'}"
+										               style="opacity: 0">
+											<v:sprite name="actions-document-open" />
+										</f:link.action>
+									</f:if>
 								</f:else>
 							</f:if>
 						</th>

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
 /***************************************************************
 *  Copyright notice
 *
@@ -22,22 +22,22 @@ namespace TYPO3\CMS\Vidi\ViewHelpers;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
- * View helper which tells whether an argument exists.
+ * Tells whether the field name is editable in the Grid.
  */
-class GPViewHelper extends AbstractViewHelper {
+class IsEditableViewHelper extends AbstractViewHelper {
 
 	/**
-	 * Tells whether the argument exists or not.
+	 * Return whether field name is editable in the Grid.
 	 *
-	 * @param string $argument
+	 * @param string $name the column Name
 	 * @return boolean
 	 */
-	public function render($argument) {
-		return urlencode(GeneralUtility::_GP($argument));
+	public function render($name) {
+		return TcaService::grid()->isEditable($name);
 	}
+
 }

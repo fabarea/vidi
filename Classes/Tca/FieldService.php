@@ -90,12 +90,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return array
 	 */
 	public function getConfiguration() {
-		if ($this->isSystem() && empty($this->tca['config'])) {
-			$this->tca['config'] = array();
-		} elseif (empty($this->tca['config'])) {
-			throw new \Exception(sprintf('No field configuration found for field "%s" in table "%s"', $this->fieldName, $this->tableName), 1385408686);
-		}
-		return $this->tca['config'];
+		return empty($this->tca['config']) ? array() : $this->tca['config'];
 	}
 
 	/**
@@ -459,7 +454,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return bool
 	 */
 	public function isTextArea() {
-		return $this->getFieldType() === 'text';
+		return $this->getType() === TcaService::TEXTAREA;
 	}
 
 	/**
@@ -468,7 +463,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return bool
 	 */
 	public function isSelect() {
-		return $this->getFieldType() === 'select';
+		return $this->getType() === 'select';
 	}
 
 	/**
@@ -477,7 +472,7 @@ class FieldService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return bool
 	 */
 	public function isGroup() {
-		return $this->getFieldType() === 'group';
+		return $this->getType() === 'group';
 	}
 
 	/**

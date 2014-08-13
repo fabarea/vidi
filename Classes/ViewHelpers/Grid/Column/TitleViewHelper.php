@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
 /***************************************************************
 *  Copyright notice
 *
@@ -11,8 +11,8 @@ namespace TYPO3\CMS\Vidi\ViewHelpers;
 *  it under the terms of the GNU General Public License as published by
 *  the Free Software Foundation; either version 2 of the License, or
 *  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
+ *
+ *  The GNU General Public License can be found at
 *  http://www.gnu.org/copyleft/gpl.html.
 *
 *  This script is distributed in the hope that it will be useful,
@@ -22,22 +22,22 @@ namespace TYPO3\CMS\Vidi\ViewHelpers;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
- * View helper which tells whether an argument exists.
+ * View helper for rendering a column title in the grid.
  */
-class IsGPViewHelper extends AbstractViewHelper {
+class TitleViewHelper extends AbstractViewHelper {
 
 	/**
-	 * Tells whether the argument exists or not.
+	 * Returns a column title.
 	 *
-	 * @param string $argument
-	 * @return boolean
+	 * @return string
 	 */
-	public function render($argument) {
-		return GeneralUtility::_GP($argument) !== NULL;
+	public function render() {
+		$columnName = $this->templateVariableContainer->get('columnName');
+		return TcaService::grid()->getLabel($columnName);
 	}
+
 }
