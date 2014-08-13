@@ -71,7 +71,7 @@ class Field implements SingletonInterface {
 	/**
 	 * @return string
 	 */
-	public function toProperty() {
+	public function toPropertyName() {
 
 		$fieldName = $this->getFieldName();
 		$tableName = $this->getTableName();
@@ -93,6 +93,14 @@ class Field implements SingletonInterface {
 		}
 
 		return $this->storage[$tableName][$fieldName];
+	}
+
+	/**
+	 * @return string
+	 * @deprecated use toPropertyName. Will be removed in 0.3.0 + 2 version.
+	 */
+	public function toProperty() {
+		return $this->toPropertyName();
 	}
 
 	/**

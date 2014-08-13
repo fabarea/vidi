@@ -125,17 +125,7 @@ class Content implements \ArrayAccess {
 	 */
 	protected function hasRelation($propertyName) {
 		$fieldName = Property::name($propertyName)->of($this)->toField();
-		return $this->getTcaFieldService($fieldName)->hasRelation();
-	}
-
-	/**
-	 * Return the TCA Table Service.
-	 *
-	 * @param string $fieldName
-	 * @return \TYPO3\CMS\Vidi\Tca\FieldService
-	 */
-	protected function getTcaFieldService($fieldName) {
-		return TcaService::table($this->dataType)->field($fieldName);
+		return TcaService::table($this->dataType)->field($fieldName)->hasRelation();
 	}
 
 	/**
@@ -149,21 +139,24 @@ class Content implements \ArrayAccess {
 	protected function resolveRelation($propertyName) {
 
 		// Convert property name to field name and get the foreign data type.
-		$fieldName = Property::name($propertyName)->of($this)->toField();
-		$foreignDataType = $this->getTcaFieldService($fieldName)->relationDataType();
+		$fieldName = Property::name($propertyName)->of($this)->toFieldName();
+		$foreignDataType = TcaService::table($this->dataType)->field($fieldName)->relationDataType();
 
 		// Get the foreign repository instance form the factory
-		/** @var \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository $foreignRepository */
-		$foreignRepository = ContentRepositoryFactory::getInstance($foreignDataType);
+		/** @var \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository $foreignContentRepository */
+		$foreignContentRepository = ContentRepositoryFactory::getInstance($foreignDataType);
 
-		if ($this->getTcaFieldService($fieldName)->hasRelationWithCommaSeparatedValues()) {
+		if (TcaService::table($this->dataType)->field($fieldName)->hasRelationWithCommaSeparatedValues()) {
 
 			// Fetch values from repository
 			$values = GeneralUtility::trimExplode(',', $this->$propertyName);
-			$this->$propertyName = $foreignRepository->findIn('uid', $values);
-		} elseif ($this->getTcaFieldService($fieldName)->hasRelationMany()) {
+			$this->$propertyName = $foreignContentRepository->findIn('uid', $values);
+		} elseif (TcaService::table($this->dataType)->field($fieldName)->hasMany()) {
+			// Include relation many-to-many and one-to-many
+			// TcaService::table($this->dataType)->field($fieldName)->hasRelationOneToMany()
+			// TcaService::table($this->dataType)->field($fieldName)->hasRelationManyToMany()
 
-			$foreignFieldName = $this->getTcaFieldService($fieldName)->getForeignField();
+			$foreignFieldName = TcaService::table($this->dataType)->field($fieldName)->getForeignField();
 			if (empty($foreignFieldName)) {
 				$message = sprintf('Missing "foreign_field" key for field "%s" in table "%s".',
 					$fieldName,
@@ -173,26 +166,25 @@ class Content implements \ArrayAccess {
 			}
 
 			// Fetch values from repository.
-			$foreignPropertyName = Field::name($foreignFieldName)->of($this)->toProperty();
+			$foreignPropertyName = Field::name($foreignFieldName)->of($this)->toPropertyName();
 			$findByProperty = 'findBy' . ucfirst($foreignPropertyName);
 
 			// Date picker (type == group) are special fields because property path must contain the table name
 			// to determine the relation type. Example for sys_category, property path will look like "items.sys_file"
 			$propertyValue = $this->uid;
-			$foreignTcaTableService = TcaService::table($foreignDataType);
-			if ($foreignTcaTableService->field($foreignPropertyName)->isGroup()) {
+			if (TcaService::table($foreignDataType)->field($foreignPropertyName)->isGroup()) {
 				$propertyValue = $this->dataType . '.' . $this->uid;
 			}
 
-			$this->$propertyName = $foreignRepository->$findByProperty($propertyValue);
+			$this->$propertyName = $foreignContentRepository->$findByProperty($propertyValue);
 
-		} elseif ($this->getTcaFieldService($fieldName)->hasRelationOne()) {
+		} elseif (TcaService::table($this->dataType)->field($fieldName)->hasOne()) {
 
-			$fieldConfiguration = $this->getTcaFieldService($fieldName)->getConfiguration();
+			$fieldConfiguration = TcaService::table($this->dataType)->field($fieldName)->getConfiguration();
 
 			// First case, we are on the "good side" of the relation, just query the repository
 			if (empty($fieldConfiguration['foreign_field'])) {
-				$this->$propertyName = $foreignRepository->findByUid($this->$propertyName);
+				$this->$propertyName = $foreignContentRepository->findByUid($this->$propertyName);
 			} else {
 				// Second case, we are the "bad side" of the relation, query the foreign repository
 				// e.g. in case of one-to-one relation.
@@ -200,11 +192,11 @@ class Content implements \ArrayAccess {
 				// We must query the opposite side to get the identifier of the foreign object.
 				$foreignDataType = TcaService::table($this->dataType)->field($fieldName)->getForeignTable();
 				$foreignField = TcaService::table($this->dataType)->field($fieldName)->getForeignField();
-				$foreignRepository = ContentRepositoryFactory::getInstance($foreignDataType);
+				$foreignContentRepository = ContentRepositoryFactory::getInstance($foreignDataType);
 				$find = 'findOneBy' . GeneralUtility::underscoredToUpperCamelCase($foreignField);
 
 				/** @var Content $foreignObject */
-				$this->$propertyName = $foreignRepository->$find($this->getUid());
+				$this->$propertyName = $foreignContentRepository->$find($this->getUid());
 			}
 
 		}
@@ -233,7 +225,7 @@ class Content implements \ArrayAccess {
 	 * @return boolean true on success or false on failure.
 	 */
 	public function offsetExists($offset) {
-		$offset = Field::name($offset)->of($this)->toProperty();
+		$offset = Field::name($offset)->of($this)->toPropertyName();
 		return isset($this->$offset);
 	}
 
@@ -245,7 +237,7 @@ class Content implements \ArrayAccess {
 	 * @return mixed Can return all value types.
 	 */
 	public function offsetGet($offset) {
-		$offset = Field::name($offset)->of($this)->toProperty();
+		$offset = Field::name($offset)->of($this)->toPropertyName();
 		$getter = 'get' . ucfirst($offset);
 		return $this->$getter();
 	}
@@ -259,7 +251,7 @@ class Content implements \ArrayAccess {
 	 * @return $this
 	 */
 	public function offsetSet($offset, $value) {
-		$offset = Field::name($offset)->of($this)->toProperty();
+		$offset = Field::name($offset)->of($this)->toPropertyName();
 		$setter = 'set' . ucfirst($offset);
 		$this->$setter($value);
 		return $this;
@@ -318,7 +310,7 @@ class Content implements \ArrayAccess {
 				}
 			} elseif ($fieldType === TcaService::FILE) {
 
-				if ($field->hasRelationMany()) {
+				if ($field->hasMany()) {
 					$files = FileReferenceService::getInstance()->findReferencedBy($propertyName, $this);
 
 					$value = array();
@@ -363,7 +355,7 @@ class Content implements \ArrayAccess {
 		$propertiesAndValues = json_decode(json_encode($this), TRUE);
 
 		foreach ($propertiesAndValues as $propertyName => $value) {
-			$result[] = Property::name($propertyName)->of($this)->toField();
+			$result[] = Property::name($propertyName)->of($this)->toFieldName();
 		}
 
 		return $result;

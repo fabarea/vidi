@@ -67,7 +67,7 @@ $tca = array(
 			'usergroup' => array(
 				'visible' => TRUE,
 				'renderers' => array(
-					'TYPO3\CMS\Vidi\Grid\RelationCreateRenderer',
+					'TYPO3\CMS\Vidi\Grid\RelationEditRenderer',
 					'TYPO3\CMS\Vidi\Grid\RelationRenderer',
 				),
 				'editable' => TRUE,

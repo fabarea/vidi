@@ -145,7 +145,7 @@ class VidiDbBackend {
 			$tableName = $statementParts['tables'][0];
 		}
 		$this->replacePlaceholders($sql, $parameters, $tableName);
-		#print $sql; exit(); // @debug
+		#print $sql; #exit(); // @debug
 
 		$result = $this->databaseHandle->sql_query($sql);
 		$this->checkSqlErrors($sql);
@@ -293,15 +293,12 @@ class VidiDbBackend {
 	 */
 	protected function parseJoin(\TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface $join, array &$sql) {
 		$leftSource = $join->getLeft();
-		$leftClassName = $leftSource->getNodeTypeName();
 		$leftTableName = $leftSource->getSelectorName();
 		// $sql['fields'][$leftTableName] = $leftTableName . '.*';
 		$rightSource = $join->getRight();
 		if ($rightSource instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface) {
-			$rightClassName = $rightSource->getLeft()->getNodeTypeName();
 			$rightTableName = $rightSource->getLeft()->getSelectorName();
 		} else {
-			$rightClassName = $rightSource->getNodeTypeName();
 			$rightTableName = $rightSource->getSelectorName();
 			$sql['fields'][$leftTableName] = $rightTableName . '.*';
 		}
@@ -525,12 +522,13 @@ class VidiDbBackend {
 			throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidRelationConfigurationException('The relation information for property "' . $fieldName . '" of class "' . $tableName . '" is missing.', 1353170925);
 		}
 
-		if ($table->field($fieldName)->hasRelationOne()) {
-			if (isset($parentKeyFieldName)) {
-				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.uid=' . $childTableName . '.' . $parentKeyFieldName;
-
-			} else {
+		if ($table->field($fieldName)->hasOne()) { // includes relation "one-to-one" and "many-to-one"
+			// sometimes the opposite relation is not defined. We don't want to force this config for backward compatibility reasons.
+			// $parentKeyFieldName === NULL does the trick somehow. Before condition was if (isset($parentKeyFieldName))
+			if ($table->field($fieldName)->hasRelationManyToOne() || $parentKeyFieldName === NULL) {
 				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.' . $fieldName . '=' . $childTableName . '.uid';
+			} else {
+				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.uid=' . $childTableName . '.' . $parentKeyFieldName;
 			}
 		} elseif ($table->field($fieldName)->hasRelationManyToMany()) {
 			$relationTableName = $table->field($fieldName)->getManyToManyTable();
@@ -546,7 +544,7 @@ class VidiDbBackend {
 				$sql['unions'][$relationTableName] .= ' AND ' . $relationTableName . '.tablenames = \'' . $tableNameCondition . '\'';
 				$sql['unions'][$childTableName] .= ' AND ' . $relationTableName . '.tablenames = \'' . $tableNameCondition . '\'';
 			}
-		} elseif ($table->field($fieldName)->hasRelationMany()) {
+		} elseif ($table->field($fieldName)->hasMany()) { // includes relations "many-to-one" and "csv" relations
 			if (isset($parentKeyFieldName)) {
 				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.uid=' . $childTableName . '.' . $parentKeyFieldName;
 			} else {

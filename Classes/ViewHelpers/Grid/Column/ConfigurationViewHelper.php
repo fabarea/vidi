@@ -70,15 +70,15 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 	/**
 	 * Return the editable class name for jeditable plugin.
 	 *
-	 * @param string $fieldName
+	 * @param string $fieldNameAndPath
 	 * @param array $configuration
 	 * @return boolean
 	 */
-	protected function computeEditableClass($fieldName, array $configuration) {
+	protected function computeEditableClass($fieldNameAndPath, array $configuration) {
 		$result = FALSE;
-		$fieldPath = $fieldName;
-		$dataType = $this->getFieldPathResolver()->getDataType($fieldPath);
-		$fieldName = $this->getFieldPathResolver()->stripPath($fieldPath);
+		$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
+		$fieldPath = $this->getFieldPathResolver()->stripFieldName($fieldNameAndPath);
+		$fieldName = $this->getFieldPathResolver()->stripPath($fieldNameAndPath);
 
 		if (TcaService::grid()->isEditable($fieldPath)
 			&& TcaService::table($dataType)->hasField($fieldName)
@@ -93,19 +93,17 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 	/**
 	 * Tell whether the field looks ok to be displayed within the Grid.
 	 *
-	 * @param string $fieldName
+	 * @param string $fieldNameAndPath
 	 * @return boolean
 	 */
-	protected function isAllowed($fieldName){
-		$result = FALSE;
-		if (TcaService::grid()->isSystem($fieldName)
-			|| TcaService::grid()->hasRenderers($fieldName)
-			|| TcaService::table()->field($fieldName)->isSystem()
-			|| TcaService::table()->hasField($fieldName)
-		) {
-			$result = TRUE;
-		}
-		return $result;
+	protected function isAllowed($fieldNameAndPath){
+		$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
+		$fieldName = $this->getFieldPathResolver()->stripPath($fieldNameAndPath);
+
+		return TcaService::grid()->isSystem($fieldNameAndPath)
+			|| TcaService::grid()->hasRenderers($fieldNameAndPath)
+			|| TcaService::table()->field($fieldNameAndPath)->isSystem()
+			|| TcaService::table($dataType)->hasField($fieldName);
 	}
 
 	/**
