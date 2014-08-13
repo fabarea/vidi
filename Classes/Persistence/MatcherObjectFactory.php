@@ -24,6 +24,7 @@ namespace TYPO3\CMS\Vidi\Persistence;
  ***************************************************************/
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
@@ -57,7 +58,7 @@ class MatcherObjectFactory implements SingletonInterface {
 		/** @var $matcher Matcher */
 		$matcher = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher', array(), $dataType);
 
-		$matcher = $this->applyCriteriaFromDataTablesPlugin($matcher, $dataType);
+		$matcher = $this->applyCriteriaFromDataTables($matcher, $dataType);
 		$matcher = $this->applyCriteriaFromMatchesArgument($matcher, $matches);
 		$matcher = $this->applyCriteriaFromUrl($matcher);
 
@@ -109,7 +110,7 @@ class MatcherObjectFactory implements SingletonInterface {
 	 * @param string $dataType
 	 * @return Matcher $matcher
 	 */
-	protected function applyCriteriaFromDataTablesPlugin(Matcher $matcher, $dataType) {
+	protected function applyCriteriaFromDataTables(Matcher $matcher, $dataType) {
 
 		// Special case for Grid in the BE using jQuery DataTables plugin.
 		// Retrieve a possible search term from GP.
@@ -124,15 +125,12 @@ class MatcherObjectFactory implements SingletonInterface {
 			$terms = json_decode($searchTerm, TRUE);
 
 			if (is_array($terms)) {
-
 				foreach ($terms as $term) {
 					$fieldName = key($term);
 					$value = current($term);
 					if ($fieldName === 'text') {
 						$matcher->setSearchTerm($value);
-					} elseif (($table->field($fieldName)->hasRelation() && is_numeric($value))
-						|| $table->field($fieldName)->isNumerical()
-					) {
+					} elseif ($this->isOperatorEquals($fieldName, $dataType, $value)) {
 						$matcher->equals($fieldName, $value);
 					} else {
 						$matcher->likes($fieldName, $value);
@@ -143,6 +141,19 @@ class MatcherObjectFactory implements SingletonInterface {
 			}
 		}
 		return $matcher;
+	}
+
+	/**
+	 * Tell whether the operator should be equals instead of like for a search, e.g. if the value is numerical.
+	 *
+	 * @param string $fieldName
+	 * @param string $dataType
+	 * @param string $value
+	 * @return bool
+	 */
+	protected function isOperatorEquals($fieldName, $dataType, $value) {
+		return (TcaService::table($dataType)->field($fieldName)->hasRelation() && MathUtility::canBeInterpretedAsInteger($value))
+			|| TcaService::table($dataType)->field($fieldName)->isNumerical();
 	}
 
 	/**
