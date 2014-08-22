@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
+namespace TYPO3\CMS\Vidi\View\MenuItem;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,12 +16,12 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
 
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Vidi\View\AbstractComponentView;
 
 /**
  * View helper which renders a "xml export" item to be placed in the menu.
  */
-class MenuItemExportXmlViewHelper extends AbstractViewHelper {
+class ExportXmlMenuItem extends AbstractComponentView {
 
 	/**
 	 * Renders an "xml export" item to be placed in the menu.

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Facet;
+namespace TYPO3\CMS\Vidi\View\MenuItem;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,20 +14,19 @@ namespace TYPO3\CMS\Vidi\Facet;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Vidi\View\AbstractComponentView;
+
 /**
- * Class for telling the Facet will handle a signal.
- * Useful to tell apart "standard" Facet from "withSignal".
+ * View helper which renders a "divider" menu item to be placed in the grid menu.
  */
-class WithSignalFacet extends StandardFacet {
+class DividerMenuItem extends AbstractComponentView {
 
 	/**
-	 * Constructor of a Facet with signal handler.
+	 * Renders a "divider" menu item to be placed in the grid menu.
 	 *
-	 * @param string $name
-	 * @param string $label
-	 * @param array $suggestions
+	 * @return string
 	 */
-	public function __construct($name, $label, array $suggestions = array()) {
-		parent::__construct($name, $label, $suggestions);
+	public function render() {
+		return '<li class="divider"></li>';
 	}
 }

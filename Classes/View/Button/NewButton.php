@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
+namespace TYPO3\CMS\Vidi\View\Button;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,12 +16,12 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
 
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Vidi\View\AbstractComponentView;
 
 /**
  * View helper which renders a "new" button to be placed in the doc header.
  */
-class ButtonNewViewHelper extends AbstractViewHelper {
+class NewButton extends AbstractComponentView {
 
 	/**
 	 * Renders a "new" button to be placed in the doc header.

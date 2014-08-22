@@ -115,45 +115,45 @@ class ModuleLoader {
 		self::DOC_HEADER => array(
 			self::TOP => array(
 				self::LEFT => array(
-					'TYPO3\CMS\Vidi\View\Menu\DataTypeMenu',
+					'TYPO3\CMS\Vidi\View\Tab\DataTypeTab',
 				),
 				self::RIGHT => array(
 				),
 			),
 			self::BOTTOM => array(
 				self::LEFT => array(
-					'TYPO3\CMS\Vidi\ViewHelpers\Component\ButtonNewViewHelper',
-					'TYPO3\CMS\Vidi\ViewHelpers\Component\LinkBackViewHelper',
+					'TYPO3\CMS\Vidi\View\Button\NewButton',
+					'TYPO3\CMS\Vidi\ViewHelpers\Link\BackViewHelper',
 				),
 				self::RIGHT => array(),
 			),
 		),
 		self::GRID => array(
 			self::TOP => array(
-				'TYPO3\CMS\Vidi\ViewHelpers\Component\CheckPidViewHelper',
-				'TYPO3\CMS\Vidi\ViewHelpers\Component\CheckRelationsViewHelper',
+				'TYPO3\CMS\Vidi\View\Check\PidCheck',
+				'TYPO3\CMS\Vidi\View\Check\RelationsCheck',
 			),
 			self::BUTTONS => array(
-				'TYPO3\CMS\Vidi\ViewHelpers\Component\ButtonEditViewHelper',
-				'TYPO3\CMS\Vidi\ViewHelpers\Component\ButtonDeleteViewHelper',
+				'TYPO3\CMS\Vidi\View\Button\EditButton',
+				'TYPO3\CMS\Vidi\View\Button\DeleteButton',
 			),
 			self::BOTTOM => array(),
 		),
 		self::MENU_SELECTED_ROWS => array(
-			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemExportXlsViewHelper',
-			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemExportXmlViewHelper',
-			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemExportCsvViewHelper',
-			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemDividerViewHelper',
-			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemMassDeleteViewHelper',
-			#'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemMassEditViewHelper',
+			'TYPO3\CMS\Vidi\View\MenuItem\ExportXlsMenuItem',
+			'TYPO3\CMS\Vidi\View\MenuItem\ExportXmlMenuItem',
+			'TYPO3\CMS\Vidi\View\MenuItem\ExportCsvMenuItem',
+			'TYPO3\CMS\Vidi\View\MenuItem\DividerMenuItem',
+			'TYPO3\CMS\Vidi\View\MenuItem\MassDeleteMenuItem',
+			#'TYPO3\CMS\Vidi\View\MenuItem\MassEditMenuItem',
 		),
 		self::MENU_ALL_ROWS => array(
-			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemExportXlsViewHelper',
-			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemExportXmlViewHelper',
-			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemExportCsvViewHelper',
-			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemDividerViewHelper',
-			'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemMassDeleteViewHelper',
-			#'TYPO3\CMS\Vidi\ViewHelpers\Component\MenuItemMassEditViewHelper',
+			'TYPO3\CMS\Vidi\View\MenuItem\ExportXlsMenuItem',
+			'TYPO3\CMS\Vidi\View\MenuItem\ExportXmlMenuItem',
+			'TYPO3\CMS\Vidi\View\MenuItem\ExportCsvMenuItem',
+			'TYPO3\CMS\Vidi\View\MenuItem\DividerMenuItem',
+			'TYPO3\CMS\Vidi\View\MenuItem\MassDeleteMenuItem',
+			#'TYPO3\CMS\Vidi\View\MenuItem\MassEditMenuItem',
 		),
 	);
 
@@ -557,8 +557,8 @@ class ModuleLoader {
 		if (is_string($components)) {
 			$components = array($components);
 		}
-		$currentViewHelpers = $this->components[self::DOC_HEADER][self::TOP][self::LEFT];
-		$this->components[self::DOC_HEADER][self::TOP][self::LEFT] = array_merge($currentViewHelpers, $components);
+		$currentComponents = $this->components[self::DOC_HEADER][self::TOP][self::LEFT];
+		$this->components[self::DOC_HEADER][self::TOP][self::LEFT] = array_merge($currentComponents, $components);
 		return $this;
 	}
 
@@ -605,8 +605,8 @@ class ModuleLoader {
 		if (is_string($components)) {
 			$components = array($components);
 		}
-		$currentViewHelpers = $this->components[self::DOC_HEADER][self::TOP][self::RIGHT];
-		$this->components[self::DOC_HEADER][self::TOP][self::RIGHT] = array_merge($currentViewHelpers, $components);
+		$currentComponents = $this->components[self::DOC_HEADER][self::TOP][self::RIGHT];
+		$this->components[self::DOC_HEADER][self::TOP][self::RIGHT] = array_merge($currentComponents, $components);
 		return $this;
 	}
 
@@ -653,8 +653,8 @@ class ModuleLoader {
 		if (is_string($components)) {
 			$components = array($components);
 		}
-		$currentViewHelpers = $this->components[self::DOC_HEADER][self::BOTTOM][self::LEFT];
-		$this->components[self::DOC_HEADER][self::BOTTOM][self::LEFT] = array_merge($currentViewHelpers, $components);
+		$currentComponents = $this->components[self::DOC_HEADER][self::BOTTOM][self::LEFT];
+		$this->components[self::DOC_HEADER][self::BOTTOM][self::LEFT] = array_merge($currentComponents, $components);
 		return $this;
 	}
 
@@ -701,8 +701,8 @@ class ModuleLoader {
 		if (is_string($components)) {
 			$components = array($components);
 		}
-		$currentViewHelpers = $this->components[self::DOC_HEADER][self::BOTTOM][self::RIGHT];
-		$this->components[self::DOC_HEADER][self::BOTTOM][self::RIGHT] = array_merge($currentViewHelpers, $components);
+		$currentComponents = $this->components[self::DOC_HEADER][self::BOTTOM][self::RIGHT];
+		$this->components[self::DOC_HEADER][self::BOTTOM][self::RIGHT] = array_merge($currentComponents, $components);
 		return $this;
 	}
 
@@ -749,8 +749,8 @@ class ModuleLoader {
 		if (is_string($components)) {
 			$components = array($components);
 		}
-		$currentViewHelpers = $this->components[self::GRID][self::TOP];
-		$this->components[self::GRID][self::TOP] = array_merge($currentViewHelpers, $components);
+		$currentComponents = $this->components[self::GRID][self::TOP];
+		$this->components[self::GRID][self::TOP] = array_merge($currentComponents, $components);
 		return $this;
 	}
 
@@ -779,8 +779,8 @@ class ModuleLoader {
 		if (is_string($components)) {
 			$components = array($components);
 		}
-		$currentViewHelpers = $this->components[self::GRID][self::BOTTOM];
-		$this->components[self::GRID][self::BOTTOM] = array_merge($currentViewHelpers, $components);
+		$currentComponents = $this->components[self::GRID][self::BOTTOM];
+		$this->components[self::GRID][self::BOTTOM] = array_merge($currentComponents, $components);
 		return $this;
 	}
 
@@ -809,8 +809,8 @@ class ModuleLoader {
 		if (is_string($components)) {
 			$components = array($components);
 		}
-		$currentViewHelpers = $this->components[self::GRID][self::BUTTONS];
-		$this->components[self::GRID][self::BUTTONS] = array_merge($currentViewHelpers, $components);
+		$currentComponents = $this->components[self::GRID][self::BUTTONS];
+		$this->components[self::GRID][self::BUTTONS] = array_merge($currentComponents, $components);
 		return $this;
 	}
 
@@ -839,8 +839,8 @@ class ModuleLoader {
 		if (is_string($components)) {
 			$components = array($components);
 		}
-		$currentViewHelpers = $this->components[self::MENU_SELECTED_ROWS];
-		$this->components[self::MENU_SELECTED_ROWS] = array_merge($currentViewHelpers, $components);
+		$currentComponents = $this->components[self::MENU_SELECTED_ROWS];
+		$this->components[self::MENU_SELECTED_ROWS] = array_merge($currentComponents, $components);
 		return $this;
 	}
 
@@ -887,8 +887,8 @@ class ModuleLoader {
 		if (is_string($components)) {
 			$components = array($components);
 		}
-		$currentViewHelpers = $this->components[self::MENU_ALL_ROWS];
-		$this->components[self::MENU_ALL_ROWS] = array_merge($currentViewHelpers, $components);
+		$currentComponents = $this->components[self::MENU_ALL_ROWS];
+		$this->components[self::MENU_ALL_ROWS] = array_merge($currentComponents, $components);
 		return $this;
 	}
 

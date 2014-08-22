@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\View\Menu;
+namespace TYPO3\CMS\Vidi\View\Tab;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -23,7 +23,7 @@ use TYPO3\CMS\Vidi\View\AbstractComponentView;
 /**
  * View component which renders a data type menu for the List2 module.
  */
-class DataTypeMenu extends AbstractComponentView {
+class DataTypeTab extends AbstractComponentView {
 
 	/**
 	 * Renders a "new" button to be placed in the doc header.
@@ -35,7 +35,7 @@ class DataTypeMenu extends AbstractComponentView {
 		if ($this->getModuleLoader()->isCurrentModuleList()) {
 			$moduleCodes = ModuleService::getInstance()->getModulesForCurrentPid();
 			$pid = $this->getModuleLoader()->getCurrentPid();
-			$menu .= $this->assembleDataTypeMenu($pid, $moduleCodes);
+			$menu .= $this->assembleDataTypeTab($pid, $moduleCodes);
 		}
 		return $menu;
 	}
@@ -46,7 +46,7 @@ class DataTypeMenu extends AbstractComponentView {
 	 * @param array $moduleCodes
 	 * @return string
 	 */
-	protected function assembleDataTypeMenu($pid, array $moduleCodes) {
+	protected function assembleDataTypeTab($pid, array $moduleCodes) {
 
 		return sprintf('<form id="form-dataType" action="%s">
 		<input type="hidden" name="M" value="%s"/>

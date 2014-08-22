@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Link;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -21,7 +21,7 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 /**
  * View helper which renders a "back" buttons to be placed in the doc header.
  */
-class LinkBackViewHelper extends AbstractViewHelper {
+class BackViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Returns the "back" buttons to be placed in the doc header.

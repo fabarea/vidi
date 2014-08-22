@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
+namespace TYPO3\CMS\Vidi\View\Check;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,13 +14,13 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Component;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Vidi\View\AbstractComponentView;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * View helper which renders check.
  */
-class CheckRelationsViewHelper extends AbstractViewHelper {
+class RelationsCheck extends AbstractComponentView {
 
 	/**
 	 * @var \TYPO3\CMS\Vidi\Module\ModuleLoader
