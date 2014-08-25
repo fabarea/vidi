@@ -35,8 +35,5 @@ class QuerySettings extends \TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySet
 	 */
 	public function initializeObject() {
 		parent::initializeObject();
-
-		// Read configuration
-		$this->setRespectSysLanguage(false);
 	}
 }

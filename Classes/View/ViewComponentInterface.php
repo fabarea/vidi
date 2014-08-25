@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\View\MenuItem;
+namespace TYPO3\CMS\Vidi\View;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,19 +14,16 @@ namespace TYPO3\CMS\Vidi\View\MenuItem;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Vidi\View\AbstractComponentView;
-
 /**
- * View which renders a "divider" menu item to be placed in the grid menu.
+ * Abstract Component View.
  */
-class DividerMenuItem extends AbstractComponentView {
+interface ViewComponentInterface {
 
 	/**
-	 * Renders a "divider" menu item to be placed in the grid menu.
+	 * Renders something to be printed out to the browser.
 	 *
 	 * @return string
 	 */
-	public function render() {
-		return '<li class="divider"></li>';
-	}
+	public function render();
+
 }

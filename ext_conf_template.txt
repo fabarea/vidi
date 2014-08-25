@@ -1,5 +1,8 @@
-# cat=basic//; type=boolean; label= Activate "beta" features: If checked, the "list2" module is activated.
+# cat=basic//; type=boolean; label= Activate "beta" features: If checked, the "list2" module is activated below the traditional module "list". After setting this option, please reload the Backend.
 activate_beta_features = 1
+
+# cat=basic//; type=boolean; label= Hide module list: If you have activate the "beta" feature above, you can also hide the "list" module to experiment how life would be with "list2" only. Beware, not everything is in place such as clipboard, localization view, workspace, ... However, it is a good way to feel the need and get things done. After setting this option, please reload the Backend.
+hide_module_list = 0
 
 # cat=basic//; type=user[EXT:vidi/Classes/Backend/ExtensionManager.php:TYPO3\CMS\Vidi\Backend\ExtensionManager->renderDataTypes]; label= Data types to show: Selected data types to have their BE module. To display custom data type, refer to the Module Loader documentation of the extension.
 data_types = fe_users,fe_groups

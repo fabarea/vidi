@@ -60,7 +60,7 @@ $tca = array(
 			'username' => array(
 				'visible' => TRUE,
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:username',
-				'editable' => TRUE,
+				'editable' => FALSE, // @todo make me "true" after fix for jeditable plugin
 			),
 			'name' => array(
 				'visible' => TRUE,

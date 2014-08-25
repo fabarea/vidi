@@ -13,22 +13,45 @@ namespace TYPO3\CMS\Vidi\View;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Vidi\Domain\Model\Content;
 
 /**
- * View helper which renders a View.
+ * Abstract Component View.
  */
-abstract class AbstractComponentView {
-
-	/**
-	 * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-	 * @inject
-	 */
-	protected $objectManager;
+abstract class AbstractComponentView implements ViewComponentInterface {
 
 	/**
 	 * Renders something to be printed out to the browser.
 	 *
 	 * @return string
 	 */
-	abstract public function render();
+	//abstract public function render(Content $object = NULL);
+
+
+	/**
+	 * Get the Vidi Module Loader.
+	 *
+	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 */
+	protected function getModuleLoader() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
+	}
+
+	/**
+	 * Returns an instance of the current Backend User.
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Lang\LanguageService');
+	}
+
 }

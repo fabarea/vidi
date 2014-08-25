@@ -47,6 +47,12 @@ if (TYPO3_MODE == 'BE' && class_exists('TYPO3\CMS\Vidi\Module\ModuleLoader')) {
 
 	// Register List2 only if beta feature is enabled.
 	if ($configuration['activate_beta_features']['value']) {
+		$labelFile = 'LLL:EXT:vidi/Resources/Private/Language/locallang_module.xlf';
+
+		if (!$configuration['hide_module_list']['value']) {
+			$labelFile = 'LLL:EXT:vidi/Resources/Private/Language/locallang_module_transitional.xlf';
+		}
+
 		\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
 			$_EXTKEY, 'web', // Make newsletter module a submodule of 'user'
 			'm1', // Submodule key
@@ -57,9 +63,19 @@ if (TYPO3_MODE == 'BE' && class_exists('TYPO3\CMS\Vidi\Module\ModuleLoader')) {
 			), array(
 				'access' => 'user,group',
 				'icon' => 'EXT:vidi/Resources/Public/Images/list.png',
-				'labels' => 'LLL:EXT:vidi/Resources/Private/Language/locallang_module.xlf',
+				'labels' => $labelFile,
 			)
 		);
+	}
+
+	if ($configuration['hide_module_list']['value']) {
+
+		// Default User TSConfig to be added in any case.
+		TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('
+
+			# Hide the module in the BE.
+			options.hideModules.web := addToList(list)
+		');
 	}
 
 	/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */

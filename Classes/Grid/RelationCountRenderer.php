@@ -26,11 +26,6 @@ use TYPO3\CMS\Vidi\Tca\TcaService;
 class RelationCountRenderer extends GridRendererAbstract {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper
-	 */
-	protected $editViewHelper;
-
-	/**
 	 * @var \TYPO3\CMS\Fluid\ViewHelpers\TranslateViewHelper
 	 */
 	protected $translateViewHelper;
@@ -39,7 +34,6 @@ class RelationCountRenderer extends GridRendererAbstract {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->editViewHelper = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper');
 		$this->translateViewHelper = GeneralUtility::makeInstance('TYPO3\CMS\Fluid\ViewHelpers\TranslateViewHelper');
 	}
 

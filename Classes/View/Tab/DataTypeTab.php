@@ -14,6 +14,7 @@ namespace TYPO3\CMS\Vidi\View\Tab;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\FormProtection\FormProtectionFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Vidi\Module\Parameter;
@@ -31,35 +32,21 @@ class DataTypeTab extends AbstractComponentView {
 	 * @return string
 	 */
 	public function render() {
-		$menu = ''; // Initialize variable as string.
-		if ($this->getModuleLoader()->isCurrentModuleList()) {
+		$output = ''; // Initialize variable as string.
+		if ($this->getModuleLoader()->copeWithPageTree()) {
 			$moduleCodes = ModuleService::getInstance()->getModulesForCurrentPid();
-			$pid = $this->getModuleLoader()->getCurrentPid();
-			$menu .= $this->assembleDataTypeTab($pid, $moduleCodes);
+			$output = $this->assembleDataTypeTab($moduleCodes);
 		}
-		return $menu;
+		return $output;
 	}
 
-
 	/**
-	 * @param int $pid
 	 * @param array $moduleCodes
 	 * @return string
 	 */
-	protected function assembleDataTypeTab($pid, array $moduleCodes) {
-
-		return sprintf('<form id="form-dataType" action="%s">
-		<input type="hidden" name="M" value="%s"/>
-		<input type="hidden" name="moduleToken" value="%s"/>
-		<input type="hidden" name="id" value="%s"/>
-		<select id="menu-dataType" class="btn btn-mini" name="%s" onchange="$(this).parent().submit()">%s</select>
-		</form>',
-			'mod.php', // We can not use BackendUtility::getModuleUrl() here as the GET parameters are reset in a GET method.
-			GeneralUtility::_GET('M'),
-			$this->getModuleToken(),
-			GeneralUtility::_GET('id'),
-			Parameter::SUBMODULE,
-			$this->assembleMenuOptions($moduleCodes)
+	protected function assembleDataTypeTab(array $moduleCodes) {
+		return sprintf('<ul class="nav nav-tabs">%s</ul>',
+			$this->assembleTab($moduleCodes)
 		);
 	}
 
@@ -69,6 +56,32 @@ class DataTypeTab extends AbstractComponentView {
 	protected function getModuleToken() {
 		$moduleName = GeneralUtility::_GET(Parameter::MODULE);
 		return FormProtectionFactory::get()->generateToken('moduleCall', $moduleName);
+	}
+
+	/**
+	 * @param array $moduleCodes
+	 * @return string
+	 */
+	protected function assembleTab(array $moduleCodes) {
+		$tabs = array();
+		foreach ($moduleCodes as $moduleCode => $title) {
+			$dataType = $this->getDataTypeForModuleCode($moduleCode);
+			$tabs[] = sprintf('<li %s><a href="%s">%s %s</a></li>',
+				$this->getModuleLoader()->getVidiModuleCode() === $moduleCode ? 'class="active"' : '',
+				$this->getModuleLoader()->getModuleUrl(array(Parameter::SUBMODULE => $moduleCode)),
+				IconUtility::getSpriteIconForRecord($dataType, array()),
+				$title
+			);
+		}
+		return implode("\n", $tabs);
+	}
+
+	/**
+	 * @param $moduleCode
+	 * @return string
+	 */
+	protected function getDataTypeForModuleCode($moduleCode) {
+		return $GLOBALS['TBE_MODULES_EXT']['vidi'][$moduleCode]['dataType'];
 	}
 
 	/**

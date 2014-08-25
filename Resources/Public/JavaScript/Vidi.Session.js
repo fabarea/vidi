@@ -10,34 +10,6 @@
 Vidi.Session = {
 
 	/**
-	 * Initialize the session with default value if not set.
-	 *
-	 * @return void
-	 */
-	initialize: function () {
-
-		// @todo remove me if not used in a close future e.g. for mass-editing!
-		// Bind action when a tab is selected
-		$('.nav-tabs li a').bind('click', function (e) {
-			var selectedTab = $(this).parent();
-			var selectedIndex = $('.nav-tabs li').index(selectedTab);
-			sessionStorage.setItem('vidi.selectedTab', selectedIndex);
-		});
-
-		// Initialize default value
-		if (window.sessionStorage) {
-			if (sessionStorage.getItem('vidi.selectedTab') == null) {
-				sessionStorage.setItem('vidi.selectedTab', 0);
-			}
-		}
-
-		// @todo remove me if not used in a close future e.g. for mass-editing!
-		// In case the form is loaded
-		var selectedTab = sessionStorage.getItem('vidi.selectedTab');
-		$('.nav-tabs li:eq(' + selectedTab + ') a').tab('show');
-	},
-
-	/**
 	 * Get a key in from the session.
 	 *
 	 * @param {string} key corresponds to an identifier

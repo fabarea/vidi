@@ -14,6 +14,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory;
@@ -57,7 +58,7 @@ class RowViewHelper extends AbstractViewHelper {
 			if (TcaService::grid()->isSystem($fieldNameAndPath)) {
 
 				$systemFieldName = substr($fieldNameAndPath, 2);
-				$className = sprintf('TYPO3\CMS\Vidi\ViewHelpers\Grid\System%sViewHelper', ucfirst($systemFieldName));
+				$className = sprintf('TYPO3\CMS\Vidi\View\System\%sSystem', ucfirst($systemFieldName));
 				if (class_exists($className)) {
 
 					/** @var AbstractViewHelper $systemColumnViewHelper */
@@ -89,29 +90,13 @@ class RowViewHelper extends AbstractViewHelper {
 							->render();
 					}
 				} else {
-
 					$value = $this->resolveValue($object, $fieldNameAndPath);
-
-					// Resolve the identifier in case of "select" or "radio button".
-					$fieldType = TcaService::table($object->getDataType())->field($fieldNameAndPath)->getType();
-					if ($fieldType === TcaService::RADIO || $fieldType === TcaService::SELECT) {
-
-						// Attempt to convert the value into a label for radio and select fields.
-						$label = TcaService::table($object->getDataType())->field($fieldNameAndPath)->getLabelForItem($value);
-						if ($label) {
-							$value = $label;
-						}
-					} elseif ($fieldType !== TcaService::TEXTAREA) {
-						$value = htmlspecialchars($value);
-					} elseif ($fieldType === TcaService::TEXTAREA && !$this->isClean($value)) {
-						$value = htmlspecialchars($value); // Avoid bad surprise, converts characters to HTML.
-					} elseif ($fieldType === TcaService::TEXTAREA && !$this->hasHtml($value)) {
-						$value = nl2br($value);
-					}
+					$value = $this->processValue($value, $object, $fieldNameAndPath); // post resolve processing.
 				}
 
-				$value = $this->format($value, $configuration);
-				$value = $this->wrap($value, $configuration);
+				$value = $this->formatValue($value, $configuration);
+				$value = $this->wrapValue($value, $configuration);
+				$value = $this->prependSpriteIcon($value, $object, $fieldNameAndPath);
 
 				$output[$fieldName] = $value;
 			}
@@ -187,13 +172,53 @@ class RowViewHelper extends AbstractViewHelper {
 	}
 
 	/**
+	 * Process the value
+	 *
+	 * @todo implement me as a processor chain to be cleaner implementation wise. Look out at the performance however!
+	 *       e.g DefaultValueGridProcessor, TextAreaGridProcessor, ...
+	 *
+	 * @param string $value
+	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param string $fieldNameAndPath
+	 * @return string
+	 */
+	protected function processValue($value, Content $object, $fieldNameAndPath) {
+
+		// Set default value if $field name correspond to the label of the table
+		$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
+		if (TcaService::table($object->getDataType())->getLabelField() === $fieldName && empty($value)) {
+			$value = sprintf('[%s]', $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.no_title', 1));
+		}
+
+		// Resolve the identifier in case of "select" or "radio button".
+		$fieldType = TcaService::table($object->getDataType())->field($fieldNameAndPath)->getType();
+		if ($fieldType === TcaService::RADIO || $fieldType === TcaService::SELECT) {
+
+			// Attempt to convert the value into a label for radio and select fields.
+			$label = TcaService::table($object->getDataType())->field($fieldNameAndPath)->getLabelForItem($value);
+			if ($label) {
+				$value = $label;
+			}
+		} elseif ($fieldType !== TcaService::TEXTAREA) {
+			$value = htmlspecialchars($value);
+		} elseif ($fieldType === TcaService::TEXTAREA && !$this->isClean($value)) {
+			$value = htmlspecialchars($value); // Avoid bad surprise, converts characters to HTML.
+		} elseif ($fieldType === TcaService::TEXTAREA && !$this->hasHtml($value)) {
+			$value = nl2br($value);
+		}
+
+		return $value;
+	}
+
+
+	/**
 	 * Possible value formatting.
 	 *
 	 * @param string $value
 	 * @param array $configuration
-	 * @return mixed
+	 * @return string
 	 */
-	protected function format($value, array $configuration) {
+	protected function formatValue($value, array $configuration) {
 		if (empty($configuration['format'])) {
 			return $value;
 		}
@@ -220,12 +245,46 @@ class RowViewHelper extends AbstractViewHelper {
 	 *
 	 * @param string $value
 	 * @param array $configuration
-	 * @return mixed
+	 * @return string
 	 */
-	protected function wrap($value, array $configuration) {
+	protected function wrapValue($value, array $configuration) {
 		if (!empty($configuration['wrap'])) {
 			$parts = explode('|', $configuration['wrap']);
 			$value = implode($value, $parts);
+		}
+		return $value;
+	}
+
+	/**
+	 * Possible value wrapping.
+	 *
+	 * @param string $value
+	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param string $fieldNameAndPath
+	 * @return string
+	 */
+	protected function prependSpriteIcon($value, Content $object, $fieldNameAndPath) {
+
+		$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
+
+		if (TcaService::table($object->getDataType())->getLabelField() === $fieldName) {
+			$recordData = array();
+
+			$enablesMethods = array('Hidden', 'Deleted', 'StartTime', 'EndTime');
+			foreach ($enablesMethods as $enableMethod) {
+
+				$methodName = 'get' . $enableMethod . 'Field';
+				// Fetch possible hidden filed
+				$enableField = TcaService::table($object)->$methodName();
+				if ($enableField) {
+					$recordData[$enableField] = $object[$enableField];
+				}
+			}
+
+			// Get Enable Fields of the object to render the sprite with overlays.
+			$spriteIcon = IconUtility::getSpriteIconForRecord($object->getDataType(), $recordData);
+			$value = $spriteIcon . ' ' . $value;
+
 		}
 		return $value;
 	}
@@ -235,5 +294,12 @@ class RowViewHelper extends AbstractViewHelper {
 	 */
 	protected function getFieldPathResolver () {
 		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 }

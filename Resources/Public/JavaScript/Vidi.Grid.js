@@ -193,7 +193,7 @@ Vidi.Grid = {
 				/**
 				 * Bind handler for editable content for input.
 				 */
-				Vidi.grid.$('td.editable-textarea').editable(
+				Vidi.grid.$('.editable-textarea').editable(
 					Vidi.EditInline.getUrl(),
 					{
 						type: 'textarea',
@@ -210,7 +210,7 @@ Vidi.Grid = {
 				/**
 				 * Bind handler for editable content for input.
 				 */
-				Vidi.grid.$('td.editable-textfield').editable(
+				Vidi.grid.$('.editable-textfield').editable(
 					Vidi.EditInline.getUrl(),
 					{
 						placeholder: '',

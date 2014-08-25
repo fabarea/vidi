@@ -14,20 +14,16 @@ namespace TYPO3\CMS\Vidi\View\Button;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Vidi\Domain\Model\Content;
 use TYPO3\CMS\Vidi\View\AbstractComponentView;
 
 /**
- * View helper which renders a "delete" button to be placed in the grid.
+ * View which renders a "delete" button to be placed in the grid.
  */
 class DeleteButton extends AbstractComponentView {
-
-	/**
-	 * @var \TYPO3\CMS\Vidi\ViewHelpers\Uri\DeleteViewHelper
-	 * @inject
-	 */
-	protected $uriDeleteViewHelper;
 
 	/**
 	 * Renders a "delete" button to be placed in the grid.
@@ -37,9 +33,31 @@ class DeleteButton extends AbstractComponentView {
 	 */
 	public function render(Content $object = NULL) {
 		return sprintf('<a href="%s" data-uid="%s" class="btn-delete" >%s</a>',
-			$this->uriDeleteViewHelper->render($object),
+			$this->getUriDelete($object),
 			$object->getUid(),
 			IconUtility::getSpriteIcon('actions-edit-delete')
 		);
 	}
+
+	/**
+	 * Render a delete URI given an object.
+	 *
+	 * @param Content $object
+	 * @return string
+	 */
+	protected function getUriDelete(Content $object) {
+
+		$parameterPrefix = $this->getModuleLoader()->getParameterPrefix();
+		$parameterPrefixEncoded = rawurlencode($parameterPrefix);
+
+		return sprintf('%s&%s[matches][uid]=%s&%s[format]=json&%s[action]=delete&%s[controller]=Content',
+			BackendUtility::getModuleUrl($this->getModuleLoader()->getModuleCode()),
+			$parameterPrefixEncoded,
+			$object->getUid(),
+			$parameterPrefixEncoded,
+			$parameterPrefixEncoded,
+			$parameterPrefixEncoded
+		);
+	}
+
 }

@@ -4,8 +4,7 @@
 
 $(document).ready(function() {
 
-	// Initialize Session
-	Vidi.Session.initialize();
+	// Initialize some objects...
 	Vidi.Edit.initialize();
 
 	/**

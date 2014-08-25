@@ -22,6 +22,7 @@ $tca = array(
 			'title' => array(
 				'visible' => TRUE,
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_groups.xlf:title',
+				'editable' => FALSE, // @todo make me "true" after fix for jeditable plugin
 			),
 			'tstamp' => array(
 				'visible' => FALSE,

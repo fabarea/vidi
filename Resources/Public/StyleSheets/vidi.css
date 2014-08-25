@@ -363,23 +363,6 @@ input,button,select,textarea{
 	min-height: 22px;
 }
 
-/* data type menu displayed in list2 */
-#form-dataType {
-	height: 18px;
-	margin-bottom: 0px;
-}
-
-select#menu-dataType {
-	margin: 0px;
-	border: 1px solid #A9A9A9;
-	border-radius: 0px;
-	color: #000;
-	padding: 0px;
-	font-size: 12px;
-	height: 18px;
-	text-align: left;
-}
-
 .mass-edit {
 	position: relative;
 	bottom: 3px;

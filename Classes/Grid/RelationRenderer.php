@@ -16,24 +16,13 @@ namespace TYPO3\CMS\Vidi\Grid;
 
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Vidi\Domain\Model\Content;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
  * Class rendering relation
  */
 class RelationRenderer extends GridRendererAbstract {
-
-	/**
-	 * @var \TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper
-	 */
-	protected $editViewHelper;
-
-	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		$this->editViewHelper = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper');
-	}
 
 	/**
 	 * Render a representation of the relation on the GUI.
@@ -57,7 +46,7 @@ class RelationRenderer extends GridRendererAbstract {
 			if ($foreignObject) {
 				$template = '<a href="%s" data-uid="%s" class="btn-edit invisible">%s</a><span>%s</span>';
 				$result = sprintf($template,
-					$this->editViewHelper->render($foreignObject),
+					$this->getEditUri($foreignObject),
 					$this->object->getUid(),
 					IconUtility::getSpriteIcon('actions-document-open'),
 					$foreignObject[$foreignLabelField]
@@ -71,7 +60,7 @@ class RelationRenderer extends GridRendererAbstract {
 				/** @var $foreignObject \TYPO3\CMS\Vidi\Domain\Model\Content */
 				foreach ($this->object[$this->fieldName] as $foreignObject) {
 					$result .= sprintf($template,
-						$this->editViewHelper->render($foreignObject),
+						$this->getEditUri($foreignObject),
 						$this->object->getUid(),
 						IconUtility::getSpriteIcon('actions-document-open'),
 						$foreignObject[$foreignLabelField]);
@@ -80,6 +69,20 @@ class RelationRenderer extends GridRendererAbstract {
 			}
 		}
 		return $result;
+	}
+
+	/**
+	 * Render an edit URI given an object.
+	 *
+	 * @param Content $object
+	 * @return string
+	 */
+	protected function getEditUri(Content $object) {
+		return sprintf('alt_doc.php?returnUrl=%s&edit[%s][%s]=edit',
+			rawurlencode($this->getModuleLoader()->getModuleUrl()),
+			rawurlencode($object->getDataType()),
+			$object->getUid()
+		);
 	}
 
 	/**
@@ -96,5 +99,14 @@ class RelationRenderer extends GridRendererAbstract {
 		// Compute the label of the foreign table.
 		$relationDataType = $table->field($fieldName)->relationDataType();
 		return TcaService::table($relationDataType)->getLabelField();
+	}
+
+	/**
+	 * Get the Vidi Module Loader.
+	 *
+	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 */
+	protected function getModuleLoader() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
 	}
 }

@@ -21,15 +21,9 @@ use TYPO3\CMS\Vidi\Module\Parameter;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
- * View helper which renders check.
+ * View which renders check.
  */
 class PidCheck extends AbstractComponentView {
-
-	/**
-	 * @var \TYPO3\CMS\Vidi\Module\ModuleLoader
-	 * @inject
-	 */
-	protected $moduleLoader;
 
 	/**
 	 * The data type (table)
@@ -63,7 +57,7 @@ class PidCheck extends AbstractComponentView {
 	 * Pseudo-Constructor, which ensures all dependencies are injected when called.
 	 */
 	public function initializeObject() {
-		$this->dataType = $this->moduleLoader->getDataType();
+		$this->dataType = $this->getModuleLoader()->getDataType();
 		$this->configuredPid = $this->getConfiguredPid();
 	}
 
@@ -214,19 +208,10 @@ EOF;
 			$configuredPid = (int)$result['value'];
 
 			// If no pid is configured, use default pid from Module Loader
-			$pid = ($configuredPid) ?: $this->moduleLoader->getDefaultPid();
+			$pid = ($configuredPid) ?: $this->getModuleLoader()->getDefaultPid();
 		}
 
 		return $pid;
-	}
-
-	/**
-	 * Returns an instance of the current Backend User.
-	 *
-	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 */
-	protected function getBackendUser() {
-		return $GLOBALS['BE_USER'];
 	}
 
 	/**

@@ -14,20 +14,16 @@ namespace TYPO3\CMS\Vidi\View\MenuItem;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Vidi\View\AbstractComponentView;
 
 /**
- * View helper which renders a "mass delete" menu item to be placed in the grid menu.
+ * View which renders a "mass delete" menu item to be placed in the grid menu.
  */
 class MassDeleteMenuItem extends AbstractComponentView {
-
-	/**
-	 * @var \TYPO3\CMS\Vidi\ViewHelpers\Uri\MassDeleteViewHelper
-	 * @inject
-	 */
-	protected $uriMassDeleteViewHelper;
 
 	/**
 	 * Renders a "mass delete" menu item to be placed in the grid menu.
@@ -36,9 +32,36 @@ class MassDeleteMenuItem extends AbstractComponentView {
 	 */
 	public function render() {
 		return sprintf('<li><a href="%s" class="mass-delete" >%s %s</a>',
-			$this->uriMassDeleteViewHelper->render(),
+			$this->getUriMassDelete(),
 			IconUtility::getSpriteIcon('actions-edit-delete'),
 			LocalizationUtility::translate('delete', 'vidi')
 		);
+	}
+
+	/**
+	 * Render a mass delete URI.
+	 *
+	 * @return string
+	 */
+	protected function getUriMassDelete() {
+
+		$parameterPrefix = $this->getModuleLoader()->getParameterPrefix();
+		$parameterPrefixEncoded = rawurlencode($parameterPrefix);
+
+		return sprintf('%s&%s[format]=json&%s[action]=delete&%s[controller]=Content',
+			BackendUtility::getModuleUrl($this->getModuleLoader()->getModuleCode()),
+			$parameterPrefixEncoded,
+			$parameterPrefixEncoded,
+			$parameterPrefixEncoded
+		);
+	}
+
+	/**
+	 * Get the Vidi Module Loader.
+	 *
+	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 */
+	protected function getModuleLoader() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
 	}
 }

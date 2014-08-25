@@ -19,7 +19,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Vidi\View\AbstractComponentView;
 
 /**
- * View helper which renders a "csv export" item to be placed in the menu.
+ * View which renders a "csv export" item to be placed in the menu.
  */
 class ExportCsvMenuItem extends AbstractComponentView {
 
@@ -38,14 +38,5 @@ class ExportCsvMenuItem extends AbstractComponentView {
 			);
 		}
 		return $result;
-	}
-
-	/**
-	 * Returns an instance of the current Backend User.
-	 *
-	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 */
-	protected function getBackendUser() {
-		return $GLOBALS['BE_USER'];
 	}
 }

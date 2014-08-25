@@ -15,20 +15,15 @@ namespace TYPO3\CMS\Vidi\View\Button;
  */
 
 use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Vidi\View\AbstractComponentView;
 use TYPO3\CMS\Vidi\Domain\Model\Content;
 
 /**
- * View helper which renders a "edit" button to be placed in the grid.
+ * View which renders a "edit" button to be placed in the grid.
  */
 class EditButton extends AbstractComponentView {
-
-	/**
-	 * @var \TYPO3\CMS\Vidi\ViewHelpers\Uri\EditViewHelper
-	 * @inject
-	 */
-	protected $uriEditViewHelper;
 
 	/**
 	 * Renders a "edit" button to be placed in the grid.
@@ -38,10 +33,25 @@ class EditButton extends AbstractComponentView {
 	 */
 	public function render(Content $object = NULL) {
 		return sprintf('<a href="%s" data-uid="%s" class="btn-edit" title="%s">%s</a>',
-			$this->uriEditViewHelper->render($object),
+			$this->getUriEdit($object),
 			$object->getUid(),
 			LocalizationUtility::translate('edit', 'vidi'),
 			IconUtility::getSpriteIcon('actions-document-open')
 		);
 	}
+
+	/**
+	 * Render an edit URI given an object.
+	 *
+	 * @param Content $object
+	 * @return string
+	 */
+	protected function getUriEdit(Content $object) {
+		return sprintf('alt_doc.php?returnUrl=%s&edit[%s][%s]=edit',
+			rawurlencode($this->getModuleLoader()->getModuleUrl()),
+			rawurlencode($object->getDataType()),
+			$object->getUid()
+		);
+	}
+
 }

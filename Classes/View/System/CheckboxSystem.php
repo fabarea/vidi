@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
+namespace TYPO3\CMS\Vidi\View\System;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,21 +14,22 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Vidi\Domain\Model\Content;
+use TYPO3\CMS\Vidi\View\AbstractComponentView;
 
 /**
- * View helper for rendering a checkbox.
+ * View for rendering a checkbox.
  */
-class SystemCheckboxViewHelper extends AbstractViewHelper {
+class CheckboxSystem extends AbstractComponentView {
 
 	/**
 	 * Returns a checkbox for the grids.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param Content $object
 	 * @param  int $offset
 	 * @return string
 	 */
-	public function render(\TYPO3\CMS\Vidi\Domain\Model\Content $object, $offset) {
+	public function render(Content $object = NULL, $offset = 0) {
 		return sprintf('<input type="checkbox" class="checkbox-row" data-index="%s" data-uid="%s"/>',
 			$offset,
 			$object->getUid()

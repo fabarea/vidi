@@ -115,7 +115,7 @@ class Content implements \ArrayAccess {
 	 * @return bool
 	 */
 	protected function hasRelation($propertyName) {
-		$fieldName = Property::name($propertyName)->of($this)->toField();
+		$fieldName = Property::name($propertyName)->of($this)->toFieldName();
 		return TcaService::table($this->dataType)->field($fieldName)->hasRelation();
 	}
 
@@ -271,7 +271,7 @@ class Content implements \ArrayAccess {
 		$propertiesAndValues = json_decode(json_encode($this), TRUE);
 
 		foreach ($propertiesAndValues as $propertyName => $value) {
-			$fieldName = Property::name($propertyName)->of($this)->toField();
+			$fieldName = Property::name($propertyName)->of($this)->toFieldName();
 			$result[$fieldName] = $value;
 		}
 
@@ -288,7 +288,7 @@ class Content implements \ArrayAccess {
 		$propertiesAndValues = json_decode(json_encode($this), TRUE);
 
 		foreach ($propertiesAndValues as $propertyName => $value) {
-			$fieldName = Property::name($propertyName)->of($this)->toField();
+			$fieldName = Property::name($propertyName)->of($this)->toFieldName();
 
 			$field = TcaService::table($this->dataType)->field($fieldName);
 			$fieldType = $field->getType();

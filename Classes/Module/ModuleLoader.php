@@ -114,11 +114,8 @@ class ModuleLoader {
 	protected $components = array(
 		self::DOC_HEADER => array(
 			self::TOP => array(
-				self::LEFT => array(
-					'TYPO3\CMS\Vidi\View\Tab\DataTypeTab',
-				),
-				self::RIGHT => array(
-				),
+				self::LEFT => array(),
+				self::RIGHT => array(),
 			),
 			self::BOTTOM => array(
 				self::LEFT => array(
@@ -132,6 +129,7 @@ class ModuleLoader {
 			self::TOP => array(
 				'TYPO3\CMS\Vidi\View\Check\PidCheck',
 				'TYPO3\CMS\Vidi\View\Check\RelationsCheck',
+				'TYPO3\CMS\Vidi\View\Tab\DataTypeTab',
 			),
 			self::BUTTONS => array(
 				'TYPO3\CMS\Vidi\View\Button\EditButton',
@@ -261,7 +259,7 @@ class ModuleLoader {
 	 *
 	 * @return bool
 	 */
-	public function isCurrentModuleList() {
+	public function copeWithPageTree() {
 		return GeneralUtility::_GP(Parameter::MODULE) === 'web_VidiM1';
 	}
 
@@ -281,7 +279,7 @@ class ModuleLoader {
 	 */
 	public function getVidiModuleCode() {
 
-		if ($this->isCurrentModuleList()) {
+		if ($this->copeWithPageTree()) {
 			$userPreferenceKey = sprintf('Vidi_pid_%s', $this->getCurrentPid());
 
 			if (GeneralUtility::_GP(Parameter::SUBMODULE)) {
@@ -326,7 +324,7 @@ class ModuleLoader {
 		$moduleCode = $this->getModuleCode();
 
 		// Add possible submodule if current module is list.
-		if ($this->isCurrentModuleList()) {
+		if ($this->copeWithPageTree() && !isset($additionalParameters[Parameter::SUBMODULE])) {
 			$additionalParameters[Parameter::SUBMODULE] = $this->getVidiModuleCode();
 		}
 

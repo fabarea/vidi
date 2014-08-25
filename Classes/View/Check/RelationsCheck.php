@@ -18,15 +18,9 @@ use TYPO3\CMS\Vidi\View\AbstractComponentView;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
- * View helper which renders check.
+ * View which renders check.
  */
 class RelationsCheck extends AbstractComponentView {
-
-	/**
-	 * @var \TYPO3\CMS\Vidi\Module\ModuleLoader
-	 * @inject
-	 */
-	protected $moduleLoader;
 
 	/**
 	 * @var array
@@ -63,7 +57,7 @@ class RelationsCheck extends AbstractComponentView {
 					Grid may have trouble to render because of wrong / missing TCA.
 				</div>
 				<div class="message-body">
-					TCA which describes the relations within "{$this->moduleLoader->getDataType()}" is incorrect.
+					TCA which describes the relations within "{$this->getModuleLoader()->getDataType()}" is incorrect.
 					When dealing with MM relations, Vidi requires to have a TCA in both direction to work properly.
 
 					You could try the following fix:
@@ -97,7 +91,7 @@ EOF;
 				'maxitems' => 9999,
 				'autoSizeMax' => 30,
 				'multiple' => 0,
-				'foreign_table' => '{$this->moduleLoader->getDataType()}',
+				'foreign_table' => '{$this->getModuleLoader()->getDataType()}',
 				'MM' => 'CHANGE_ME',
 				'MM_opposite_field' => '{$invalidField}',
 			),
@@ -121,7 +115,7 @@ EOF;
 	 */
 	protected function isTcaValid() {
 
-		$tableName = $this->moduleLoader->getDataType();
+		$tableName = $this->getModuleLoader()->getDataType();
 		$tcaGridService = TcaService::grid($tableName);
 		$tcaTableService = TcaService::table($tableName);
 
@@ -148,21 +142,4 @@ EOF;
 		return empty($this->invalidFields);
 	}
 
-	/**
-	 * Returns an instance of the current Backend User.
-	 *
-	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 */
-	protected function getBackendUser() {
-		return $GLOBALS['BE_USER'];
-	}
-
-	/**
-	 * Return a pointer to the database.
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
-	}
 }

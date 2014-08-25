@@ -19,7 +19,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Vidi\View\AbstractComponentView;
 
 /**
- * View helper which renders a "mass edit" menu item to be placed in the grid menu.
+ * View which renders a "mass edit" menu item to be placed in the grid menu.
  */
 class MassEditMenuItem extends AbstractComponentView {
 

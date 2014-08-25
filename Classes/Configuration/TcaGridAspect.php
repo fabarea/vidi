@@ -51,7 +51,7 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface {
 			),
 			'columns' => array(
 				'__checkbox' => array(
-					'width' => '5px',
+					'width' => '14px',
 					'sortable' => FALSE,
 					'html' => '<input type="checkbox" class="checkbox-row-top"/>',
 				),
@@ -61,7 +61,7 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface {
 					'width' => '5px',
 				),
 				$labelField => array(
-					'editable' => TRUE,
+					'editable' => FALSE, // @todo make me editable but consider the record icon with jEditable plugin
 				),
 				'tstamp' => array(
 					'visible' => FALSE,
