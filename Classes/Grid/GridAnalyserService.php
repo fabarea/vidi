@@ -30,7 +30,7 @@ class GridAnalyserService {
 	public function checkRelationForTable($tableName){
 
 		$relations = array();
-		$tcaTableService = TcaService::table($tableName);
+		$table = TcaService::table($tableName);
 
 		$missingOppositionRelationMessage =<<<EOF
 
@@ -41,27 +41,27 @@ EOF;
 
 		foreach (TcaService::grid($tableName)->getFields() as $fieldName => $configuration) {
 
-			if ($tcaTableService->hasField($fieldName)) {
-				if ($tcaTableService->field($fieldName)->hasMany()) {
-					if ($tcaTableService->field($fieldName)->hasRelationWithCommaSeparatedValues()) {
+			if ($table->hasField($fieldName)) {
+				if ($table->field($fieldName)->hasMany()) {
+					if ($table->field($fieldName)->hasRelationWithCommaSeparatedValues()) {
 						$_relations = $this->checkRelationOf($tableName, $fieldName, 'comma separated values');
 						$relations = array_merge($relations, $_relations);
-					} elseif ($tcaTableService->field($fieldName)->hasRelationManyToMany()) {
+					} elseif ($table->field($fieldName)->hasRelationManyToMany()) {
 						$_relations = $this->checkRelationManyToMany($tableName, $fieldName);
 						$relations = array_merge($relations, $_relations);
 
-					} elseif ($tcaTableService->field($fieldName)->hasRelationOneToMany()) {
+					} elseif ($table->field($fieldName)->hasRelationOneToMany()) {
 						$_relations = $this->checkRelationOf($tableName, $fieldName, 'one-to-many');
 						$relations = array_merge($relations, $_relations);
 					} else {
 						$relations[] = sprintf('* field: "%s", relation: ?-to-many%s', $fieldName, $missingOppositionRelationMessage);
 					}
 					$relations[] = '';
-				} elseif ($tcaTableService->field($fieldName)->hasOne()) {
+				} elseif ($table->field($fieldName)->hasOne()) {
 
-					if ($tcaTableService->field($fieldName)->hasRelationOneToOne()) {
+					if ($table->field($fieldName)->hasRelationOneToOne()) {
 						$relations[] = sprintf('* one-to-one "%s"', $fieldName);
-					} elseif ($tcaTableService->field($fieldName)->hasRelationManyToOne()) {
+					} elseif ($table->field($fieldName)->hasRelationManyToOne()) {
 						$_relations = $this->checkRelationOf($tableName, $fieldName, 'many-to-one');
 						$relations = array_merge($relations, $_relations);
 					} else {
@@ -85,12 +85,12 @@ EOF;
 
 		$output = array();
 
-		$tcaTableService = TcaService::table($tableName);
+		$table = TcaService::table($tableName);
 		$output[] = sprintf('* field: "%s", relation: many-to-many', $fieldName);
 
-		$foreignTable = $tcaTableService->field($fieldName)->getForeignTable();
-		$manyToManyTable = $tcaTableService->field($fieldName)->getManyToManyTable();
-		$foreignField = $tcaTableService->field($fieldName)->getForeignField();
+		$foreignTable = $table->field($fieldName)->getForeignTable();
+		$manyToManyTable = $table->field($fieldName)->getManyToManyTable();
+		$foreignField = $table->field($fieldName)->getForeignField();
 
 		if (!$foreignField) {
 			$output[] = sprintf('  ERROR! Can not found foreign field for "%s". Perhaps missing opposite configuration?', $fieldName);
@@ -118,11 +118,11 @@ EOF;
 
 		$output = array();
 
-		$tcaTableService = TcaService::table($tableName);
+		$table = TcaService::table($tableName);
 		$output[] = sprintf('* field: "%s", relation: %s', $fieldName, $relationType);
 
-		$foreignTable = $tcaTableService->field($fieldName)->getForeignTable();
-		$foreignField = $tcaTableService->field($fieldName)->getForeignField();
+		$foreignTable = $table->field($fieldName)->getForeignTable();
+		$foreignField = $table->field($fieldName)->getForeignField();
 		$output[] = sprintf('  %s.%s <--> %s.%s', $tableName, $fieldName, $foreignTable, $foreignField);
 		$output[] = '';
 

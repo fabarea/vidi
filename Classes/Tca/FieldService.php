@@ -552,7 +552,7 @@ class FieldService implements TcaServiceInterface {
 	}
 
 	/**
-	 * Returns whether the field has one-to-many relation.
+	 * Returns whether the field has many-to-one relation.
 	 *
 	 * @return bool
 	 */
@@ -562,7 +562,7 @@ class FieldService implements TcaServiceInterface {
 		$foreignField = $this->getForeignField();
 		if (!empty($foreignField)) {
 
-			// Load TCA service of foreign field..
+			// Load TCA service of the foreign field.
 			$foreignTable = $this->getForeignTable();
 			$result = $this->hasOne() && TcaService::table($foreignTable)->field($foreignField)->hasMany();
 		}
@@ -570,7 +570,7 @@ class FieldService implements TcaServiceInterface {
 	}
 
 	/**
-	 * Returns whether the field has many-to-one relation.
+	 * Returns whether the field has one-to-many relation.
 	 *
 	 * @return bool
 	 */
@@ -580,7 +580,7 @@ class FieldService implements TcaServiceInterface {
 		$foreignField = $this->getForeignField();
 		if (!empty($foreignField)) {
 
-			// Load TCA service of foreign field..
+			// Load TCA service of the foreign field.
 			$foreignTable = $this->getForeignTable();
 			$result = $this->hasMany() && TcaService::table($foreignTable)->field($foreignField)->hasOne();
 		}
