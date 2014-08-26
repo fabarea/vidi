@@ -51,6 +51,36 @@ install the extension as normal in the Extension Manager::
 .. _TER: typo3.org/extensions/repository/
 .. _master branch: https://github.com/TYPO3-extensions/vidi.git
 
+FAQ
+===
+
+* **What about performance?**
+
+According to our experience, Vidi modules behave quite well when dealing with large amount of data (in the limit of the reasonable). In general, Vidi is capable to fetch just the
+exact number of records required. Furthermore, Vidi is capable of internally caching data in memory such as relations once they have been fetched.
+
+If you experiment a slow Grid, consider reducing the number of column visible among other the "relational" columns which are the most expensive to render. If a column is hidden
+in the Grid, the content will not be computed for performance sake.
+
+* How to get started with a new custom Vidi module?
+
+As of 0.4.0 Vidi comes with a new experimentation in the form of a "list2". The idea is to bring all the power of Vidi for every type of records by default.
+It can be activated (or deactivated) in the settings of the Extension Manager. Take example how it is done for fe_users in ``EXT:vidi/Configuration/Overrides/fe_users.php``
+but basically you should have for all record types a default configuration already. What you might want is to have an independent module in the BE. This can be achieved by
+the Vidi Module Loader.
+
+* **How to hook into a Vidi module?**
+
+If you need to add some custom behaviour such as adding a new button or replacing a default Component, you are likely to do it through the Vidi Module Loader. As a quick example::
+
+	$moduleLoader = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader', 'sys_file');
+	$moduleLoader->addJavaScriptFiles(...)
+
+
+For more insight, consider the example of ``ext_tables.php`` of EXT:media.
+
+Notice also for each Vidi module, you can add any kind of utility tools in a dedicated module (c.f. Add tools in a Vidi module).
+
 
 Configuration
 =============
@@ -80,18 +110,105 @@ be fine grained::
 
 .. _TCEmain: http://docs.typo3.org/TYPO3/CoreApiReference/ApiOverview/Typo3CoreEngine/UsingTcemain/Index.html
 
-Start a new BE module for a custom data type
-============================================
 
-Loading a BE module for a custom data type can be summed up with:
+Fetching data with...
+=====================
 
-#. Configure the module loader
-#. Define a language file which contains some labels.
-#. Define icon and JS / CSS files
+Content View Helper
+-------------------
 
-The best way to get started is to install the Vidi Starter extension which is the ideal companion of Vidi
-aiming to facilitate the initial steps. More info https://github.com/fudriot/vidi_starter.
+To quickly get data in a Fluid Template such as a list of Value Objects, the Content View Helper will interact with
+the Vidi Content Repository and can be used to retrieve list of content.
+As example, display a list of all user belonging to User Group "1" and loop around there respective groups::
 
+	<f:if condition="{v:content.find(matches: '{usergroup: 1}', orderings: '{uid: \'ASC\'}', dataType: 'fe_users')}">
+		<ul>
+			<f:for each="{v:content.find(matches: '{usergroup: 1}', orderings: '{uid: \'ASC\'}', dataType: 'fe_users')}" as="user">
+				<li>
+					{user.uid}:{user.username}
+
+					<!-- !!! Notice how you can fetch relation through their properties! -->
+					<f:if condition="{user.usergroup}}">
+						<ul>
+							<f:for each="{user.usergroup}" as="group">
+								<li>{group.title}</li>
+							</f:for>
+						</ul>
+					</f:if>
+				</li>
+			</f:for>
+		</ul>
+	</f:if>
+	{namespace m=TYPO3\CMS\Vidi\ViewHelpers}
+
+Same example but simply count records::
+
+	Number of files: {v:content.find(matches: '{usergroup: 1}', orderings: '{uid: \'ASC\'}', dataType: 'fe_users')}
+
+
+**TODO**: Implement selection saving! the syntax is still a bit verbose to (my) taste. There is in preparation the possibility to save selection (tx_vid_domain_model_selection)
+in a BE module and retrieve that selection on the Frontend. Looking for resources!!
+
+Vidi Content Repository (programming way)
+-----------------------------------------
+
+Each Content type (e.g. fe_users, fe_groups) has its own Content repository instance which is manged internally by the Repository Factory.
+For getting the adequate instance, the repository can be fetched by this code. ::
+
+
+	// Fetch the adequate repository for a known data type.
+	$dataType = 'fe_users';
+	$contentRepository = \TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory::getInstance($dataType);
+
+	// From there, you can query the repository as you are used to in Flow / Extbase.
+
+	// Fetch all users having name "foo".
+	$contentRepository->findByName('foo');
+
+	// Fetch one user with username "foo"
+	$contentRepository->findOneByUsername('foo');
+
+	// Fetch all users belonging to User Group "1". Usergroup must be written that sort following the TCA of fe_users, column "usergroup".
+	$contentRepository->findByUsergroup(1);
+
+For complex query, a matcher object can be instantiated where to add many criteria. The matching criteria will then be interpreted by the
+Content Repository. Here is an example for retrieving a set of files::
+
+	// Initialize a Matcher object.
+	/** @var \TYPO3\CMS\Vidi\Persistence\Matcher $matcher */
+	$matcher = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher');
+
+	// Add some criteria.
+	$matcher->equals('storage', '1');
+
+	// "metadata" is required and corresponds to a field path making the join between the "sys_file_metadata" and "sys_file".
+	$matcher->equals('metadata.categories', '1');
+
+	// Add criteria with "like"
+	$matcher->like('metadata.title', 'foo');
+
+	// Fetch the objects.
+	$files = $contentRepository->findBy($matcher);
+
+**Notice**: The example would work in the Frontend as well. However, not everything is in place such as localization. Having that on my todo list.
+
+Add tools in a Vidi module
+==========================
+
+For each Vidi module, it is possible to register some tools to do whatever maintenance, utility, processing operations.
+The landing page of the Tools can be accessed by clicking the upper right icon. The icon is only displayed if any Tools is available.
+To take example, there is a Tool which is shown for admin User that will check the relations used in the Grid.
+To register your own Tool, add the following lines into in ``ext_tables.php``::
+
+	if (TYPO3_MODE == 'BE') {
+
+		// Register a Tool for a FE User only.
+		\TYPO3\CMS\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'TYPO3\CMS\Vidi\Tool\RelationAnalyserTool');
+
+
+		// Register some Tools for all Vidi modules.
+		\TYPO3\CMS\Vidi\Tool\ToolRegistry::getInstance()->register('fe_users', 'TYPO3\CMS\Vidi\Tool\RelationAnalyserTool');
+	}
 
 TCA Grid
 ========
@@ -430,7 +547,6 @@ Description
 		"WeirdField_Name" => 'weirdFieldName'
 
 
-
 Grid Renderer
 -------------
 
@@ -494,23 +610,6 @@ Example, using the custom FancyDate formatter from the Acme Package::
 		'format' => 'Acme\\Package\\Vidi\\Formatter\\FancyDate',
 	),
 
-
-Content Repository Factory
-==========================
-
-Each Content type (e.g. fe_users, fe_groups) has its own Content repository instance which is manged internally by the Repository Factory.
-For getting the adequate instance, the repository can be fetched by this code::
-
-
-	// Fetch the adequate repository for a known data type.
-	$dataType = 'fe_users';
-	$contentRepository = \TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory::getInstance($dataType);
-
-	// The data type can be omitted in the context of a BE module
-	// Internally, the Factory ask the Module Loader to retrieve the main data type of the BE module.
-	$contentRepository = \TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory::getInstance();
-
-
 TCA Service API
 ===============
 
@@ -545,206 +644,8 @@ Command line
 To check whether TCA is well configured, Vidi provides a Command that will scan the configuration and report potential problem. This feature is still experimental::
 
 	# Check relations used in the grid.
-	./typo3/cli_dispatch.phpsh extbase vidi:checkrelations
-	./typo3/cli_dispatch.phpsh extbase vidi:checkrelations --table tx_domain_model_foo
+	./typo3/cli_dispatch.phpsh extbase vidi:analyseRelations
+	./typo3/cli_dispatch.phpsh extbase vidi:analyseRelations --table tx_domain_model_foo
 
 	# Check labels of the Grid
 	./typo3/cli_dispatch.phpsh extbase vidi:checkLabels
-
-
-Example of TCA
---------------
-
-@todo writing review is necessary.
-
-Important to notice that for displaying relational columns in a Vidi module, the TCA configuration ``foreign_field``
-must be defined in both side of the relations. This is needed for Vidi to retrieve the content in both direction.
-Check example below which shows ``foreign_field`` set for each field.
-
-One to Many relation and its opposite Many to One:
-
-::
-
-	#################
-	# one-to-many
-	#################
-	$TCA['tx_foo_domain_model_book'] = array(
-		'columns' => array(
-			'access_codes' => array(
-				'config' => array(
-					'type' => 'inline',
-					'foreign_table' => 'tx_foo_domain_model_accesscode',
-					'foreign_field' => 'book',
-					'maxitems' => 9999,
-				),
-			),
-		),
-	);
-
-	#################
-	# many-to-one
-	#################
-	$TCA['tx_foo_domain_model_accesscode'] = array(
-		'columns' => array(
-			'book' => array(
-				'config' => array(
-					'type' => 'select',
-					'foreign_table' => 'tx_foo_domain_model_book',
-					# IMPORTANT: DO NOT FORGET TO ADD foreign_field.
-					'foreign_field' => 'access_codes',
-					'minitems' => 1,
-					'maxitems' => 1,
-				),
-			),
-		),
-	);
-
-
-Bi-directional Many to Many relation::
-
-	#################
-	# many-to-many
-	#################
-	$TCA['tx_foo_domain_model_book'] = array(
-		'columns' => array(
-			'tx_myext_locations' => array(
-				'config' => array(
-					'type' => 'select',
-					'foreign_table' => 'tx_foo_domain_categories',
-					'MM_opposite_field' => 'usage_mm',
-					'MM' => 'tx_foo_domain_categories_mm',
-					'MM_match_fields' => array(
-						'tablenames' => 'pages'
-					),
-					'size' => 5,
-					'maxitems' => 100
-				)
-			)
-		),
-	);
-
-	#################
-	# many-to-many (opposite relation)
-	#################
-	$TCA['tx_foo_domain_categories'] = array(
-		'columns' => array(
-			'usage_mm' => array(
-				'config' => array(
-					'type' => 'group',
-					'internal_type' => 'db',
-					'allowed' => 'pages,tt_news',
-					'prepend_tname' => 1,
-					'size' => 5,
-					'maxitems' => 100,
-					'MM' => 'tx_foo_domain_categories_mm'
-				)
-			)
-		),
-	);
-
-Legacy Many to Many relation with comma separated values (should be avoided in favour to proper MM relations). Notice field ``foreign_field`` is omitted::
-
-	#################
-	# Legacy MM relation (comma separated value)
-	#################
-	$TCA['tx_foo_domain_model_book'] = array(
-		'columns' => array(
-			'fe_groups' => array(
-				'config' => array(
-					'type' => 'inline',
-					'foreign_table' => 'tx_foo_domain_model_accesscode',
-					'foreign_field' => 'book',
-					'maxitems' => 9999,
-				),
-			),
-		),
-	);
-
-
-
-Tutorial: display a custom widget within the BE module
-======================================================
-
-@todo put this into EXT:vidi_starter as a implemented option.
-
-It is possible to load a custom form.
-
-* In ext_tables.php::
-
-	$moduleLoader->addJavaScriptFiles(array(sprintf('EXT:ebook/Resources/Public/JavaScript/%s.js', $dataType)));
-
-	$controllerActions = array(
-		'FrontendUser' => 'listFrontendUserGroup, addFrontendUserGroup',
-	);
-
-	/**
-	 * Register some controllers for the Backend (Ajax)
-	 * Special case for FE User and FE Group
-	 */
-	\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-		$_EXTKEY,
-		'Pi1',
-		$controllerActions,
-		$controllerActions
-	);
-
-	\TYPO3\CMS\Vidi\AjaxDispatcher::addAllowedActions(
-		$_EXTKEY,
-		'Pi1',
-		$controllerActions
-	);
-
-* Create Controller for loading Wizard::
-
-	touch EXT:ebook/Classes/Controller/Backend/AccessCodeController.php
-	touch EXT:ebook/Resources/Private/Backend/Templates/AccessCode/ShowWizard.html
-	touch EXT:ebook/Resources/Public/JavaScript/tx_ebook_domain_model_book.js
-	touch EXT:ebook/ext_typoscript_constants.txt
-	touch EXT:ebook/ext_typoscript_setup.txt
-	touch EXT:ebook/Migrations/Code/ClassAliasMap.php
-
-
-* TypoScript Constants in ``EXT:ebook/ext_typoscript_constants.txt``::
-
-	module.tx_ebook {
-		view {
-			 # cat=module.tx_ebook/file; type=string; label=Path to template root (BE)
-			templateRootPath = EXT:ebook/Resources/Private/Backend/Templates/
-			 # cat=module.tx_ebook/file; type=string; label=Path to template partials (BE)
-			partialRootPath = EXT:ebook/Resources/Private/Partials/
-			 # cat=module.tx_ebook/file; type=string; label=Path to template layouts (BE)
-			layoutRootPath = EXT:ebook/Resources/Private/Backend/Layouts/
-		}
-	}
-
-
-* Configure TypoScript in ``EXT:ebook/ext_typoscript_setup.txt``::
-
-	# Plugin configuration
-	plugin.tx_vidi {
-		settings {
-		}
-		view {
-			templateRootPath = {$plugin.tx_vidi.view.templateRootPath}
-			partialRootPath = {$plugin.tx_vidi.view.partialRootPath}
-			layoutRootPath = {$plugin.tx_vidi.view.layoutRootPath}
-			defaultPid = auto
-		}
-	}
-
-	# Module configuration
-	module.tx_vidi {
-		settings < plugin.tx_vidi.settings
-		view < plugin.tx_vidi.view
-		view {
-			templateRootPath = {$module.tx_vidi.view.templateRootPath}
-			partialRootPath = {$module.tx_vidi.view.partialRootPath}
-			layoutRootPath = {$module.tx_vidi.view.layoutRootPath}
-		}
-	}
-
-
-* Migration file in ``EXT:ebook/Migrations/Code/ClassAliasMap.php`` (copy example from EXT:ebook).
-* Backend Controller ``EXT:ebook/Classes/Controller/Backend/AccessCodeController.php`` (copy example from EXT:ebook).
-* HTML Template ``EXT:ebook/Resources/Private/Backend/Templates/AccessCode/ShowWizard.html`` (copy example from EXT:ebook).
-* JavaScript File ``EXT:ebook/Resources/Public/JavaScript/tx_ebook_domain_model_book.js`` (copy example from EXT:ebook).

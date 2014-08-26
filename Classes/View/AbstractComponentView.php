@@ -22,14 +22,6 @@ use TYPO3\CMS\Vidi\Domain\Model\Content;
 abstract class AbstractComponentView implements ViewComponentInterface {
 
 	/**
-	 * Renders something to be printed out to the browser.
-	 *
-	 * @return string
-	 */
-	//abstract public function render(Content $object = NULL);
-
-
-	/**
 	 * Get the Vidi Module Loader.
 	 *
 	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader

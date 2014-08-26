@@ -6,7 +6,7 @@ if (!defined('TYPO3_MODE')) {
 
 // Check from Vidi configuration what default module should be loaded.
 // Make sure the class exists to avoid a Runtime Error
-if (TYPO3_MODE == 'BE' && class_exists('TYPO3\CMS\Vidi\Module\ModuleLoader')) {
+if (TYPO3_MODE == 'BE') {
 
 	// Register Selection table
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_vidi_domain_model_selection');
@@ -59,6 +59,7 @@ if (TYPO3_MODE == 'BE' && class_exists('TYPO3\CMS\Vidi\Module\ModuleLoader')) {
 			'after:list', // Position
 			array(
 				'Content' => 'index, list, delete, update, edit',
+				'Tool' => 'welcome, work',
 				'FacetValue' => 'list',
 			), array(
 				'access' => 'user,group',
@@ -77,6 +78,9 @@ if (TYPO3_MODE == 'BE' && class_exists('TYPO3\CMS\Vidi\Module\ModuleLoader')) {
 			options.hideModules.web := addToList(list)
 		');
 	}
+
+	// Register the Tools for Vidi.
+	\TYPO3\CMS\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'TYPO3\CMS\Vidi\Tool\RelationAnalyserTool');
 
 	/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
 	$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
@@ -101,6 +105,9 @@ if (TYPO3_MODE == 'BE' && class_exists('TYPO3\CMS\Vidi\Module\ModuleLoader')) {
 		'processMarkers',
 		TRUE
 	);
+
+	// Register some Tools for Vidi.
+	\TYPO3\CMS\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'TYPO3\CMS\Vidi\Tool\RelationAnalyserTool');
 }
 
 // Add new sprite icon.

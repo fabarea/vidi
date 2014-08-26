@@ -115,7 +115,9 @@ class ModuleLoader {
 		self::DOC_HEADER => array(
 			self::TOP => array(
 				self::LEFT => array(),
-				self::RIGHT => array(),
+				self::RIGHT => array(
+					'TYPO3\CMS\Vidi\View\Button\ToolButton',
+				),
 			),
 			self::BOTTOM => array(
 				self::LEFT => array(
@@ -160,15 +162,6 @@ class ModuleLoader {
 	 */
 	public function __construct($dataType = '') {
 		$this->dataType = $dataType;
-	}
-
-	/**
-	 * Initialize and populate TBE_MODULES_EXT with default data.
-	 *
-	 * @return void
-	 */
-	public function initialize() {
-
 	}
 
 	/**
@@ -237,6 +230,7 @@ class ModuleLoader {
 				$this->position,
 				array(
 					'Content' => 'index, list, delete, update, edit',
+					'Tool' => 'welcome, work',
 					'Facet' => 'suggest',
 				),
 				$moduleConfiguration
@@ -323,7 +317,7 @@ class ModuleLoader {
 	public function getModuleUrl(array $additionalParameters = array()) {
 		$moduleCode = $this->getModuleCode();
 
-		// Add possible submodule if current module is list.
+		// Add possible submodule if current module has page tree.
 		if ($this->copeWithPageTree() && !isset($additionalParameters[Parameter::SUBMODULE])) {
 			$additionalParameters[Parameter::SUBMODULE] = $this->getVidiModuleCode();
 		}
