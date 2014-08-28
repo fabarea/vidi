@@ -17,6 +17,7 @@ namespace TYPO3\CMS\Vidi\Domain\Repository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException;
+use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\RepositoryInterface;
 use TYPO3\CMS\Vidi\Converter\Property;
 use TYPO3\CMS\Vidi\Exception\MissingUidException;
@@ -59,7 +60,7 @@ class ContentRepository implements RepositoryInterface {
 	protected $errorMessages = array();
 
 	/**
-	 * @var \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface
+	 * @var QuerySettingsInterface
 	 */
 	protected $defaultQuerySettings;
 
@@ -352,13 +353,6 @@ class ContentRepository implements RepositoryInterface {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
-	 */
-	protected function getFieldPathResolver () {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
-	}
-
-	/**
 	 * It does not make sense to have a "like" in presence of numerical field, e.g "uid".
 	 * Tell whether the given value makes sense for a "like" clause.
 	 *
@@ -402,19 +396,37 @@ class ContentRepository implements RepositoryInterface {
 		if (!empty($criteria)) {
 			$constraints = array();
 
-			$tcaTableService = TcaService::table($this->dataType);
 			foreach ($criteria as $criterion) {
 
-				$fieldName = $criterion['propertyName'];
+				$fieldNameAndPath = $criterion['fieldNameAndPath'];
+
+				// Compute a few variables...
+				// $dataType is generally equals to $this->dataType but not always... if fieldName is a path.
+				$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $this->dataType);
+				$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $this->dataType);
+				$fieldPath = $this->getFieldPathResolver()->stripFieldName($fieldNameAndPath, $this->dataType);
+
+				// Get the proper table service.
+				$table = TcaService::table($dataType);
 				$operand = $criterion['operand'];
-				if ($tcaTableService->field($fieldName)->hasRelation() && is_numeric($operand)) {
-					$fieldName = $fieldName . '.uid';
-				} elseif ($tcaTableService->field($fieldName)->hasRelation()) {
-					$foreignTable = $tcaTableService->field($fieldName)->getForeignTable();
-					$foreignTcaTableService = TcaService::table($foreignTable);
-					$fieldName = $fieldName . '.' . $foreignTcaTableService->getLabelField();
+
+				if ($table->field($fieldName)->hasRelation()) {
+					if (MathUtility::canBeInterpretedAsInteger($operand)) {
+						$fieldNameAndPath = $fieldName . '.uid';
+					} else {
+						$foreignTableName = $table->field($fieldName)->getForeignTable();
+						$foreignTable = TcaService::table($foreignTableName);
+						$fieldNameAndPath = $fieldName . '.' . $foreignTable->getLabelField();
+					}
 				}
-				$constraints[] = $query->$operator($fieldName, $criterion['operand']);
+
+				// If different means we should restore the prepended path segment for proper SQL parser.
+				// This is TRUE for a composite field, e.g items.sys_file_metadata for categories.
+				if ($fieldName !== $fieldPath) { // this could also be defined with TcaService::table($dataType)->hasField($fieldName)
+					$fieldNameAndPath = $fieldPath . '.' . $fieldNameAndPath;
+				}
+
+				$constraints[] = $query->$operator($fieldNameAndPath, $criterion['operand']);
 			}
 
 			$getLogicalSeparator = sprintf('getLogicalSeparatorFor%s', $operatorName);
@@ -558,8 +570,8 @@ class ContentRepository implements RepositoryInterface {
 		/** @var $matcher Matcher */
 		$matcher = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher', array(), $this->getDataType());
 
-		$tcaTableService = TcaService::table($this->dataType);
-		if ($tcaTableService->field($fieldName)->isGroup()) {
+		$table = TcaService::table($this->dataType);
+		if ($table->field($fieldName)->isGroup()) {
 
 			$valueParts = explode('.', $value, 2);
 			$fieldName = $fieldName . '.' . $valueParts[0];
@@ -650,12 +662,12 @@ class ContentRepository implements RepositoryInterface {
 	/**
 	 * Sets the default query settings to be used in this repository
 	 *
-	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $defaultQuerySettings The query settings to be used by default
+	 * @param QuerySettingsInterface $defaultQuerySettings The query settings to be used by default
 	 * @throws \BadMethodCallException
 	 * @return void
 	 * @api
 	 */
-	public function setDefaultQuerySettings(\TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $defaultQuerySettings) {
+	public function setDefaultQuerySettings(QuerySettingsInterface $defaultQuerySettings) {
 		$this->defaultQuerySettings = $defaultQuerySettings;
 	}
 
@@ -678,4 +690,12 @@ class ContentRepository implements RepositoryInterface {
 	protected function isBackendMode() {
 		return TYPO3_MODE == 'BE';
 	}
+
+	/**
+	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 */
+	protected function getFieldPathResolver () {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+	}
+
 }

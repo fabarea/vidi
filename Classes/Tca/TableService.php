@@ -285,7 +285,31 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @return array
 	 */
 	public function hasField($fieldName) {
-		return isset($this->columnTca[$fieldName]) || in_array($fieldName, TcaService::getSystemFields());
+		if ($this->isComposite($fieldName)) {
+			$parts = explode('.', $fieldName);
+			$strippedFieldName = $parts[0];
+			$tableName = $parts[1];
+
+			$hasField = $this->columnTca[$strippedFieldName] && isset($GLOBALS['TCA'][$tableName]);
+
+			// Continue checking that the $strippedFieldName is of type "group"
+			if (isset($GLOBALS['TCA'][$this->tableName]['columns'][$strippedFieldName])) {
+				$hasField = TcaService::table($this->tableName)->field($strippedFieldName)->isGroup(); // Group
+			}
+		} else {
+			$hasField = isset($this->columnTca[$fieldName]) || in_array($fieldName, TcaService::getSystemFields());
+		}
+		return $hasField;
+	}
+
+	/**
+	 * Tell whether the field name contains a path, e.g. metadata.title
+	 *
+	 * @param string $fieldName
+	 * @return boolean
+	 */
+	public function isComposite($fieldName) {
+		return strpos($fieldName, '.') > 0;
 	}
 
 	/**
@@ -338,17 +362,17 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	public function field($fieldName) {
 
 		// In case field contains items.tx_table for field type "group"
-		$fieldNameAndPath = '';
+		$compositeField = '';
 		if (strpos($fieldName, '.') !== FALSE) {
-			$fieldNameAndPath = $fieldName;
-			$fieldParts = explode('.', $fieldNameAndPath, 2);
+			$compositeField = $fieldName;
+			$fieldParts = explode('.', $compositeField, 2);
 			$fieldName = $fieldParts[0];
 
 			// Special when field has been instantiated without the field name and path.
 			if (!empty($this->instances[$fieldName])) {
-				/** @var FieldService $fieldTcaService */
-				$fieldTcaService = $this->instances[$fieldName];
-				$fieldTcaService->setFieldNameAndPath($fieldNameAndPath);
+				/** @var FieldService $field */
+				$field = $this->instances[$fieldName];
+				$field->setCompositeField($compositeField);
 			}
 		}
 
@@ -368,7 +392,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 				$fieldName,
 				$this->columnTca[$fieldName],
 				$this->tableName,
-				$fieldNameAndPath
+				$compositeField
 			);
 
 			$this->instances[$fieldName] = $instance;

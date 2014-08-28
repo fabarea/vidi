@@ -136,12 +136,12 @@ class Matcher {
 	}
 
 	/**
-	 * @param $propertyName
+	 * @param $fieldNameAndPath
 	 * @param $operand
 	 * @return $this
 	 */
-	public function equals($propertyName, $operand) {
-		$this->equalsCriteria[] = array('propertyName' => $propertyName, 'operand' => $operand);
+	public function equals($fieldNameAndPath, $operand) {
+		$this->equalsCriteria[] = array('fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand);
 		return $this;
 	}
 
@@ -153,12 +153,12 @@ class Matcher {
 	}
 
 	/**
-	 * @param $propertyName
+	 * @param $fieldNameAndPath
 	 * @param $operand
 	 * @return $this
 	 */
-	public function in($propertyName, $operand) {
-		$this->inCriteria[] = array('propertyName' => $propertyName, 'operand' => $operand);
+	public function in($fieldNameAndPath, $operand) {
+		$this->inCriteria[] = array('fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand);
 		return $this;
 	}
 
@@ -170,12 +170,12 @@ class Matcher {
 	}
 
 	/**
-	 * @param $propertyName
+	 * @param $fieldNameAndPath
 	 * @param $operand
 	 * @return $this
 	 */
-	public function likes($propertyName, $operand) {
-		$this->likeCriteria[] = array('propertyName' => $propertyName, 'operand' => '%' . $operand . '%');
+	public function likes($fieldNameAndPath, $operand) {
+		$this->likeCriteria[] = array('fieldNameAndPath' => $fieldNameAndPath, 'operand' => '%' . $operand . '%');
 		return $this;
 	}
 

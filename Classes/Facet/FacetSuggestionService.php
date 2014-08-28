@@ -58,7 +58,7 @@ class FacetSuggestionService  {
 				// Fetch the adequate repository
 				$foreignTable = TcaService::table($dataType)->field($fieldName)->getForeignTable();
 				$contentRepository = ContentRepositoryFactory::getInstance($foreignTable);
-				$tcaTableService = TcaService::table($foreignTable);
+				$table = TcaService::table($foreignTable);
 
 				// Initialize the matcher object.
 				$matcher = MatcherObjectFactory::getInstance()->getMatcher(array(), $foreignTable);
@@ -69,12 +69,7 @@ class FacetSuggestionService  {
 					$contents = $contentRepository->findBy($matcher);
 
 					foreach ($contents as $content) {
-						// Format content so that suggestion displays the uid on the Visual Search.
-						#$values[] = array (
-						#	'value' => $content['uid'],
-						#	'label' => $content[$tcaTableService->getLabelField()],
-						#);
-						$values[$content->getUid()] = $content[$tcaTableService->getLabelField()];
+						$values[$content->getUid()] = $content[$table->getLabelField()];
 					}
 				}
 			} elseif (!TcaService::table($dataType)->field($fieldName)->isTextArea()) { // We don't want suggestion if field is text area.

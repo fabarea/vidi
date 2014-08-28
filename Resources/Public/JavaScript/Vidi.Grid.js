@@ -141,7 +141,6 @@ Vidi.Grid = {
 				$.each(aoData, function(index, object) {
 					if (object['name'] === 'sSearch') {
 						object['value'] = Vidi.VisualSearch.convertExpression(object['value']);
-						console.log(object['value']); // @todo debug. Remove me when search by category with "like" will work.
 						aoData.push({ 'name': Vidi.module.parameterPrefix + '[searchTerm]', 'value': object['value'] });
 					}
 				});

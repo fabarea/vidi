@@ -30,7 +30,7 @@ class FieldService implements TcaServiceInterface {
 	/**
 	 * @var string
 	 */
-	protected $fieldNameAndPath;
+	protected $compositeField;
 
 	/**
 	 * @var string
@@ -46,14 +46,14 @@ class FieldService implements TcaServiceInterface {
 	 * @param string $fieldName
 	 * @param array $tca
 	 * @param string $tableName
-	 * @param string $fieldNameAndPath
+	 * @param string $compositeField
 	 * @return \TYPO3\CMS\Vidi\Tca\FieldService
 	 */
-	public function __construct($fieldName, array $tca, $tableName, $fieldNameAndPath = '') {
+	public function __construct($fieldName, array $tca, $tableName, $compositeField = '') {
 		$this->fieldName = $fieldName;
 		$this->tca = $tca;
 		$this->tableName = $tableName;
-		$this->fieldNameAndPath = $fieldNameAndPath;
+		$this->compositeField = $compositeField;
 	}
 
 	/**
@@ -140,7 +140,7 @@ class FieldService implements TcaServiceInterface {
 		if (!empty($configuration['foreign_table'])) {
 			$result = $configuration['foreign_table'];
 		} elseif ($this->isGroup()) {
-			$fieldParts = explode('.', $this->fieldNameAndPath, 2);
+			$fieldParts = explode('.', $this->compositeField, 2);
 			$result = $fieldParts[1];
 		}
 		return $result;
@@ -236,7 +236,7 @@ class FieldService implements TcaServiceInterface {
 		} elseif ($this->isGroup()) {
 
 			// @todo check if $this->fieldName could be simply used as $result
-			$fieldParts = explode('.', $this->fieldNameAndPath, 2);
+			$fieldParts = explode('.', $this->compositeField, 2);
 			$result = $fieldParts[1];
 		}
 
@@ -635,15 +635,15 @@ class FieldService implements TcaServiceInterface {
 	/**
 	 * @return string
 	 */
-	public function getFieldNameAndPath() {
-		return $this->fieldNameAndPath;
+	public function getCompositeField() {
+		return $this->compositeField;
 	}
 
 	/**
-	 * @param string $fieldNameAndPath
+	 * @param string $compositeField
 	 */
-	public function setFieldNameAndPath($fieldNameAndPath) {
-		$this->fieldNameAndPath = $fieldNameAndPath;
+	public function setCompositeField($compositeField) {
+		$this->compositeField = $compositeField;
 	}
 
 	/**

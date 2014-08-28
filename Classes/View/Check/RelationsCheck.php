@@ -115,18 +115,18 @@ EOF;
 	 */
 	protected function isTcaValid() {
 
-		$tableName = $this->getModuleLoader()->getDataType();
-		$tcaGridService = TcaService::grid($tableName);
-		$tcaTableService = TcaService::table($tableName);
+		$dataType = $this->getModuleLoader()->getDataType();
+		$grid = TcaService::grid($dataType);
+		$table = TcaService::table($dataType);
 
-		foreach ($tcaGridService->getFields() as $fieldName => $configuration) {
+		foreach ($grid->getFields() as $fieldName => $configuration) {
 
-			if ($tcaGridService->isNotSystem($fieldName) && $tcaTableService->field($fieldName)->hasMany()) {
-				if ($tcaTableService->field($fieldName)->hasRelationManyToMany()) {
+			if ($grid->isNotSystem($fieldName) && $table->field($fieldName)->hasMany()) {
+				if ($table->field($fieldName)->hasRelationManyToMany()) {
 
-					$foreignTable = $tcaTableService->field($fieldName)->getForeignTable();
-					$manyToManyTable = $tcaTableService->field($fieldName)->getManyToManyTable();
-					$foreignField = $tcaTableService->field($fieldName)->getForeignField();
+					$foreignTable = $table->field($fieldName)->getForeignTable();
+					$manyToManyTable = $table->field($fieldName)->getManyToManyTable();
+					$foreignField = $table->field($fieldName)->getForeignField();
 
 					if (!$foreignField) {
 						$this->invalidFields[] = $fieldName;
