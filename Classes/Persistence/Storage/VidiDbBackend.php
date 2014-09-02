@@ -14,6 +14,14 @@ namespace TYPO3\CMS\Vidi\Persistence\Storage;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Versioning\VersionState;
+use TYPO3\CMS\Extbase\Persistence\Generic\Exception;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 	/**
@@ -34,7 +42,7 @@ class VidiDbBackend {
 	/**
 	 * The TYPO3 page repository. Used for language and workspace overlay
 	 *
-	 * @var \TYPO3\CMS\Frontend\Page\PageRepository
+	 * @var PageRepository
 	 */
 	protected $pageRepository;
 
@@ -138,11 +146,6 @@ class VidiDbBackend {
 		$this->checkSqlErrors($sql);
 		$rows = $this->getRowsFromResult($result);
 		$this->databaseHandle->sql_free_result($result);
-
-		// Get language uid from querySettings.
-		// Ensure the backend handling is not broken (fallback to Get parameter 'L' if needed)
-		# @todo evaluate this code.
-		#$rows = $this->doLanguageAndWorkspaceOverlay($this->query->getSource(), $rows, $this->query->getQuerySettings());
 
 		return $rows;
 	}
@@ -253,12 +256,12 @@ class VidiDbBackend {
 	/**
 	 * Transforms a Query Source into SQL and parameter arrays
 	 *
-	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface $source The source
+	 * @param SourceInterface $source The source
 	 * @param array &$sql
 	 * @return void
 	 */
-	protected function parseSource(\TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface $source, array &$sql) {
-		if ($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface) {
+	protected function parseSource(SourceInterface $source, array &$sql) {
+		if ($source instanceof SelectorInterface) {
 			$tableName = $source->getNodeTypeName();
 			$sql['fields'][$tableName] = $tableName . '.*';
 			$sql['tables'][$tableName] = $tableName;
@@ -306,12 +309,12 @@ class VidiDbBackend {
 	 * Transforms a constraint into SQL and parameter arrays
 	 *
 	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface $constraint The constraint
-	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface $source The source
+	 * @param SourceInterface $source The source
 	 * @param array &$sql The query parts
 	 * @param array &$parameters The parameters that will replace the markers
 	 * @return void
 	 */
-	protected function parseConstraint(\TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface $constraint = NULL, \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface $source, array &$sql, array &$parameters) {
+	protected function parseConstraint(\TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface $constraint = NULL, SourceInterface $source, array &$sql, array &$parameters) {
 		if ($constraint instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\AndInterface) {
 			$sql['where'][] = '(';
 			$this->parseConstraint($constraint->getConstraint1(), $source, $sql, $parameters);
@@ -337,13 +340,13 @@ class VidiDbBackend {
 	 * Parse a Comparison into SQL and parameter arrays.
 	 *
 	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\Qom\ComparisonInterface $comparison The comparison to parse
-	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface $source The source
+	 * @param SourceInterface $source The source
 	 * @param array &$sql SQL query parts to add to
 	 * @param array &$parameters Parameters to bind to the SQL
 	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\RepositoryException
 	 * @return void
 	 */
-	protected function parseComparison(\TYPO3\CMS\Extbase\Persistence\Generic\Qom\ComparisonInterface $comparison, \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface $source, array &$sql, array &$parameters) {
+	protected function parseComparison(\TYPO3\CMS\Extbase\Persistence\Generic\Qom\ComparisonInterface $comparison, SourceInterface $source, array &$sql, array &$parameters) {
 		$operand1 = $comparison->getOperand1();
 		$operator = $comparison->getOperator();
 		$operand2 = $comparison->getOperand2();
@@ -443,21 +446,21 @@ class VidiDbBackend {
 	 *
 	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\Qom\DynamicOperandInterface $operand
 	 * @param string $operator One of the JCR_OPERATOR_* constants
-	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface $source The source
+	 * @param SourceInterface $source The source
 	 * @param array &$sql The query parts
 	 * @param array &$parameters The parameters that will replace the markers
 	 * @param string $valueFunction an optional SQL function to apply to the operand value
 	 * @param null $operand2
 	 * @return void
 	 */
-	protected function parseDynamicOperand(\TYPO3\CMS\Extbase\Persistence\Generic\Qom\DynamicOperandInterface $operand, $operator, \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface $source, array &$sql, array &$parameters, $valueFunction = NULL, $operand2 = NULL) {
+	protected function parseDynamicOperand(\TYPO3\CMS\Extbase\Persistence\Generic\Qom\DynamicOperandInterface $operand, $operator, SourceInterface $source, array &$sql, array &$parameters, $valueFunction = NULL, $operand2 = NULL) {
 		if ($operand instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\LowerCaseInterface) {
 			$this->parseDynamicOperand($operand->getOperand(), $operator, $source, $sql, $parameters, 'LOWER');
 		} elseif ($operand instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\UpperCaseInterface) {
 			$this->parseDynamicOperand($operand->getOperand(), $operator, $source, $sql, $parameters, 'UPPER');
 		} elseif ($operand instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\PropertyValueInterface) {
 			$propertyName = $operand->getPropertyName();
-			if ($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface) {
+			if ($source instanceof SelectorInterface) {
 				// FIXME Only necessary to differ from  Join
 				$tableName = $this->query->getType();
 				while (strpos($propertyName, '.') !== FALSE) {
@@ -482,7 +485,7 @@ class VidiDbBackend {
 	 * @param string &$tableName
 	 * @param array &$propertyPath
 	 * @param array &$sql
-	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+	 * @throws Exception
 	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidRelationConfigurationException
 	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\MissingColumnMapException
 	 */
@@ -539,7 +542,7 @@ class VidiDbBackend {
 				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $onStatement;
 			}
 		} else {
-			throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception('Could not determine type of relation.', 1252502725);
+			throw new Exception('Could not determine type of relation.', 1252502725);
 		}
 
 		// TODO check if there is another solution for this
@@ -552,7 +555,7 @@ class VidiDbBackend {
 	 * Returns the SQL operator for the given JCR operator type.
 	 *
 	 * @param string $operator One of the JCR_OPERATOR_* constants
-	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+	 * @throws Exception
 	 * @return string an SQL operator
 	 */
 	protected function resolveOperator($operator) {
@@ -588,7 +591,7 @@ class VidiDbBackend {
 				$operator = 'LIKE';
 				break;
 			default:
-				throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception('Unsupported operator encountered.', 1242816073);
+				throw new Exception('Unsupported operator encountered.', 1242816073);
 		}
 		return $operator;
 	}
@@ -601,12 +604,12 @@ class VidiDbBackend {
 	 * @param array $parameters The parameters
 	 * @param string $tableName
 	 *
-	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception
+	 * @throws Exception
 	 */
 	protected function replacePlaceholders(&$sqlString, array $parameters, $tableName = 'foo') {
 		// TODO profile this method again
 		if (substr_count($sqlString, '?') !== count($parameters)) {
-			throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception('The number of question marks to replace must be equal to the number of parameters.', 1242816074);
+			throw new Exception('The number of question marks to replace must be equal to the number of parameters.', 1242816074);
 		}
 		$offset = 0;
 		foreach ($parameters as $parameter) {
@@ -632,12 +635,12 @@ class VidiDbBackend {
 	/**
 	 * Adds additional WHERE statements according to the query settings.
 	 *
-	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $querySettings The TYPO3 CMS specific query settings
+	 * @param QuerySettingsInterface $querySettings The TYPO3 CMS specific query settings
 	 * @param string $tableName The table name to add the additional where clause for
 	 * @param string &$sql
 	 * @return void
 	 */
-	protected function addAdditionalWhereClause(\TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $querySettings, $tableName, &$sql) {
+	protected function addAdditionalWhereClause(QuerySettingsInterface $querySettings, $tableName, &$sql) {
 		$this->addVisibilityConstraintStatement($querySettings, $tableName, $sql);
 		if ($querySettings->getRespectSysLanguage()) {
 			$this->addSysLanguageStatement($tableName, $sql, $querySettings);
@@ -651,12 +654,12 @@ class VidiDbBackend {
 	/**
 	 * Adds enableFields and deletedClause to the query if necessary
 	 *
-	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $querySettings
+	 * @param QuerySettingsInterface $querySettings
 	 * @param string $tableName The database table name
 	 * @param array &$sql The query parts
 	 * @return void
 	 */
-	protected function addVisibilityConstraintStatement(\TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $querySettings, $tableName, array &$sql) {
+	protected function addVisibilityConstraintStatement(QuerySettingsInterface $querySettings, $tableName, array &$sql) {
 		$statement = '';
 		if (is_array($GLOBALS['TCA'][$tableName]['ctrl'])) {
 			$ignoreEnableFields = $querySettings->getIgnoreEnableFields();
@@ -683,7 +686,7 @@ class VidiDbBackend {
 	 * @param array $enableFieldsToBeIgnored If $ignoreEnableFields is true, this array specifies enable fields to be ignored. If it is NULL or an empty array (default) all enable fields are ignored.
 	 * @param boolean $includeDeleted A flag indicating whether deleted records should be included
 	 * @return string
-	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\InconsistentQuerySettingsException
+	 * @throws Exception\InconsistentQuerySettingsException
 	 */
 	protected function getFrontendConstraintStatement($tableName, $ignoreEnableFields, $enableFieldsToBeIgnored = array(), $includeDeleted) {
 		$statement = '';
@@ -697,7 +700,7 @@ class VidiDbBackend {
 		} elseif (!$ignoreEnableFields && !$includeDeleted) {
 			$statement .= $this->getPageRepository()->enableFields($tableName);
 		} elseif (!$ignoreEnableFields && $includeDeleted) {
-			throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\InconsistentQuerySettingsException('Query setting "ignoreEnableFields=FALSE" can not be used together with "includeDeleted=TRUE" in frontend context.', 1327678173);
+			throw new Exception\InconsistentQuerySettingsException('Query setting "ignoreEnableFields=FALSE" can not be used together with "includeDeleted=TRUE" in frontend context.', 1327678173);
 		}
 		return $statement;
 	}
@@ -713,11 +716,30 @@ class VidiDbBackend {
 	protected function getBackendConstraintStatement($tableName, $ignoreEnableFields, $includeDeleted) {
 		$statement = '';
 		if (!$ignoreEnableFields) {
-			$statement .= \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields($tableName);
+			$statement .= BackendUtility::BEenableFields($tableName);
 		}
+
+		// If the table is found to have "workspace" support, add the corresponding fields in the statement.
+		if (TcaService::table($tableName)->hasWorkspaceSupport()) {
+			if ($this->getBackendUser()->workspace > 0) {
+				$statement .= ' AND ' . $tableName . '.t3ver_state<=' . new VersionState(VersionState::DEFAULT_STATE);
+			} else {
+				// Show only records of live and of the current workspace
+				// In case we are in a Versioning preview
+				$statement .= ' AND (' .
+					$tableName . '.t3ver_wsid=0 OR ' .
+					$tableName . '.t3ver_wsid=' . (int)$this->getBackendUser()->workspace .
+					')';
+			}
+
+			// Check if this segment make sense here or whether it should be in the "if" part when we have workspace = 0
+			$statement .= ' AND ' . $tableName . '.pid<>-1';
+		}
+
 		if (!$includeDeleted) {
-			$statement .= \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($tableName);
+			$statement .= BackendUtility::deleteClause($tableName);
 		}
+
 		return $statement;
 	}
 
@@ -726,18 +748,18 @@ class VidiDbBackend {
 	 *
 	 * @param string $tableName The database table name
 	 * @param array &$sql The query parts
-	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $querySettings The TYPO3 CMS specific query settings
+	 * @param QuerySettingsInterface $querySettings The TYPO3 CMS specific query settings
 	 * @return void
 	 */
 	protected function addSysLanguageStatement($tableName, array &$sql, $querySettings) {
 		if (is_array($GLOBALS['TCA'][$tableName]['ctrl'])) {
 			if (!empty($GLOBALS['TCA'][$tableName]['ctrl']['languageField'])) {
 				// Select all entries for the current language
-				$additionalWhereClause = $tableName . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['languageField'] . ' IN (' . intval($querySettings->getSysLanguageUid()) . ',-1)';
+				$additionalWhereClause = $tableName . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['languageField'] . ' IN (' . intval($querySettings->getLanguageUid()) . ',-1)';
 				// If any language is set -> get those entries which are not translated yet
 				// They will be removed by t3lib_page::getRecordOverlay if not matching overlay mode
 				if (isset($GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField'])
-					&& $querySettings->getSysLanguageUid() > 0
+					&& $querySettings->getLanguageUid() > 0
 				) {
 					$additionalWhereClause .= ' OR (' . $tableName . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['languageField'] . '=0' .
 						' AND ' . $tableName . '.uid NOT IN (SELECT ' . $tableName . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField'] .
@@ -762,7 +784,7 @@ class VidiDbBackend {
 	 * @param string $tableName The database table name
 	 * @param array &$sql The query parts
 	 * @param array $storagePageIds list of storage page ids
-	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\InconsistentQuerySettingsException
+	 * @throws Exception\InconsistentQuerySettingsException
 	 * @return void
 	 */
 	protected function addPageIdStatement($tableName, array &$sql, array $storagePageIds) {
@@ -779,7 +801,7 @@ class VidiDbBackend {
 				}
 			} else {
 				if (empty($storagePageIds)) {
-					throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\InconsistentQuerySettingsException('Missing storage page ids.', 1365779762);
+					throw new Exception\InconsistentQuerySettingsException('Missing storage page ids.', 1365779762);
 				}
 				$sql['additionalWhereClause'][] = $tableName . '.pid IN (' . implode(', ', $storagePageIds) . ')';
 			}
@@ -790,12 +812,12 @@ class VidiDbBackend {
 	 * Transforms orderings into SQL.
 	 *
 	 * @param array $orderings An array of orderings (Tx_Extbase_Persistence_QOM_Ordering)
-	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface $source The source
+	 * @param SourceInterface $source The source
 	 * @param array &$sql The query parts
-	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedOrderException
+	 * @throws Exception\UnsupportedOrderException
 	 * @return void
 	 */
-	protected function parseOrderings(array $orderings, \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface $source, array &$sql) {
+	protected function parseOrderings(array $orderings, SourceInterface $source, array &$sql) {
 		foreach ($orderings as $propertyName => $order) {
 			switch ($order) {
 				case \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING:
@@ -805,10 +827,10 @@ class VidiDbBackend {
 					$order = 'DESC';
 					break;
 				default:
-					throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedOrderException('Unsupported order encountered.', 1242816074);
+					throw new Exception\UnsupportedOrderException('Unsupported order encountered.', 1242816074);
 			}
 			$tableName = '';
-			if ($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface) {
+			if ($source instanceof SelectorInterface) {
 				$tableName = $this->query->getType();
 				while (strpos($propertyName, '.') !== FALSE) {
 					$this->addUnionStatement($tableName, $propertyName, $sql);
@@ -852,22 +874,18 @@ class VidiDbBackend {
 		while ($row = $this->databaseHandle->sql_fetch_assoc($result)) {
 			if (is_array($row)) {
 
-				// Get record overlay if needed
-				// @todo evaluate this code.
-//				if (TYPO3_MODE == 'FE' && $GLOBALS['TSFE']->sys_language_uid > 0) {
-//
-//					$overlay = \TYPO3\CMS\Vidi\Language\Overlays::getOverlayRecords($this->query->getType(), array($row['uid']), $GLOBALS['TSFE']->sys_language_uid);
-//					if (!empty($overlay[$row['uid']])) {
-//						$key = key($overlay[$row['uid']]);
-//						$row = $overlay[$row['uid']][$key];
-//					}
-//				}
+				// Get language uid from querySettings.
+				// Ensure the backend handling is not broken (fallback to Get parameter 'L' if needed)
+				$overlaidRow = $this->doLanguageAndWorkspaceOverlay($this->query->getSource(), $row, $this->query->getQuerySettings());
+
+				// Alternative method for the FE only. Remove me if "doLanguageAndWorkspaceOverlay" is proven to work well in 0.4.0 + two version.
+				#$overlaidRow = \TYPO3\CMS\Vidi\Language\Overlays::getOverlayRecords($this->query->getType(), array($row['uid']), $GLOBALS['TSFE']->sys_language_uid);
 
 				if (!$this->query->getQuerySettings()->getReturnRawQueryResult()) {
-					$row = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($this->objectType, $this->query->getType(), $row);
+					$overlaidRow = GeneralUtility::makeInstance($this->objectType, $this->query->getType(), $overlaidRow);
 				}
 
-				$rows[] = $row;
+				$rows[] = $overlaidRow;
 			}
 		}
 
@@ -878,85 +896,87 @@ class VidiDbBackend {
 	 * Performs workspace and language overlay on the given row array. The language and workspace id is automatically
 	 * detected (depending on FE or BE context). You can also explicitly set the language/workspace id.
 	 *
-	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface $source The source (selector od join)
-	 * @param array $rows
-	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface $querySettings The TYPO3 CMS specific query settings
+	 * @param SourceInterface $source The source (selector od join)
+	 * @param array $row
+	 * @param QuerySettingsInterface $querySettings The TYPO3 CMS specific query settings
 	 * @param null|integer $workspaceUid
 	 * @return array
 	 */
-	protected function doLanguageAndWorkspaceOverlay(\TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface $source, array $rows, $querySettings, $workspaceUid = NULL) {
-		if ($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface) {
-			$tableName = $source->getSelectorName();
-		} elseif ($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface) {
-			$tableName = $source->getRight()->getSelectorName();
-		}
-		// If we do not have a table name here, we cannot do an overlay and return the original rows instead.
-		if (isset($tableName)) {
-			$pageRepository = $this->getPageRepository();
-			if (is_object($GLOBALS['TSFE'])) {
-				$languageMode = $GLOBALS['TSFE']->sys_language_mode;
-				if ($workspaceUid !== NULL) {
-					$pageRepository->versioningWorkspaceId = $workspaceUid;
-				}
-			} else {
-				$languageMode = '';
-				if ($workspaceUid === NULL) {
-					$workspaceUid = $GLOBALS['BE_USER']->workspace;
-				}
+	protected function doLanguageAndWorkspaceOverlay(SourceInterface $source, array $row, $querySettings, $workspaceUid = NULL) {
+
+		/** @var SelectorInterface $source */
+		$tableName = $source->getSelectorName();
+
+		$pageRepository = $this->getPageRepository();
+		if (is_object($GLOBALS['TSFE'])) {
+			$languageMode = $GLOBALS['TSFE']->sys_language_mode;
+			if ($workspaceUid !== NULL) {
 				$pageRepository->versioningWorkspaceId = $workspaceUid;
 			}
-
-			$overlayedRows = array();
-			foreach ($rows as $row) {
-				// If current row is a translation select its parent
-				if (isset($tableName) && isset($GLOBALS['TCA'][$tableName])
-					&& isset($GLOBALS['TCA'][$tableName]['ctrl']['languageField'])
-					&& isset($GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField'])
-				) {
-					if (isset($row[$GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField']])
-						&& $row[$GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField']] > 0
-					) {
-						$row = $this->databaseHandle->exec_SELECTgetSingleRow(
-							$tableName . '.*',
-							$tableName,
-							$tableName . '.uid=' . (integer) $row[$GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField']] .
-								' AND ' . $tableName . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['languageField'] . '=0'
-						);
-					}
-				}
-				$pageRepository->versionOL($tableName, $row, TRUE);
-				if ($pageRepository->versioningPreview && isset($row['_ORIG_uid'])) {
-					$row['uid'] = $row['_ORIG_uid'];
-				}
-				if ($tableName == 'pages') {
-					$row = $pageRepository->getPageOverlay($row, $querySettings->getSysLanguageUid());
-				} elseif (isset($GLOBALS['TCA'][$tableName]['ctrl']['languageField'])
-					&& $GLOBALS['TCA'][$tableName]['ctrl']['languageField'] !== ''
-				) {
-					if (in_array($row[$GLOBALS['TCA'][$tableName]['ctrl']['languageField']], array(-1, 0))) {
-						$overlayMode = $languageMode === 'strict' ? 'hideNonTranslated' : '';
-						$row = $pageRepository->getRecordOverlay($tableName, $row, $querySettings->getSysLanguageUid(), $overlayMode);
-					}
-				}
-				if ($row !== NULL && is_array($row)) {
-					$overlayedRows[] = $row;
-				}
-			}
 		} else {
-			$overlayedRows = $rows;
+			$languageMode = '';
+			if ($workspaceUid === NULL) {
+				$workspaceUid = $this->getBackendUser()->workspace;
+			}
+			$pageRepository->versioningWorkspaceId = $workspaceUid;
 		}
-		return $overlayedRows;
+
+		// If current row is a translation select its parent
+		if (isset($GLOBALS['TCA'][$tableName]['ctrl']['languageField'])
+			&& isset($GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField'])
+		) {
+			if (isset($row[$GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField']])
+				&& $row[$GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField']] > 0
+			) {
+				$row = $this->databaseHandle->exec_SELECTgetSingleRow(
+					$tableName . '.*',
+					$tableName,
+					$tableName . '.uid=' . (integer) $row[$GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField']] .
+						' AND ' . $tableName . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['languageField'] . '=0'
+				);
+			}
+		}
+
+		// Retrieve the original uid
+		// @todo It looks for me this code will never be used! "_ORIG_uid" is something from extbase. Adjust me or remove me in 0.4 + 2 version!
+		$pageRepository->versionOL($tableName, $row, TRUE);
+		if ($pageRepository->versioningPreview && isset($row['_ORIG_uid'])) {
+			$row['uid'] = $row['_ORIG_uid'];
+		}
+
+		// Special case for table "pages"
+		if ($tableName == 'pages') {
+			$row = $pageRepository->getPageOverlay($row, $querySettings->getLanguageUid());
+		} elseif (isset($GLOBALS['TCA'][$tableName]['ctrl']['languageField'])
+			&& $GLOBALS['TCA'][$tableName]['ctrl']['languageField'] !== ''
+		) {
+			if (in_array($row[$GLOBALS['TCA'][$tableName]['ctrl']['languageField']], array(-1, 0))) {
+				$overlayMode = $languageMode === 'strict' ? 'hideNonTranslated' : '';
+				$row = $pageRepository->getRecordOverlay($tableName, $row, $querySettings->getLanguageUid(), $overlayMode);
+			}
+		}
+
+		return $row;
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Frontend\Page\PageRepository
+	 * Returns an instance of the current Backend User.
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * @return PageRepository
 	 */
 	protected function getPageRepository() {
-		if (!$this->pageRepository instanceof \TYPO3\CMS\Frontend\Page\PageRepository) {
+		if (!$this->pageRepository instanceof PageRepository) {
 			if ($this->environmentService->isEnvironmentInFrontendMode() && is_object($GLOBALS['TSFE'])) {
 				$this->pageRepository = $GLOBALS['TSFE']->sys_page;
 			} else {
-				$this->pageRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+				$this->pageRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 			}
 		}
 

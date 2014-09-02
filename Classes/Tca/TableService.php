@@ -333,6 +333,24 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
+	 * Tells whether the table name has "workspace" support.
+	 *
+	 * @return string
+	 */
+	public function hasWorkspaceSupport() {
+		return isset($this->tca['versioningWS']);
+	}
+
+	/**
+	 * Tells whether the table name has "language" support.
+	 *
+	 * @return string
+	 */
+	public function hasLanguageSupport() {
+		return isset($this->tca['languageField']);
+	}
+
+	/**
 	 * Return configuration value given a key.
 	 *
 	 * @param string $key

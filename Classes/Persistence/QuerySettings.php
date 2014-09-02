@@ -13,6 +13,7 @@ namespace TYPO3\CMS\Vidi\Persistence;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 
 /**
  * Query settings. This class is NOT part of the FLOW3 API.
@@ -20,7 +21,7 @@ namespace TYPO3\CMS\Vidi\Persistence;
  *
  * @api
  */
-class QuerySettings extends \TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings {
+class QuerySettings extends Typo3QuerySettings {
 
 	/**
 	 * Flag if the storage page should be respected for the query.
