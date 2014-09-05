@@ -721,7 +721,7 @@ class VidiDbBackend {
 
 		// If the table is found to have "workspace" support, add the corresponding fields in the statement.
 		if (TcaService::table($tableName)->hasWorkspaceSupport()) {
-			if ($this->getBackendUser()->workspace > 0) {
+			if ($this->getBackendUser()->workspace === 0) {
 				$statement .= ' AND ' . $tableName . '.t3ver_state<=' . new VersionState(VersionState::DEFAULT_STATE);
 			} else {
 				// Show only records of live and of the current workspace
@@ -899,10 +899,9 @@ class VidiDbBackend {
 	 * @param SourceInterface $source The source (selector od join)
 	 * @param array $row
 	 * @param QuerySettingsInterface $querySettings The TYPO3 CMS specific query settings
-	 * @param null|integer $workspaceUid
 	 * @return array
 	 */
-	protected function doLanguageAndWorkspaceOverlay(SourceInterface $source, array $row, $querySettings, $workspaceUid = NULL) {
+	protected function doLanguageAndWorkspaceOverlay(SourceInterface $source, array $row, $querySettings) {
 
 		/** @var SelectorInterface $source */
 		$tableName = $source->getSelectorName();
@@ -910,15 +909,16 @@ class VidiDbBackend {
 		$pageRepository = $this->getPageRepository();
 		if (is_object($GLOBALS['TSFE'])) {
 			$languageMode = $GLOBALS['TSFE']->sys_language_mode;
-			if ($workspaceUid !== NULL) {
-				$pageRepository->versioningWorkspaceId = $workspaceUid;
+			if ($this->isBackendUserLogged() && $this->getBackendUser()->workspace !== 0) {
+				$pageRepository->versioningWorkspaceId = $this->getBackendUser()->workspace;
 			}
 		} else {
 			$languageMode = '';
-			if ($workspaceUid === NULL) {
-				$workspaceUid = $this->getBackendUser()->workspace;
-			}
+			$workspaceUid = $this->getBackendUser()->workspace;
 			$pageRepository->versioningWorkspaceId = $workspaceUid;
+			if ($this->getBackendUser()->workspace !== 0) {
+				$pageRepository->versioningPreview = 1;
+			}
 		}
 
 		// If current row is a translation select its parent
@@ -966,6 +966,15 @@ class VidiDbBackend {
 	 */
 	protected function getBackendUser() {
 		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Tell whether a Backend User is logged in.
+	 *
+	 * @return bool
+	 */
+	protected function isBackendUserLogged() {
+		return is_object($GLOBALS['BE_USER']);
 	}
 
 	/**
