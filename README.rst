@@ -649,3 +649,46 @@ To check whether TCA is well configured, Vidi provides a Command that will scan 
 
 	# Check labels of the Grid
 	./typo3/cli_dispatch.phpsh extbase vidi:checkLabels
+
+
+Property Mapping
+================
+
+Internally, Vidi makes an automatic conversion of a field name (in the database) to a property name (in the object)
+following a camel-case convention. Example ``field_name`` will be converted to ``propertyName``.
+
+However, there could be special cases where the field name does not follow the conventions for legacy reason.
+Vidi needs a bit of help to find the equivalence fieldName <-> propertyName. This can be addressed by configuration::
+
+	# Context: $GLOBALS['fe_users']['vidi']
+	# Example used for "fe_users"
+	'vidi' => array(
+		'mappings' => array(
+			'lockToDomain' => 'lockToDomain',
+			'TSconfig' => 'tsConfig',
+			'felogin_redirectPid' => 'feLoginRedirectPid',
+			'felogin_forgotHash' => 'feLoginForgotHash',
+		),
+	),
+
+Data Handling
+=============
+
+For actions such as "update", "remove", "copy", "move", the DataHandler of the Core is configured to be used by default.
+It will work fine in most cases. However, there is the chance to call your own Data Handler if there are special needs (@see FileDataHandler in EXT:media)
+Another reasons, would be for speed. You will notice a performance impact when mass editing data and relying on the Core DataHandler at the same time.
+While it will disconnect you from TCEmain (which handles for your hooks, cache Handling, etc... ), using your own DataHandler will make the mass processing much faster.
+
+::
+
+	# Context: $GLOBALS['sys_file']['vidi']
+	# Example used for "sys_file"
+	'vidi' => array(
+		'data_handler' => array(
+			// For all actions
+			'*' => 'TYPO3\CMS\Media\DataHandler\FileDataHandler'
+
+			// Or for individual action
+			ProcessAction::UPDATE => 'MyVendor\MyExt\DataHandler\FooDataHandler'
+		),
+	),

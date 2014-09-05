@@ -3,9 +3,9 @@
 /** @namespace Vidi */
 
 /**
- * Object for handling the Edit dialog window.
+ * Object for handling "edit" actions.
  *
- * @type {Object} Edit
+ * @type {Object} Vidi.Edit
  */
 Vidi.Edit = {
 
@@ -42,7 +42,6 @@ Vidi.Edit = {
 		 * Load the generic "edit relation" form for mm relations.
 		 */
 		$(document).on('click', '.dataTable tbody .btn-edit-relation', function (e) {
-
 			e.preventDefault();
 
 			// Call the Edit routine which will pop-up the modal window.
@@ -59,8 +58,8 @@ Vidi.Edit = {
 		 * Add handler against pencil icon located in the header on the grid.
 		 */
 		$('.mass-edit-relation').click(function(e) {
-
 			e.preventDefault();
+			e.stopPropagation(); // Important to stop event propagation to not change ordering and a Grid reload.
 
 			var columnPosition = $(this).parent().index(); // corresponds to "th".
 			var editedCells = Vidi.Edit.getEditedCells(columnPosition);
@@ -80,8 +79,8 @@ Vidi.Edit = {
 		 * Add handler against pencil icon located in the header on the grid.
 		 */
 		$('.mass-edit-scalar').click(function(e) {
-
 			e.preventDefault();
+			e.stopPropagation(); // Important to stop event propagation to not change ordering and a Grid reload.
 
 			var columnPosition = $(this).parent().index(); // corresponds to "th".
 			var editedCells = Vidi.Edit.getEditedCells(columnPosition);
@@ -96,6 +95,42 @@ Vidi.Edit = {
 				.loadContent(url)
 				.showWindow();
 		});
+	},
+
+	/**
+	 * Bind edit buttons in list view.
+	 *
+	 * @return void
+	 */
+	attachHandlerInGrid: function() {
+
+		// bind the click handler script to the newly created elements held in the table
+		$('.btn-edit').bind('click', function(e) {
+			Vidi.Session.set('lastEditedUid', $(this).data('uid'));
+		});
+
+		// Make a row selectable.
+		$('.checkbox-row').bind('click', function(e) {
+			var checkboxes;
+
+			$(this)
+				.closest('tr')
+				.toggleClass('active');
+			e.stopPropagation(); // We don't want the event to propagate.
+
+			checkboxes = $('#content-list').find('.checkbox-row').filter(':checked');
+
+			// Update the mass action menu label.
+			Vidi.Grid.updateMassActionMenu();
+		});
+
+		// Add listener on the row as well
+		$('.checkbox-row')
+			.parent()
+			.css('cursor', 'pointer')
+			.bind('click', function(e) {
+				$(this).find('.checkbox-row').click()
+			});
 	},
 
 	/**
@@ -125,7 +160,7 @@ Vidi.Edit = {
 	},
 
 	/**
-	 * Get mass edit for URL.
+	 * Get the mass edit URL.
 	 *
 	 * @param {string} url
 	 * @return string
@@ -149,8 +184,8 @@ Vidi.Edit = {
 		}
 
 		// Keep only certain parameters which make sense to transmit.
-		for (var index in Vidi.Grid.stored.data) {
-			var parameter = Vidi.Grid.stored.data[index];
+		for (var index in Vidi.Grid.getStoredParameters()) {
+			var parameter = Vidi.Grid.getStoredParameters()[index];
 
 			// Keep only certain parameters which make sense to transmit.
 			if ($.inArray(parameter.name, parametersToKeep) > -1) {
@@ -213,27 +248,7 @@ Vidi.Edit = {
 							// Hide the modal window
 							bootbox.hideAll();
 
-							// Check the response does not contain error.
-							for (var index = 0; index < response.length; index++) {
-								var updatedObject = response[index];
-								if (updatedObject.status === false) {
-									Vidi.FlashMessage.add(updatedObject.message, 'error');
-								}
-							}
-
-							if (Vidi.FlashMessage.containsMessages()) {
-								var fadeOut = false;
-								Vidi.FlashMessage.showAll(fadeOut);
-							} else {
-								// Store in session the last edited uid
-								Vidi.Session.set('lastEditedUid', Vidi.Edit.contentIdentifier);
-
-								// Un-check the top checkbox.
-								$('.checkbox-row-top').removeAttr('checked');
-
-								// Reload data table.
-								Vidi.grid.fnDraw(false); // false = for keeping the pagination.
-							}
+							Vidi.Response.processResponse(response, 'update');
 						}
 					})
 				});
@@ -248,7 +263,7 @@ Vidi.Edit = {
 	},
 
 	/**
-	 * Show the popup window
+	 * Show the popup window.
 	 *
 	 * @return void
 	 */
@@ -345,7 +360,8 @@ Vidi.Edit = {
 				}
 			});
 		}
-		bootbox.dialog(template,
+		bootbox.dialog(
+			template,
 			modalWindowConfiguration, {
 			onEscape: function () {
 				// Empty but required function to have escape keystroke hiding the modal window.

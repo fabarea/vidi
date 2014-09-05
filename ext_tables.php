@@ -58,7 +58,7 @@ if (TYPO3_MODE == 'BE') {
 			'm1', // Submodule key
 			'after:list', // Position
 			array(
-				'Content' => 'index, list, delete, update, edit',
+				'Content' => 'index, list, delete, update, edit, move, copy',
 				'Tool' => 'welcome, work',
 				'FacetValue' => 'list',
 			), array(

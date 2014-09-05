@@ -33,7 +33,7 @@ class EditButton extends AbstractComponentView {
 	 */
 	public function render(Content $object = NULL) {
 		return sprintf('<a href="%s" data-uid="%s" class="btn-edit" title="%s">%s</a>',
-			$this->getUriEdit($object),
+			$this->getEditUri($object),
 			$object->getUid(),
 			LocalizationUtility::translate('edit', 'vidi'),
 			IconUtility::getSpriteIcon('actions-document-open')
@@ -46,7 +46,7 @@ class EditButton extends AbstractComponentView {
 	 * @param Content $object
 	 * @return string
 	 */
-	protected function getUriEdit(Content $object) {
+	protected function getEditUri(Content $object) {
 		return sprintf('alt_doc.php?returnUrl=%s&edit[%s][%s]=edit',
 			rawurlencode($this->getModuleLoader()->getModuleUrl()),
 			rawurlencode($object->getDataType()),

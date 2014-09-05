@@ -20,6 +20,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\RepositoryInterface;
 use TYPO3\CMS\Vidi\Converter\Property;
+use TYPO3\CMS\Vidi\DataHandler\ProcessAction;
 use TYPO3\CMS\Vidi\Exception\MissingUidException;
 use TYPO3\CMS\Vidi\Persistence\Matcher;
 use TYPO3\CMS\Vidi\Persistence\Order;
@@ -30,11 +31,6 @@ use TYPO3\CMS\Vidi\Tca\TcaService;
  * Repository for accessing Content
  */
 class ContentRepository implements RepositoryInterface {
-
-	/**
-	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected $databaseHandle;
 
 	/**
 	 * Tell whether it is a raw result (array) or object being returned.
@@ -48,11 +44,6 @@ class ContentRepository implements RepositoryInterface {
 	 * @var string
 	 */
 	protected $dataType;
-
-	/**
-	 * @var \TYPO3\CMS\Extbase\Object\ObjectManager
-	 */
-	protected $objectManager;
 
 	/**
 	 * @var array
@@ -71,51 +62,6 @@ class ContentRepository implements RepositoryInterface {
 	 */
 	public function __construct($dataType) {
 		$this->dataType = $dataType;
-		$this->databaseHandle = $GLOBALS['TYPO3_DB'];
-		$this->objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
-	}
-
-	/**
-	 * Update a content with new information.
-	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
-	 * @throws \TYPO3\CMS\Vidi\Exception\MissingUidException
-	 * @throws \Exception
-	 * @return bool
-	 */
-	public function update($content) {
-
-		// Security check.
-		if ($content->getUid() <= 0) {
-			throw new MissingUidException('Missing Uid', 1351605542);
-		}
-
-		$values = array();
-
-		// Check the field to be updated exists
-		foreach ($content->toArray() as $fieldName => $value) {
-			if (TcaService::table($content->getDataType())->hasNotField($fieldName)) {
-				$message = sprintf('It looks field "%s" does not exist for data type "%s"', $fieldName, $content->getDataType());
-				throw new \Exception($message, 1390668497);
-			}
-
-			// Flatten value if array given which is required for the DataHandler.
-			if (is_array($value)) {
-				$value = implode(',', $value);
-			}
-			$values[$fieldName] = $value;
-		}
-
-		$data[$content->getDataType()][$content->getUid()] = $values;
-
-		/** @var $tce \TYPO3\CMS\Core\DataHandling\DataHandler */
-		$tce = $this->objectManager->get('TYPO3\CMS\Core\DataHandling\DataHandler');
-		$tce->start($data, array());
-		$tce->process_datamap();
-		$this->errorMessages = $tce->errorLog;
-
-		// Returns TRUE is log does not contain errors.
-		return empty($tce->errorLog);
 	}
 
 	/**
@@ -457,25 +403,87 @@ class ContentRepository implements RepositoryInterface {
 	}
 
 	/**
+	 * Update a content with new information.
+	 *
+	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
+	 * @throws \TYPO3\CMS\Vidi\Exception\MissingUidException
+	 * @throws \Exception
+	 * @return bool
+	 */
+	public function update($content) {
+
+		// Security check.
+		if ($content->getUid() <= 0) {
+			throw new MissingUidException('Missing Uid', 1351605542);
+		}
+
+		$dataType = $content->getDataType();
+		$handler = $this->getDataHandlerFactory()->action(ProcessAction::UPDATE)->forType($dataType)->getDataHandler();
+
+		$handlerResult = $handler->processUpdate($content);
+		$this->errorMessages = $handler->getErrorMessages();
+		return $handlerResult;
+	}
+
+	/**
 	 * Removes an object from this repository.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content The object to remove
+	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
 	 * @return boolean
 	 */
 	public function remove($content) {
+		$dataType = $content->getDataType();
+		$handler = $this->getDataHandlerFactory()->action(ProcessAction::REMOVE)->forType($dataType)->getDataHandler();
 
-		// Build command
-		$cmd[$content->getDataType()][$content->getUid()]['delete'] = 1;
+		$handlerResult = $handler->processRemove($content);
+		$this->errorMessages = $handler->getErrorMessages();
+		return $handlerResult;
+	}
 
-		/** @var $tce \TYPO3\CMS\Core\DataHandling\DataHandler */
-		$tce = $this->objectManager->get('TYPO3\CMS\Core\DataHandling\DataHandler');
-		$tce->start(array(), $cmd);
-		$tce->process_datamap();
-		$tce->process_cmdmap();
-		$this->errorMessages = $tce->errorLog;
+	/**
+	 * Move a content within this repository.
+	 *
+	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
+	 * @param string $target
+	 * @throws \TYPO3\CMS\Vidi\Exception\MissingUidException
+	 * @return bool
+	 */
+	public function move($content, $target) {
 
-		// Returns TRUE is log does not contain errors.
-		return empty($tce->errorLog);
+		// Security check.
+		if ($content->getUid() <= 0) {
+			throw new MissingUidException('Missing Uid', 1351605593);
+		}
+
+		$dataType = $content->getDataType();
+		$handler = $this->getDataHandlerFactory()->action(ProcessAction::MOVE)->forType($dataType)->getDataHandler();
+
+		$handlerResult = $handler->processMove($content, $target);
+		$this->errorMessages = $handler->getErrorMessages();
+		return $handlerResult;
+	}
+
+	/**
+	 * Copy a content within this repository.
+	 *
+	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
+	 * @throws \TYPO3\CMS\Vidi\Exception\MissingUidException
+	 * @throws \Exception
+	 * @return bool
+	 */
+	public function copy($content) {
+
+		// Security check.
+		if ($content->getUid() <= 0) {
+			throw new MissingUidException('Missing Uid', 1351605593);
+		}
+
+		$dataType = $content->getDataType();
+		$handler = $this->getDataHandlerFactory()->action(ProcessAction::COPY)->forType($dataType)->getDataHandler();
+
+		$handlerResult = $handler->processCopy($content);
+		$this->errorMessages = $handler->getErrorMessages();
+		return $handlerResult;
 	}
 
 	/**
@@ -511,7 +519,7 @@ class ContentRepository implements RepositoryInterface {
 	 */
 	public function createQuery() {
 		/** @var Query $query */
-		$query = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\Query', $this->dataType);
+		$query = $this->getObjectManager()->get('TYPO3\CMS\Vidi\Persistence\Query', $this->dataType);
 
 		if ($this->defaultQuerySettings) {
 			$query->setQuerySettings($this->defaultQuerySettings);
@@ -519,7 +527,7 @@ class ContentRepository implements RepositoryInterface {
 
 			// Initialize and pass the query settings at this level.
 			/** @var \TYPO3\CMS\Vidi\Persistence\QuerySettings $querySettings */
-			$querySettings = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\QuerySettings');
+			$querySettings = $this->getObjectManager()->get('TYPO3\CMS\Vidi\Persistence\QuerySettings');
 
 			// Default choice for the BE.
 			if ($this->isBackendMode()) {
@@ -674,12 +682,15 @@ class ContentRepository implements RepositoryInterface {
 	/**
 	 * @return array
 	 */
-	public function getErrorMessage() {
-		$message = '';
-		if (!empty($this->errorMessages)) {
-			$message = '<ul><li>' . implode('<li></li>', $this->errorMessages) . '</li></ul>';
-		}
-		return $message;
+	public function getErrorMessages() {
+		return $this->errorMessages;
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Vidi\DataHandler\DataHandlerFactory
+	 */
+	protected function getDataHandlerFactory() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\DataHandler\DataHandlerFactory');
 	}
 
 	/**
@@ -696,6 +707,13 @@ class ContentRepository implements RepositoryInterface {
 	 */
 	protected function getFieldPathResolver () {
 		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Extbase\Object\ObjectManager
+	 */
+	protected function getObjectManager() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
 	}
 
 }

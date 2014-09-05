@@ -4,6 +4,7 @@
 
 /**
  * Language object
+ * @todo replace me with Core API lang
  *
  * @type {Object}
  */

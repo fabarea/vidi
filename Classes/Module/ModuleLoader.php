@@ -25,25 +25,6 @@ use TYPO3\CMS\Vidi\Service\BackendUserPreferenceService;
  */
 class ModuleLoader {
 
-	// @todo use ModulePosition Enumeration instead.
-	const DOC_HEADER = 'doc-header';
-
-	const TOP = 'top';
-
-	const BOTTOM = 'bottom';
-
-	const LEFT = 'left';
-
-	const RIGHT = 'right';
-
-	const GRID = 'grid';
-
-	const BUTTONS = 'buttons';
-
-	const MENU_SELECTED_ROWS = 'selected-rows';
-
-	const MENU_ALL_ROWS = 'all-rows';
-
 	/**
 	 * The type of data being listed (which corresponds to a table name in TCA)
 	 *
@@ -112,42 +93,34 @@ class ModuleLoader {
 	 * @var array
 	 */
 	protected $components = array(
-		self::DOC_HEADER => array(
-			self::TOP => array(
-				self::LEFT => array(),
-				self::RIGHT => array(
+		ModulePosition::DOC_HEADER => array(
+			ModulePosition::TOP => array(
+				ModulePosition::LEFT => array(),
+				ModulePosition::RIGHT => array(
 					'TYPO3\CMS\Vidi\View\Button\ToolButton',
 				),
 			),
-			self::BOTTOM => array(
-				self::LEFT => array(
+			ModulePosition::BOTTOM => array(
+				ModulePosition::LEFT => array(
 					'TYPO3\CMS\Vidi\View\Button\NewButton',
 					'TYPO3\CMS\Vidi\ViewHelpers\Link\BackViewHelper',
 				),
-				self::RIGHT => array(),
+				ModulePosition::RIGHT => array(),
 			),
 		),
-		self::GRID => array(
-			self::TOP => array(
+		ModulePosition::GRID => array(
+			ModulePosition::TOP => array(
 				'TYPO3\CMS\Vidi\View\Check\PidCheck',
 				'TYPO3\CMS\Vidi\View\Check\RelationsCheck',
 				'TYPO3\CMS\Vidi\View\Tab\DataTypeTab',
 			),
-			self::BUTTONS => array(
+			ModulePosition::BUTTONS => array(
 				'TYPO3\CMS\Vidi\View\Button\EditButton',
 				'TYPO3\CMS\Vidi\View\Button\DeleteButton',
 			),
-			self::BOTTOM => array(),
+			ModulePosition::BOTTOM => array(),
 		),
-		self::MENU_SELECTED_ROWS => array(
-			'TYPO3\CMS\Vidi\View\MenuItem\ExportXlsMenuItem',
-			'TYPO3\CMS\Vidi\View\MenuItem\ExportXmlMenuItem',
-			'TYPO3\CMS\Vidi\View\MenuItem\ExportCsvMenuItem',
-			'TYPO3\CMS\Vidi\View\MenuItem\DividerMenuItem',
-			'TYPO3\CMS\Vidi\View\MenuItem\MassDeleteMenuItem',
-			#'TYPO3\CMS\Vidi\View\MenuItem\MassEditMenuItem',
-		),
-		self::MENU_ALL_ROWS => array(
+		ModulePosition::MENU_MASS_ACTION => array(
 			'TYPO3\CMS\Vidi\View\MenuItem\ExportXlsMenuItem',
 			'TYPO3\CMS\Vidi\View\MenuItem\ExportXmlMenuItem',
 			'TYPO3\CMS\Vidi\View\MenuItem\ExportCsvMenuItem',
@@ -229,7 +202,7 @@ class ModuleLoader {
 				$this->dataType . '_' . $this->moduleKey,
 				$this->position,
 				array(
-					'Content' => 'index, list, delete, update, edit',
+					'Content' => 'index, list, delete, update, edit, move, copy',
 					'Tool' => 'welcome, work',
 					'Facet' => 'suggest',
 				),
@@ -529,7 +502,7 @@ class ModuleLoader {
 	 */
 	public function getDocHeaderTopLeftComponents() {
 		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][self::DOC_HEADER][self::TOP][self::LEFT];
+		return $configuration['components'][ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::LEFT];
 	}
 
 	/**
@@ -537,7 +510,7 @@ class ModuleLoader {
 	 * @return $this
 	 */
 	public function setDocHeaderTopLeftComponents(array $components) {
-		$this->components[self::DOC_HEADER][self::TOP][self::LEFT] = $components;
+		$this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::LEFT] = $components;
 		return $this;
 	}
 
@@ -549,8 +522,8 @@ class ModuleLoader {
 		if (is_string($components)) {
 			$components = array($components);
 		}
-		$currentComponents = $this->components[self::DOC_HEADER][self::TOP][self::LEFT];
-		$this->components[self::DOC_HEADER][self::TOP][self::LEFT] = array_merge($currentComponents, $components);
+		$currentComponents = $this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::LEFT];
+		$this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::LEFT] = array_merge($currentComponents, $components);
 		return $this;
 	}
 
@@ -577,7 +550,7 @@ class ModuleLoader {
 	 */
 	public function getDocHeaderTopRightComponents() {
 		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][self::DOC_HEADER][self::TOP][self::RIGHT];
+		return $configuration['components'][ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::RIGHT];
 	}
 
 	/**
@@ -585,7 +558,7 @@ class ModuleLoader {
 	 * @return $this
 	 */
 	public function setDocHeaderTopRightComponents(array $components) {
-		$this->components[self::DOC_HEADER][self::TOP][self::RIGHT] = $components;
+		$this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::RIGHT] = $components;
 		return $this;
 	}
 
@@ -597,8 +570,8 @@ class ModuleLoader {
 		if (is_string($components)) {
 			$components = array($components);
 		}
-		$currentComponents = $this->components[self::DOC_HEADER][self::TOP][self::RIGHT];
-		$this->components[self::DOC_HEADER][self::TOP][self::RIGHT] = array_merge($currentComponents, $components);
+		$currentComponents = $this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::RIGHT];
+		$this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::RIGHT] = array_merge($currentComponents, $components);
 		return $this;
 	}
 
@@ -625,7 +598,7 @@ class ModuleLoader {
 	 */
 	public function getDocHeaderBottomLeftComponents() {
 		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][self::DOC_HEADER][self::BOTTOM][self::LEFT];
+		return $configuration['components'][ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::LEFT];
 	}
 
 	/**
@@ -633,7 +606,7 @@ class ModuleLoader {
 	 * @return $this
 	 */
 	public function setDocHeaderBottomLeftComponents(array $components) {
-		$this->components[self::DOC_HEADER][self::BOTTOM][self::LEFT] = $components;
+		$this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::LEFT] = $components;
 		return $this;
 	}
 
@@ -645,8 +618,8 @@ class ModuleLoader {
 		if (is_string($components)) {
 			$components = array($components);
 		}
-		$currentComponents = $this->components[self::DOC_HEADER][self::BOTTOM][self::LEFT];
-		$this->components[self::DOC_HEADER][self::BOTTOM][self::LEFT] = array_merge($currentComponents, $components);
+		$currentComponents = $this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::LEFT];
+		$this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::LEFT] = array_merge($currentComponents, $components);
 		return $this;
 	}
 
@@ -673,7 +646,7 @@ class ModuleLoader {
 	 */
 	public function getDocHeaderBottomRightComponents() {
 		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][self::DOC_HEADER][self::BOTTOM][self::RIGHT];
+		return $configuration['components'][ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::RIGHT];
 	}
 
 	/**
@@ -681,7 +654,7 @@ class ModuleLoader {
 	 * @return $this
 	 */
 	public function setDocHeaderBottomRightComponents(array $components) {
-		$this->components[self::DOC_HEADER][self::BOTTOM][self::RIGHT] = $components;
+		$this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::RIGHT] = $components;
 		return $this;
 	}
 
@@ -693,8 +666,8 @@ class ModuleLoader {
 		if (is_string($components)) {
 			$components = array($components);
 		}
-		$currentComponents = $this->components[self::DOC_HEADER][self::BOTTOM][self::RIGHT];
-		$this->components[self::DOC_HEADER][self::BOTTOM][self::RIGHT] = array_merge($currentComponents, $components);
+		$currentComponents = $this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::RIGHT];
+		$this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::RIGHT] = array_merge($currentComponents, $components);
 		return $this;
 	}
 
@@ -721,7 +694,7 @@ class ModuleLoader {
 	 */
 	public function getGridTopComponents() {
 		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][self::GRID][self::TOP];
+		return $configuration['components'][ModulePosition::GRID][ModulePosition::TOP];
 	}
 
 	/**
@@ -729,7 +702,7 @@ class ModuleLoader {
 	 * @return $this
 	 */
 	public function setGridTopComponents(array $components) {
-		$this->components[self::GRID][self::TOP] = $components;
+		$this->components[ModulePosition::GRID][ModulePosition::TOP] = $components;
 		return $this;
 	}
 
@@ -741,8 +714,8 @@ class ModuleLoader {
 		if (is_string($components)) {
 			$components = array($components);
 		}
-		$currentComponents = $this->components[self::GRID][self::TOP];
-		$this->components[self::GRID][self::TOP] = array_merge($currentComponents, $components);
+		$currentComponents = $this->components[ModulePosition::GRID][ModulePosition::TOP];
+		$this->components[ModulePosition::GRID][ModulePosition::TOP] = array_merge($currentComponents, $components);
 		return $this;
 	}
 
@@ -751,7 +724,7 @@ class ModuleLoader {
 	 */
 	public function getGridBottomComponents() {
 		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][self::GRID][self::BOTTOM];
+		return $configuration['components'][ModulePosition::GRID][ModulePosition::BOTTOM];
 	}
 
 	/**
@@ -759,7 +732,7 @@ class ModuleLoader {
 	 * @return $this
 	 */
 	public function setGridBottomComponents(array $components) {
-		$this->components[self::GRID][self::BOTTOM] = $components;
+		$this->components[ModulePosition::GRID][ModulePosition::BOTTOM] = $components;
 		return $this;
 	}
 
@@ -771,8 +744,8 @@ class ModuleLoader {
 		if (is_string($components)) {
 			$components = array($components);
 		}
-		$currentComponents = $this->components[self::GRID][self::BOTTOM];
-		$this->components[self::GRID][self::BOTTOM] = array_merge($currentComponents, $components);
+		$currentComponents = $this->components[ModulePosition::GRID][ModulePosition::BOTTOM];
+		$this->components[ModulePosition::GRID][ModulePosition::BOTTOM] = array_merge($currentComponents, $components);
 		return $this;
 	}
 
@@ -781,7 +754,7 @@ class ModuleLoader {
 	 */
 	public function getGridButtonsComponents() {
 		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][self::GRID][self::BUTTONS];
+		return $configuration['components'][ModulePosition::GRID][ModulePosition::BUTTONS];
 	}
 
 	/**
@@ -789,7 +762,7 @@ class ModuleLoader {
 	 * @return $this
 	 */
 	public function setGridButtonsComponents(array $components) {
-		$this->components[self::GRID][self::BUTTONS] = $components;
+		$this->components[ModulePosition::GRID][ModulePosition::BUTTONS] = $components;
 		return $this;
 	}
 
@@ -801,45 +774,41 @@ class ModuleLoader {
 		if (is_string($components)) {
 			$components = array($components);
 		}
-		$currentComponents = $this->components[self::GRID][self::BUTTONS];
-		$this->components[self::GRID][self::BUTTONS] = array_merge($currentComponents, $components);
+		$currentComponents = $this->components[ModulePosition::GRID][ModulePosition::BUTTONS];
+		$this->components[ModulePosition::GRID][ModulePosition::BUTTONS] = array_merge($currentComponents, $components);
 		return $this;
 	}
 
 	/**
 	 * @return $array
+	 * @deprecated will be removed in Vidi 0.4 + 1 version
 	 */
 	public function getMenuSelectedRowsComponents() {
-		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][self::MENU_SELECTED_ROWS];
+		return $this->getMenuMassActionComponents();
 	}
 
 	/**
 	 * @param array $components
 	 * @return $this
+	 * @deprecated will be removed in Vidi 0.4 + 1 version
 	 */
 	public function setMenuSelectedRowsComponents(array $components) {
-		$this->components[self::MENU_SELECTED_ROWS] = $components;
-		return $this;
+		return $this->setMenuMassActionComponents($components);
 	}
 
 	/**
 	 * @param string|array $components
 	 * @return $this
+	 * @deprecated will be removed in Vidi 0.4 + 1 version
 	 */
 	public function addMenuSelectedRowsComponents($components) {
-		if (is_string($components)) {
-			$components = array($components);
-		}
-		$currentComponents = $this->components[self::MENU_SELECTED_ROWS];
-		$this->components[self::MENU_SELECTED_ROWS] = array_merge($currentComponents, $components);
-		return $this;
+		return $this->addMenuMassActionComponents($components);
 	}
 
 	/**
 	 * @param array $components
 	 * @return $this
-	 * @deprecated will be removed in 0.4.0 + 2 version.
+	 * @deprecated will be removed in 0.4.0 + 1 version.
 	 */
 	public function setGridMenuComponents(array $components) {
 		return $this->setMenuSelectedRowsComponents($components);
@@ -848,7 +817,7 @@ class ModuleLoader {
 	/**
 	 * @param array $components
 	 * @return $this
-	 * @deprecated will be removed in 0.4.0 + 2 version.
+	 * @deprecated will be removed in 0.4.0 + 1 version.
 	 */
 	public function addGridMenuComponents(array $components) {
 		return $this->addMenuSelectedRowsComponents($components);
@@ -856,18 +825,44 @@ class ModuleLoader {
 
 	/**
 	 * @return $array
+	 * @deprecated will be removed in Vidi 0.4 + 1 version
 	 */
 	public function getMenuAllRowsComponents() {
+		return $this->getMenuMassActionComponents();
+	}
+
+	/**
+	 * @param array $components
+	 * @return $this
+	 * @deprecated will be removed in Vidi 0.4 + 1 version
+	 */
+	public function setMenuAllRowsComponents(array $components) {
+		return $this->setMenuMassActionComponents($components);
+	}
+
+	/**
+	 * @param string|array $components
+	 * @return $this
+	 * @deprecated will be removed in Vidi 0.4 + 1 version
+	 */
+	public function addMenuAllRowsComponents($components) {
+		return $this->addMenuMassActionComponents($components);
+	}
+
+	/**
+	 * @return $array
+	 */
+	public function getMenuMassActionComponents() {
 		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][self::MENU_ALL_ROWS];
+		return $configuration['components'][ModulePosition::MENU_MASS_ACTION];
 	}
 
 	/**
 	 * @param array $components
 	 * @return $this
 	 */
-	public function setMenuAllRowsComponents(array $components) {
-		$this->components[self::MENU_ALL_ROWS] = $components;
+	public function setMenuMassActionComponents(array $components) {
+		$this->components[ModulePosition::MENU_MASS_ACTION] = $components;
 		return $this;
 	}
 
@@ -875,12 +870,12 @@ class ModuleLoader {
 	 * @param string|array $components
 	 * @return $this
 	 */
-	public function addMenuAllRowsComponents($components) {
+	public function addMenuMassActionComponents($components) {
 		if (is_string($components)) {
 			$components = array($components);
 		}
-		$currentComponents = $this->components[self::MENU_ALL_ROWS];
-		$this->components[self::MENU_ALL_ROWS] = array_merge($currentComponents, $components);
+		$currentComponents = $this->components[ModulePosition::MENU_MASS_ACTION];
+		$this->components[ModulePosition::MENU_MASS_ACTION] = array_merge($currentComponents, $components);
 		return $this;
 	}
 

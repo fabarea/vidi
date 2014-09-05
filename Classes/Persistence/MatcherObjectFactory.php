@@ -118,8 +118,8 @@ class MatcherObjectFactory implements SingletonInterface {
 				foreach ($terms as $term) {
 					$fieldNameAndPath = key($term);
 
-					$resolvedDataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
-					$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
+					$resolvedDataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $dataType);
+					$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $dataType);
 
 					// Only process if field really exists.
 					if (TcaService::table($resolvedDataType)->hasField($fieldName)) {

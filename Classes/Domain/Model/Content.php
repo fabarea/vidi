@@ -47,7 +47,7 @@ class Content implements \ArrayAccess {
 	public function __construct($dataType, array $contentData = array()) {
 
 		$this->dataType = $dataType;
-		$this->uid = empty($contentData['uid']) ? NULL : $contentData['uid'];
+		$this->uid = empty($contentData['uid']) ? NULL : (int)$contentData['uid'];
 
 		/** @var \TYPO3\CMS\Vidi\Tca\TableService $table */
 		$table = TcaService::table($dataType);

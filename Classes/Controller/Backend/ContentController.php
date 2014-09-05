@@ -19,11 +19,11 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Vidi\Behavior\SavingBehavior;
 use TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory;
 use TYPO3\CMS\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Vidi\Persistence\Matcher;
+use TYPO3\CMS\Vidi\Mvc\JsonView;
+use TYPO3\CMS\Vidi\Mvc\JsonResult;
 use TYPO3\CMS\Vidi\Persistence\MatcherObjectFactory;
 use TYPO3\CMS\Vidi\Persistence\OrderObjectFactory;
 use TYPO3\CMS\Vidi\Persistence\PagerObjectFactory;
-use TYPO3\CMS\Vidi\Signal\AfterFindContentObjectsSignalArguments;
 use TYPO3\CMS\Vidi\Signal\ProcessContentDataSignalArguments;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
@@ -70,32 +70,20 @@ class ContentController extends ActionController {
 		$order = OrderObjectFactory::getInstance()->getOrder();
 		$pager = PagerObjectFactory::getInstance()->getPager();
 
-		// Query the repository.
-		$objects = ContentRepositoryFactory::getInstance()->findBy($matcher, $order, $pager->getLimit(), $pager->getOffset());
-		$signalResult = $this->emitAfterFindContentObjectsSignal($objects, $matcher, $pager->getLimit(), $pager->getOffset());
-
-		// Reset objects variable after possible signal / slot processing.
-		$objects = $signalResult->getContentObjects();
-
-		// Count number of content objects.
-		if ($signalResult->getHasBeenProcessed()) {
-			$numberOfContents = $signalResult->getNumberOfObjects();
-		} else {
-			$numberOfContents = ContentRepositoryFactory::getInstance()->countBy($matcher);
-		}
-
-		$pager->setCount($numberOfContents);
+		// Fetch objects via the Content Service.
+		$contentService = $this->getContentService()->findBy($matcher, $order, $pager->getLimit(), $pager->getOffset());
+		$pager->setCount($contentService->getNumberOfObjects());
 
 		// Assign values.
 		$this->view->assign('columns', $columns);
-		$this->view->assign('objects', $objects);
-		$this->view->assign('numberOfContents', $numberOfContents);
+		$this->view->assign('objects', $contentService->getObjects());
+		$this->view->assign('numberOfObjects', $contentService->getNumberOfObjects());
 		$this->view->assign('pager', $pager);
 		$this->view->assign('response', $this->response);
 	}
 
 	/**
-	 * Update content objects given matching criteria and returns a json result.
+	 * Retrieve Content objects first according to matching criteria and then "update" them.
 	 * Important to notice the field name can contains a path, e.g. metadata.title and therefore must be analysed.
 	 *
 	 * Possible values for $matches:
@@ -119,29 +107,26 @@ class ContentController extends ActionController {
 	 */
 	public function updateAction($fieldNameAndPath, array $content, array $matches = array(), $savingBehavior = SavingBehavior::REPLACE) {
 
-		$result = array(); // Initialize array.
-
 		// Instantiate the Matcher object according different rules.
 		$matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
 		$order = OrderObjectFactory::getInstance()->getOrder();
 
-		// Query the repository given a matcher object.
-		$objects = ContentRepositoryFactory::getInstance()->findBy($matcher, $order);
-		$signalResult = $this->emitAfterFindContentObjectsSignal($objects, $matcher);
+		// Fetch objects via the Content Service.
+		$contentService = $this->getContentService()->findBy($matcher, $order);
 
-		// Reset objects variable after possible signal / slot processing.
-		$objects = $signalResult->getContentObjects();
-
+		// Get the real field that is going to be updated.
 		$updatedFieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
 
-		$numberOfObjects = count($objects);
-		foreach ($objects as $counter => $object) {
+		// Get result object for storing data along the processing.
+		$result = $this->getJsonResult();
+		$result->setNumberOfObjects($contentService->getNumberOfObjects());
+
+		foreach ($contentService->getObjects() as $index => $object) {
 
 			$identifier = $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, 'uid');
 			$dataType = $this->getContentObjectResolver()->getDataType($object, $fieldNameAndPath);
 
-			$signalResult = $this->emitProcessContentDataSignal($object, $fieldNameAndPath, $content, $counter + 1, $savingBehavior);
-
+			$signalResult = $this->emitProcessContentDataSignal($object, $fieldNameAndPath, $content, $index + 1, $savingBehavior);
 			$contentData = $signalResult->getContentData();
 
 			// Add identifier to content data, required by TCEMain.
@@ -150,17 +135,16 @@ class ContentController extends ActionController {
 			/** @var Content $dataObject */
 			$dataObject = $this->objectManager->get('TYPO3\CMS\Vidi\Domain\Model\Content', $dataType, $contentData);
 
-			$_result = array();
-			$_result['status'] = ContentRepositoryFactory::getInstance($dataType)->update($dataObject);
-			$_result['message'] = ContentRepositoryFactory::getInstance($dataType)->getErrorMessage();
-			$_result['updatedField'] = $updatedFieldName;
-			$_result['action'] = 'update';
-			$_result['identifier'] = $object->getUid();
-			$_result['dataType'] = $object->getDataType();
+			// Properly update object.
+			ContentRepositoryFactory::getInstance($dataType)->update($dataObject);
+
+			// Get the possible error messages and store them.
+			$errorMessage = ContentRepositoryFactory::getInstance()->getErrorMessages();
+			$result->addErrorMessages($errorMessage);
 
 			// We only want to see the detail result if there is one object updated.
-			// It would cost time for nothing in case of mass update.
-			if ($_result['status'] && $numberOfObjects === 1) {
+			// Required for inline editing + it will display some useful info on the GUI in the flash messages.
+			if ($contentService->getNumberOfObjects() === 1) {
 
 				// Reload the updated object from repository.
 				$updatedObject = ContentRepositoryFactory::getInstance()->findByUid($object->getUid());
@@ -175,7 +159,7 @@ class ContentController extends ActionController {
 						$labelField = TcaService::table($contentObject)->getLabelField();
 						$values = array(
 							'uid' => $contentObject->getUid(),
-							$labelField => $contentObject[$labelField],
+							'name' => $contentObject[$labelField],
 						);
 						$_updatedResult[] = $values;
 					}
@@ -183,23 +167,27 @@ class ContentController extends ActionController {
 					$updatedResult = $_updatedResult;
 				}
 
-				$_result['object'] = array(
+				$labelField = TcaService::table($dataType)->getLabelField();
+				$processedObjectData = array(
 					'uid' => $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, 'uid'),
-					$updatedFieldName => $updatedResult,
+					'name' => $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, $labelField),
+					'updatedField' => $updatedFieldName,
+					'updatedValue' => $updatedResult,
 				);
+				$result->setProcessedObject($processedObjectData);
+
 			}
-			$result[] = $_result;
 		}
 
-		# Json header is not automatically sent in the BE...
-		$this->response->setHeader('Content-Type', 'application/json');
-		$this->response->sendHeaders();
-		return json_encode($result);
+		// Set the result and render the JSON view.
+		$this->getJsonView()->setResult($result);
+		return $this->getJsonView()->render();
 	}
 
 	/**
 	 * Returns an editing form for a given field name of a Content object.
-	 * Argument $field corresponds to the field name to be edited.
+	 * Argument $fieldNameAndPath corresponds to the field name to be edited.
+	 * Important to notice it can contains a path, e.g. metadata.title and therefore must be analysed.
 	 *
 	 * @param string $fieldNameAndPath
 	 * @param array $matches
@@ -210,16 +198,8 @@ class ContentController extends ActionController {
 		// Instantiate the Matcher object according different rules.
 		$matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
 
-		// Query the repository given a matcher object.
-		$objects = ContentRepositoryFactory::getInstance()->findBy($matcher);
-		$signalResult = $this->emitAfterFindContentObjectsSignal($objects, $matcher);
-
-		if ($signalResult->getHasBeenProcessed()) {
-			$numberOfObjects = $signalResult->getNumberOfObjects();
-		} else {
-			// @todo find out whether it is faster a double query as find + count in PHP.
-			$numberOfObjects = ContentRepositoryFactory::getInstance()->countBy($matcher);
-		}
+		// Fetch objects via the Content Service.
+		$contentService = $this->getContentService()->findBy($matcher);
 
 		$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
 		$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
@@ -230,7 +210,7 @@ class ContentController extends ActionController {
 		$this->view->assign('fieldName', $fieldName);
 		$this->view->assign('matches', $matches);
 		$this->view->assign('fieldNameAndPath', $fieldNameAndPath);
-		$this->view->assign('numberOfObjects', $numberOfObjects);
+		$this->view->assign('numberOfObjects', $contentService->getNumberOfObjects());
 		$this->view->assign('editWholeSelection', empty($matches['uid'])); // necessary??
 
 		// Fetch content and its relations.
@@ -254,9 +234,11 @@ class ContentController extends ActionController {
 
 			// Default ordering for related data type.
 			$defaultOrderings = TcaService::table($relatedDataType)->getDefaultOrderings();
-			$order = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Order', $defaultOrderings);
+			/** @var \TYPO3\CMS\Vidi\Persistence\Order $order */
+			$defaultOrder = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Order', $defaultOrderings);
 
-			$relatedContents = ContentRepositoryFactory::getInstance($relatedDataType)->findBy($matcher, $order);
+			// Fetch related contents
+			$relatedContents = ContentRepositoryFactory::getInstance($relatedDataType)->findBy($matcher, $defaultOrder);
 
 			$this->view->assign('content', $content);
 			$this->view->assign('relatedContents', $relatedContents);
@@ -266,7 +248,7 @@ class ContentController extends ActionController {
 	}
 
 	/**
-	 * Delete rows given matching criteria and returns a json result.
+	 * Retrieve Content objects first according to matching criteria and then "delete" them.
 	 *
 	 * Possible values for $matches:
 	 * -----------------------------
@@ -278,51 +260,125 @@ class ContentController extends ActionController {
 	 * @param array $matches
 	 * @return string
 	 */
-	public function deleteAction(array $matches) {
+	public function deleteAction(array $matches = array()) {
 
 		$matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
 
-		// Query the repository.
-		$objects = ContentRepositoryFactory::getInstance()->findBy($matcher);
-		$signalResult = $this->emitAfterFindContentObjectsSignal($objects, $matcher);
-
-		// Reset objects variable after possible signal / slot processing.
-		$objects = $signalResult->getContentObjects();
+		// Fetch objects via the Content Service.
+		$contentService = $this->getContentService()->findBy($matcher);
 
 		// Compute the label field name of the table.
 		$tableTitleField = TcaService::table()->getLabelField();
 
-		$result = array();
-		foreach ($objects as $object) {
+		// Get result object for storing data along the processing.
+		$result = $this->getJsonResult();
+		$result->setNumberOfObjects($contentService->getNumberOfObjects());
 
-			$tableTitleValue = $object[$tableTitleField];
+		foreach ($contentService->getObjects() as $object) {
 
-			$_result = array();
-			$_result['status'] = ContentRepositoryFactory::getInstance()->remove($object);
-			$_result['message'] = ContentRepositoryFactory::getInstance()->getErrorMessage();
-			$_result['action'] = 'delete';
-			if ($_result['status']) {
-				$_result['object'] = array(
+			// Store the first object, so that the delete message can be more explicit when deleting only one record.
+			if ($contentService->getNumberOfObjects() === 1) {
+				$tableTitleValue = $object[$tableTitleField];
+				$processedObjectData = array(
 					'uid' => $object->getUid(),
-					$tableTitleField => $tableTitleValue,
+					'name' => $tableTitleValue,
 				);
+				$result->setProcessedObject($processedObjectData);
 			}
-			$result[] = $_result;
+
+			// Properly delete object.
+			ContentRepositoryFactory::getInstance()->remove($object);
+
+			// Get the possible error messages and store them.
+			$errorMessages = ContentRepositoryFactory::getInstance()->getErrorMessages();
+			$result->addErrorMessages($errorMessages);
 		}
 
-		# Json header is not automatically sent in the BE...
-		$this->response->setHeader('Content-Type', 'application/json');
-		$this->response->sendHeaders();
-		return json_encode($result);
+		// Set the result and render the JSON view.
+		$this->getJsonView()->setResult($result);
+		return $this->getJsonView()->render();
+	}
+
+	/**
+	 * Retrieve Content objects first according to matching criteria and then "move" them.
+	 *
+	 * Possible values for $matches:
+	 * -----------------------------
+	 *
+	 * $matches = array(uid => 1), will be taken as $query->equals
+	 * $matches = array(uid => 1,2,3), will be taken as $query->in
+	 * $matches = array(field_name1 => bar, field_name2 => bax), will be separated by AND.
+	 *
+	 * @param string $target
+	 * @param array $matches
+	 * @return string
+	 */
+	public function moveAction($target, array $matches = array()) {
+
+		$matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
+
+		// Fetch objects via the Content Service.
+		$contentService = $this->getContentService()->findBy($matcher);
+
+		// Compute the label field name of the table.
+		$tableTitleField = TcaService::table()->getLabelField();
+
+		// Get result object for storing data along the processing.
+		$result = $this->getJsonResult();
+		$result->setNumberOfObjects($contentService->getNumberOfObjects());
+
+		foreach ($contentService->getObjects() as $object) {
+
+			// Store the first object, so that the "action" message can be more explicit when deleting only one record.
+			if ($contentService->getNumberOfObjects() === 1) {
+				$tableTitleValue = $object[$tableTitleField];
+				$processedObjectData = array(
+					'uid' => $object->getUid(),
+					'name' => $tableTitleValue,
+				);
+				$result->setProcessedObject($processedObjectData);
+			}
+
+			// Work out the object.
+			ContentRepositoryFactory::getInstance()->move($object, $target);
+
+			// Get the possible error messages and store them.
+			$errorMessages = ContentRepositoryFactory::getInstance()->getErrorMessages();
+			$result->addErrorMessages($errorMessages);
+		}
+
+		// Set the result and render the JSON view.
+		$this->getJsonView()->setResult($result);
+		return $this->getJsonView()->render();
+	}
+
+	/**
+	 * Retrieve Content objects first according to matching criteria and then "copy" them.
+	 *
+	 * Possible values for $matches:
+	 * -----------------------------
+	 *
+	 * $matches = array(uid => 1), will be taken as $query->equals
+	 * $matches = array(uid => 1,2,3), will be taken as $query->in
+	 * $matches = array(field_name1 => bar, field_name2 => bax), will be separated by AND.
+	 *
+	 * @param string $target
+	 * @param array $matches
+	 * @throws \Exception
+	 * @return string
+	 */
+	public function copyAction($target, array $matches = array()) {
+		// @todo
+		throw new \Exception('Not yet implemented', 1410192546);
 	}
 
 	/**
 	 * Get the Vidi Module Loader.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 * @return \TYPO3\CMS\Vidi\Service\ContentService
 	 */
-	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
+	protected function getContentService() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Service\ContentService');
 	}
 
 	/**
@@ -340,28 +396,25 @@ class ContentController extends ActionController {
 	}
 
 	/**
-	 * Signal that is called after the content objects have been found.
+	 * Return a special view for handling JSON
+	 * Goal is to have this view injected but require more configuration.
 	 *
-	 * @param array $contentObjects
-	 * @param \TYPO3\CMS\Vidi\Persistence\Matcher $matcher
-	 * @param int $limit
-	 * @param int $offset
-	 * @return AfterFindContentObjectsSignalArguments
-	 * @signal
+	 * @return JsonView
 	 */
-	protected function emitAfterFindContentObjectsSignal($contentObjects, Matcher $matcher, $limit = 0, $offset = 0) {
+	protected function getJsonView() {
+		if (!$this->view instanceof JsonView) {
+			/** @var JsonView $view */
+			$this->view = $this->objectManager->get('TYPO3\CMS\Vidi\Mvc\JsonView');
+			$this->view->setResponse($this->response);
+		}
+		return $this->view;
+	}
 
-		/** @var \TYPO3\CMS\Vidi\Signal\AfterFindContentObjectsSignalArguments $signalArguments */
-		$signalArguments = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Signal\AfterFindContentObjectsSignalArguments');
-		$signalArguments->setDataType($this->getModuleLoader()->getDataType())
-			->setContentObjects($contentObjects)
-			->setMatcher($matcher)
-			->setLimit($limit)
-			->setOffset($offset)
-			->setHasBeenProcessed(FALSE);
-
-		$signalResult = $this->getSignalSlotDispatcher()->dispatch('TYPO3\CMS\Vidi\Controller\Backend\ContentController', 'afterFindContentObjects', array($signalArguments));
-		return $signalResult[0];
+	/**
+	 * @return JsonResult
+	 */
+	protected function getJsonResult() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Mvc\JsonResult');
 	}
 
 	/**

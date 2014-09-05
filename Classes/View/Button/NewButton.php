@@ -47,7 +47,7 @@ class NewButton extends AbstractComponentView {
 			$spriteForCurrentDataType = IconUtility::mapRecordTypeToSpriteIconName($currentDataType, array());
 
 			$output .= sprintf(' <a href="%s" title="%s" class="btn-new-top">%s</a>',
-				$this->getUriNew(),
+				$this->getNewUri(),
 				$this->getLanguageService()->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:newRecordGeneral'),
 				IconUtility::getSpriteIcon($spriteForCurrentDataType) // temporary code. Find a better solution GUI-wise. Perhaps a dropdown menu with multiple "add" variants.
 			);
@@ -56,7 +56,7 @@ class NewButton extends AbstractComponentView {
 
 			// New button only for the current data type.
 			$output = sprintf('<a href="%s" title="%s" class="btn-new-top">%s</a>',
-				$this->getUriNew(),
+				$this->getNewUri(),
 				$this->getLanguageService()->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:newRecordGeneral'),
 				IconUtility::getSpriteIcon('actions-document-new')
 			);
@@ -89,7 +89,7 @@ class NewButton extends AbstractComponentView {
 	 *
 	 * @return string
 	 */
-	protected function getUriNew() {
+	protected function getNewUri() {
 		return sprintf('alt_doc.php?returnUrl=%s&edit[%s][%s]=new',
 			rawurlencode($this->getModuleLoader()->getModuleUrl()),
 			rawurlencode($this->getModuleLoader()->getDataType()),

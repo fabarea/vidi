@@ -107,28 +107,14 @@
 				<tfoot>
 				<tr>
 					<th colspan="30">
-						<div style="width: 50%; float: left;">
-							<div class="btn-group dropup">
-								<a class="btn dropdown-toggle menu-selected-rows disabled" data-toggle="dropdown" href="#"
-								   onclick="return false">
-									<span class="caret"></span>
-									<f:translate key="for_selected_rows"/>
-								</a>
-								<ul class="dropdown-menu action-selected-rows">
-									{v:render.components(part: 'menuSelectedRows')}
-								</ul>
-							</div>
-						</div>
-						<div style="width: 50%; float: left; text-align: right;">
-							<div class="btn-group dropup">
-								<a class="btn dropdown-toggle" data-toggle="dropdown" href="#"
-								   onclick="return false">
-									<f:translate key="for_all_rows"/>
-								</a>
-								<ul class="dropdown-menu pull-right action-all-rows">
-									{v:render.components(part: 'menuAllRows')}
-								</ul>
-							</div>
+						<div class="btn-group dropup">
+							<a class="btn dropdown-toggle mass-action-label" data-toggle="dropdown" href="#"
+							   onclick="return false">
+								[mass action label]
+							</a>
+							<ul class="dropdown-menu mass-action-items">
+								{v:render.components(part: 'menuMassAction')}
+							</ul>
 						</div>
 					</th>
 				</tr>

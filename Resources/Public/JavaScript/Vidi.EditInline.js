@@ -3,9 +3,9 @@
 /** @namespace Vidi */
 
 /**
- * Object for handling Data Table
+ * Object for handling "edit-inline" actions.
  *
- * @type {Object}
+ * @type {Object} Vidi.EditInline
  */
 Vidi.EditInline = {
 
@@ -58,19 +58,24 @@ Vidi.EditInline = {
 	 *
 	 * @param {string} data
 	 * @param {object} settings
-	 * @returns {string}
+	 * @return {void}
 	 */
 	submitDataCallBack: function(data, settings) {
 
 		// dataType = html is hardcoded in jEditable -> so convert to JSON first
 		// And take the first element as THE response since we are not in a multi editing context.
-		var response = JSON.parse(data)[0];
+		var response = JSON.parse(data);
 
-		if (response.status === true) {
-			var updatedField = response.updatedField;
-			$(this).html(response.object[updatedField]); // re-inject the value in the Cell
+		if (!response.hasErrors) {
+			$(this).html(response.processedObject['updatedValue']); // re-inject the value in the Cell
 		} else {
-			Vidi.FlashMessage.add(response.message, 'error');
+
+			// Display error messages.
+			for (var index = 0; index < response.errorMessages.length; index++) {
+				var message = response.errorMessages[index];
+				Vidi.FlashMessage.add(message, 'error');
+			}
+
 			var fadeOut = false;
 			Vidi.FlashMessage.showAll(fadeOut);
 			$(this).html('Something went wrong...');

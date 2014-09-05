@@ -10,26 +10,26 @@
 			<trans-unit id="publish-dates">
 				<source>Publish Dates</source>
 			</trans-unit>
-			<trans-unit id="message-deleted">
-				<source>Object "{0}" has been deleted.</source>
+			<trans-unit id="success-delete">
+				<source>Success! Record "{0}" has been deleted.</source>
 			</trans-unit>
-			<trans-unit id="message-mass-deleted-singular">
-				<source>{0} item deleted</source>
+			<trans-unit id="success-mass-delete">
+				<source>Success! {0}/{1} records have been deleted</source>
 			</trans-unit>
-			<trans-unit id="message-mass-deleted-plural">
-				<source>{0} items deleted</source>
+			<trans-unit id="success-update">
+				<source>Success! Record "{0}" has been updated.</source>
+			</trans-unit>
+			<trans-unit id="success-mass-update">
+				<source>Success! {0}/{1} records have been updated</source>
 			</trans-unit>
 			<trans-unit id="confirm-delete">
 				<source>Are you sure to delete "{0}"?</source>
 			</trans-unit>
 			<trans-unit id="confirm-mass-delete-singular">
-				<source>Are you sure you want to delete {0} item?</source>
+				<source>Are you sure you want to delete {0} record?</source>
 			</trans-unit>
 			<trans-unit id="confirm-mass-delete-plural">
-				<source>Are you sure you want to delete {0} items?</source>
-			</trans-unit>
-			<trans-unit id="confirm-mass-delete-current-selection">
-				<source>Are you sure you want to delete the current selection?</source>
+				<source>Are you sure you want to delete {0} records?</source>
 			</trans-unit>
 			<trans-unit id="message-error">
 				<source>Transaction did not succeed</source>
@@ -95,10 +95,10 @@
 				<source>Selected rows...</source>
 			</trans-unit>
 			<trans-unit id="for_selected_rows">
-				<source>For selected rows...</source>
+				<source>For selected rows ({0})</source>
 			</trans-unit>
 			<trans-unit id="for_all_rows">
-				<source>For all rows...</source>
+				<source>For all rows ({0})</source>
 			</trans-unit>
 			<trans-unit id="export-csv">
 				<source>Export CSV</source>
@@ -119,13 +119,13 @@
 				<source>Replace relation</source>
 			</trans-unit>
 			<trans-unit id="update_all">
-				<source>Update all rows (%s)</source>
+				<source>Update all records (%s)</source>
 			</trans-unit>
 			<trans-unit id="update_selected_rows">
-				<source>Update selected rows (%s)</source>
+				<source>Update selected records (%s)</source>
 			</trans-unit>
 			<trans-unit id="update_selected_row">
-				<source>Update the current selected row</source>
+				<source>Update the current record</source>
 			</trans-unit>
 			<trans-unit id="editing_many_rows_takes_time">
 				<source>Editing more than 300 records is resource consuming and will take some time.</source>

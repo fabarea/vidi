@@ -102,12 +102,4 @@ class DataTypeTab extends AbstractComponentView {
 		return $options;
 	}
 
-	/**
-	 * Get the Vidi Module Loader.
-	 *
-	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
-	 */
-	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
-	}
 }

@@ -32,36 +32,24 @@ class MassDeleteMenuItem extends AbstractComponentView {
 	 */
 	public function render() {
 		return sprintf('<li><a href="%s" class="mass-delete" >%s %s</a>',
-			$this->getUriMassDelete(),
+			$this->getMassDeleteUri(),
 			IconUtility::getSpriteIcon('actions-edit-delete'),
 			LocalizationUtility::translate('delete', 'vidi')
 		);
 	}
 
 	/**
-	 * Render a mass delete URI.
-	 *
 	 * @return string
 	 */
-	protected function getUriMassDelete() {
-
-		$parameterPrefix = $this->getModuleLoader()->getParameterPrefix();
-		$parameterPrefixEncoded = rawurlencode($parameterPrefix);
-
-		return sprintf('%s&%s[format]=json&%s[action]=delete&%s[controller]=Content',
-			BackendUtility::getModuleUrl($this->getModuleLoader()->getModuleCode()),
-			$parameterPrefixEncoded,
-			$parameterPrefixEncoded,
-			$parameterPrefixEncoded
+	protected function getMassDeleteUri() {
+		$additionalParameters = array(
+			$this->getModuleLoader()->getParameterPrefix() => array(
+				'controller' => 'Content',
+				'action' => 'delete',
+				'format' => 'json',
+			),
 		);
+		return $this->getModuleLoader()->getModuleUrl($additionalParameters);
 	}
 
-	/**
-	 * Get the Vidi Module Loader.
-	 *
-	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
-	 */
-	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
-	}
 }

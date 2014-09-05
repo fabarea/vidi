@@ -33,8 +33,8 @@ class ToJsonViewHelper extends AbstractViewHelper {
 		$columns = $this->templateVariableContainer->get('columns');
 		$output = array(
 			'sEcho' => $this->getNextTransactionId(),
-			'iTotalRecords' => $this->templateVariableContainer->get('numberOfContents'),
-			'iTotalDisplayRecords' => $this->templateVariableContainer->get('numberOfContents'),
+			'iTotalRecords' => $this->templateVariableContainer->get('numberOfObjects'),
+			'iTotalDisplayRecords' => $this->templateVariableContainer->get('numberOfObjects'),
 			'iNumberOfRecords' => count($objects),
 			'aaData' => $this->getRowsViewHelper()->render($objects, $columns),
 		);

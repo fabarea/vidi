@@ -10,6 +10,13 @@
 Vidi.Grid = {
 
 	/**
+	 * Variable for storing various data.
+	 *
+	 * {Object}
+	 */
+	storage: {},
+
+	/**
 	 * @return object
 	 */
 	getOptions: function() {
@@ -68,10 +75,8 @@ Vidi.Grid = {
 			'fnServerData': function(sSource, aoData, fnCallback, oSettings) {
 
 				// Store the parameters to be able to reconstruct the URL later on.
-				Vidi.Grid.stored = {
-					data: aoData,
-					url: sSource
-				};
+				Vidi.Grid.storage.data = aoData;
+				Vidi.Grid.storage.url = sSource;
 
 				oSettings.jqXHR = $.ajax({
 					'dataType': 'json',
@@ -166,7 +171,15 @@ Vidi.Grid = {
 				var query = Vidi.Session.get('visualSearch.query');
 				Vidi.VisualSearch.instance.searchBox.setQuery(query);
 			},
-			'fnDrawCallback': function() {
+			/**
+			 * Override the default Ajax call of DataTable.
+			 *
+			 * @param {object} transaction
+			 */
+			'fnDrawCallback': function(transaction) {
+
+				// Store the transaction parameters for later use.
+				Vidi.Grid.storage.lastTransaction = transaction;
 
 				// Restore visual
 				$('#content-list').css('opacity', 1);
@@ -183,11 +196,14 @@ Vidi.Grid = {
 					});
 
 				// Attach event to DOM elements
-				Vidi.Action.edit();
-				Vidi.Action.remove();
+				Vidi.Edit.attachHandlerInGrid();
+				Vidi.Remove.attachHandlerInGrid();
 
 				// Handle flash message
 				Vidi.FlashMessage.showAll();
+
+				// Update the mass action menu label.
+				Vidi.Grid.updateMassActionMenu();
 
 				/**
 				 * Bind handler for editable content for input.
@@ -226,6 +242,24 @@ Vidi.Grid = {
 
 		config = this.initializeDefaultSearch(config);
 		return config;
+	},
+
+	/**
+	 * Update the label of the mass action menu.
+	 *
+	 * @return {void}
+	 */
+	updateMassActionMenu: function() {
+		var massActionLabel, label;
+		if (Vidi.Grid.hasSelectedRows()) {
+			label = TYPO3.l10n.localize('for_selected_rows');
+			massActionLabel = label.format(Vidi.Grid.getNumberOfSelectedRows());
+		} else {
+			label = TYPO3.l10n.localize('for_all_rows');
+			massActionLabel = label.format(Vidi.Grid.getStoredTransaction().fnRecordsTotal());
+		}
+
+		$('.mass-action-label').html('<span class="caret"></span> ' + massActionLabel);
 	},
 
 	/**
@@ -269,12 +303,42 @@ Vidi.Grid = {
 	},
 
 	/**
+	 * Return the number of selected rows.
+	 *
+	 * @return {int}
+	 */
+	getNumberOfSelectedRows: function() {
+		return Vidi.Grid.getSelectedIdentifiers().length;
+	},
+
+	/**
 	 * Tells whether the Grid has selected rows.
 	 *
-	 * @return {bool}
+	 * @return {boolean}
 	 */
 	hasSelectedRows: function() {
 		return Vidi.Grid.getSelectedIdentifiers().length > 0;
+	},
+
+	/**
+	 * @return {object}
+	 */
+	getStoredTransaction: function() {
+		return Vidi.Grid.storage.lastTransaction;
+	},
+
+	/**
+	 * @return {string}
+	 */
+	getStoredUrl: function() {
+		return Vidi.Grid.storage.url;
+	},
+
+	/**
+	 * @return {object}
+	 */
+	getStoredParameters: function() {
+		return Vidi.Grid.storage.data;
 	},
 
 	/**

@@ -3,43 +3,42 @@
 
 	<!-- additional parameters -->
 	<f:form.hidden name="dataType" value="{dataType}"/>
+	<input type="hidden" name="iSortCol_0" value="{v:gp(argument: 'iSortCol_0')}"/>
+	<input type="hidden" name="sSortDir_0" value="{v:gp(argument: 'sSortDir_0')}"/>
+	<input type="hidden" name="sSearch" value="{v:gp(argument: 'sSearch')}"/>
 
 	<!-- @todo display records in two flex columns if many records or display with indentation if tree widget is configured? -->
-	<div class="control-group create-one">
-
-		<h5 class="modal-title">
-			<f:if condition="{editWholeSelection}">
-				<f:then>
-					<f:translate key="update_all" arguments="{0: '{numberOfObjects}'}"/>
-				</f:then>
-				<f:else>
-					<f:if condition="{numberOfObjects} > 1">
-						<f:then>
-							<f:translate key="update_selected_rows" arguments="{0: '{numberOfObjects}'}"/>
-						</f:then>
-						<f:else>
-							<f:translate key="update_selected_row"/>
-						</f:else>
-					</f:if>
-				</f:else>
-			</f:if>
-		</h5>
-
-		<hr/>
-
-		<f:if condition="{numberOfObjects} > 300">
-			<div class="alert">
-				<strong>
-					<f:translate key="attention"/>
-				</strong>
-				<f:translate key="editing_many_rows_takes_time"/>
-			</div>
+	<h5 class="modal-title">
+		<f:if condition="{editWholeSelection}">
+			<f:then>
+				<f:translate key="update_all" arguments="{0: '{numberOfObjects}'}"/>
+			</f:then>
+			<f:else>
+				<f:if condition="{numberOfObjects} > 1">
+					<f:then>
+						<f:translate key="update_selected_rows" arguments="{0: '{numberOfObjects}'}"/>
+					</f:then>
+					<f:else>
+						<f:translate key="update_selected_row"/>
+					</f:else>
+				</f:if>
+			</f:else>
 		</f:if>
+	</h5>
 
-		<input type="hidden" name="sSearch" value="{v:GP(argument: 'sSearch')}" />
-		<f:render section="{fieldType}" partial="Edit/{fieldType}" arguments="{_all}"/>
+	<hr/>
 
-	</div>
+	<!-- @todo conditional warning, not displayed if used own Data Handler -->
+	<f:if condition="{numberOfObjects} > 300">
+		<div class="alert">
+			<strong>
+				<f:translate key="attention"/>
+			</strong>
+			<f:translate key="editing_many_rows_takes_time"/>
+		</div>
+	</f:if>
+
+	<f:render section="{fieldType}" partial="Edit/{fieldType}" arguments="{_all}"/>
 
 	<!-- HIDDEN SUBMIT BUTTON -->
 	<input type="submit" style="visibility: hidden; height: 1px">

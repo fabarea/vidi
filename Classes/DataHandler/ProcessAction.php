@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Module;
+namespace TYPO3\CMS\Vidi\DataHandler;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -17,24 +17,16 @@ namespace TYPO3\CMS\Vidi\Module;
 use TYPO3\CMS\Core\Type\Enumeration;
 
 /**
- * Enumeration object for positioning components in a Vidi module.
+ * Enumeration object for process action.
  */
-class ModulePosition extends Enumeration {
+class ProcessAction extends Enumeration {
 
-	const DOC_HEADER = 'doc-header';
+	const REMOVE = 'remove';
 
-	const TOP = 'top';
+	const UPDATE = 'update';
 
-	const BOTTOM = 'bottom';
+	const COPY = 'copy';
 
-	const LEFT = 'left';
-
-	const RIGHT = 'right';
-
-	const GRID = 'grid';
-
-	const BUTTONS = 'buttons';
-
-	const MENU_MASS_ACTION = 'menu-mass-action';
+	const MOVE = 'move';
 
 }
