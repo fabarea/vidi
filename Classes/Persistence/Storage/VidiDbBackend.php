@@ -21,6 +21,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Exception;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
@@ -97,7 +98,7 @@ class VidiDbBackend {
 	/**
 	 * Constructor. takes the database handle from $GLOBALS['TYPO3_DB']
 	 */
-	public function __construct(\TYPO3\CMS\Extbase\Persistence\QueryInterface $query) {
+	public function __construct(QueryInterface $query) {
 		$this->query = $query;
 		$this->databaseHandle = $GLOBALS['TYPO3_DB'];
 	}
@@ -133,8 +134,7 @@ class VidiDbBackend {
 		$parameters = array();
 		$statementParts = $this->parseQuery($this->query, $parameters);
 
-		$sql = $this->buildQuery($statementParts, $parameters);
-
+		$sql = $this->buildQuery($statementParts);
 		$tableName = '';
 		if (is_array($statementParts) && !empty($statementParts['tables'][0])) {
 			$tableName = $statementParts['tables'][0];
@@ -165,7 +165,7 @@ class VidiDbBackend {
 
 		// if limit is set, we need to count the rows "manually" as COUNT(*) ignores LIMIT constraints
 		if (!empty($statementParts['limit'])) {
-			$statement = $this->buildQuery($statementParts, $parameters);
+			$statement = $this->buildQuery($statementParts);
 			$this->replacePlaceholders($statement, $parameters, current($statementParts['tables']));
 			#print $statement; exit(); // @debug
 			$result = $this->databaseHandle->sql_query($statement);
@@ -181,7 +181,7 @@ class VidiDbBackend {
 				$statementParts['fields'] = array('COUNT(DISTINCT ' . reset($statementParts['tables']) . '.' . $distinctField . ')');
 			}
 
-			$statement = $this->buildQuery($statementParts, $parameters);
+			$statement = $this->buildQuery($statementParts);
 			$this->replacePlaceholders($statement, $parameters, current($statementParts['tables']));
 
 			#print $statement; exit(); // @debug
@@ -200,55 +200,66 @@ class VidiDbBackend {
 	/**
 	 * Parses the query and returns the SQL statement parts.
 	 *
-	 * @param \TYPO3\CMS\Extbase\Persistence\QueryInterface $query The query
+	 * @param QueryInterface $query The query
 	 * @param array &$parameters
 	 * @return array The SQL statement parts
 	 */
-	public function parseQuery(\TYPO3\CMS\Extbase\Persistence\QueryInterface $query, array &$parameters) {
-		$sql = array();
-		$sql['keywords'] = array();
-		$sql['tables'] = array();
-		$sql['unions'] = array();
-		$sql['fields'] = array();
-		$sql['where'] = array();
-		$sql['additionalWhereClause'] = array();
-		$sql['orderings'] = array();
-		$sql['limit'] = array();
+	public function parseQuery(QueryInterface $query, array &$parameters) {
+		$statementParts = array();
+		$statementParts['keywords'] = array();
+		$statementParts['tables'] = array();
+		$statementParts['unions'] = array();
+		$statementParts['fields'] = array();
+		$statementParts['where'] = array();
+		$statementParts['additionalWhereClause'] = array();
+		$statementParts['orderings'] = array();
+		$statementParts['limit'] = array();
 		$source = $query->getSource();
-		$this->parseSource($source, $sql);
-		$this->parseConstraint($query->getConstraint(), $source, $sql, $parameters);
-		$this->parseOrderings($query->getOrderings(), $source, $sql);
-		$this->parseLimitAndOffset($query->getLimit(), $query->getOffset(), $sql);
-		$tableNames = array_unique(array_keys($sql['tables'] + $sql['unions']));
+		$this->parseSource($source, $statementParts);
+		$this->parseConstraint($query->getConstraint(), $source, $statementParts, $parameters);
+		$this->parseOrderings($query->getOrderings(), $source, $statementParts);
+		$this->parseLimitAndOffset($query->getLimit(), $query->getOffset(), $statementParts);
+		$tableNames = array_unique(array_keys($statementParts['tables'] + $statementParts['unions']));
 		foreach ($tableNames as $tableName) {
 			if (is_string($tableName) && strlen($tableName) > 0) {
-				$this->addAdditionalWhereClause($query->getQuerySettings(), $tableName, $sql);
+				$this->addAdditionalWhereClause($query->getQuerySettings(), $tableName, $statementParts);
 			}
 		}
-		return $sql;
+
+		return $statementParts;
 	}
 
 	/**
 	 * Returns the statement, ready to be executed.
 	 *
-	 * @param array $sql The SQL statement parts
+	 * @param array $statementParts The SQL statement parts
 	 * @return string The SQL statement
 	 */
-	public function buildQuery(array $sql) {
-		$statement = 'SELECT ' . implode(' ', $sql['keywords']) . ' ' . implode(',', $sql['fields']) . ' FROM ' . implode(' ', $sql['tables']) . ' ' . implode(' ', $sql['unions']);
-		if (!empty($sql['where'])) {
-			$statement .= ' WHERE ' . implode('', $sql['where']);
-			if (!empty($sql['additionalWhereClause'])) {
-				$statement .= ' AND ' . implode(' AND ', $sql['additionalWhereClause']);
+	public function buildQuery(array $statementParts) {
+
+		// Add more statement to the UNION part.
+		if (!empty($statementParts['unions'])) {
+			foreach ($statementParts['unions'] as $tableName => $unionPart) {
+				if (!empty($statementParts['additionalWhereClause'][$tableName])) {
+					$statementParts['unions'][$tableName] .= ' AND ' . implode(' AND ', $statementParts['additionalWhereClause'][$tableName]);
+				}
 			}
-		} elseif (!empty($sql['additionalWhereClause'])) {
-			$statement .= ' WHERE ' . implode(' AND ', $sql['additionalWhereClause']);
 		}
-		if (!empty($sql['orderings'])) {
-			$statement .= ' ORDER BY ' . implode(', ', $sql['orderings']);
+
+		$statement = 'SELECT ' . implode(' ', $statementParts['keywords']) . ' ' . implode(',', $statementParts['fields']) . ' FROM ' . implode(' ', $statementParts['tables']) . ' ' . implode(' ', $statementParts['unions']);
+		if (!empty($statementParts['where'])) {
+			$statement .= ' WHERE ' . implode('', $statementParts['where']);
+			if (!empty($statementParts['additionalWhereClause'][$this->query->getType()])) {
+				$statement .= ' AND ' . implode(' AND ', $statementParts['additionalWhereClause'][$this->query->getType()]);
+			}
+		} elseif (!empty($statementParts['additionalWhereClause'])) {
+			$statement .= ' WHERE ' . implode(' AND ', $statementParts['additionalWhereClause'][$this->query->getType()]);
 		}
-		if (!empty($sql['limit'])) {
-			$statement .= ' LIMIT ' . $sql['limit'];
+		if (!empty($statementParts['orderings'])) {
+			$statement .= ' ORDER BY ' . implode(', ', $statementParts['orderings']);
+		}
+		if (!empty($statementParts['limit'])) {
+			$statement .= ' LIMIT ' . $statementParts['limit'];
 		}
 		return $statement;
 	}
@@ -350,7 +361,7 @@ class VidiDbBackend {
 		$operand1 = $comparison->getOperand1();
 		$operator = $comparison->getOperator();
 		$operand2 = $comparison->getOperand2();
-		if ($operator === \TYPO3\CMS\Extbase\Persistence\QueryInterface::OPERATOR_IN) {
+		if ($operator === QueryInterface::OPERATOR_IN) {
 			$items = array();
 			$hasValue = FALSE;
 			foreach ($operand2 as $value) {
@@ -366,7 +377,7 @@ class VidiDbBackend {
 				$this->parseDynamicOperand($operand1, $operator, $source, $sql, $parameters, NULL, $operand2);
 				$parameters[] = $items;
 			}
-		} elseif ($operator === \TYPO3\CMS\Extbase\Persistence\QueryInterface::OPERATOR_CONTAINS) {
+		} elseif ($operator === QueryInterface::OPERATOR_CONTAINS) {
 			if ($operand2 === NULL) {
 				$sql['where'][] = '1<>1';
 			} else {
@@ -399,9 +410,9 @@ class VidiDbBackend {
 			}
 		} else {
 			if ($operand2 === NULL) {
-				if ($operator === \TYPO3\CMS\Extbase\Persistence\QueryInterface::OPERATOR_EQUAL_TO) {
+				if ($operator === QueryInterface::OPERATOR_EQUAL_TO) {
 					$operator = self::OPERATOR_EQUAL_TO_NULL;
-				} elseif ($operator === \TYPO3\CMS\Extbase\Persistence\QueryInterface::OPERATOR_NOT_EQUAL_TO) {
+				} elseif ($operator === QueryInterface::OPERATOR_NOT_EQUAL_TO) {
 					$operator = self::OPERATOR_NOT_EQUAL_TO_NULL;
 				}
 			}
@@ -566,28 +577,28 @@ class VidiDbBackend {
 			case self::OPERATOR_NOT_EQUAL_TO_NULL:
 				$operator = 'IS NOT';
 				break;
-			case \TYPO3\CMS\Extbase\Persistence\QueryInterface::OPERATOR_IN:
+			case QueryInterface::OPERATOR_IN:
 				$operator = 'IN';
 				break;
-			case \TYPO3\CMS\Extbase\Persistence\QueryInterface::OPERATOR_EQUAL_TO:
+			case QueryInterface::OPERATOR_EQUAL_TO:
 				$operator = '=';
 				break;
-			case \TYPO3\CMS\Extbase\Persistence\QueryInterface::OPERATOR_NOT_EQUAL_TO:
+			case QueryInterface::OPERATOR_NOT_EQUAL_TO:
 				$operator = '!=';
 				break;
-			case \TYPO3\CMS\Extbase\Persistence\QueryInterface::OPERATOR_LESS_THAN:
+			case QueryInterface::OPERATOR_LESS_THAN:
 				$operator = '<';
 				break;
-			case \TYPO3\CMS\Extbase\Persistence\QueryInterface::OPERATOR_LESS_THAN_OR_EQUAL_TO:
+			case QueryInterface::OPERATOR_LESS_THAN_OR_EQUAL_TO:
 				$operator = '<=';
 				break;
-			case \TYPO3\CMS\Extbase\Persistence\QueryInterface::OPERATOR_GREATER_THAN:
+			case QueryInterface::OPERATOR_GREATER_THAN:
 				$operator = '>';
 				break;
-			case \TYPO3\CMS\Extbase\Persistence\QueryInterface::OPERATOR_GREATER_THAN_OR_EQUAL_TO:
+			case QueryInterface::OPERATOR_GREATER_THAN_OR_EQUAL_TO:
 				$operator = '>=';
 				break;
-			case \TYPO3\CMS\Extbase\Persistence\QueryInterface::OPERATOR_LIKE:
+			case QueryInterface::OPERATOR_LIKE:
 				$operator = 'LIKE';
 				break;
 			default:
@@ -637,29 +648,28 @@ class VidiDbBackend {
 	 *
 	 * @param QuerySettingsInterface $querySettings The TYPO3 CMS specific query settings
 	 * @param string $tableName The table name to add the additional where clause for
-	 * @param string &$sql
+	 * @param array &$statementParts
 	 * @return void
 	 */
-	protected function addAdditionalWhereClause(QuerySettingsInterface $querySettings, $tableName, &$sql) {
-		$this->addVisibilityConstraintStatement($querySettings, $tableName, $sql);
+	protected function addAdditionalWhereClause(QuerySettingsInterface $querySettings, $tableName, &$statementParts) {
+		$this->addVisibilityConstraintStatement($querySettings, $tableName, $statementParts);
 		if ($querySettings->getRespectSysLanguage()) {
-			$this->addSysLanguageStatement($tableName, $sql, $querySettings);
+			$this->addSysLanguageStatement($tableName, $statementParts, $querySettings);
 		}
 		if ($querySettings->getRespectStoragePage()) {
-			$this->addPageIdStatement($tableName, $sql, $querySettings->getStoragePageIds());
+			$this->addPageIdStatement($tableName, $statementParts, $querySettings->getStoragePageIds());
 		}
 	}
-
 
 	/**
 	 * Adds enableFields and deletedClause to the query if necessary
 	 *
 	 * @param QuerySettingsInterface $querySettings
 	 * @param string $tableName The database table name
-	 * @param array &$sql The query parts
+	 * @param array &$statementParts The query parts
 	 * @return void
 	 */
-	protected function addVisibilityConstraintStatement(QuerySettingsInterface $querySettings, $tableName, array &$sql) {
+	protected function addVisibilityConstraintStatement(QuerySettingsInterface $querySettings, $tableName, array &$statementParts) {
 		$statement = '';
 		if (is_array($GLOBALS['TCA'][$tableName]['ctrl'])) {
 			$ignoreEnableFields = $querySettings->getIgnoreEnableFields();
@@ -671,9 +681,11 @@ class VidiDbBackend {
 				// TYPO3_MODE === 'BE'
 				$statement .= $this->getBackendConstraintStatement($tableName, $ignoreEnableFields, $includeDeleted);
 			}
+
+			// Remove the prefixing "AND" if any.
 			if (!empty($statement)) {
 				$statement = strtolower(substr($statement, 1, 3)) === 'and' ? substr($statement, 5) : $statement;
-				$sql['additionalWhereClause'][] = $statement;
+				$statementParts['additionalWhereClause'][$tableName][] = $statement;
 			}
 		}
 	}
@@ -747,11 +759,11 @@ class VidiDbBackend {
 	 * Builds the language field statement
 	 *
 	 * @param string $tableName The database table name
-	 * @param array &$sql The query parts
+	 * @param array &$statementParts The query parts
 	 * @param QuerySettingsInterface $querySettings The TYPO3 CMS specific query settings
 	 * @return void
 	 */
-	protected function addSysLanguageStatement($tableName, array &$sql, $querySettings) {
+	protected function addSysLanguageStatement($tableName, array &$statementParts, $querySettings) {
 		if (is_array($GLOBALS['TCA'][$tableName]['ctrl'])) {
 			if (!empty($GLOBALS['TCA'][$tableName]['ctrl']['languageField'])) {
 				// Select all entries for the current language
@@ -773,7 +785,7 @@ class VidiDbBackend {
 					}
 					$additionalWhereClause .= '))';
 				}
-				$sql['additionalWhereClause'][] = '(' . $additionalWhereClause . ')';
+				$statementParts['additionalWhereClause'][$tableName][] = '(' . $additionalWhereClause . ')';
 			}
 		}
 	}
@@ -782,12 +794,12 @@ class VidiDbBackend {
 	 * Builds the page ID checking statement
 	 *
 	 * @param string $tableName The database table name
-	 * @param array &$sql The query parts
+	 * @param array &$statementParts The query parts
 	 * @param array $storagePageIds list of storage page ids
 	 * @throws Exception\InconsistentQuerySettingsException
 	 * @return void
 	 */
-	protected function addPageIdStatement($tableName, array &$sql, array $storagePageIds) {
+	protected function addPageIdStatement($tableName, array &$statementParts, array $storagePageIds) {
 		$tableColumns = $this->tableColumnCache->get($tableName);
 		if ($tableColumns === FALSE) {
 			$tableColumns = $this->databaseHandle->admin_get_fields($tableName);
@@ -797,13 +809,13 @@ class VidiDbBackend {
 			$rootLevel = (int)$GLOBALS['TCA'][$tableName]['ctrl']['rootLevel'];
 			if ($rootLevel) {
 				if ($rootLevel === 1) {
-					$sql['additionalWhereClause'][] = $tableName . '.pid = 0';
+					$statementParts['additionalWhereClause'][$tableName][] = $tableName . '.pid = 0';
 				}
 			} else {
 				if (empty($storagePageIds)) {
 					throw new Exception\InconsistentQuerySettingsException('Missing storage page ids.', 1365779762);
 				}
-				$sql['additionalWhereClause'][] = $tableName . '.pid IN (' . implode(', ', $storagePageIds) . ')';
+				$statementParts['additionalWhereClause'][$tableName][] = $tableName . '.pid IN (' . implode(', ', $storagePageIds) . ')';
 			}
 		}
 	}
@@ -820,10 +832,10 @@ class VidiDbBackend {
 	protected function parseOrderings(array $orderings, SourceInterface $source, array &$sql) {
 		foreach ($orderings as $propertyName => $order) {
 			switch ($order) {
-				case \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING:
+				case QueryInterface::ORDER_ASCENDING:
 					$order = 'ASC';
 					break;
-				case \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING:
+				case QueryInterface::ORDER_DESCENDING:
 					$order = 'DESC';
 					break;
 				default:

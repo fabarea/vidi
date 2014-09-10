@@ -68,7 +68,9 @@ Vidi.VisualSearch = {
 	 */
 	retrieveFacetName: function(facetLabel) {
 
-		var facetName = null;
+		// If no facet name is found for a label (e.g for "text"), returns the facet label as such.
+		// The server will know how to handle that.
+		var facetName = facetLabel;
 
 		_.each(Vidi.module.grid.facets, function(label, _facetName) {
 			if (label == facetLabel) {

@@ -121,16 +121,21 @@ class MatcherObjectFactory implements SingletonInterface {
 					$resolvedDataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $dataType);
 					$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $dataType);
 
-					// Only process if field really exists.
+					// Retrieve the value.
+					$value = current($term);
+
+					// Check whether the field exists and set it as "equal" or "like".
 					if (TcaService::table($resolvedDataType)->hasField($fieldName)) {
-						$value = current($term);
-						if ($fieldNameAndPath === 'text') {
-							$matcher->setSearchTerm($value);
-						} elseif ($this->isOperatorEquals($fieldNameAndPath, $dataType, $value)) {
+						if ($this->isOperatorEquals($fieldNameAndPath, $dataType, $value)) {
 							$matcher->equals($fieldNameAndPath, $value);
 						} else {
 							$matcher->likes($fieldNameAndPath, $value);
 						}
+					} elseif ($fieldNameAndPath === 'text') {
+						// Special case if field is "text" which is a pseudo field in this case.
+						// Set the search term which means Vidi will
+						// search in various fields with operator "like". The fields come from key "searchFields" in the TCA.
+						$matcher->setSearchTerm($value);
 					}
 				}
 			} else {
