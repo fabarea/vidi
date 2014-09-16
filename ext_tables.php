@@ -79,9 +79,6 @@ if (TYPO3_MODE == 'BE') {
 		');
 	}
 
-	// Register the Tools for Vidi.
-	\TYPO3\CMS\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'TYPO3\CMS\Vidi\Tool\RelationAnalyserTool');
-
 	/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
 	$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
 
@@ -106,7 +103,7 @@ if (TYPO3_MODE == 'BE') {
 		TRUE
 	);
 
-	// Register some Tools for Vidi.
+	// Register default Tools for Vidi.
 	\TYPO3\CMS\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'TYPO3\CMS\Vidi\Tool\RelationAnalyserTool');
 }
 

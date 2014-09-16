@@ -32,20 +32,21 @@
 		</div>
 	</div>
 
-	<div id="container" style="padding-left: 10px;">
-		<ul class="thumbnails">
-
-			<f:for each="{items}" as="item">
-				<li class="span5">
-					<div class="thumbnail">
-						<div class="caption">
-							<h4>{item.title}</h4>
-							{item.description -> f:format.raw()}
+	<div id="container" style="padding-left: 10px; padding-right: 10px;">
+		<f:for each="{orderedItems}" as="items">
+			<div class="row-fluid" style="margin-top: 10px">
+				<f:for each="{items}" as="item">
+					<div class="span4" style="margin-left: 1%">
+						<div class="thumbnail">
+							<div class="caption">
+								<h4>{item.title}</h4>
+								{item.description -> f:format.raw()}
+							</div>
 						</div>
 					</div>
-				</li>
-			</f:for>
-		</ul>
+				</f:for>
+			</div>
+		</f:for>
 	</div>
 
 </f:section>

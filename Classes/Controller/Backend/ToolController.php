@@ -29,13 +29,20 @@ class ToolController extends ActionController {
 	public function welcomeAction() {
 		$items = array();
 		$tools = ToolRegistry::getInstance()->getTools($this->getModuleLoader()->getDataType());
-		foreach ($tools as $tool) {
+
+		foreach ($tools as $index => $tool) {
+
+			// Order items by columns / rows
+			$position = (int)($index / 3);
+			if (!isset($items[$position])) {
+				$items[$position] = array();
+			}
 			$item['title'] = $tool->getTitle();
 			$item['description'] = $tool->getDescription();
 
-			$items[] = $item;
+			$items[$position][] = $item;
 		}
-		$this->view->assign('items', $items);
+		$this->view->assign('orderedItems', $items);
 	}
 
 	/**

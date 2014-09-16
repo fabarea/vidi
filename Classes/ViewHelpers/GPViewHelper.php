@@ -26,9 +26,14 @@ class GPViewHelper extends AbstractViewHelper {
 	 * Tells whether the argument exists or not.
 	 *
 	 * @param string $argument
+	 * @param bool $encode
 	 * @return boolean
 	 */
-	public function render($argument) {
-		return urlencode(GeneralUtility::_GP($argument));
+	public function render($argument, $encode = TRUE) {
+		$value = GeneralUtility::_GP($argument);
+		if ($encode) {
+			$value = urlencode($value);
+		}
+		return $value;
 	}
 }

@@ -195,14 +195,14 @@ Content Repository. Here is an example for retrieving a set of files::
 Add tools in a Vidi module
 ==========================
 
-For each Vidi module, it is possible to register some tools to do whatever maintenance, utility, processing operations.
-The landing page of the Tools can be accessed by clicking the upper right icon. The icon is only displayed if any Tools is available.
+For each Vidi module, it is possible to register some tools to do whatever maintenance, utility, processing operations for a content type.
+The landing page of the Tools can be accessed by clicking the upper right icon within the BE module. The icon is only displayed if some Tools is available for the User.
 To take example, there is a Tool which is shown for admin User that will check the relations used in the Grid.
 To register your own Tool, add the following lines into in ``ext_tables.php``::
 
 	if (TYPO3_MODE == 'BE') {
 
-		// Register a Tool for a FE User only.
+		// Register a Tool for a FE User content type only.
 		\TYPO3\CMS\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'TYPO3\CMS\Vidi\Tool\RelationAnalyserTool');
 
 

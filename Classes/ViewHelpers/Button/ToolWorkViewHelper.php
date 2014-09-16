@@ -26,10 +26,11 @@ class ToolWorkViewHelper extends AbstractViewHelper {
 	 * Renders a button for "work" for a Tool.
 	 *
 	 * @param string $tool
+	 * @param string $label
 	 * @param array $arguments
 	 * @return string
 	 */
-	public function render($tool, $arguments = array()) {
+	public function render($tool, $label, $arguments = array()) {
 
 		$parameterPrefix = $this->getModuleLoader()->getParameterPrefix();
 
@@ -47,9 +48,10 @@ class ToolWorkViewHelper extends AbstractViewHelper {
 			$additionalParameters[$parameterPrefix]['arguments'] = $arguments;
 		}
 
-		$result = sprintf('<a href="%s&returnUrl=%s" class="btn">Analyse relations</a>',
+		$result = sprintf('<a href="%s&returnUrl=%s" class="btn">%s</a>',
 			$this->getModuleLoader()->getModuleUrl($additionalParameters),
-			urlencode($GLOBALS['_SERVER']['REQUEST_URI'])
+			urlencode($GLOBALS['_SERVER']['REQUEST_URI']),
+			$label
 		);
 		return $result;
 	}
