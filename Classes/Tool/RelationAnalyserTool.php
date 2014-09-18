@@ -35,7 +35,7 @@ class RelationAnalyserTool extends AbstractTool {
 	 * @return string
 	 */
 	public function getDescription() {
-		$templateNameAndPath = 'EXT:vidi/Resources/Private/Backend/StandAlone/Tool/RelationAnalyser/Launcher.html';
+		$templateNameAndPath = 'EXT:vidi/Resources/Private/Backend/Standalone/Tool/RelationAnalyser/Launcher.html';
 		$view = $this->initializeStandaloneView($templateNameAndPath);
 		$view->assign('sitePath', PATH_site);
 		return $view->render();
@@ -49,7 +49,7 @@ class RelationAnalyserTool extends AbstractTool {
 	 */
 	public function work(array $arguments = array()) {
 
-		$templateNameAndPath = 'EXT:vidi/Resources/Private/Backend/StandAlone/Tool/RelationAnalyser/WorkResult.html';
+		$templateNameAndPath = 'EXT:vidi/Resources/Private/Backend/Standalone/Tool/RelationAnalyser/WorkResult.html';
 		$view = $this->initializeStandaloneView($templateNameAndPath);
 
 		$dataType = $this->getModuleLoader()->getDataType();
