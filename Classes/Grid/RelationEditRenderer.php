@@ -18,7 +18,7 @@ use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class for editing mm relation between objects
+ * Class for editing mm relation between objects.
  */
 class RelationEditRenderer extends GridRendererAbstract {
 
@@ -47,14 +47,5 @@ class RelationEditRenderer extends GridRendererAbstract {
 		);
 
 		return $result;
-	}
-
-	/**
-	 * Get the Vidi Module Loader.
-	 *
-	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
-	 */
-	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
 	}
 }

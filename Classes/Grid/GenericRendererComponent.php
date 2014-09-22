@@ -17,7 +17,7 @@ namespace TYPO3\CMS\Vidi\Grid;
 /**
  * Class for configuring a Grid Renderer in the Grid TCA.
  */
-class GenericRendererComponent implements RendererComponentInterface {
+class GenericRendererComponent implements GridComponentInterface {
 
 	/**
 	 * @var string

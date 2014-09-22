@@ -121,9 +121,9 @@ To quickly get data in a Fluid Template such as a list of Value Objects, the Con
 the Vidi Content Repository and can be used to retrieve list of content.
 As example, display a list of all user belonging to User Group "1" and loop around there respective groups::
 
-	<f:if condition="{v:content.find(matches: '{usergroup: 1}', orderings: '{uid: \'ASC\'}', dataType: 'fe_users')}">
+	<f:if condition="{v:content.find(matches: '{usergroup: 1}', orderings: '{uid: \'ASC\'}', type: 'fe_users')}">
 		<ul>
-			<f:for each="{v:content.find(matches: '{usergroup: 1}', orderings: '{uid: \'ASC\'}', dataType: 'fe_users')}" as="user">
+			<f:for each="{v:content.find(matches: '{usergroup: 1}', orderings: '{uid: \'ASC\'}', type: 'fe_users')}" as="user">
 				<li>
 					{user.uid}:{user.username}
 
@@ -143,7 +143,7 @@ As example, display a list of all user belonging to User Group "1" and loop arou
 
 Same example but simply count records::
 
-	Number of files: {v:content.find(matches: '{usergroup: 1}', orderings: '{uid: \'ASC\'}', dataType: 'fe_users')}
+	Number of files: {v:content.find(matches: '{usergroup: 1}', orderings: '{uid: \'ASC\'}', type: 'fe_users')}
 
 
 **TODO**: Implement selection saving! the syntax is still a bit verbose to (my) taste. There is in preparation the possibility to save selection (tx_vid_domain_model_selection)
@@ -225,7 +225,7 @@ columns should be rendered. Take inspiration of `this example`_ below for your o
 			),
 			'uid' => array(
 				'visible' => FALSE,
-				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:uid',
+				'label' => 'Id',
 				'width' => '5px',
 			),
 			'username' => array(
@@ -417,43 +417,36 @@ Description
 Default
 	NULL
 
-System columns
---------------
-
-There a few columns that are considered as "system" which means they don't correspond to a property of an object
-but are display to control the record. By convention, theses columns are prefixed with a double underscore e.g "__":
-
-
-.. ...............................................................
 .. ...............................................................
 .. container:: table-row
 
 Key
-	**__number**
+	**canBeHidden**
+
+Datatype
+	boolean
 
 Description
-	Display a row number
+	Whether the column can be hidden or not.
 
-.. ...............................................................
+Default
+	TRUE
+
+
 .. ...............................................................
 .. container:: table-row
 
 Key
-	**__checkbox**
+	**localized**
+
+Datatype
+	boolean
 
 Description
-	Display a check box
+	If a field is configured to be localized in the TCA, there is the chance to force not to be localized in the Grid.
 
-.. ...............................................................
-.. ...............................................................
-.. container:: table-row
-
-Key
-	**__buttons**
-
-Description
-	Display "edit", "deleted", ... buttons to control the row
-
+Default
+	TRUE
 
 TCA "grid.facets"
 -----------------
@@ -647,9 +640,6 @@ To check whether TCA is well configured, Vidi provides a Command that will scan 
 	./typo3/cli_dispatch.phpsh extbase vidi:analyseRelations
 	./typo3/cli_dispatch.phpsh extbase vidi:analyseRelations --table tx_domain_model_foo
 
-	# Check labels of the Grid
-	./typo3/cli_dispatch.phpsh extbase vidi:checkLabels
-
 
 Property Mapping
 ================
@@ -692,3 +682,4 @@ While it will disconnect you from TCEmain (which handles for your hooks, cache H
 			ProcessAction::UPDATE => 'MyVendor\MyExt\DataHandler\FooDataHandler'
 		),
 	),
+

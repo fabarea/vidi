@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Exception;
+namespace TYPO3\CMS\Vidi\Grid;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,8 +15,22 @@ namespace TYPO3\CMS\Vidi\Exception;
  */
 
 /**
- * Handle Exception for missing uid
+ *  Interface for configuring a Grid Renderer in the Grid TCA.
  */
-class MissingUidException extends \Exception {
+interface GridComponentInterface {
 
+	/**
+	 * @return string
+	 */
+	public function getClassName();
+
+	/**
+	 * @return array
+	 */
+	public function getConfiguration();
+
+	/**
+	 * @return string
+	 */
+	public function toArray();
 }

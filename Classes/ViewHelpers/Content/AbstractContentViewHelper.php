@@ -29,7 +29,8 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper {
 	 * @return void
 	 */
 	public function initializeArguments() {
-		$this->registerArgument('dataType', 'string', 'Corresponds to a table name where the records come from.', FALSE, '');
+		$this->registerArgument('type', 'string', 'Corresponds to the type of data to be fetched. It will basically be a table name e.g. fe_users.', FALSE, '');
+		$this->registerArgument('dataType', 'string', 'Corresponds to a table name where the records come from.', FALSE, ''); // @todo deprecated remove me in version 0.6 + 2
 		$this->registerArgument('matches', 'array', 'Key / value array to be used as filter. The key corresponds to a field name.', FALSE, array());
 		$this->registerArgument('selection', 'int', 'A possible selection defined in the BE and stored in the database.', FALSE, 0);
 		$this->registerArgument('ignoreEnableFields', 'bool', 'Whether to ignore enable fields or not (AKA hidden, deleted, starttime, ...).', FALSE, FALSE);

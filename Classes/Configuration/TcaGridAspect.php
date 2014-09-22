@@ -15,6 +15,8 @@ namespace TYPO3\CMS\Vidi\Configuration;
  */
 
 use TYPO3\CMS\Core\Database\TableConfigurationPostProcessingHookInterface;
+use TYPO3\CMS\Vidi\Grid\ButtonGroupComponent;
+use TYPO3\CMS\Vidi\Grid\CheckBoxComponent;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
@@ -51,17 +53,15 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface {
 			),
 			'columns' => array(
 				'__checkbox' => array(
-					'width' => '14px',
-					'sortable' => FALSE,
-					'html' => '<input type="checkbox" class="checkbox-row-top"/>',
+					'renderer' => new CheckBoxComponent(),
 				),
 				'uid' => array(
 					'visible' => FALSE,
-					'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:uid', // @todo change me!
+					'label' => 'Id',
 					'width' => '5px',
 				),
 				$labelField => array(
-					'editable' => FALSE, // @todo make me editable but consider the record icon with jEditable plugin
+					'editable' => TRUE,
 				),
 				'tstamp' => array(
 					'visible' => FALSE,
@@ -74,8 +74,7 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface {
 					'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:crdate',
 				),
 				'__buttons' => array(
-					'sortable' => FALSE,
-					'width' => '70px',
+					'renderer' => new ButtonGroupComponent(),
 				),
 			),
 		);

@@ -21,7 +21,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\RepositoryInterface;
 use TYPO3\CMS\Vidi\Converter\Property;
 use TYPO3\CMS\Vidi\DataHandler\ProcessAction;
-use TYPO3\CMS\Vidi\Exception\MissingUidException;
+use TYPO3\CMS\Vidi\Domain\Model\Content;
 use TYPO3\CMS\Vidi\Persistence\Matcher;
 use TYPO3\CMS\Vidi\Persistence\Order;
 use TYPO3\CMS\Vidi\Persistence\Query;
@@ -67,7 +67,7 @@ class ContentRepository implements RepositoryInterface {
 	/**
 	 * Returns all objects of this repository.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content[]
+	 * @return Content[]
 	 */
 	public function findAll() {
 		$query = $this->createQuery();
@@ -79,7 +79,7 @@ class ContentRepository implements RepositoryInterface {
 	 *
 	 * @param string $propertyName
 	 * @param Matcher $matcher
-	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content[]
+	 * @return Content[]
 	 */
 	public function findDistinctValues($propertyName, Matcher $matcher = NULL) {
 		$query = $this->createQuery();
@@ -141,7 +141,7 @@ class ContentRepository implements RepositoryInterface {
 	 * Finds an object matching the given identifier.
 	 *
 	 * @param int $uid The identifier of the object to find
-	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content The matching object
+	 * @return Content|NULL
 	 * @api
 	 */
 	public function findByUid($uid) {
@@ -153,7 +153,7 @@ class ContentRepository implements RepositoryInterface {
 	 *
 	 * @param string $propertyName
 	 * @param array $values
-	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content[]
+	 * @return Content[]
 	 */
 	public function findIn($propertyName, array $values) {
 		$query = $this->createQuery();
@@ -168,7 +168,7 @@ class ContentRepository implements RepositoryInterface {
 	 * @param Order $order The order
 	 * @param int $limit
 	 * @param int $offset
-	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content[]
+	 * @return Content[]
 	 */
 	public function findBy(Matcher $matcher, Order $order = NULL, $limit = NULL, $offset = NULL) {
 
@@ -202,7 +202,7 @@ class ContentRepository implements RepositoryInterface {
 	 * @internal param \TYPO3\CMS\Vidi\Persistence\Order $order The order
 	 * @internal param int $limit
 	 * @internal param int $offset
-	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content
+	 * @return Content
 	 */
 	public function findOneBy(Matcher $matcher) {
 
@@ -405,17 +405,46 @@ class ContentRepository implements RepositoryInterface {
 	/**
 	 * Update a content with new information.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
-	 * @throws \TYPO3\CMS\Vidi\Exception\MissingUidException
-	 * @throws \Exception
+	 * @param Content $content
+	 * @param $language
+	 * @return bool
+	 */
+	public function localize($content, $language) {
+
+		// Security check
+		$this->getContentValidator()->validate($content);
+		$this->getLanguageValidator()->validate($language);
+
+		$dataType = $content->getDataType();
+		$handler = $this->getDataHandlerFactory()->action(ProcessAction::LOCALIZE)->forType($dataType)->getDataHandler();
+
+		$handlerResult = $handler->processLocalize($content, $language);
+		$this->errorMessages = $handler->getErrorMessages();
+		return $handlerResult;
+	}
+
+
+	/**
+	 * @return \TYPO3\CMS\Core\DataHandling\DataHandler
+	 */
+	protected function getDataHandler() {
+		if (!$this->dataHandler) {
+			$this->dataHandler = GeneralUtility::makeInstance('TYPO3\CMS\Core\DataHandling\DataHandler');
+		}
+		return $this->dataHandler;
+	}
+
+
+	/**
+	 * Update a content with new information.
+	 *
+	 * @param Content $content
 	 * @return bool
 	 */
 	public function update($content) {
 
 		// Security check.
-		if ($content->getUid() <= 0) {
-			throw new MissingUidException('Missing Uid', 1351605542);
-		}
+		$this->getContentValidator()->validate($content);
 
 		$dataType = $content->getDataType();
 		$handler = $this->getDataHandlerFactory()->action(ProcessAction::UPDATE)->forType($dataType)->getDataHandler();
@@ -428,7 +457,7 @@ class ContentRepository implements RepositoryInterface {
 	/**
 	 * Removes an object from this repository.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
+	 * @param Content $content
 	 * @return boolean
 	 */
 	public function remove($content) {
@@ -443,17 +472,14 @@ class ContentRepository implements RepositoryInterface {
 	/**
 	 * Move a content within this repository.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
+	 * @param Content $content
 	 * @param string $target
-	 * @throws \TYPO3\CMS\Vidi\Exception\MissingUidException
 	 * @return bool
 	 */
 	public function move($content, $target) {
 
 		// Security check.
-		if ($content->getUid() <= 0) {
-			throw new MissingUidException('Missing Uid', 1351605593);
-		}
+		$this->getContentValidator()->validate($content);
 
 		$dataType = $content->getDataType();
 		$handler = $this->getDataHandlerFactory()->action(ProcessAction::MOVE)->forType($dataType)->getDataHandler();
@@ -466,22 +492,18 @@ class ContentRepository implements RepositoryInterface {
 	/**
 	 * Copy a content within this repository.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $content
-	 * @throws \TYPO3\CMS\Vidi\Exception\MissingUidException
-	 * @throws \Exception
+	 * @param Content $content
 	 * @return bool
 	 */
-	public function copy($content) {
+	public function copy($content, $target) {
 
 		// Security check.
-		if ($content->getUid() <= 0) {
-			throw new MissingUidException('Missing Uid', 1351605593);
-		}
+		$this->getContentValidator()->validate($content);
 
 		$dataType = $content->getDataType();
 		$handler = $this->getDataHandlerFactory()->action(ProcessAction::COPY)->forType($dataType)->getDataHandler();
 
-		$handlerResult = $handler->processCopy($content);
+		$handlerResult = $handler->processCopy($content, $target);
 		$this->errorMessages = $handler->getErrorMessages();
 		return $handlerResult;
 	}
@@ -634,7 +656,7 @@ class ContentRepository implements RepositoryInterface {
 	 * Finds an object matching the given identifier.
 	 *
 	 * @param mixed $identifier The identifier of the object to find
-	 * @return object The matching object if found, otherwise NULL
+	 * @return Content|NULL
 	 * @api
 	 */
 	public function findByIdentifier($identifier) {
@@ -714,6 +736,20 @@ class ContentRepository implements RepositoryInterface {
 	 */
 	protected function getObjectManager() {
 		return GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Vidi\Domain\Validator\ContentValidator
+	 */
+	protected function getContentValidator() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Domain\Validator\ContentValidator');
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Vidi\Domain\Validator\LanguageValidator
+	 */
+	protected function getLanguageValidator() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Domain\Validator\LanguageValidator');
 	}
 
 }

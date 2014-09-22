@@ -15,18 +15,20 @@ namespace TYPO3\CMS\Vidi\Grid;
  */
 
 /**
- * Class rendering relation
- *
- * @deprecated will be removed in 0.4.0 + 2 version. Use RelationEditRenderer instead.
+ * Class for configuring a "Button Group" Grid Renderer.
  */
-class RelationCreateRenderer extends RelationEditRenderer {
+class ButtonGroupComponent extends GenericRendererComponent {
 
 	/**
-	 * Render a representation of the relation on the GUI.
-	 *
-	 * @return string
+	 * Configure the "Button Group" Grid Renderer.
 	 */
-	public function render() {
-		return parent::render();
+	public function __construct() {
+		$configuration = array(
+			'sortable' => FALSE,
+			'canBeHidden' => FALSE,
+			'width' => '70px',
+		);
+		$className = 'TYPO3\CMS\Vidi\Grid\ButtonGroupRenderer';
+		parent::__construct($className, $configuration);
 	}
 }

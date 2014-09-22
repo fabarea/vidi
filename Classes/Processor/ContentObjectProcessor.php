@@ -57,7 +57,7 @@ class ContentObjectProcessor implements SingletonInterface {
 
 		foreach ($contentData as $fieldName => $values) {
 
-			$resolvedObject = $this->getContentObjectResolver()->getObject($object, $fieldNameAndPath, $fieldName);
+			$resolvedObject = $this->getContentObjectResolver()->getObject($object, $fieldNameAndPath);
 
 			if (TcaService::table($resolvedObject)->field($fieldName)->hasMany()) {
 

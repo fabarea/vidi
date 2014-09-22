@@ -440,6 +440,9 @@
                         }
                         $(this).append(cancel);
 
+	                    // Patched by Fabien to add a little bit more space - 02.10.14
+	                    $(this).append('<hr style="margin-top: 10px; border: 0;"/>');
+
                         $(cancel).click(function(event) {
                             //original.reset();
                             if ($.isFunction($.editable.types[settings.type].reset)) {

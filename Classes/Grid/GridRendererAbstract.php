@@ -13,6 +13,7 @@ namespace TYPO3\CMS\Vidi\Grid;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class rendering relation
@@ -21,7 +22,6 @@ abstract class GridRendererAbstract implements GridRendererInterface {
 
 	/**
 	 * The content object.
-	 * @todo rename me to contentObject for the sake of clarity.
 	 *
 	 * @var \TYPO3\CMS\Vidi\Domain\Model\Content
 	 */
@@ -31,6 +31,11 @@ abstract class GridRendererAbstract implements GridRendererInterface {
 	 * @var string
 	 */
 	protected $fieldName;
+
+	/**
+	 * @var int
+	 */
+	protected $rowIndex;
 
 	/**
 	 * @var array
@@ -75,6 +80,22 @@ abstract class GridRendererAbstract implements GridRendererInterface {
 	}
 
 	/**
+	 * @return int
+	 */
+	public function getRowIndex() {
+		return $this->rowIndex;
+	}
+
+	/**
+	 * @param int $rowIndex
+	 * @return $this
+	 */
+	public function setRowIndex($rowIndex) {
+		$this->rowIndex = $rowIndex;
+		return $this;
+	}
+
+	/**
 	 * @return array
 	 */
 	public function getFieldConfiguration() {
@@ -104,5 +125,14 @@ abstract class GridRendererAbstract implements GridRendererInterface {
 	public function setGridRendererConfiguration($gridRendererConfiguration) {
 		$this->gridRendererConfiguration = $gridRendererConfiguration;
 		return $this;
+	}
+
+	/**
+	 * Get the Vidi Module Loader.
+	 *
+	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 */
+	protected function getModuleLoader() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
 	}
 }

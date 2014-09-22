@@ -45,7 +45,12 @@ class MarkerProcessor implements SingletonInterface {
 		foreach ($signalArguments->getContentData() as $fieldName => $value) {
 			$currentValue = $this->getContentObjectResolver()->getValue($signalArguments->getContentObject(), $signalArguments->getFieldNameAndPath(), $fieldName);
 			$creationTime = $this->getContentObjectResolver()->getValue($signalArguments->getContentObject(), $signalArguments->getFieldNameAndPath(), 'crdate');
-			$contentData[$fieldName] = $this->replaceWellKnownMarkers($value, $currentValue, $signalArguments->getCounter(), $creationTime);
+
+			if (strpos($value, 's/') !== FALSE) {
+				$contentData[$fieldName] = $this->searchAndReplace($value, $currentValue);
+			} else {
+				$contentData[$fieldName] = $this->replaceWellKnownMarkers($value, $currentValue, $signalArguments->getCounter(), $creationTime);
+			}
 		}
 		$signalArguments->setContentData($contentData);
 
@@ -71,6 +76,21 @@ class MarkerProcessor implements SingletonInterface {
 
 		// Replace me!
 		return str_replace($this->wellKnownMarkers, $replaces, $value);
+	}
+
+	/**
+	 * @param string $value
+	 * @param string $currentValue
+	 * @return string
+	 */
+	protected function searchAndReplace($value, $currentValue) {
+
+		$structure = explode('/', $value);
+		$search = $structure[1];
+		$replace = $structure[2];
+
+		// Perhaps needs to be improved here if search contains "/" precisely.
+		return preg_replace('/' . $search . '/isU', $replace, $currentValue);
 	}
 
 	/**

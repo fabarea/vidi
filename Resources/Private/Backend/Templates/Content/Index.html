@@ -36,7 +36,7 @@
 							<ul class="dropdown-menu">
 								<f:for each="{columns}" key="columnName" as="configuration" iteration="iterator">
 									<li>
-										<f:if condition="{v:grid.column.isNotSystem(name: '{columnName}')}">
+										<f:if condition="{v:grid.column.canBeHidden(name: '{columnName}')}">
 											<label class="checkbox inline">
 												<f:if condition="{v:grid.column.isVisible(name: '{columnName}')}">
 													<f:then>
@@ -83,9 +83,9 @@
 				<tr class="t3-row-header">
 					<f:for each="{columns}" key="columnName" as="configuration">
 						<th>
-							<f:if condition="{configuration.html}">
+							<f:if condition="{v:grid.column.header(name: '{columnName}')}">
 								<f:then>
-									<f:format.raw>{configuration.html}</f:format.raw>
+									<f:format.raw>{v:grid.column.header(name: '{columnName}')}</f:format.raw>
 								</f:then>
 								<f:else>
 									<v:grid.column.title />

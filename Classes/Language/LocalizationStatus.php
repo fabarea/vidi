@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\DataHandler;
+namespace TYPO3\CMS\Vidi\Language;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -17,18 +17,12 @@ namespace TYPO3\CMS\Vidi\DataHandler;
 use TYPO3\CMS\Core\Type\Enumeration;
 
 /**
- * Enumeration object for process action.
+ * Enumeration object for localization status.
  */
-class ProcessAction extends Enumeration {
+class LocalizationStatus extends Enumeration {
 
-	const REMOVE = 'remove';
-
-	const UPDATE = 'update';
-
-	const COPY = 'copy';
-
-	const MOVE = 'move';
-
-	const LOCALIZE = 'localize';
+	const LOCALIZED = 'localized';
+	const NOT_YET_LOCALIZED = 'notYetLocalized';
+	const EMPTY_VALUE = 'emptyValue';
 
 }

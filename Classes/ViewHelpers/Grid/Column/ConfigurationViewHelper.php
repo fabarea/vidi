@@ -45,38 +45,17 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 			// -------------------
 			// mData: internal name of DataTable plugin and can not contains a path, e.g. metadata.title
 			// columnName: whole field name with path
-			$output .= sprintf('Vidi._columns.push({ "mData": "%s", "bSortable": %s, "bVisible": %s, "sWidth": "%s", "sClass": "%s %s", "columnName": "%s" });' . PHP_EOL,
+			$output .= sprintf('Vidi._columns.push({ "mData": "%s", "bSortable": %s, "bVisible": %s, "sWidth": "%s", "sClass": "%s", "columnName": "%s" });' . PHP_EOL,
 				$this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath), // Suitable field name for the DataTable plugin.
 				TcaService::grid()->isSortable($fieldNameAndPath) ? 'true' : 'false',
 				TcaService::grid()->isVisible($fieldNameAndPath) ? 'true' : 'false',
-				empty($configuration['width']) ? 'auto' : $configuration['width'],
-				$this->computeEditableClass($fieldNameAndPath),
+				TcaService::grid()->getWidth($fieldNameAndPath),
 				TcaService::grid()->getClass($fieldNameAndPath),
 				$fieldNameAndPath
 			);
 		}
 
 		return $output;
-	}
-
-	/**
-	 * Return the editable class name for jeditable plugin.
-	 *
-	 * @param string $fieldNameAndPath
-	 * @return boolean
-	 */
-	protected function computeEditableClass($fieldNameAndPath) {
-		$result = FALSE;
-		$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
-		$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
-
-		if (TcaService::grid()->isEditable($fieldNameAndPath)
-			&& TcaService::table($dataType)->hasField($fieldName)
-			&& TcaService::table($dataType)->field($fieldName)->hasNoRelation() // relation are editable through Renderer only.
-		) {
-			$result = TcaService::table($dataType)->field($fieldName)->isTextArea() ? 'editable-textarea' : 'editable-textfield';
-		}
-		return $result;
 	}
 
 	/**
@@ -89,10 +68,16 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 		$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
 		$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
 
-		return TcaService::grid()->isSystem($fieldNameAndPath)
-			|| TcaService::grid()->hasRenderers($fieldNameAndPath)
-			|| TcaService::table()->field($fieldNameAndPath)->isSystem()
-			|| TcaService::table($dataType)->hasField($fieldName);
+		$isAllowed = FALSE;
+		if (TcaService::grid()->isSystem($fieldNameAndPath)) {
+			$isAllowed = TRUE; // @todo remove me in 0.6 + 2 versions
+		} elseif (TcaService::grid()->hasRenderers($fieldNameAndPath)) {
+			$isAllowed = TRUE;
+		} elseif (TcaService::table()->field($fieldNameAndPath)->isSystem() || TcaService::table($dataType)->hasField($fieldName)) {
+			$isAllowed = TRUE;
+		}
+
+		return $isAllowed;
 	}
 
 	/**

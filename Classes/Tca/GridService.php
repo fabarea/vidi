@@ -82,14 +82,15 @@ class GridService implements TcaServiceInterface {
 			if (is_null($label)) {
 				$label = $field['label'];
 			}
-		} elseif ($this->isNotSystem($fieldNameAndPath)) {
+		} else {
 
 			// Important to notice the label can contains a path, e.g. metadata.categories and must be resolved.
 			$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
 			$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
+			$table = TcaService::table($dataType);
 
-			if (TcaService::table($dataType)->field($fieldName)->hasLabel()) {
-				$label = TcaService::table($dataType)->field($fieldName)->getLabel();
+			if ($table->hasField($fieldName) && $table->field($fieldName)->hasLabel()) {
+				$label = $table->field($fieldName)->getLabel();
 			}
 		}
 		return $label;
@@ -100,6 +101,7 @@ class GridService implements TcaServiceInterface {
 	 *
 	 * @param string $fieldName
 	 * @return boolean
+	 * @deprecated will be removed in 0.6 + 2 versions.
 	 */
 	public function isSystem($fieldName) {
 		return strpos($fieldName, '__') === 0;
@@ -126,6 +128,7 @@ class GridService implements TcaServiceInterface {
 	 *
 	 * @param string $fieldName
 	 * @return boolean
+	 * @deprecated will be removed in 0.6 + 2 versions.
 	 */
 	public function isNotSystem($fieldName) {
 		return !$this->isSystem($fieldName);
@@ -203,15 +206,108 @@ class GridService implements TcaServiceInterface {
 	}
 
 	/**
-	 * Returns whether the column is sortable or not.
+	 * Returns the "sortable" value of the column.
+	 *
+	 * @param string $fieldName
+	 * @return int|string
+	 */
+	public function isSortable($fieldName) {
+		$defaultValue = TRUE;
+		return $this->get($fieldName, 'sortable', $defaultValue);
+	}
+
+	/**
+	 * Returns the "canBeHidden" value of the column.
 	 *
 	 * @param string $fieldName
 	 * @return bool
 	 */
-	public function isSortable($fieldName) {
-		$field = $this->getField($fieldName);
-		return isset($field['sortable']) ? $field['sortable'] : TRUE;
+	public function canBeHidden($fieldName) {
+		$defaultValue = TRUE;
+		return $this->get($fieldName, 'canBeHidden', $defaultValue);
 	}
+
+	/**
+	 * Returns the "width" value of the column.
+	 *
+	 * @param string $fieldName
+	 * @return int|string
+	 */
+	public function getWidth($fieldName) {
+		$defaultValue = 'auto';
+		return $this->get($fieldName, 'width', $defaultValue);
+	}
+
+	/**
+	 * Returns the "visible" value of the column.
+	 *
+	 * @param string $fieldName
+	 * @return bool
+	 */
+	public function isVisible($fieldName) {
+		$defaultValue = TRUE;
+		return $this->get($fieldName, 'visible', $defaultValue);
+	}
+
+	/**
+	 * Returns the "editable" value of the column.
+	 *
+	 * @param string $columnName
+	 * @return bool
+	 */
+	public function isEditable($columnName) {
+		$defaultValue = FALSE;
+		return $this->get($columnName, 'editable', $defaultValue);
+	}
+
+	/**
+	 * Returns the "localized" value of the column.
+	 *
+	 * @param string $columnName
+	 * @return bool
+	 */
+	public function isLocalized($columnName) {
+		$defaultValue = TRUE;
+		return $this->get($columnName, 'localized', $defaultValue);
+	}
+
+	/**
+	 *
+	 * Returns the "html" value of the column.
+	 *
+	 * @param string $fieldName
+	 * @return string
+	 */
+	public function getHeader($fieldName) {
+		$defaultValue = '';
+		return $this->get($fieldName, 'html', $defaultValue);
+	}
+
+	/**
+	 * Fetch a possible from a Grid Renderer. If no value is found, returns NULL
+	 *
+	 * @param string $fieldName
+	 * @param string $key
+	 * @param mixed $defaultValue
+	 * @return NULL|mixed
+	 */
+	public function get($fieldName, $key, $defaultValue = NULL) {
+		$value = $defaultValue;
+
+		$field = $this->getField($fieldName);
+		if (isset($field[$key])) {
+			$value = $field[$key];
+		} elseif ($this->hasRenderers($fieldName)) {
+			$renderers = $this->getRenderers($fieldName);
+			foreach ($renderers as $rendererConfiguration) {
+				if (isset($rendererConfiguration[$key])) {
+					$value = $rendererConfiguration[$key];
+				}
+			}
+		}
+		return $value;
+	}
+
 
 	/**
 	 * Returns whether the column has a renderer.
@@ -258,41 +354,6 @@ class GridService implements TcaServiceInterface {
 			$result[$renderer->getClassName()] = $renderer->getConfiguration();
 		}
 		return $result;
-	}
-
-	/**
-	 * Returns whether the column is visible or not.
-	 *
-	 * @param string $fieldName
-	 * @return bool
-	 */
-	public function isVisible($fieldName) {
-		$field = $this->getField($fieldName);
-		return isset($field['visible']) ? $field['visible'] : TRUE;
-	}
-
-	/**
-	 * Returns whether the column must be rendered.
-	 * There is a mechanism that only necessary columns are rendered to improve performance.
-	 * The "force" flag can by pass this mechanism.
-	 *
-	 * @param string $fieldName
-	 * @return bool
-	 */
-	public function isForce($fieldName) {
-		$field = $this->getField($fieldName);
-		return isset($field['force']) ? $field['force'] : FALSE;
-	}
-
-	/**
-	 * Returns whether the column is editable or not.
-	 *
-	 * @param string $fieldName
-	 * @return bool
-	 */
-	public function isEditable($fieldName) {
-		$field = $this->getField($fieldName);
-		return isset($field['editable']) ? $field['editable'] : FALSE;
 	}
 
 	/**

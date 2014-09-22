@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\View\Button;
+namespace TYPO3\CMS\Vidi\View\Uri;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,16 +14,13 @@ namespace TYPO3\CMS\Vidi\View\Button;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Backend\Utility\IconUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Vidi\View\AbstractComponentView;
 use TYPO3\CMS\Vidi\Domain\Model\Content;
 
 /**
  * View which renders a "edit" button to be placed in the grid.
  */
-class EditButton extends AbstractComponentView {
+class EditUri extends AbstractComponentView {
 
 	/**
 	 * Renders a "edit" button to be placed in the grid.
@@ -32,19 +29,11 @@ class EditButton extends AbstractComponentView {
 	 * @return string
 	 */
 	public function render(Content $object = NULL) {
-		return sprintf('<a href="%s" data-uid="%s" class="btn-edit" title="%s">%s</a>',
-			$this->getUriRenderer()->render($object),
-			$object->getUid(),
-			LocalizationUtility::translate('edit', 'vidi'),
-			IconUtility::getSpriteIcon('actions-document-open')
+		return sprintf('alt_doc.php?returnUrl=%s&edit[%s][%s]=edit',
+			rawurlencode($this->getModuleLoader()->getModuleUrl()),
+			rawurlencode($object->getDataType()),
+			$object->getUid()
 		);
-	}
-
-	/**
-	 * @return \TYPO3\CMS\Vidi\View\Uri\EditUri
-	 */
-	protected function getUriRenderer() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\View\Uri\EditUri');
 	}
 
 }

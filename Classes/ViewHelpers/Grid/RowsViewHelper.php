@@ -14,7 +14,9 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Vidi\View\Grid\Row;
 
 /**
  * View helper for rendering multiple rows.
@@ -31,10 +33,10 @@ class RowsViewHelper extends AbstractViewHelper {
 	public function render(array $objects = array(), array $columns = array()) {
 		$rows = array();
 
-		/** @var RowViewHelper $rowViewHelper */
-		$rowViewHelper = $this->objectManager->get('TYPO3\CMS\Vidi\ViewHelpers\Grid\RowViewHelper', $columns);
+		/** @var Row $row */
+		$row = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\View\Grid\Row', $columns);
 		foreach ($objects as $index => $object) {
-			$rows[] = $rowViewHelper->render($object, $index);
+			$rows[] = $row->render($object, $index);
 		}
 
 		return $rows;

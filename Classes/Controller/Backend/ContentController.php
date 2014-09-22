@@ -15,6 +15,7 @@ namespace TYPO3\CMS\Vidi\Controller\Backend;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Vidi\Behavior\SavingBehavior;
 use TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory;
@@ -103,9 +104,10 @@ class ContentController extends ActionController {
 	 * @param array $content
 	 * @param array $matches
 	 * @param string $savingBehavior
+	 * @param int $language
 	 * @return string
 	 */
-	public function updateAction($fieldNameAndPath, array $content, array $matches = array(), $savingBehavior = SavingBehavior::REPLACE) {
+	public function updateAction($fieldNameAndPath, array $content, array $matches = array(), $savingBehavior = SavingBehavior::REPLACE, $language = 0) {
 
 		// Instantiate the Matcher object according different rules.
 		$matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
@@ -123,7 +125,7 @@ class ContentController extends ActionController {
 
 		foreach ($contentService->getObjects() as $index => $object) {
 
-			$identifier = $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, 'uid');
+			$identifier = $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, 'uid', $language);
 			$dataType = $this->getContentObjectResolver()->getDataType($object, $fieldNameAndPath);
 
 			$signalResult = $this->emitProcessContentDataSignal($object, $fieldNameAndPath, $content, $index + 1, $savingBehavior);
@@ -133,7 +135,7 @@ class ContentController extends ActionController {
 			$contentData['uid'] = $identifier;
 
 			/** @var Content $dataObject */
-			$dataObject = $this->objectManager->get('TYPO3\CMS\Vidi\Domain\Model\Content', $dataType, $contentData);
+			$dataObject = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Domain\Model\Content', $dataType, $contentData);
 
 			// Properly update object.
 			ContentRepositoryFactory::getInstance($dataType)->update($dataObject);
@@ -146,11 +148,11 @@ class ContentController extends ActionController {
 			// Required for inline editing + it will display some useful info on the GUI in the flash messages.
 			if ($contentService->getNumberOfObjects() === 1) {
 
-				// Reload the updated object from repository.
+				// Fetch the updated object from repository.
 				$updatedObject = ContentRepositoryFactory::getInstance()->findByUid($object->getUid());
 
 				// Re-fetch the updated result.
-				$updatedResult = $this->getContentObjectResolver()->getValue($updatedObject, $fieldNameAndPath, $updatedFieldName);
+				$updatedResult = $this->getContentObjectResolver()->getValue($updatedObject, $fieldNameAndPath, $updatedFieldName, $language);
 				if (is_array($updatedResult)) {
 					$_updatedResult = array(); // reset result set.
 
@@ -169,8 +171,8 @@ class ContentController extends ActionController {
 
 				$labelField = TcaService::table($dataType)->getLabelField();
 				$processedObjectData = array(
-					'uid' => $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, 'uid'),
-					'name' => $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, $labelField),
+					'uid' => $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, 'uid', $language),
+					'name' => $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, $labelField, $language),
 					'updatedField' => $updatedFieldName,
 					'updatedValue' => $updatedResult,
 				);
@@ -188,6 +190,8 @@ class ContentController extends ActionController {
 	 * Returns an editing form for a given field name of a Content object.
 	 * Argument $fieldNameAndPath corresponds to the field name to be edited.
 	 * Important to notice it can contains a path, e.g. metadata.title and therefore must be analysed.
+	 *
+	 * Possible values for $matches, refer to method "updateAction".
 	 *
 	 * @param string $fieldNameAndPath
 	 * @param array $matches
@@ -250,12 +254,7 @@ class ContentController extends ActionController {
 	/**
 	 * Retrieve Content objects first according to matching criteria and then "delete" them.
 	 *
-	 * Possible values for $matches:
-	 * -----------------------------
-	 *
-	 * $matches = array(uid => 1), will be taken as $query->equals
-	 * $matches = array(uid => 1,2,3), will be taken as $query->in
-	 * $matches = array(field_name1 => bar, field_name2 => bax), will be separated by AND.
+	 * Possible values for $matches, refer to method "updateAction".
 	 *
 	 * @param array $matches
 	 * @return string
@@ -300,14 +299,24 @@ class ContentController extends ActionController {
 	}
 
 	/**
+	 * Retrieve Content objects first according to matching criteria and then "copy" them.
+	 *
+	 * Possible values for $matches, refer to method "updateAction".
+	 *
+	 * @param string $target
+	 * @param array $matches
+	 * @throws \Exception
+	 * @return string
+	 */
+	public function copyAction($target, array $matches = array()) {
+		// @todo
+		throw new \Exception('Not yet implemented', 1410192546);
+	}
+
+	/**
 	 * Retrieve Content objects first according to matching criteria and then "move" them.
 	 *
-	 * Possible values for $matches:
-	 * -----------------------------
-	 *
-	 * $matches = array(uid => 1), will be taken as $query->equals
-	 * $matches = array(uid => 1,2,3), will be taken as $query->in
-	 * $matches = array(field_name1 => bar, field_name2 => bax), will be separated by AND.
+	 * Possible values for $matches, refer to method "updateAction".
 	 *
 	 * @param string $target
 	 * @param array $matches
@@ -353,23 +362,98 @@ class ContentController extends ActionController {
 	}
 
 	/**
-	 * Retrieve Content objects first according to matching criteria and then "copy" them.
+	 * Retrieve Content objects first according to matching criteria and then "localize" them.
 	 *
-	 * Possible values for $matches:
-	 * -----------------------------
+	 * Possible values for $matches, refer to method "updateAction".
 	 *
-	 * $matches = array(uid => 1), will be taken as $query->equals
-	 * $matches = array(uid => 1,2,3), will be taken as $query->in
-	 * $matches = array(field_name1 => bar, field_name2 => bax), will be separated by AND.
-	 *
-	 * @param string $target
+	 * @param string $fieldNameAndPath
 	 * @param array $matches
-	 * @throws \Exception
+	 * @param int $language
 	 * @return string
 	 */
-	public function copyAction($target, array $matches = array()) {
-		// @todo
-		throw new \Exception('Not yet implemented', 1410192546);
+	public function localizeAction($fieldNameAndPath, array $matches = array(), $language = 0) {
+
+		$matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
+
+		// Fetch objects via the Content Service.
+		$contentService = $this->getContentService()->findBy($matcher);
+
+		// Compute the label field name of the table.
+		$tableTitleField = TcaService::table()->getLabelField();
+
+		// Get result object for storing data along the processing.
+		$result = $this->getJsonResult();
+		$result->setNumberOfObjects($contentService->getNumberOfObjects());
+
+		foreach ($contentService->getObjects() as $object) {
+
+			$identifier = $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, 'uid');
+			$dataType = $this->getContentObjectResolver()->getDataType($object, $fieldNameAndPath);
+
+			// Fetch the source object to be localized.
+			/** @var Content $content */
+			$content = ContentRepositoryFactory::getInstance($dataType)->findByIdentifier($identifier);
+
+			// Makes sure the object could have been retrieved. Security!
+			if (!$content) {
+				$message = sprintf('Something went wrong when retrieving content "%s" with identifier "%s".',  $dataType,  $identifier);
+				throw new \Exception($message, 1412343097);
+			}
+
+			// Handover the localization to the Repository.
+			ContentRepositoryFactory::getInstance($dataType)->localize($content, $language);
+
+			// Get the possible error messages and store them.
+			$errorMessages = ContentRepositoryFactory::getInstance()->getErrorMessages();
+
+			// Redirect to TCEForm so that the BE User can do its job!
+			if ($contentService->getNumberOfObjects() === 1) {
+
+				if (!empty($errorMessages)) {
+					$message = sprintf('Something went wrong when localizing content "%s" with identifier "%s". <br/>%s',
+						$dataType,
+						$identifier,
+						implode('<br/>', $errorMessages)
+					);
+					throw new \Exception($message, 1412343098);
+				}
+
+				$localizedContent = $this->getLanguageService()->getLocalizedContent($content, $language);
+				if (empty($localizedContent)) {
+					$message = sprintf('Oups! I could not retrieve localized content of type "%s" with identifier "%s"',
+						$content->getDataType(),
+						$content->getUid()
+					);
+					throw new \Exception($message, 1412343099);
+				}
+
+				/** @var \TYPO3\CMS\Vidi\View\Uri\EditUri $uri */
+				$uriRenderer = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\View\Uri\EditUri');
+				$uri = $uriRenderer->render($localizedContent);
+				HttpUtility::redirect($uri);
+				break; // no need to further continue
+			}
+
+			$result->addErrorMessages($errorMessages);
+		}
+
+		// Set the result and render the JSON view.
+		$this->getJsonView()->setResult($result);
+		return $this->getJsonView()->render();
+	}
+
+	/**
+	 * Render an edit URI given an object.
+	 *
+	 * @param Content $object
+	 * @return string
+	 */
+	protected function getEditUri(Content $object) {
+		return sprintf('alt_doc.php?returnUrl=%s&edit[%s][%s]=edit',
+			rawurlencode($this->getModuleLoader()->getModuleUrl()),
+			rawurlencode($object->getDataType()),
+			$object->getUid()
+		);
 	}
 
 	/**
@@ -449,5 +533,12 @@ class ContentController extends ActionController {
 	 */
 	protected function getSignalSlotDispatcher() {
 		return $this->objectManager->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Vidi\Language\LanguageService
+	 */
+	protected function getLanguageService() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Language\LanguageService');
 	}
 }

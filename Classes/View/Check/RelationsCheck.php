@@ -116,12 +116,47 @@ EOF;
 	protected function isTcaValid() {
 
 		$dataType = $this->getModuleLoader()->getDataType();
-		$grid = TcaService::grid($dataType);
 		$table = TcaService::table($dataType);
 
-		foreach ($grid->getFields() as $fieldName => $configuration) {
+		// Hunt for System Fields which has been removed
+		// @todo remove me in 0.6 + 2 versions
+		$systemFields = array();
+		foreach (TcaService::grid($dataType)->getFields() as $fieldName => $configuration) {
+			if (TcaService::grid($dataType)->isSystem($fieldName) && !TcaService::grid($dataType)->hasRenderers($fieldName)) {
+				$systemFields[] =  $fieldName;
+			}
+		}
 
-			if ($grid->isNotSystem($fieldName) && $table->field($fieldName)->hasMany()) {
+		if (!empty($systemFields)) {
+			print 'You are using some old Grid configuration which requires to be changed. Don\'t worry it is simple and quickly done.<br/>';
+			print 'We now use Grid Renderers to render the special columns.<br/>';
+			print '<strong>Look for string "' . implode('", "', $systemFields) . '" in Configuration/* and replace by the following:</strong><br/>';
+
+			print <<<EOF
+<pre>
+'columns' => array(
+
+		# Config with key "__checkbox" must be replaced by:
+		'__checkbox' => array(
+			'renderer' => new \TYPO3\CMS\Vidi\Grid\CheckBoxComponent(),
+		),
+		...
+
+		# Config with key "__buttons" must be replaced by:
+		'__buttons' => array(
+			'renderer' => new \TYPO3\CMS\Vidi\Grid\ButtonGroupComponent(),
+		),
+);
+</pre>
+
+EOF;
+			print 'Don\'t forget to clear the cache afterwards.<br/>';
+			exit();
+		}
+
+		foreach (TcaService::grid($dataType)->getFields() as $fieldName => $configuration) {
+
+			if ($table->hasField($fieldName) && $table->field($fieldName)->hasMany()) {
 				if ($table->field($fieldName)->hasRelationManyToMany()) {
 
 					$foreignTable = $table->field($fieldName)->getForeignTable();

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\DataHandler;
+namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,21 +14,22 @@ namespace TYPO3\CMS\Vidi\DataHandler;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Core\Type\Enumeration;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
- * Enumeration object for process action.
+ * Return a possible column header.
  */
-class ProcessAction extends Enumeration {
+class HeaderViewHelper extends AbstractViewHelper {
 
-	const REMOVE = 'remove';
-
-	const UPDATE = 'update';
-
-	const COPY = 'copy';
-
-	const MOVE = 'move';
-
-	const LOCALIZE = 'localize';
+	/**
+	 * Returns a possible column header.
+	 *
+	 * @param string $name the column Name
+	 * @return boolean
+	 */
+	public function render($name) {
+		return TcaService::grid()->getHeader($name);
+	}
 
 }

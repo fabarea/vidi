@@ -18,18 +18,18 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
 /**
- * Tells whether the field name is considered a "not system" in the Grid, e.g. regular field "title", ...
+ * Tells whether the column can be hidden or not.
  */
-class IsNotSystemViewHelper extends AbstractViewHelper {
+class CanBeHiddenViewHelper extends AbstractViewHelper {
 
 	/**
-	 * Returns whether the given column name is "not system".
+	 * Returns whether the column can be hidden or not.
 	 *
 	 * @param string $name the column Name
 	 * @return boolean
 	 */
 	public function render($name) {
-		return TcaService::grid()->isNotSystem($name);
+		return TcaService::grid()->canBeHidden($name);
 	}
 
 }

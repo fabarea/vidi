@@ -133,6 +133,12 @@
 			<trans-unit id="attention">
 				<source>Attention!</source>
 			</trans-unit>
+			<trans-unit id="start_editing">
+				<source>Click to start editing</source>
+			</trans-unit>
+			<trans-unit id="create_translation">
+				<source>Create new translation</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

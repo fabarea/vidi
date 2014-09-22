@@ -3,24 +3,20 @@ if (!defined('TYPO3_MODE')) die ('Access denied.');
 
 $tca = array(
 	'grid' => array(
-		'facets' => array(
-			'uid',
-			'title',
-			'description',
-		),
+		'showFields' => '*', // @todo implement me!
+		'hideFields' => '', // @todo implement me!
 		'columns' => array(
 			'__checkbox' => array(
-				'renderer' => new \TYPO3\CMS\Vidi\Grid\CheckBoxComponent(),
+				'renderer' => new TYPO3\CMS\Vidi\Grid\CheckBoxComponent(),
 			),
 			'uid' => array(
 				'visible' => FALSE,
 				'label' => 'Id',
 				'width' => '5px',
 			),
-			'title' => array(
-				'visible' => TRUE,
-				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_groups.xlf:title',
+			'header' => array(
 				'editable' => TRUE,
+				'label' => 'LLL:EXT:vidi/Resources/Private/Language/tt_content.xlf:header',
 			),
 			'tstamp' => array(
 				'visible' => FALSE,
@@ -34,14 +30,14 @@ $tca = array(
 			),
 			'hidden' => array(
 				'renderer' => 'TYPO3\CMS\Vidi\Grid\VisibilityRenderer',
-				'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:visibility_abbreviation',
+				'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:active',
 				'width' => '3%',
 			),
 			'__buttons' => array(
-				'renderer' => new \TYPO3\CMS\Vidi\Grid\ButtonGroupComponent(),
+				'renderer' => new TYPO3\CMS\Vidi\Grid\ButtonGroupComponent(),
 			),
 		)
 	)
 );
 
-\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($GLOBALS['TCA']['fe_groups'], $tca);
+\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($GLOBALS['TCA']['tt_content'], $tca);

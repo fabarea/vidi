@@ -19,6 +19,7 @@ use TYPO3\CMS\Vidi\View\AbstractComponentView;
 
 /**
  * View for rendering a checkbox.
+ * @todo remove me in version 0.6 + 2 versions
  */
 class CheckboxSystem extends AbstractComponentView {
 
@@ -30,9 +31,6 @@ class CheckboxSystem extends AbstractComponentView {
 	 * @return string
 	 */
 	public function render(Content $object = NULL, $offset = 0) {
-		return sprintf('<input type="checkbox" class="checkbox-row" data-index="%s" data-uid="%s"/>',
-			$offset,
-			$object->getUid()
-		);
+		return '';
 	}
 }

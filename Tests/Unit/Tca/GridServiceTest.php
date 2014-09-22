@@ -84,20 +84,6 @@ class GridServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function columnUsernameIsNotInternal() {
-		$this->assertFalse($this->fixture->isSystem('username'));
-	}
-
-	/**
-	 * @test
-	 */
-	public function columnNumberIsInternal() {
-		$this->assertTrue($this->fixture->isSystem('__number'));
-	}
-
-	/**
-	 * @test
-	 */
 	public function labelOfColumnUsernameShouldBeUsernameByDefault() {
 		$this->assertEquals('Username', $this->fixture->getLabel('username'));
 	}

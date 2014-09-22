@@ -8,6 +8,13 @@
 	<input type="hidden" name="sSearch" value="{v:gp(argument: 'sSearch')}"/>
 
 	<!-- @todo display records in two flex columns if many records or display with indentation if tree widget is configured? -->
+
+	<f:if condition="{fieldType} == 'Text'">
+		<div style="float: right">
+			<f:form.select name="language" style="width: 50px" options="{v:languages()}" optionValueField="uid" optionLabelField="flag"/>
+		</div>
+	</f:if>
+
 	<h5 class="modal-title">
 		<f:if condition="{editWholeSelection}">
 			<f:then>

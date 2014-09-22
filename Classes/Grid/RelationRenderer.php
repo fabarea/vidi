@@ -101,12 +101,4 @@ class RelationRenderer extends GridRendererAbstract {
 		return TcaService::table($relationDataType)->getLabelField();
 	}
 
-	/**
-	 * Get the Vidi Module Loader.
-	 *
-	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
-	 */
-	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
-	}
 }

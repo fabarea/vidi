@@ -29,14 +29,13 @@ if (TYPO3_MODE == 'BE') {
 	// Loop around the data types and register them to be displayed within a BE module.
 	if ($configuration['data_types']['value']) {
 
-		/** @var \TYPO3\CMS\Vidi\Module\ModuleLoader $moduleLoader */
-		$moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
-
 		$dataTypes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['data_types']['value']);
 		foreach ($dataTypes as $dataType) {
 
 			/** @var \TYPO3\CMS\Vidi\Module\ModuleLoader $moduleLoader */
 			$moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader', $dataType);
+
+			/** @var \TYPO3\CMS\Vidi\Module\ModuleLoader $moduleLoader */
 			$moduleLoader->setIcon(sprintf('EXT:vidi/Resources/Public/Images/%s.png', $dataType))
 				->setModuleLanguageFile(sprintf('LLL:EXT:vidi/Resources/Private/Language/%s.xlf', $dataType))
 				->addJavaScriptFiles(array(sprintf('EXT:vidi/Resources/Public/JavaScript/%s.js', $dataType)))
@@ -58,7 +57,7 @@ if (TYPO3_MODE == 'BE') {
 			'm1', // Submodule key
 			'after:list', // Position
 			array(
-				'Content' => 'index, list, delete, update, edit, move, copy',
+				'Content' => 'index, list, delete, update, edit, copy, move, localize',
 				'Tool' => 'welcome, work',
 				'FacetValue' => 'list',
 			), array(

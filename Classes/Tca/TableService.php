@@ -203,6 +203,15 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
+	 * Get the field which points to the parent.
+	 *
+	 * @return string
+	 */
+	public function getLanguageParentField() {
+		return $this->get('transOrigPointerField');
+	}
+
+	/**
 	 * Returns the default order in the form of a SQL segment.
 	 *
 	 * @return string

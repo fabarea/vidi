@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\DataHandler;
+namespace TYPO3\CMS\Vidi\Exception;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,21 +14,9 @@ namespace TYPO3\CMS\Vidi\DataHandler;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Core\Type\Enumeration;
-
 /**
- * Enumeration object for process action.
+ * Handle Exception for missing uid
  */
-class ProcessAction extends Enumeration {
-
-	const REMOVE = 'remove';
-
-	const UPDATE = 'update';
-
-	const COPY = 'copy';
-
-	const MOVE = 'move';
-
-	const LOCALIZE = 'localize';
+class MissingIdentifierException extends \Exception {
 
 }

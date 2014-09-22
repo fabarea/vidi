@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\View\System;
+namespace TYPO3\CMS\Vidi\Domain\Validator;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,24 +14,27 @@ namespace TYPO3\CMS\Vidi\View\System;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Vidi\View\AbstractComponentView;
+use TYPO3\CMS\Vidi\Exception\MissingIdentifierException;
 
 /**
- * View for rendering buttons in the grids according to a Content object.
- * @todo remove me in version 0.6 + 2 versions
+ * Validate "content"
  */
-class ButtonsSystem extends AbstractComponentView {
+class ContentValidator {
 
 	/**
-	 * Rendering buttons in the grids given a Content object.
+	 * Check whether $Content object is valid.
 	 *
-	 * @param Content $object
-	 * @return string
+	 * @param Content $content
+	 * @throws \Exception
+	 * @return void
 	 */
-	public function render(Content $object = NULL) {
-		return '';
+	public function validate(Content $content) {
+
+		// Security check.
+		if ($content->getUid() <= 0) {
+			throw new MissingIdentifierException('Missing identifier for Content Object', 1351605542);
+		}
 	}
 
 }

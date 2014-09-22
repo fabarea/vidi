@@ -32,8 +32,11 @@ class CountViewHelper extends AbstractContentViewHelper {
 	 * @return int
 	 */
 	public function render() {
-
-		$dataType = $this->arguments['dataType'];
+		if (!empty($this->arguments['dataType'])) {
+			print 'Sorry to be so rude! There is something to change in the View Helper "v:find". Please replace attribute "dataType" by "type". This is a shorter syntax...';
+			exit();
+		}
+		$dataType = $this->arguments['type'];
 		$matches = $this->arguments['matches'];
 		$ignoreEnableFields = $this->arguments['ignoreEnableFields'];
 

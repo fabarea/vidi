@@ -11,7 +11,7 @@
 			<div class="accordion-group">
 				<div class="accordion-heading">
 					<a class="accordion-toggle" href="#collapseOne" onclick="$('#collapseOne').toggle(); return false;">
-						<span class="icon-chevron-down"></span>Available markers
+						<span class="icon-chevron-down"></span>Available expressions
 					</a>
 				</div>
 				<div id="collapseOne" class="accordion-body" style="display: none">
@@ -19,25 +19,29 @@
 
 						<![CDATA[
 						<p class="help-block" style="margin-top: 10px">
-							Markers can be used within the field to replace content:
+							Expressions that can be used to replace content:
 						</p>
 						<ul class="help-block">
 							<li>
-								{*} symbolise the current content
+								<strong>{*}</strong> symbolise the current content
 							</li>
 							<li>
-								{counter} counter when looping around the records
+								<strong>{counter}</strong> counter when looping around the records
 							</li>
 							<li>
-								{date} date of day
+								<strong>{date}</strong> date of day
 							</li>
 							<li>
-								{creation_date} creation date of the record - if available.
+								<strong>{creation_date}</strong> creation date of the record - if available.
+							</li>
+							<li>
+								<strong>s/search me/replace me/</strong> expression to find and replace.
 							</li>
 						</ul>
 
 						<div class="help-block">
-							Example when combining: {counter} - {*} ({date})
+							Expressions can be combined as example:<br>
+							{counter} - {*} followed by a sample word
 						</div>
 						]]>
 

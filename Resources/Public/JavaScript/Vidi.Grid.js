@@ -211,7 +211,7 @@ Vidi.Grid = {
 				Vidi.grid.$('.editable-textarea').editable(
 					Vidi.EditInline.getUrl(),
 					{
-						type: 'textarea',
+						type: 'custom-textarea',
 						placeholder: '',
 						cancel: 'Cancel',
 						submit: 'OK',
@@ -228,8 +228,8 @@ Vidi.Grid = {
 				Vidi.grid.$('.editable-textfield').editable(
 					Vidi.EditInline.getUrl(),
 					{
+						type: 'custom-textfield',
 						placeholder: '',
-						height: '20px',
 						submit: 'OK',
 						indicator: Vidi.EditInline.indicator,
 						data: Vidi.EditInline.getParameters,
@@ -369,6 +369,25 @@ Vidi.Grid = {
 			}
 		}
 		return config;
+	},
+
+	/**
+	 * Compute the cell position according to an DOM element given as parameter
+	 *
+	 * @param {Object} element
+	 * @return int
+	 */
+	getColumnPosition: function(element) {
+		var cell, columnPosition;
+
+		if (element.nodeName === 'TD') {
+			cell = element;
+		} else {
+			cell = $(element).closest('td').get(0);
+
+		}
+		columnPosition = Vidi.grid.fnGetPosition(cell)[2];
+		return columnPosition;
 	},
 
 	/**

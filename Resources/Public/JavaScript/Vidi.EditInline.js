@@ -15,6 +15,8 @@ Vidi.EditInline = {
 	indicator: '<img src="' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" width="16" height="" alt="" />',
 
 	/**
+	 * Get needed values to be added to the Ajax request.
+	 *
 	 * @param {string} value
 	 * @param {object} settings
 	 * @returns {object}
@@ -22,30 +24,36 @@ Vidi.EditInline = {
 	submitData: function (value, settings) {
 		var data = {}; // initialize empty
 
-		// Get needed values to be added to the Ajax request. this corresponds to a "td"
-		var columnPosition = Vidi.grid.fnGetPosition(this)[2];
+		var columnPosition = Vidi.Grid.getColumnPosition(this);
 
 		// Compute "matches" parameter...
-		var parameterName;
-		parameterName = '{0}[matches][uid]'.format(Vidi.module.parameterPrefix);
+		var parameterName = '{0}[matches][uid]'.format(Vidi.module.parameterPrefix);
 		data[parameterName] = Vidi.Grid.getRowIdentifier(this);
 
 		// Compute "fieldNameAndPath" parameter...
 		parameterName= '{0}[fieldNameAndPath]'.format(Vidi.module.parameterPrefix);
 		data[parameterName] = Vidi._columns[columnPosition]['columnName'];
+
+		if ($(this).data('language')) {
+			parameterName= '{0}[language]'.format(Vidi.module.parameterPrefix);
+			data[parameterName] = $(this).data('language');
+		}
+
 		return data;
 	},
 
 	/**
+	 * Define dynamically the name of the field which will be used as POST parameter.
+	 *
 	 * @param {string} value
 	 * @param {object} settings
 	 * @returns {string}
 	 */
 	getParameters: function (value, settings) {
-		var contentParameter, columnPosition, fieldName;
+		var contentParameter, fieldName;
 
-		// Define dynamically the name of the field which will be used as POST parameter
-		columnPosition = Vidi.grid.fnGetPosition(this)[2];
+		var columnPosition = Vidi.Grid.getColumnPosition(this);
+
 		fieldName = Vidi._columns[columnPosition]['mData'];
 		contentParameter = '{0}[content][{1}]'.format(Vidi.module.parameterPrefix, fieldName);
 
@@ -68,6 +76,14 @@ Vidi.EditInline = {
 
 		if (!response.hasErrors) {
 			$(this).html(response.processedObject['updatedValue']); // re-inject the value in the Cell
+
+			// remove a possible "invisible" or "visible" class.
+			if ($(this).closest('div.invisible')) {
+				$(this).closest('div.invisible').removeClass('invisible');
+			}
+			if ($(this).closest('div.visible')) {
+				$(this).closest('div.visible').removeClass('visible');
+			}
 		} else {
 
 			// Display error messages.

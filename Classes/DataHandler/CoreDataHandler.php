@@ -109,6 +109,27 @@ class CoreDataHandler extends AbstractDataHandler {
 	}
 
 	/**
+	 * Process Content with action "localize".
+	 *
+	 * @param Content $content
+	 * @param int $language
+	 * @return bool
+	 */
+	public function processLocalize(Content $content, $language) {
+
+		$command[$content->getDataType()][$content->getUid()]['localize'] = $language;
+
+		$dataHandler = $this->getDataHandler();
+		$dataHandler->start(array(), $command);
+		$dataHandler->process_datamap();
+		$dataHandler->process_cmdmap();
+		$this->errorMessages = $dataHandler->errorLog;
+
+		// Returns TRUE is log does not contain errors.
+		return empty($dataHandler->errorLog);
+	}
+
+	/**
 	 * @return \TYPO3\CMS\Core\DataHandling\DataHandler
 	 */
 	protected function getDataHandler() {

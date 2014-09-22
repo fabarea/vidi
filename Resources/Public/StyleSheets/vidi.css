@@ -379,3 +379,7 @@ input,button,select,textarea{
 #form-edit .radio {
 	width: 180px;
 }
+
+td form {
+	display: inline;
+}

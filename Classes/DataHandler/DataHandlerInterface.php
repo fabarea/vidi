@@ -55,6 +55,15 @@ interface DataHandlerInterface {
 	public function processMove(Content $content, $target);
 
 	/**
+	 * Process Content with action "localize".
+	 *
+	 * @param Content $content
+	 * @param int $language
+	 * @return bool
+	 */
+	public function processLocalize(Content $content, $language);
+
+	/**
 	 * Return error that have occurred while processing the data.
 	 *
 	 * @return array

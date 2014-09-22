@@ -3,7 +3,10 @@ if (!defined('TYPO3_MODE')) die ('Access denied.');
 
 $tca = array(
 	'ctrl' => array(
-		'searchFields' => $GLOBALS['TCA']['fe_users']['ctrl']['searchFields'] . ',usergroup',
+		// By default "searchFields" has many fields which has a performance cost when dealing with large data-set.
+		// Override search field for performance reason.
+		// To restore default values, just replace with this: $GLOBALS['TCA']['fe_users']['ctrl']['searchFields'] . ',usergroup',
+		'searchFields' => 'username, first_name, last_name, usergroup',
 	),
 	'vidi' => array(
 		// Special case when the field name does not follow the conventions.
@@ -48,19 +51,17 @@ $tca = array(
 		),
 		'columns' => array(
 			'__checkbox' => array(
-				'width' => '5px',
-				'sortable' => FALSE,
-				'html' => '<input type="checkbox" class="checkbox-row-top"/>',
+				'renderer' => new TYPO3\CMS\Vidi\Grid\CheckBoxComponent(),
 			),
 			'uid' => array(
 				'visible' => FALSE,
-				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:uid',
+				'label' => 'Id',
 				'width' => '5px',
 			),
 			'username' => array(
 				'visible' => TRUE,
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:username',
-				'editable' => FALSE, // @todo make me "true" after fix for jeditable plugin
+				'editable' => TRUE,
 			),
 			'name' => array(
 				'visible' => TRUE,
@@ -98,8 +99,7 @@ $tca = array(
 				'width' => '3%',
 			),
 			'__buttons' => array(
-				'sortable' => FALSE,
-				'width' => '70px',
+				'renderer' => new TYPO3\CMS\Vidi\Grid\ButtonGroupComponent(),
 			),
 		)
 	)

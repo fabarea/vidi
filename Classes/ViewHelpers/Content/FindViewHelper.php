@@ -51,7 +51,11 @@ class FindViewHelper extends AbstractContentViewHelper {
 			$matches = json_decode($selection->getMatches(), TRUE);
 			$dataType = $selection->getDataType();
 		} else {
-			$dataType = $this->arguments['dataType'];
+			$dataType = $this->arguments['type'];
+			if (!empty($this->arguments['dataType'])) {
+				print 'Sorry to be so rude! There is something to change in the View Helper "v:find". Please replace attribute "dataType" by "type". This is a shorter syntax...';
+				exit();
+			}
 			$matches = $this->arguments['matches'];
 		}
 

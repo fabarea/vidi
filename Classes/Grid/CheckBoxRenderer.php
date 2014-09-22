@@ -14,23 +14,24 @@ namespace TYPO3\CMS\Vidi\Grid;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
- *  Interface for configuring a Grid Renderer in the Grid TCA.
+ * Class for rendering the "Check Box" in the Grid.
  */
-interface RendererComponentInterface {
+class CheckBoxRenderer extends GridRendererAbstract {
 
 	/**
+	 * Render the "Check Box" in the Grid.
+	 *
 	 * @return string
 	 */
-	public function getClassName();
+	public function render() {
 
-	/**
-	 * @return array
-	 */
-	public function getConfiguration();
-
-	/**
-	 * @return string
-	 */
-	public function toArray();
+		return sprintf('<input type="checkbox" class="checkbox-row" data-index="%s" data-uid="%s"/>',
+			$this->getRowIndex(),
+			$this->getObject()->getUid()
+		);
+	}
 }

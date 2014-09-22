@@ -154,7 +154,7 @@ class ModuleLoader {
 	 * @param NULL|string $dataType
 	 * @return string
 	 */
-	public function getInternalModuleCode($dataType = NULL) {
+	protected function getInternalModuleCode($dataType = NULL) {
 		if (is_null($dataType)) {
 			$dataType = $this->dataType;
 		}
@@ -202,7 +202,7 @@ class ModuleLoader {
 				$this->dataType . '_' . $this->moduleKey,
 				$this->position,
 				array(
-					'Content' => 'index, list, delete, update, edit, move, copy',
+					'Content' => 'index, list, delete, update, edit, copy, move, localize',
 					'Tool' => 'welcome, work',
 					'Facet' => 'suggest',
 				),
@@ -777,76 +777,6 @@ class ModuleLoader {
 		$currentComponents = $this->components[ModulePosition::GRID][ModulePosition::BUTTONS];
 		$this->components[ModulePosition::GRID][ModulePosition::BUTTONS] = array_merge($currentComponents, $components);
 		return $this;
-	}
-
-	/**
-	 * @return $array
-	 * @deprecated will be removed in Vidi 0.4 + 1 version
-	 */
-	public function getMenuSelectedRowsComponents() {
-		return $this->getMenuMassActionComponents();
-	}
-
-	/**
-	 * @param array $components
-	 * @return $this
-	 * @deprecated will be removed in Vidi 0.4 + 1 version
-	 */
-	public function setMenuSelectedRowsComponents(array $components) {
-		return $this->setMenuMassActionComponents($components);
-	}
-
-	/**
-	 * @param string|array $components
-	 * @return $this
-	 * @deprecated will be removed in Vidi 0.4 + 1 version
-	 */
-	public function addMenuSelectedRowsComponents($components) {
-		return $this->addMenuMassActionComponents($components);
-	}
-
-	/**
-	 * @param array $components
-	 * @return $this
-	 * @deprecated will be removed in 0.4.0 + 1 version.
-	 */
-	public function setGridMenuComponents(array $components) {
-		return $this->setMenuSelectedRowsComponents($components);
-	}
-
-	/**
-	 * @param array $components
-	 * @return $this
-	 * @deprecated will be removed in 0.4.0 + 1 version.
-	 */
-	public function addGridMenuComponents(array $components) {
-		return $this->addMenuSelectedRowsComponents($components);
-	}
-
-	/**
-	 * @return $array
-	 * @deprecated will be removed in Vidi 0.4 + 1 version
-	 */
-	public function getMenuAllRowsComponents() {
-		return $this->getMenuMassActionComponents();
-	}
-
-	/**
-	 * @param array $components
-	 * @return $this
-	 * @deprecated will be removed in Vidi 0.4 + 1 version
-	 */
-	public function setMenuAllRowsComponents(array $components) {
-		return $this->setMenuMassActionComponents($components);
-	}
-
-	/**
-	 * @param string|array $components
-	 * @return $this
-	 * @deprecated will be removed in Vidi 0.4 + 1 version
-	 */
-	public function addMenuAllRowsComponents($components) {
-		return $this->addMenuMassActionComponents($components);
 	}
 
 	/**

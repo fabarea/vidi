@@ -19,7 +19,7 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 use TYPO3\CMS\Vidi\Tool\ToolRegistry;
 
 /**
- * Validate "tool" before they are being called.
+ * Validate the Tool class name before being instantiated.
  */
 class ToolValidator extends AbstractValidator {
 

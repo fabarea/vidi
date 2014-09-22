@@ -476,6 +476,22 @@ class FieldService implements TcaServiceInterface {
 	}
 
 	/**
+	 * Returns whether the field is language aware.
+	 *
+	 * @return bool
+	 */
+	public function isLocalized() {
+		$isLocalized = FALSE;
+		if (isset($this->tca['l10n_mode'])) {
+
+			if ($this->tca['l10n_mode'] == 'prefixLangTitle' || $this->tca['l10n_mode'] == 'mergeIfNotBlank') {
+				$isLocalized = TRUE;
+			}
+		}
+		return $isLocalized;
+	}
+
+	/**
 	 * Returns whether the field is required.
 	 *
 	 * @return bool

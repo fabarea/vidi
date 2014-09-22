@@ -52,37 +52,30 @@ class ContentObjectResolver implements SingletonInterface {
 	 * @param Content $object
 	 * @param string $fieldNameAndPath
 	 * @param string $fieldName
+	 * @param int $language
 	 * @return mixed
 	 */
-	public function getValue(Content $object, $fieldNameAndPath, $fieldName) {
+	public function getValue(Content $object, $fieldNameAndPath, $fieldName, $language = 0) {
 
-		$resolvedValue = '';
+		$resolvedContentObject = $this->getObject($object, $fieldNameAndPath);
+		$resolvedValue = $resolvedContentObject[$fieldName];
 
-		// Important to notice the field name can contains a path, e.g. metadata.title and must be sanitized.
-		$fieldPath = $this->getFieldPathResolver()->stripFieldName($fieldNameAndPath); // ex: metadata.title -> metadata
-
-		// Handle case when field name leads to a relation.
-		if ($object[$fieldPath] instanceof Content) {
-			$resolvedValue = $object[$fieldPath][$fieldName];
-		} elseif (TcaService::table($object)->hasField($fieldName)) {
-			$resolvedValue = $object[$fieldName];
+		if (is_scalar($resolvedValue) && $language > 0) {
+			$resolvedValue = $this->getLanguageService()->getLocalizedFieldName($resolvedContentObject, $language, $fieldName);
 		}
 
 		return $resolvedValue;
 	}
 
 	/**
-	 * Fetch the value of an object according to a field path.
-	 * The returned value can be a string, int or array of Content objects.
+	 * Fetch the value of an object according to a field name and path.
+	 * The returned value is a Content object.
 	 *
 	 * @param Content $object
 	 * @param string $fieldNameAndPath
-	 * @param string $fieldName
-	 * @return mixed
+	 * @return Content
 	 */
-	public function getObject(Content $object, $fieldNameAndPath, $fieldName) {
-
-		$resolvedObject = '';
+	public function getObject(Content $object, $fieldNameAndPath) {
 
 		// Important to notice the field name can contains a path, e.g. metadata.title and must be sanitized.
 		$fieldPath = $this->getFieldPathResolver()->stripFieldName($fieldNameAndPath); // ex: metadata.title -> metadata
@@ -90,7 +83,7 @@ class ContentObjectResolver implements SingletonInterface {
 		// Handle case when field name leads to a relation.
 		if ($object[$fieldPath] instanceof Content) {
 			$resolvedObject = $object[$fieldPath];
-		} elseif (TcaService::table($object)->hasField($fieldName)) {
+		} else {
 			$resolvedObject = $object;
 		}
 
@@ -102,5 +95,12 @@ class ContentObjectResolver implements SingletonInterface {
 	 */
 	protected function getFieldPathResolver () {
 		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Vidi\Language\LanguageService
+	 */
+	protected function getLanguageService() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Language\LanguageService');
 	}
 }

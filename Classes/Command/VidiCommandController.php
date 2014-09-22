@@ -55,32 +55,6 @@ class VidiCommandController extends CommandController {
 	}
 
 	/**
-	 * Check labels of the grid.
-	 *
-	 * @return void
-	 */
-	public function checkLabelsCommand(){
-
-		// @todo move the logic into the GridAnalyserService.
-		$this->outputLine('Checking labels...');
-		$result = '-> OK';
-		foreach ($GLOBALS['TCA'] as $tableName => $TCA) {
-			$tcaGridService = TcaService::grid($tableName);
-			foreach ($tcaGridService->getFields() as $fieldName => $configuration) {
-				$label = $tcaGridService->getLabel($fieldName);
-				if (empty($label) && $tcaGridService->isNotSystem($fieldName)) {
-					$output = sprintf('* Missing label for field "%s"', $fieldName);
-					$this->outputLine($output);
-					$result = '';
-				}
-			}
-		}
-		if ($result) {
-			$this->outputLine($result);
-		}
-	}
-
-	/**
 	 * Get the Vidi Module Loader.
 	 *
 	 * @return \TYPO3\CMS\Vidi\Grid\GridAnalyserService

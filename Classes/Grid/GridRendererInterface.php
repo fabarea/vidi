@@ -39,6 +39,12 @@ interface GridRendererInterface {
 	public function setFieldName($fieldName);
 
 	/**
+	 * @param int $index
+	 * @return $this
+	 */
+	public function setRowIndex($index);
+
+	/**
 	 * @param array $configuration
 	 * @return $this
 	 */
