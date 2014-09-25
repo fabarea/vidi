@@ -20,7 +20,7 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 /**
  * View helper which tells whether an argument exists.
  */
-class GPViewHelper extends AbstractViewHelper {
+class GpViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Tells whether the argument exists or not.
