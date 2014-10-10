@@ -18,8 +18,15 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Versioning\VersionState;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception;
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ComparisonInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\DynamicOperandInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\LowerCaseInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\PropertyValueInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\UpperCaseInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Frontend\Page\PageRepository;
@@ -87,6 +94,23 @@ class VidiDbBackend {
 	 * @var \TYPO3\CMS\Vidi\Persistence\Query
 	 */
 	protected $query;
+
+	/**
+	 * Store some info related to table name and its aliases.
+	 *
+	 * @var array
+	 */
+	protected $tableNames = array(
+		'aliases' => array(),
+		'aliasIncrement' => array(),
+	);
+
+	/**
+	 * Use to store the current foreign table name alias.
+	 *
+	 * @var string
+	 */
+	protected $currentChildTableNameAlias = '';
 
 	/**
 	 * The default object type being returned for the Media Object Factory
@@ -220,9 +244,9 @@ class VidiDbBackend {
 		$this->parseOrderings($query->getOrderings(), $source, $statementParts);
 		$this->parseLimitAndOffset($query->getLimit(), $query->getOffset(), $statementParts);
 		$tableNames = array_unique(array_keys($statementParts['tables'] + $statementParts['unions']));
-		foreach ($tableNames as $tableName) {
-			if (is_string($tableName) && strlen($tableName) > 0) {
-				$this->addAdditionalWhereClause($query->getQuerySettings(), $tableName, $statementParts);
+		foreach ($tableNames as $tableNameOrAlias) {
+			if (is_string($tableNameOrAlias) && strlen($tableNameOrAlias) > 0) {
+				$this->addAdditionalWhereClause($query->getQuerySettings(), $tableNameOrAlias, $statementParts);
 			}
 		}
 
@@ -280,7 +304,7 @@ class VidiDbBackend {
 				$sql['fields'][$tableName] = $tableName . '.' . $this->query->getDistinct();
 				$sql['keywords']['distinct'] = 'DISTINCT';
 			}
-		} elseif ($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface) {
+		} elseif ($source instanceof JoinInterface) {
 			$this->parseJoin($source, $sql);
 		}
 	}
@@ -288,16 +312,16 @@ class VidiDbBackend {
 	/**
 	 * Transforms a Join into SQL and parameter arrays
 	 *
-	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface $join The join
+	 * @param JoinInterface $join The join
 	 * @param array &$sql The query parts
 	 * @return void
 	 */
-	protected function parseJoin(\TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface $join, array &$sql) {
+	protected function parseJoin(JoinInterface $join, array &$sql) {
 		$leftSource = $join->getLeft();
 		$leftTableName = $leftSource->getSelectorName();
 		// $sql['fields'][$leftTableName] = $leftTableName . '.*';
 		$rightSource = $join->getRight();
-		if ($rightSource instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface) {
+		if ($rightSource instanceof JoinInterface) {
 			$rightTableName = $rightSource->getLeft()->getSelectorName();
 		} else {
 			$rightTableName = $rightSource->getSelectorName();
@@ -311,7 +335,7 @@ class VidiDbBackend {
 			$column2Name = $joinCondition->getProperty2Name();
 			$sql['unions'][$rightTableName] .= ' ON ' . $joinCondition->getSelector1Name() . '.' . $column1Name . ' = ' . $joinCondition->getSelector2Name() . '.' . $column2Name;
 		}
-		if ($rightSource instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface) {
+		if ($rightSource instanceof JoinInterface) {
 			$this->parseJoin($rightSource, $sql);
 		}
 	}
@@ -342,7 +366,7 @@ class VidiDbBackend {
 			$sql['where'][] = 'NOT (';
 			$this->parseConstraint($constraint->getConstraint(), $source, $sql, $parameters);
 			$sql['where'][] = ')';
-		} elseif ($constraint instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\ComparisonInterface) {
+		} elseif ($constraint instanceof ComparisonInterface) {
 			$this->parseComparison($constraint, $source, $sql, $parameters);
 		}
 	}
@@ -350,14 +374,14 @@ class VidiDbBackend {
 	/**
 	 * Parse a Comparison into SQL and parameter arrays.
 	 *
-	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\Qom\ComparisonInterface $comparison The comparison to parse
+	 * @param ComparisonInterface $comparison The comparison to parse
 	 * @param SourceInterface $source The source
 	 * @param array &$sql SQL query parts to add to
 	 * @param array &$parameters Parameters to bind to the SQL
-	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\RepositoryException
+	 * @throws Exception\RepositoryException
 	 * @return void
 	 */
-	protected function parseComparison(\TYPO3\CMS\Extbase\Persistence\Generic\Qom\ComparisonInterface $comparison, SourceInterface $source, array &$sql, array &$parameters) {
+	protected function parseComparison(ComparisonInterface $comparison, SourceInterface $source, array &$sql, array &$parameters) {
 		$operand1 = $comparison->getOperand1();
 		$operator = $comparison->getOperator();
 		$operand2 = $comparison->getOperand2();
@@ -374,39 +398,40 @@ class VidiDbBackend {
 			if ($hasValue === FALSE) {
 				$sql['where'][] = '1<>1';
 			} else {
-				$this->parseDynamicOperand($operand1, $operator, $source, $sql, $parameters, NULL, $operand2);
+				$this->parseDynamicOperand($operand1, $operator, $source, $sql, $parameters, NULL);
 				$parameters[] = $items;
 			}
 		} elseif ($operator === QueryInterface::OPERATOR_CONTAINS) {
 			if ($operand2 === NULL) {
 				$sql['where'][] = '1<>1';
 			} else {
-				// @todo check if this case is really used.
-				$tableName = $this->query->getType();
-				$propertyName = $operand1->getPropertyName();
-				while (strpos($propertyName, '.') !== FALSE) {
-					$this->addUnionStatement($tableName, $propertyName, $sql);
-				}
-				$columnName = $propertyName;
-				$columnMap = $propertyName;
-				$typeOfRelation = $columnMap instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap ? $columnMap->getTypeOfRelation() : NULL;
-				if ($typeOfRelation === \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap::RELATION_HAS_AND_BELONGS_TO_MANY) {
-					$relationTableName = $columnMap->getRelationTableName();
-					$sql['where'][] = $tableName . '.uid IN (SELECT ' . $columnMap->getParentKeyFieldName() . ' FROM ' . $relationTableName . ' WHERE ' . $columnMap->getChildKeyFieldName() . '=?)';
-					$parameters[] = intval($this->getPlainValue($operand2));
-				} elseif ($typeOfRelation === \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap::RELATION_HAS_MANY) {
-					$parentKeyFieldName = $columnMap->getParentKeyFieldName();
-					if (isset($parentKeyFieldName)) {
-						$childTableName = $columnMap->getChildTableName();
-						$sql['where'][] = $tableName . '.uid=(SELECT ' . $childTableName . '.' . $parentKeyFieldName . ' FROM ' . $childTableName . ' WHERE ' . $childTableName . '.uid=?)';
-						$parameters[] = intval($this->getPlainValue($operand2));
-					} else {
-						$sql['where'][] = 'FIND_IN_SET(?,' . $tableName . '.' . $columnName . ')';
-						$parameters[] = intval($this->getPlainValue($operand2));
-					}
-				} else {
-					throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\RepositoryException('Unsupported or non-existing property name "' . $propertyName . '" used in relation matching.', 1327065745);
-				}
+				throw new \Exception('Not implemented! Contact extension author.', 1412931227);
+				# @todo re-implement me if necessary.
+				#$tableName = $this->query->getType();
+				#$propertyName = $operand1->getPropertyName();
+				#while (strpos($propertyName, '.') !== FALSE) {
+				#	$this->addUnionStatement($tableName, $propertyName, $sql);
+				#}
+				#$columnName = $propertyName;
+				#$columnMap = $propertyName;
+				#$typeOfRelation = $columnMap instanceof ColumnMap ? $columnMap->getTypeOfRelation() : NULL;
+				#if ($typeOfRelation === ColumnMap::RELATION_HAS_AND_BELONGS_TO_MANY) {
+				#	$relationTableName = $columnMap->getRelationTableName();
+				#	$sql['where'][] = $tableName . '.uid IN (SELECT ' . $columnMap->getParentKeyFieldName() . ' FROM ' . $relationTableName . ' WHERE ' . $columnMap->getChildKeyFieldName() . '=?)';
+				#	$parameters[] = intval($this->getPlainValue($operand2));
+				#} elseif ($typeOfRelation === ColumnMap::RELATION_HAS_MANY) {
+				#	$parentKeyFieldName = $columnMap->getParentKeyFieldName();
+				#	if (isset($parentKeyFieldName)) {
+				#		$childTableName = $columnMap->getChildTableName();
+				#		$sql['where'][] = $tableName . '.uid=(SELECT ' . $childTableName . '.' . $parentKeyFieldName . ' FROM ' . $childTableName . ' WHERE ' . $childTableName . '.uid=?)';
+				#		$parameters[] = intval($this->getPlainValue($operand2));
+				#	} else {
+				#		$sql['where'][] = 'FIND_IN_SET(?,' . $tableName . '.' . $columnName . ')';
+				#		$parameters[] = intval($this->getPlainValue($operand2));
+				#	}
+				#} else {
+				#	throw new Exception\RepositoryException('Unsupported or non-existing property name "' . $propertyName . '" used in relation matching.', 1327065745);
+				#}
 			}
 		} else {
 			if ($operand2 === NULL) {
@@ -455,29 +480,27 @@ class VidiDbBackend {
 	/**
 	 * Parse a DynamicOperand into SQL and parameter arrays.
 	 *
-	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\Qom\DynamicOperandInterface $operand
+	 * @param DynamicOperandInterface $operand
 	 * @param string $operator One of the JCR_OPERATOR_* constants
 	 * @param SourceInterface $source The source
 	 * @param array &$sql The query parts
 	 * @param array &$parameters The parameters that will replace the markers
 	 * @param string $valueFunction an optional SQL function to apply to the operand value
-	 * @param null $operand2
 	 * @return void
 	 */
-	protected function parseDynamicOperand(\TYPO3\CMS\Extbase\Persistence\Generic\Qom\DynamicOperandInterface $operand, $operator, SourceInterface $source, array &$sql, array &$parameters, $valueFunction = NULL, $operand2 = NULL) {
-		if ($operand instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\LowerCaseInterface) {
+	protected function parseDynamicOperand(DynamicOperandInterface $operand, $operator, SourceInterface $source, array &$sql, array &$parameters, $valueFunction = NULL) {
+		if ($operand instanceof LowerCaseInterface) {
 			$this->parseDynamicOperand($operand->getOperand(), $operator, $source, $sql, $parameters, 'LOWER');
-		} elseif ($operand instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\UpperCaseInterface) {
+		} elseif ($operand instanceof UpperCaseInterface) {
 			$this->parseDynamicOperand($operand->getOperand(), $operator, $source, $sql, $parameters, 'UPPER');
-		} elseif ($operand instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\PropertyValueInterface) {
+		} elseif ($operand instanceof PropertyValueInterface) {
 			$propertyName = $operand->getPropertyName();
 			if ($source instanceof SelectorInterface) {
-				// FIXME Only necessary to differ from  Join
 				$tableName = $this->query->getType();
 				while (strpos($propertyName, '.') !== FALSE) {
 					$this->addUnionStatement($tableName, $propertyName, $sql);
 				}
-			} elseif ($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface) {
+			} elseif ($source instanceof JoinInterface) {
 				$tableName = $source->getJoinCondition()->getSelector1Name();
 			}
 			$columnName = $propertyName;
@@ -488,6 +511,10 @@ class VidiDbBackend {
 			} else {
 				$constraintSQL .= $valueFunction . '(' . (!empty($tableName) ? $tableName . '.' : '') . $columnName . ') ' . $operator . ' ?';
 			}
+
+			if (isset($tableName) && !empty($this->currentChildTableNameAlias)) {
+				$constraintSQL = $this->replaceTableNameByAlias($tableName, $this->currentChildTableNameAlias, $constraintSQL);
+			}
 			$sql['where'][] = $constraintSQL;
 		}
 	}
@@ -497,11 +524,12 @@ class VidiDbBackend {
 	 * @param array &$propertyPath
 	 * @param array &$sql
 	 * @throws Exception
-	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidRelationConfigurationException
+	 * @throws Exception\InvalidRelationConfigurationException
 	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\MissingColumnMapException
 	 */
 	protected function addUnionStatement(&$tableName, &$propertyPath, array &$sql) {
 
+		$this->currentChildTableNameAlias = ''; // Reset value.
 		$table = TcaService::table($tableName);
 
 		$explodedPropertyPath = explode('.', $propertyPath, 2);
@@ -520,7 +548,7 @@ class VidiDbBackend {
 		$childTableName = $table->field($fieldName)->getForeignTable();
 
 		if ($childTableName === NULL) {
-			throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidRelationConfigurationException('The relation information for property "' . $fieldName . '" of class "' . $tableName . '" is missing.', 1353170925);
+			throw new Exception\InvalidRelationConfigurationException('The relation information for property "' . $fieldName . '" of class "' . $tableName . '" is missing.', 1353170925);
 		}
 
 		if ($table->field($fieldName)->hasOne()) { // includes relation "one-to-one" and "many-to-one"
@@ -538,19 +566,61 @@ class VidiDbBackend {
 			$childKeyFieldName = !$table->field($fieldName)->isOppositeRelation() ? 'uid_foreign' : 'uid_local';
 			$tableNameCondition = $table->field($fieldName)->getAdditionalTableNameCondition();
 
-			$sql['unions'][$relationTableName] = 'LEFT JOIN ' . $relationTableName . ' ON ' . $tableName . '.uid=' . $relationTableName . '.' . $parentKeyFieldName;
-			$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $relationTableName . '.' . $childKeyFieldName . '=' . $childTableName . '.uid';
+			// MM table e.g sys_category_record_mm
+			$relationTableNameAlias = $this->generateAlias($relationTableName);
+			$join = sprintf(
+				'LEFT JOIN %s AS %s ON %s.uid=%s.%s', $relationTableName,
+				$relationTableNameAlias,
+				$tableName,
+				$relationTableNameAlias,
+				$parentKeyFieldName
+			);
+			$sql['unions'][$relationTableNameAlias] = $join;
+
+			// Foreign table e.g sys_category
+			$childTableNameAlias = $this->generateAlias($childTableName);
+			$this->currentChildTableNameAlias = $childTableNameAlias;
+			$join = sprintf(
+				'LEFT JOIN %s AS %s ON %s.%s=%s.uid',
+				$childTableName,
+				$childTableNameAlias,
+				$relationTableNameAlias,
+				$childKeyFieldName,
+				$childTableNameAlias
+			);
+			$sql['unions'][$childTableNameAlias] = $join;
 
 			if ($tableNameCondition) {
-				$sql['unions'][$relationTableName] .= ' AND ' . $relationTableName . '.tablenames = \'' . $tableNameCondition . '\'';
-				$sql['unions'][$childTableName] .= ' AND ' . $relationTableName . '.tablenames = \'' . $tableNameCondition . '\'';
+				$additionalJoin = sprintf(' AND %s.tablenames = "%s"',  $relationTableNameAlias, $tableNameCondition);
+				$sql['unions'][$relationTableNameAlias] .= $additionalJoin;
+
+				$additionalJoin = sprintf(' AND %s.tablenames = "%s"', $relationTableNameAlias, $tableNameCondition);
+				$sql['unions'][$childTableNameAlias] .= $additionalJoin;
 			}
 		} elseif ($table->field($fieldName)->hasMany()) { // includes relations "many-to-one" and "csv" relations
+			$childTableNameAlias = $this->generateAlias($childTableName);
+			$this->currentChildTableNameAlias = $childTableNameAlias;
+
 			if (isset($parentKeyFieldName)) {
-				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.uid=' . $childTableName . '.' . $parentKeyFieldName;
+				$join = sprintf(
+					'LEFT JOIN %s AS %s ON %s.uid=%s.%s',
+					$childTableName,
+					$childTableNameAlias,
+					$tableName,
+					$childTableNameAlias,
+					$parentKeyFieldName
+				);
+				$sql['unions'][$childTableName] = $join;
 			} else {
-				$onStatement = '(FIND_IN_SET(' . $childTableName . '.uid, ' . $tableName . '.' . $fieldName . '))';
-				$sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $onStatement;
+				$join = sprintf(
+					'LEFT JOIN %s AS %s ON (FIND_IN_SET(%s.uid, %s.%s))',
+					$childTableName,
+					$childTableNameAlias,
+					$childTableNameAlias,
+					$tableName,
+					$fieldName
+				);
+				$sql['unions'][$childTableNameAlias] = $join;
 			}
 		} else {
 			throw new Exception('Could not determine type of relation.', 1252502725);
@@ -647,17 +717,17 @@ class VidiDbBackend {
 	 * Adds additional WHERE statements according to the query settings.
 	 *
 	 * @param QuerySettingsInterface $querySettings The TYPO3 CMS specific query settings
-	 * @param string $tableName The table name to add the additional where clause for
+	 * @param string $tableNameOrAlias The table name to add the additional where clause for
 	 * @param array &$statementParts
 	 * @return void
 	 */
-	protected function addAdditionalWhereClause(QuerySettingsInterface $querySettings, $tableName, &$statementParts) {
-		$this->addVisibilityConstraintStatement($querySettings, $tableName, $statementParts);
+	protected function addAdditionalWhereClause(QuerySettingsInterface $querySettings, $tableNameOrAlias, &$statementParts) {
+		$this->addVisibilityConstraintStatement($querySettings, $tableNameOrAlias, $statementParts);
 		if ($querySettings->getRespectSysLanguage()) {
-			$this->addSysLanguageStatement($tableName, $statementParts, $querySettings);
+			$this->addSysLanguageStatement($tableNameOrAlias, $statementParts, $querySettings);
 		}
 		if ($querySettings->getRespectStoragePage()) {
-			$this->addPageIdStatement($tableName, $statementParts, $querySettings->getStoragePageIds());
+			$this->addPageIdStatement($tableNameOrAlias, $statementParts, $querySettings->getStoragePageIds());
 		}
 	}
 
@@ -665,27 +735,28 @@ class VidiDbBackend {
 	 * Adds enableFields and deletedClause to the query if necessary
 	 *
 	 * @param QuerySettingsInterface $querySettings
-	 * @param string $tableName The database table name
+	 * @param string $tableNameOrAlias The database table name
 	 * @param array &$statementParts The query parts
 	 * @return void
 	 */
-	protected function addVisibilityConstraintStatement(QuerySettingsInterface $querySettings, $tableName, array &$statementParts) {
+	protected function addVisibilityConstraintStatement(QuerySettingsInterface $querySettings, $tableNameOrAlias, array &$statementParts) {
 		$statement = '';
+		$tableName = $this->resolveTableNameAlias($tableNameOrAlias);
 		if (is_array($GLOBALS['TCA'][$tableName]['ctrl'])) {
 			$ignoreEnableFields = $querySettings->getIgnoreEnableFields();
 			$enableFieldsToBeIgnored = $querySettings->getEnableFieldsToBeIgnored();
 			$includeDeleted = $querySettings->getIncludeDeleted();
 			if ($this->environmentService->isEnvironmentInFrontendMode()) {
-				$statement .= $this->getFrontendConstraintStatement($tableName, $ignoreEnableFields, $enableFieldsToBeIgnored, $includeDeleted);
+				$statement .= $this->getFrontendConstraintStatement($tableNameOrAlias, $ignoreEnableFields, $enableFieldsToBeIgnored, $includeDeleted);
 			} else {
 				// TYPO3_MODE === 'BE'
-				$statement .= $this->getBackendConstraintStatement($tableName, $ignoreEnableFields, $includeDeleted);
+				$statement .= $this->getBackendConstraintStatement($tableNameOrAlias, $ignoreEnableFields, $includeDeleted);
 			}
 
 			// Remove the prefixing "AND" if any.
 			if (!empty($statement)) {
 				$statement = strtolower(substr($statement, 1, 3)) === 'and' ? substr($statement, 5) : $statement;
-				$statementParts['additionalWhereClause'][$tableName][] = $statement;
+				$statementParts['additionalWhereClause'][$tableNameOrAlias][] = $statement;
 			}
 		}
 	}
@@ -693,15 +764,16 @@ class VidiDbBackend {
 	/**
 	 * Returns constraint statement for frontend context
 	 *
-	 * @param string $tableName
+	 * @param string $tableNameOrAlias
 	 * @param boolean $ignoreEnableFields A flag indicating whether the enable fields should be ignored
 	 * @param array $enableFieldsToBeIgnored If $ignoreEnableFields is true, this array specifies enable fields to be ignored. If it is NULL or an empty array (default) all enable fields are ignored.
 	 * @param boolean $includeDeleted A flag indicating whether deleted records should be included
 	 * @return string
 	 * @throws Exception\InconsistentQuerySettingsException
 	 */
-	protected function getFrontendConstraintStatement($tableName, $ignoreEnableFields, $enableFieldsToBeIgnored = array(), $includeDeleted) {
+	protected function getFrontendConstraintStatement($tableNameOrAlias, $ignoreEnableFields, $enableFieldsToBeIgnored = array(), $includeDeleted) {
 		$statement = '';
+		$tableName = $this->resolveTableNameAlias($tableNameOrAlias);
 		if ($ignoreEnableFields && !$includeDeleted) {
 			if (count($enableFieldsToBeIgnored)) {
 				// array_combine() is necessary because of the way \TYPO3\CMS\Frontend\Page\PageRepository::enableFields() is implemented
@@ -714,18 +786,19 @@ class VidiDbBackend {
 		} elseif (!$ignoreEnableFields && $includeDeleted) {
 			throw new Exception\InconsistentQuerySettingsException('Query setting "ignoreEnableFields=FALSE" can not be used together with "includeDeleted=TRUE" in frontend context.', 1327678173);
 		}
-		return $statement;
+		return $this->replaceTableNameByAlias($tableName, $tableNameOrAlias, $statement);
 	}
 
 	/**
 	 * Returns constraint statement for backend context
 	 *
-	 * @param string $tableName
+	 * @param string $tableNameOrAlias
 	 * @param boolean $ignoreEnableFields A flag indicating whether the enable fields should be ignored
 	 * @param boolean $includeDeleted A flag indicating whether deleted records should be included
 	 * @return string
 	 */
-	protected function getBackendConstraintStatement($tableName, $ignoreEnableFields, $includeDeleted) {
+	protected function getBackendConstraintStatement($tableNameOrAlias, $ignoreEnableFields, $includeDeleted) {
+		$tableName = $this->resolveTableNameAlias($tableNameOrAlias);
 		$statement = '';
 		if (!$ignoreEnableFields) {
 			$statement .= BackendUtility::BEenableFields($tableName);
@@ -752,22 +825,25 @@ class VidiDbBackend {
 			$statement .= BackendUtility::deleteClause($tableName);
 		}
 
-		return $statement;
+		return $this->replaceTableNameByAlias($tableName, $tableNameOrAlias, $statement);
 	}
 
 	/**
 	 * Builds the language field statement
 	 *
-	 * @param string $tableName The database table name
+	 * @param string $tableNameOrAlias The database table name
 	 * @param array &$statementParts The query parts
 	 * @param QuerySettingsInterface $querySettings The TYPO3 CMS specific query settings
+	 * @throws Exception
 	 * @return void
 	 */
-	protected function addSysLanguageStatement($tableName, array &$statementParts, $querySettings) {
+	protected function addSysLanguageStatement($tableNameOrAlias, array &$statementParts, $querySettings) {
+
+		$tableName = $this->resolveTableNameAlias($tableNameOrAlias);
 		if (is_array($GLOBALS['TCA'][$tableName]['ctrl'])) {
 			if (!empty($GLOBALS['TCA'][$tableName]['ctrl']['languageField'])) {
 				// Select all entries for the current language
-				$additionalWhereClause = $tableName . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['languageField'] . ' IN (' . intval($querySettings->getLanguageUid()) . ',-1)';
+				$additionalWhereClause = $tableNameOrAlias . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['languageField'] . ' IN (' . intval($querySettings->getLanguageUid()) . ',-1)';
 				// If any language is set -> get those entries which are not translated yet
 				// They will be removed by t3lib_page::getRecordOverlay if not matching overlay mode
 				if (isset($GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField'])
@@ -781,11 +857,12 @@ class VidiDbBackend {
 
 					// Add delete clause to ensure all entries are loaded
 					if (isset($GLOBALS['TCA'][$tableName]['ctrl']['delete'])) {
-						$additionalWhereClause .= ' AND ' . $tableName . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['delete'] . '=0';
+						$additionalWhereClause .= ' AND ' . $tableNameOrAlias . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['delete'] . '=0';
 					}
 					$additionalWhereClause .= '))';
+					throw new Exception('Not tested code! It will fail', 1412928284);
 				}
-				$statementParts['additionalWhereClause'][$tableName][] = '(' . $additionalWhereClause . ')';
+				$statementParts['additionalWhereClause'][$tableNameOrAlias][] = '(' . $additionalWhereClause . ')';
 			}
 		}
 	}
@@ -793,13 +870,15 @@ class VidiDbBackend {
 	/**
 	 * Builds the page ID checking statement
 	 *
-	 * @param string $tableName The database table name
+	 * @param string $tableNameOrAlias The database table name
 	 * @param array &$statementParts The query parts
 	 * @param array $storagePageIds list of storage page ids
 	 * @throws Exception\InconsistentQuerySettingsException
 	 * @return void
 	 */
-	protected function addPageIdStatement($tableName, array &$statementParts, array $storagePageIds) {
+	protected function addPageIdStatement($tableNameOrAlias, array &$statementParts, array $storagePageIds) {
+
+		$tableName = $this->resolveTableNameAlias($tableNameOrAlias);
 		$tableColumns = $this->tableColumnCache->get($tableName);
 		if ($tableColumns === FALSE) {
 			$tableColumns = $this->databaseHandle->admin_get_fields($tableName);
@@ -809,13 +888,13 @@ class VidiDbBackend {
 			$rootLevel = (int)$GLOBALS['TCA'][$tableName]['ctrl']['rootLevel'];
 			if ($rootLevel) {
 				if ($rootLevel === 1) {
-					$statementParts['additionalWhereClause'][$tableName][] = $tableName . '.pid = 0';
+					$statementParts['additionalWhereClause'][$tableNameOrAlias][] = $tableNameOrAlias . '.pid = 0';
 				}
 			} else {
 				if (empty($storagePageIds)) {
 					throw new Exception\InconsistentQuerySettingsException('Missing storage page ids.', 1365779762);
 				}
-				$statementParts['additionalWhereClause'][$tableName][] = $tableName . '.pid IN (' . implode(', ', $storagePageIds) . ')';
+				$statementParts['additionalWhereClause'][$tableNameOrAlias][] = $tableNameOrAlias . '.pid IN (' . implode(', ', $storagePageIds) . ')';
 			}
 		}
 	}
@@ -844,10 +923,11 @@ class VidiDbBackend {
 			$tableName = '';
 			if ($source instanceof SelectorInterface) {
 				$tableName = $this->query->getType();
-				while (strpos($propertyName, '.') !== FALSE) {
-					$this->addUnionStatement($tableName, $propertyName, $sql);
-				}
-			} elseif ($source instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface) {
+				// @todo? addUnionStatement method should be called once otherwise it could be side effect with the table aliases.
+				#while (strpos($propertyName, '.') !== FALSE) {
+				#	$this->addUnionStatement($tableName, $propertyName, $sql);
+				#}
+			} elseif ($source instanceof JoinInterface) {
 				$tableName = $source->getLeft()->getSelectorName();
 			}
 			$columnName = $propertyName;
@@ -889,9 +969,6 @@ class VidiDbBackend {
 				// Get language uid from querySettings.
 				// Ensure the backend handling is not broken (fallback to Get parameter 'L' if needed)
 				$overlaidRow = $this->doLanguageAndWorkspaceOverlay($this->query->getSource(), $row, $this->query->getQuerySettings());
-
-				// Alternative method for the FE only. Remove me if "doLanguageAndWorkspaceOverlay" is proven to work well in 0.4.0 + two version.
-				#$overlaidRow = \TYPO3\CMS\Vidi\Language\Overlays::getOverlayRecords($this->query->getType(), array($row['uid']), $GLOBALS['TSFE']->sys_language_uid);
 
 				if (!$this->query->getQuerySettings()->getReturnRawQueryResult()) {
 					$overlaidRow = GeneralUtility::makeInstance($this->objectType, $this->query->getType(), $overlaidRow);
@@ -970,6 +1047,57 @@ class VidiDbBackend {
 
 		return $row;
 	}
+
+	/**
+	 * Return a resolved table name given a possible table name alias.
+	 *
+	 * @param string $tableNameOrAlias
+	 * @return string
+	 */
+	protected function resolveTableNameAlias($tableNameOrAlias) {
+		$resolvedTableName = $tableNameOrAlias;
+		if (!empty($this->tableNames['aliases'][$tableNameOrAlias])) {
+			$resolvedTableName = $this->tableNames['aliases'][$tableNameOrAlias];
+		}
+		return $resolvedTableName;
+	}
+
+	/**
+	 * Generate a unique table name alias for the given table name.
+	 *
+	 * @param string $tableName
+	 * @return string
+	 */
+	protected function generateAlias($tableName) {
+
+		if (!isset($this->tableNames['aliasIncrement'][$tableName])) {
+			$this->tableNames['aliasIncrement'][$tableName] = 0;
+		}
+
+		$numberOfAliases = $this->tableNames['aliasIncrement'][$tableName];
+		$tableNameAlias = $tableName . $numberOfAliases;
+
+		$this->tableNames['aliasIncrement'][$tableName]++;
+		$this->tableNames['aliases'][$tableNameAlias] = $tableName;
+
+		return $tableNameAlias;
+	}
+
+	/**
+	 * Replace the table names by its table name alias within the given statement.
+	 *
+	 * @param string $tableName
+	 * @param string $tableNameAlias
+	 * @param string $statement
+	 * @return string
+	 */
+	protected function replaceTableNameByAlias($tableName, $tableNameAlias, $statement) {
+		if ($statement && $tableName !== $tableNameAlias) {
+			$statement = str_replace($tableName, $tableNameAlias, $statement);
+		}
+		return $statement;
+	}
+
 
 	/**
 	 * Returns an instance of the current Backend User.
