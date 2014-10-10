@@ -25,7 +25,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 use TYPO3\CMS\Vidi\Tca\TcaService;
 
-	/**
+/**
  * A Storage backend
  */
 class VidiDbBackend {

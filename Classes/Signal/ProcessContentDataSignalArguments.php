@@ -47,6 +47,11 @@ class ProcessContentDataSignalArguments {
 	protected $savingBehavior;
 
 	/**
+	 * @var int
+	 */
+	protected $language;
+
+	/**
 	 * @param array $contentData
 	 * @return $this
 	 */
@@ -124,6 +129,22 @@ class ProcessContentDataSignalArguments {
 	 */
 	public function getSavingBehavior() {
 		return $this->savingBehavior;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getLanguage() {
+		return $this->language;
+	}
+
+	/**
+	 * @param int $language
+	 * @return $this
+	 */
+	public function setLanguage($language) {
+		$this->language = $language;
+		return $this;
 	}
 
 

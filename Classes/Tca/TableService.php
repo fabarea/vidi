@@ -169,7 +169,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Get the "deleted" field for the table.
 	 *
-	 * @return string
+	 * @return string|NULL
 	 */
 	public function getDeletedField() {
 		return $this->get('delete');
@@ -178,7 +178,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Get the modification time stamp field.
 	 *
-	 * @return string
+	 * @return string|NULL
 	 */
 	public function getTimeModificationField() {
 		return $this->get('tstamp');
@@ -187,7 +187,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Get the creation time stamp field.
 	 *
-	 * @return string
+	 * @return string|NULL
 	 */
 	public function getTimeCreationField() {
 		return $this->get('crdate');
@@ -196,7 +196,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Get the language field for the table.
 	 *
-	 * @return string
+	 * @return string|NULL
 	 */
 	public function getLanguageField() {
 		return $this->get('languageField');
@@ -205,7 +205,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Get the field which points to the parent.
 	 *
-	 * @return string
+	 * @return string|NULL
 	 */
 	public function getLanguageParentField() {
 		return $this->get('transOrigPointerField');
@@ -214,7 +214,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns the default order in the form of a SQL segment.
 	 *
-	 * @return string
+	 * @return string|NULL
 	 */
 	public function getDefaultOrderSql() {
 		return $this->get('default_sortby');
@@ -247,7 +247,7 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	/**
 	 * Returns the searchable fields.
 	 *
-	 * @return string
+	 * @return string|NULL
 	 */
 	public function getSearchFields() {
 		return $this->get('searchFields');

@@ -126,9 +126,16 @@ class ContentController extends ActionController {
 		foreach ($contentService->getObjects() as $index => $object) {
 
 			$identifier = $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, 'uid', $language);
+
+			// It could be the identifier is not found because the translation
+			// of the record does not yet exist when mass-editing
+			if ((int) $identifier <= 0) {
+				continue;
+			}
+
 			$dataType = $this->getContentObjectResolver()->getDataType($object, $fieldNameAndPath);
 
-			$signalResult = $this->emitProcessContentDataSignal($object, $fieldNameAndPath, $content, $index + 1, $savingBehavior);
+			$signalResult = $this->emitProcessContentDataSignal($object, $fieldNameAndPath, $content, $index + 1, $savingBehavior, $language);
 			$contentData = $signalResult->getContentData();
 
 			// Add identifier to content data, required by TCEMain.
@@ -169,11 +176,11 @@ class ContentController extends ActionController {
 					$updatedResult = $_updatedResult;
 				}
 
-				$labelField = TcaService::table($dataType)->getLabelField();
+				$labelField = TcaService::table($object)->getLabelField();
 				$processedObjectData = array(
-					'uid' => $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, 'uid', $language),
-					'name' => $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, $labelField, $language),
-					'updatedField' => $updatedFieldName,
+					'uid' => $object->getUid(),
+					'name' => $object[$labelField],
+					'updatedField' => $fieldNameAndPath,
 					'updatedValue' => $updatedResult,
 				);
 				$result->setProcessedObject($processedObjectData);
@@ -509,10 +516,11 @@ class ContentController extends ActionController {
 	 * @param $contentData
 	 * @param $counter
 	 * @param $savingBehavior
+	 * @param $language
 	 * @return ProcessContentDataSignalArguments
 	 * @signal
 	 */
-	protected function emitProcessContentDataSignal(Content $contentObject, $fieldNameAndPath, $contentData, $counter, $savingBehavior) {
+	protected function emitProcessContentDataSignal(Content $contentObject, $fieldNameAndPath, $contentData, $counter, $savingBehavior, $language) {
 
 		/** @var \TYPO3\CMS\Vidi\Signal\ProcessContentDataSignalArguments $signalArguments */
 		$signalArguments = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Signal\ProcessContentDataSignalArguments');
@@ -520,7 +528,8 @@ class ContentController extends ActionController {
 			->setFieldNameAndPath($fieldNameAndPath)
 			->setContentData($contentData)
 			->setCounter($counter)
-			->setSavingBehavior($savingBehavior);
+			->setSavingBehavior($savingBehavior)
+			->setLanguage($language);
 
 		$signalResult = $this->getSignalSlotDispatcher()->dispatch('TYPO3\CMS\Vidi\Controller\Backend\ContentController', 'processContentData', array($signalArguments));
 		return $signalResult[0];
