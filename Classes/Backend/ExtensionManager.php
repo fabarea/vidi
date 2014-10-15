@@ -36,8 +36,8 @@ class ExtensionManager {
 	 * Display a message to the Extension Manager whether the configuration is OK or KO.
 	 *
 	 * @param array $params
-	 * @param object $tsObj t3lib_tsStyleConfig
-	 * @return string the HTML message
+	 * @param \TYPO3\CMS\Core\TypoScript\ConfigurationForm $tsObj
+	 * @return string
 	 */
 	public function renderDataTypes(&$params, &$tsObj) {
 
