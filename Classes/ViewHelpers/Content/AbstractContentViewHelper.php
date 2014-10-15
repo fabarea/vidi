@@ -34,6 +34,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper {
 		$this->registerArgument('matches', 'array', 'Key / value array to be used as filter. The key corresponds to a field name.', FALSE, array());
 		$this->registerArgument('selection', 'int', 'A possible selection defined in the BE and stored in the database.', FALSE, 0);
 		$this->registerArgument('ignoreEnableFields', 'bool', 'Whether to ignore enable fields or not (AKA hidden, deleted, starttime, ...).', FALSE, FALSE);
+		$this->registerArgument('aliases', 'array', 'Attribute "matches" does not support certain character such as "." in field name. Use this to create aliases.', FALSE, array());
 	}
 
 	/**
@@ -65,13 +66,28 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper {
 		$matcher = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher', array(), $dataType);
 
 	    // @todo implement advanced selection parsing {or: {usergroup.title: {like: foo}}, {tstamp: {greaterThan: 1234}}}
-		foreach ($matches as $propertyName => $value) {
+		foreach ($matches as $fieldNameAndPath => $value) {
+
 			// CSV values should be considered as "in" operator in Query, otherwise "equals".
 			$explodedValues = GeneralUtility::trimExplode(',', $value, TRUE);
+
+			// The matching value contains a "1,2" as example
 			if (count($explodedValues) > 1) {
-				$matcher->in($propertyName, $explodedValues);
+
+				$resolvedDataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $dataType);
+				$resolvedFieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $dataType);
+
+				// "equals" if in presence of a relation.
+				// "in" if not a relation.
+				if (TcaService::table($resolvedDataType)->field($resolvedFieldName)->hasRelation()) {
+					foreach ($explodedValues as $explodedValue) {
+						$matcher->equals($fieldNameAndPath, $explodedValue);
+					}
+				} else {
+					$matcher->in($fieldNameAndPath, $explodedValues);
+				}
 			} else {
-				$matcher->equals($propertyName, $explodedValues[0]);
+				$matcher->equals($fieldNameAndPath, $explodedValues[0]);
 			}
 		}
 
@@ -79,6 +95,26 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper {
 		$this->emitPostProcessMatcherObjectSignal($matcher->getDataType(), $matcher);
 
 		return $matcher;
+	}
+
+	/**
+	 * Replace possible aliases.
+	 *
+	 * @param array $values
+	 * @return array
+	 */
+	protected function replacesAliases(array $values) {
+
+		$aliases = $this->arguments['aliases'];
+
+		foreach ($aliases as $aliasName => $aliasValue) {
+			if (isset($values[$aliasName])) {
+				$values[$aliasValue] = $values[$aliasName];
+				unset($values[$aliasName]); // remove the alias.
+			}
+		}
+
+		return $values;
 	}
 
 	/**
@@ -179,4 +215,12 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper {
 		$defaultQuerySettings->setIgnoreEnableFields($ignoreEnableFields);
 		return $defaultQuerySettings;
 	}
+
+	/**
+	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 */
+	protected function getFieldPathResolver () {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+	}
+
 }

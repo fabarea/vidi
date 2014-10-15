@@ -56,10 +56,10 @@ class FindViewHelper extends AbstractContentViewHelper {
 				print 'Sorry to be so rude! There is something to change in the View Helper "v:find". Please replace attribute "dataType" by "type". This is a shorter syntax...';
 				exit();
 			}
-			$matches = $this->arguments['matches'];
+			$matches = $this->replacesAliases($this->arguments['matches']);
 		}
 
-		$orderings = $this->arguments['orderings'];
+		$orderings = $this->replacesAliases($this->arguments['orderings']);
 		$limit = $this->arguments['limit'];
 		$offset = $this->arguments['offset'];
 		$ignoreEnableFields = $this->arguments['ignoreEnableFields'];

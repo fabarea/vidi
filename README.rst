@@ -32,9 +32,7 @@ http://twitter.com/fudriot
 Installation and requirement
 ============================
 
-The extension **requires TYPO3 6.1**. In case, a fresh TYPO3 set-up is available at http://get.typo3.org/.
-The extension is not yet released on the TER_. Download the source from the `master branch`_ and
-install the extension as normal in the Extension Manager::
+The extension **requires TYPO3 6.2**. Install the extension as normal in the Extension Manager::
 
 	# local installation
 	cd typo3conf/ext
@@ -50,37 +48,6 @@ install the extension as normal in the Extension Manager::
 
 .. _TER: typo3.org/extensions/repository/
 .. _master branch: https://github.com/TYPO3-extensions/vidi.git
-
-FAQ
-===
-
-* **What about performance?**
-
-According to our experience, Vidi modules behave quite well when dealing with large amount of data (in the limit of the reasonable). In general, Vidi is capable to fetch just the
-exact number of records required. Furthermore, Vidi is capable of internally caching data in memory such as relations once they have been fetched.
-
-If you experiment a slow Grid, consider reducing the number of column visible among other the "relational" columns which are the most expensive to render. If a column is hidden
-in the Grid, the content will not be computed for performance sake.
-
-* How to get started with a new custom Vidi module?
-
-As of 0.4.0 Vidi comes with a new experimentation in the form of a "list2". The idea is to bring all the power of Vidi for every type of records by default.
-It can be activated (or deactivated) in the settings of the Extension Manager. Take example how it is done for fe_users in ``EXT:vidi/Configuration/Overrides/fe_users.php``
-but basically you should have for all record types a default configuration already. What you might want is to have an independent module in the BE. This can be achieved by
-the Vidi Module Loader.
-
-* **How to hook into a Vidi module?**
-
-If you need to add some custom behaviour such as adding a new button or replacing a default Component, you are likely to do it through the Vidi Module Loader. As a quick example::
-
-	$moduleLoader = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader', 'sys_file');
-	$moduleLoader->addJavaScriptFiles(...)
-
-
-For more insight, consider the example of ``ext_tables.php`` of EXT:media.
-
-Notice also for each Vidi module, you can add any kind of utility tools in a dedicated module (c.f. Add tools in a Vidi module).
-
 
 Configuration
 =============
@@ -117,20 +84,22 @@ Fetching data with...
 Content View Helper
 -------------------
 
-To quickly get data in a Fluid Template such as a list of Value Objects, the Content View Helper will interact with
-the Vidi Content Repository and can be used to retrieve list of content.
-As example, display a list of all user belonging to User Group "1" and loop around there respective groups::
+To fetch content, the ``content.find()`` View Helper can be used to retrieve data in a Fluid template. Underneath it will
+interact with a Vidi Content Repository.
+As example, let display a list of all Frontend Users belonging to User Group "1" and also display the User Groups they belong::
 
-	<f:if condition="{v:content.find(matches: '{usergroup: 1}', orderings: '{uid: \'ASC\'}', type: 'fe_users')}">
+	<strong>Number of people: {v:content.count(matches: {usergroup: 3}, type: 'fe_users')}</strong>
+
+	<f:if condition="{v:content.find(matches: {usergroup: 3}, orderings: {uid: 'ASC'}, type: 'fe_users')}">
 		<ul>
-			<f:for each="{v:content.find(matches: '{usergroup: 1}', orderings: '{uid: \'ASC\'}', type: 'fe_users')}" as="user">
+			<f:for each="{v:content.find(matches: {usergroup: 3}, orderings: {uid: 'ASC'}, type: 'fe_users')}" as="person">
 				<li>
-					{user.uid}:{user.username}
+					{person.uid}:{person.username}
 
 					<!-- !!! Notice how you can fetch relation through their properties! -->
-					<f:if condition="{user.usergroup}}">
+					<f:if condition="{person.usergroup}}">
 						<ul>
-							<f:for each="{user.usergroup}" as="group">
+							<f:for each="{person.usergroup}" as="group">
 								<li>{group.title}</li>
 							</f:for>
 						</ul>
@@ -141,18 +110,14 @@ As example, display a list of all user belonging to User Group "1" and loop arou
 	</f:if>
 	{namespace m=TYPO3\CMS\Vidi\ViewHelpers}
 
-Same example but simply count records::
 
-	Number of files: {v:content.find(matches: '{usergroup: 1}', orderings: '{uid: \'ASC\'}', type: 'fe_users')}
-
-
-**TODO**: Implement selection saving! the syntax is still a bit verbose to (my) taste. There is in preparation the possibility to save selection (tx_vid_domain_model_selection)
-in a BE module and retrieve that selection on the Frontend. Looking for resources!!
+**TODO**: Implement selection saving! There is in the pipeline the possibility to save a selection
+in a BE module and retrieve that selection on the Frontend. Looking for some opportunities...
 
 Vidi Content Repository (programming way)
 -----------------------------------------
 
-Each Content type (e.g. fe_users, fe_groups) has its own Content repository instance which is manged internally by the Repository Factory.
+Each Content type (e.g. fe_users, fe_groups) has its own Content repository instance which is managed internally by the Repository Factory.
 For getting the adequate instance, the repository can be fetched by this code. ::
 
 
@@ -213,7 +178,7 @@ To register your own Tool, add the following lines into in ``ext_tables.php``::
 TCA Grid
 ========
 
-A Grid is an interactive list displayed in a BE module. TCA was extended to describe how a grid and its
+The Grid is the heart of the List component in Vidi. The TCA was extended to describe how a grid and its
 columns should be rendered. Take inspiration of `this example`_ below for your own data type::
 
 	'grid' => array(
@@ -244,7 +209,7 @@ columns should be rendered. Take inspiration of `this example`_ below for your o
 	),
 
 
-.. _this example: https://github.com/TYPO3-extensions/vidi/blob/master/Configuration/TCA/fe_users.php
+.. _this example: https://github.com/TYPO3-extensions/vidi/blob/master/Configuration/TCA/Overrides/fe_users.php#L21
 
 TCA "grid.columns"
 ------------------
@@ -644,7 +609,7 @@ To check whether TCA is well configured, Vidi provides a Command that will scan 
 Property Mapping
 ================
 
-Internally, Vidi makes an automatic conversion of a field name (in the database) to a property name (in the object)
+Internally, Vidi makes an automatic conversion of a field name (in the database) to a property name (of the object)
 following a camel-case convention. Example ``field_name`` will be converted to ``propertyName``.
 
 However, there could be special cases where the field name does not follow the conventions for legacy reason.
@@ -683,3 +648,36 @@ While it will disconnect you from TCEmain (which handles for your hooks, cache H
 		),
 	),
 
+
+Module Loader
+=============
+
+If you need to hook into a module and add some custom behaviour for a new button or replacing a Component,
+you can configure the Module through the Vidi Module Loader. As a quick example::
+
+	$moduleLoader = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader', 'sys_file');
+	$moduleLoader->addJavaScriptFiles(...)
+
+
+For more insight, consider the example of ``ext_tables.php`` of extension Media_.
+
+Notice also for each Vidi module, you can add any kind of utility tools in a dedicated module (c.f. Add tools in a Vidi module).
+
+.. _Media: https://github.com/TYPO3-extensions/media/blob/master/ext_tables.php#L61
+
+FAQ
+===
+
+* **What about performance?**
+
+We don't have figures. However, Vidi is quite close to the database and if the index are well configured,
+Vidi modules behave quite well when dealing with large amount of data. In general, Vidi is capable to fetch just the
+exact number of records required. Furthermore, Vidi is capable of internally caching data in memory such as relations once they have been fetched.
+
+If you experiment a slow Grid, consider reducing the number of column visible among other the "relational" columns which are the most expensive to render. If a column is hidden
+in the Grid, the content will not be computed for performance sake.
+
+* **How to get started with a new custom Vidi module?**
+
+As of 0.4.0 Vidi comes with a new experimentation in the form of a "list2". The idea is to bring all the power of Vidi to every record types without further configuration.
+It can be activated in the settings of the Extension Manager. If you need further configure the Grid, take example how it is done for fe_users in file ``EXT:vidi/Configuration/Overrides/fe_users.php``.

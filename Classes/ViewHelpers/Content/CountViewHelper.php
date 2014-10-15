@@ -37,7 +37,7 @@ class CountViewHelper extends AbstractContentViewHelper {
 			exit();
 		}
 		$dataType = $this->arguments['type'];
-		$matches = $this->arguments['matches'];
+		$matches = $this->replacesAliases($this->arguments['matches']);
 		$ignoreEnableFields = $this->arguments['ignoreEnableFields'];
 
 		$matcher = $this->getMatcher($dataType, $matches);

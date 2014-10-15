@@ -82,13 +82,13 @@ class MatcherObjectFactory implements SingletonInterface {
 	 */
 	protected function applyCriteriaFromMatchesArgument(Matcher $matcher, $matches) {
 
-		foreach ($matches as $propertyName => $value) {
+		foreach ($matches as $fieldNameAndPath => $value) {
 			// CSV values should be considered as "in" operator in Query, otherwise "equals".
 			$explodedValues = GeneralUtility::trimExplode(',', $value, TRUE);
 			if (count($explodedValues) > 1) {
-				$matcher->in($propertyName, $explodedValues);
+				$matcher->in($fieldNameAndPath, $explodedValues);
 			} else {
-				$matcher->equals($propertyName, $explodedValues[0]);
+				$matcher->equals($fieldNameAndPath, $explodedValues[0]);
 			}
 		}
 

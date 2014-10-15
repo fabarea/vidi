@@ -909,7 +909,7 @@ class VidiDbBackend {
 	 * @return void
 	 */
 	protected function parseOrderings(array $orderings, SourceInterface $source, array &$sql) {
-		foreach ($orderings as $propertyName => $order) {
+		foreach ($orderings as $fieldNameAndPath => $order) {
 			switch ($order) {
 				case QueryInterface::ORDER_ASCENDING:
 					$order = 'ASC';
@@ -920,22 +920,10 @@ class VidiDbBackend {
 				default:
 					throw new Exception\UnsupportedOrderException('Unsupported order encountered.', 1242816074);
 			}
-			$tableName = '';
-			if ($source instanceof SelectorInterface) {
-				$tableName = $this->query->getType();
-				// @todo? addUnionStatement method should be called once otherwise it could be side effect with the table aliases.
-				#while (strpos($propertyName, '.') !== FALSE) {
-				#	$this->addUnionStatement($tableName, $propertyName, $sql);
-				#}
-			} elseif ($source instanceof JoinInterface) {
-				$tableName = $source->getLeft()->getSelectorName();
-			}
-			$columnName = $propertyName;
-			if (strlen($tableName) > 0) {
-				$sql['orderings'][] = $tableName . '.' . $columnName . ' ' . $order;
-			} else {
-				$sql['orderings'][] = $columnName . ' ' . $order;
-			}
+
+			$tableName = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $this->query->getType());
+			$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $tableName);
+			$sql['orderings'][] = sprintf('%s.%s %s', $tableName, $fieldName, $order);
 		}
 	}
 
@@ -1130,6 +1118,13 @@ class VidiDbBackend {
 		}
 
 		return $this->pageRepository;
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 */
+	protected function getFieldPathResolver () {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
 	}
 
 	/**
