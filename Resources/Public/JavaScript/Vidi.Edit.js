@@ -193,7 +193,8 @@ Vidi.Edit = {
 			}
 		}
 
-		return uri.toString();
+		// Fix a bug in URI object. URL should looks like mod.php?xyz and not mod.php/?xyz
+		return uri.toString().replace('.php/?', '.php?');
 	},
 
 	/**
