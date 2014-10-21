@@ -93,6 +93,9 @@ Vidi.VisualSearch = {
 		var convertedExpression = [];
 		if (searchExpression) {
 
+			// In case the search expression has been fetched from the URL.
+			searchExpression = decodeURIComponent(searchExpression);
+
 			var facets = JSON.parse(searchExpression);
 			_.each(facets, function(facet) {
 
