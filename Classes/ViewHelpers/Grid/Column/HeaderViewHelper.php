@@ -29,7 +29,11 @@ class HeaderViewHelper extends AbstractViewHelper {
 	 * @return boolean
 	 */
 	public function render($name) {
-		return TcaService::grid()->getHeader($name);
+		$dataType = '';
+		if ($this->templateVariableContainer->exists('dataType')) {
+			$dataType = $this->templateVariableContainer->get('dataType');
+		}
+		return TcaService::grid($dataType)->getHeader($name);
 	}
 
 }
