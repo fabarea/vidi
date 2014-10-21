@@ -32,7 +32,7 @@ http://twitter.com/fudriot
 Installation and requirement
 ============================
 
-The extension **requires TYPO3 6.2**. Install the extension as normal in the Extension Manager::
+The extension **requires TYPO3 6.2**. Install the extension as normal in the Extension Manager or download the Git version as follows::
 
 	# local installation
 	cd typo3conf/ext
@@ -40,10 +40,7 @@ The extension **requires TYPO3 6.2**. Install the extension as normal in the Ext
 	# download the source
 	git clone git://git.typo3.org/TYPO3CMS/Extensions/vidi.git
 
-	# alternatively, it can be fetched from the Git mirror.
-	git clone https://github.com/TYPO3-extensions/vidi.git
-
-	# -> open the Extension Manager in the BE
+	-> next step, is to open the Extension Manager in the BE.
 
 
 .. _TER: typo3.org/extensions/repository/
