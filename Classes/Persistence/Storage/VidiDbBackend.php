@@ -610,7 +610,7 @@ class VidiDbBackend {
 					$childTableNameAlias,
 					$parentKeyFieldName
 				);
-				$sql['unions'][$childTableName] = $join;
+				$sql['unions'][$childTableNameAlias] = $join;
 			} else {
 				$join = sprintf(
 					'LEFT JOIN %s AS %s ON (FIND_IN_SET(%s.uid, %s.%s))',
