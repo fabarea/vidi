@@ -85,8 +85,8 @@ class GridService implements TcaServiceInterface {
 		} else {
 
 			// Important to notice the label can contains a path, e.g. metadata.categories and must be resolved.
-			$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
-			$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
+			$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $this->tableName);
+			$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $this->tableName);
 			$table = TcaService::table($dataType);
 
 			if ($table->hasField($fieldName) && $table->field($fieldName)->hasLabel()) {
