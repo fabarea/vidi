@@ -129,7 +129,7 @@ class ContentController extends ActionController {
 
 			// It could be the identifier is not found because the translation
 			// of the record does not yet exist when mass-editing
-			if ((int) $identifier <= 0) {
+			if ((int)$identifier <= 0) {
 				continue;
 			}
 
@@ -403,7 +403,7 @@ class ContentController extends ActionController {
 
 			// Makes sure the object could have been retrieved. Security!
 			if (!$content) {
-				$message = sprintf('Something went wrong when retrieving content "%s" with identifier "%s".',  $dataType,  $identifier);
+				$message = sprintf('Something went wrong when retrieving content "%s" with identifier "%s".', $dataType, $identifier);
 				throw new \Exception($message, 1412343097);
 			}
 
@@ -482,7 +482,7 @@ class ContentController extends ActionController {
 	/**
 	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
 	 */
-	protected function getFieldPathResolver () {
+	protected function getFieldPathResolver() {
 		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
 	}
 
