@@ -127,7 +127,6 @@ class VidiDbBackend {
 		$this->databaseHandle = $GLOBALS['TYPO3_DB'];
 	}
 
-
 	/**
 	 * Lifecycle method
 	 *
@@ -178,7 +177,7 @@ class VidiDbBackend {
 	 * Returns the number of tuples matching the query.
 	 *
 	 * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Exception\BadConstraintException
-	 * @return integer The number of matching tuples
+	 * @return int The number of matching tuples
 	 */
 	public function countResult() {
 
@@ -218,7 +217,7 @@ class VidiDbBackend {
 			}
 		}
 		$this->databaseHandle->sql_free_result($result);
-		return (integer) $count;
+		return (int)$count;
 	}
 
 	/**
@@ -591,7 +590,7 @@ class VidiDbBackend {
 			$sql['unions'][$childTableNameAlias] = $join;
 
 			if ($tableNameCondition) {
-				$additionalJoin = sprintf(' AND %s.tablenames = "%s"',  $relationTableNameAlias, $tableNameCondition);
+				$additionalJoin = sprintf(' AND %s.tablenames = "%s"', $relationTableNameAlias, $tableNameCondition);
 				$sql['unions'][$relationTableNameAlias] .= $additionalJoin;
 
 				$additionalJoin = sprintf(' AND %s.tablenames = "%s"', $relationTableNameAlias, $tableNameCondition);
@@ -930,8 +929,8 @@ class VidiDbBackend {
 	/**
 	 * Transforms limit and offset into SQL
 	 *
-	 * @param integer $limit
-	 * @param integer $offset
+	 * @param int $limit
+	 * @param int $offset
 	 * @param array &$sql
 	 * @return void
 	 */
@@ -1008,7 +1007,7 @@ class VidiDbBackend {
 				$row = $this->databaseHandle->exec_SELECTgetSingleRow(
 					$tableName . '.*',
 					$tableName,
-					$tableName . '.uid=' . (integer) $row[$GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField']] .
+					$tableName . '.uid=' . (int)$row[$GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField']] .
 						' AND ' . $tableName . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['languageField'] . '=0'
 				);
 			}
@@ -1086,7 +1085,6 @@ class VidiDbBackend {
 		return $statement;
 	}
 
-
 	/**
 	 * Returns an instance of the current Backend User.
 	 *
@@ -1123,7 +1121,7 @@ class VidiDbBackend {
 	/**
 	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
 	 */
-	protected function getFieldPathResolver () {
+	protected function getFieldPathResolver() {
 		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
 	}
 

@@ -22,7 +22,7 @@ use TYPO3\CMS\Vidi\Tca\TcaService;
 /**
  * Class for configuring a custom Facet item.
  */
-class FacetSuggestionService  {
+class FacetSuggestionService {
 
 	/**
 	 * @var array
@@ -110,8 +110,8 @@ class FacetSuggestionService  {
 	 *
 	 * @return int
 	 */
-	protected function getLimit(){
-		$suggestionLimit = (int) $this->settings['suggestionLimit'];
+	protected function getLimit() {
+		$suggestionLimit = (int)$this->settings['suggestionLimit'];
 		if ($suggestionLimit <= 0) {
 			$suggestionLimit = 1000;
 		}
@@ -121,7 +121,7 @@ class FacetSuggestionService  {
 	/**
 	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
 	 */
-	protected function getFieldPathResolver () {
+	protected function getFieldPathResolver() {
 		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
 	}
 }

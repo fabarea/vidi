@@ -81,18 +81,9 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 	}
 
 	/**
-	 * Get the Vidi Module Loader.
-	 *
-	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
-	 */
-	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
-	}
-
-	/**
 	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
 	 */
-	protected function getFieldPathResolver () {
+	protected function getFieldPathResolver() {
 		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
 	}
 }

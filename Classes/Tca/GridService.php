@@ -308,7 +308,6 @@ class GridService implements TcaServiceInterface {
 		return $value;
 	}
 
-
 	/**
 	 * Returns whether the column has a renderer.
 	 *
@@ -417,7 +416,7 @@ class GridService implements TcaServiceInterface {
 	 */
 	public function facet($facet = '') {
 
-		if (! $facet instanceof StandardFacet) {
+		if (!$facet instanceof StandardFacet) {
 			$label = TcaService::grid($this->tableName)->getLabel($facet);
 
 			/** @var StandardFacet $facet */
@@ -442,7 +441,8 @@ class GridService implements TcaServiceInterface {
 	/**
 	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
 	 */
-	protected function getFieldPathResolver () {
+	protected function getFieldPathResolver() {
 		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
 	}
+
 }
