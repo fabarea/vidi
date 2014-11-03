@@ -41,6 +41,7 @@ class ContentRepository implements RepositoryInterface {
 
 	/**
 	 * The data type to be returned, e.g fe_users, fe_groups, tt_content, etc...
+	 *
 	 * @var string
 	 */
 	protected $dataType;
@@ -104,7 +105,6 @@ class ContentRepository implements RepositoryInterface {
 
 		return $query->execute();
 	}
-
 
 	/**
 	 * Returns all "distinct" values for a given property.
@@ -252,7 +252,7 @@ class ContentRepository implements RepositoryInterface {
 		if (count($constraints) > 1) {
 			$logical = $matcher->getDefaultLogicalSeparator();
 			$result = $query->$logical($constraints);
-		} elseif(!empty($constraints)) {
+		} elseif (!empty($constraints)) {
 
 			// true means there is one constraint only and should become the result
 			$result = current($constraints);
@@ -310,13 +310,14 @@ class ContentRepository implements RepositoryInterface {
 		$isSuitable = TRUE;
 
 		// TRUE means it is a string
-		if (! MathUtility::canBeInterpretedAsInteger($value)) {
+		if (!MathUtility::canBeInterpretedAsInteger($value)) {
 
 			$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
 			$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
 
 			if (TcaService::table($dataType)->field($fieldName)->isNumerical()
-				&& !TcaService::table($dataType)->field($fieldName)->hasRelation()) {
+				&& !TcaService::table($dataType)->field($fieldName)->hasRelation()
+			) {
 				$isSuitable = FALSE;
 			}
 		}
@@ -345,6 +346,7 @@ class ContentRepository implements RepositoryInterface {
 			foreach ($criteria as $criterion) {
 
 				$fieldNameAndPath = $criterion['fieldNameAndPath'];
+				$operand = $criterion['operand'];
 
 				// Compute a few variables...
 				// $dataType is generally equals to $this->dataType but not always... if fieldName is a path.
@@ -352,24 +354,20 @@ class ContentRepository implements RepositoryInterface {
 				$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $this->dataType);
 				$fieldPath = $this->getFieldPathResolver()->stripFieldName($fieldNameAndPath, $this->dataType);
 
-				// Get the proper table service.
-				$table = TcaService::table($dataType);
-				$operand = $criterion['operand'];
-
-				if ($table->field($fieldName)->hasRelation()) {
+				if (TcaService::table($dataType)->field($fieldName)->hasRelation()) {
 					if (MathUtility::canBeInterpretedAsInteger($operand)) {
 						$fieldNameAndPath = $fieldName . '.uid';
 					} else {
-						$foreignTableName = $table->field($fieldName)->getForeignTable();
+						$foreignTableName = TcaService::table($dataType)->field($fieldName)->getForeignTable();
 						$foreignTable = TcaService::table($foreignTableName);
 						$fieldNameAndPath = $fieldName . '.' . $foreignTable->getLabelField();
 					}
-				}
 
-				// If different means we should restore the prepended path segment for proper SQL parser.
-				// This is TRUE for a composite field, e.g items.sys_file_metadata for categories.
-				if ($fieldName !== $fieldPath) { // this could also be defined with TcaService::table($dataType)->hasField($fieldName)
-					$fieldNameAndPath = $fieldPath . '.' . $fieldNameAndPath;
+					// If different means we should restore the prepended path segment for proper SQL parser.
+					// This is TRUE for a composite field, e.g items.sys_file_metadata for categories.
+					if ($fieldName !== $fieldPath) {
+						$fieldNameAndPath = $fieldPath . '.' . $fieldNameAndPath;
+					}
 				}
 
 				$constraints[] = $query->$operator($fieldNameAndPath, $criterion['operand']);
@@ -423,7 +421,6 @@ class ContentRepository implements RepositoryInterface {
 		return $handlerResult;
 	}
 
-
 	/**
 	 * @return \TYPO3\CMS\Core\DataHandling\DataHandler
 	 */
@@ -433,7 +430,6 @@ class ContentRepository implements RepositoryInterface {
 		}
 		return $this->dataHandler;
 	}
-
 
 	/**
 	 * Update a content with new information.
@@ -727,7 +723,7 @@ class ContentRepository implements RepositoryInterface {
 	/**
 	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
 	 */
-	protected function getFieldPathResolver () {
+	protected function getFieldPathResolver() {
 		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
 	}
 
