@@ -36,8 +36,8 @@ $tca = array(
 			'__buttons' => array(
 				'renderer' => new TYPO3\CMS\Vidi\Grid\ButtonGroupComponent(),
 			),
-		)
-	)
+		),
+	),
 );
 
 \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($GLOBALS['TCA']['tt_content'], $tca);

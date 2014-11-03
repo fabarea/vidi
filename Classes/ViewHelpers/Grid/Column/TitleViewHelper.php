@@ -28,14 +28,8 @@ class TitleViewHelper extends AbstractViewHelper {
 	 * @return string
 	 */
 	public function render() {
-		$dataType = '';
-		if ($this->templateVariableContainer->exists('dataType')) {
-			$dataType = $this->templateVariableContainer->get('dataType');
-		}
-
 		$columnName = $this->templateVariableContainer->get('columnName');
-
-		return TcaService::grid($dataType)->getLabel($columnName);
+		return TcaService::grid()->getLabel($columnName);
 	}
 
 }

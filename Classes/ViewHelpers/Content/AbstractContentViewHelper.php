@@ -50,7 +50,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper {
 	protected function getQuerySignature($dataType, array $matches, array $orderings, $limit, $offset) {
 		$serializedMatches = serialize($matches);
 		$serializedOrderings = serialize($orderings);
-		return md5($dataType . $serializedMatches . $serializedOrderings . $limit .  $offset);
+		return md5($dataType . $serializedMatches . $serializedOrderings . $limit . $offset);
 	}
 
 	/**
@@ -65,7 +65,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper {
 		/** @var $matcher Matcher */
 		$matcher = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher', array(), $dataType);
 
-	    // @todo implement advanced selection parsing {or: {usergroup.title: {like: foo}}, {tstamp: {greaterThan: 1234}}}
+		// @todo implement advanced selection parsing {or: {usergroup.title: {like: foo}}, {tstamp: {greaterThan: 1234}}}
 		foreach ($matches as $fieldNameAndPath => $value) {
 
 			// CSV values should be considered as "in" operator in Query, otherwise "equals".
@@ -219,7 +219,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper {
 	/**
 	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
 	 */
-	protected function getFieldPathResolver () {
+	protected function getFieldPathResolver() {
 		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
 	}
 
