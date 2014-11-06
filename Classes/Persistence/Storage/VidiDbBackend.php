@@ -494,6 +494,10 @@ class VidiDbBackend {
 			$this->parseDynamicOperand($operand->getOperand(), $operator, $source, $sql, $parameters, 'UPPER');
 		} elseif ($operand instanceof PropertyValueInterface) {
 			$propertyName = $operand->getPropertyName();
+
+			// Reset value.
+			$this->currentChildTableNameAlias = '';
+
 			if ($source instanceof SelectorInterface) {
 				$tableName = $this->query->getType();
 				while (strpos($propertyName, '.') !== FALSE) {
@@ -502,6 +506,7 @@ class VidiDbBackend {
 			} elseif ($source instanceof JoinInterface) {
 				$tableName = $source->getJoinCondition()->getSelector1Name();
 			}
+
 			$columnName = $propertyName;
 			$operator = $this->resolveOperator($operator);
 			$constraintSQL = '';
@@ -528,7 +533,6 @@ class VidiDbBackend {
 	 */
 	protected function addUnionStatement(&$tableName, &$propertyPath, array &$sql) {
 
-		$this->currentChildTableNameAlias = ''; // Reset value.
 		$table = TcaService::table($tableName);
 
 		$explodedPropertyPath = explode('.', $propertyPath, 2);
