@@ -156,6 +156,7 @@ class VidiDbBackend {
 
 		$parameters = array();
 		$statementParts = $this->parseQuery($this->query, $parameters);
+		$statementParts = $this->processStatementStructureForRecursiveMMRelation($statementParts); // Mmm... check if that is the right way of doing that.
 
 		$sql = $this->buildQuery($statementParts);
 		$tableName = '';
@@ -183,6 +184,7 @@ class VidiDbBackend {
 
 		$parameters = array();
 		$statementParts = $this->parseQuery($this->query, $parameters);
+		$statementParts = $this->processStatementStructureForRecursiveMMRelation($statementParts); // Mmm... check if that is the right way of doing that.
 		// Reset $statementParts for valid table return
 		reset($statementParts);
 
@@ -250,6 +252,55 @@ class VidiDbBackend {
 		}
 
 		return $statementParts;
+	}
+
+	/**
+	 * Fiddle with the statement structure to handle recursive MM relations.
+	 * For the recursive MM query to work, we must invert some values.
+	 * Let see if that is the best way of doing that...
+	 *
+	 * @param array $statementParts
+	 * @return array
+	 */
+	public function processStatementStructureForRecursiveMMRelation(array $statementParts) {
+
+		if ($this->hasRecursiveMMRelation()) {
+			$tableName = $this->query->getType();
+
+			// In order the MM query to work for a recursive MM query, we must invert some values.
+			// tx_domain_model_foo0 (the alias) <--> tx_domain_model_foo (the origin table name)
+			$values = array();
+			foreach ($statementParts['fields'] as $key => $value) {
+				$values[$key] = str_replace($tableName, $tableName . '0', $value);
+			}
+			$statementParts['fields'] = $values;
+
+			// Same comment as above.
+			$values = array();
+			foreach ($statementParts['where'] as $key => $value) {
+				$values[$key] = str_replace($tableName . '0', $tableName, $value);
+			}
+			$statementParts['where'] = $values;
+
+			// We must be more restrictive by transforming the "left" union by "inner"
+			$values = array();
+			foreach ($statementParts['unions'] as $key => $value) {
+				$values[$key] = str_replace('LEFT JOIN', 'INNER JOIN', $value);
+			}
+			$statementParts['unions'] = $values;
+		}
+
+		return $statementParts;
+	}
+
+	/**
+	 * Tell whether there is a recursive MM relation.
+	 *
+	 * @return bool
+	 */
+	public function hasRecursiveMMRelation() {
+		return isset($this->tableNames['aliasIncrement'][$this->query->getType()]);
+
 	}
 
 	/**
