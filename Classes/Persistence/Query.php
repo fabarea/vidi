@@ -51,6 +51,11 @@ class Query implements QueryInterface {
 	/**
 	 * @var string
 	 */
+	protected $sourceFieldName;
+
+	/**
+	 * @var string
+	 */
 	protected $type;
 
 	/**
@@ -611,4 +616,21 @@ class Query implements QueryInterface {
 	protected function isBackendMode() {
 		return TYPO3_MODE == 'BE';
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getSourceFieldName() {
+		return $this->sourceFieldName;
+	}
+
+	/**
+	 * @param string $sourceFieldName
+	 * @return $this
+	 */
+	public function setSourceFieldName($sourceFieldName) {
+		$this->sourceFieldName = $sourceFieldName;
+		return $this;
+	}
+
 }

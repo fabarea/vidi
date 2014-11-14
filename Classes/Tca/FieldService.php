@@ -222,7 +222,7 @@ class FieldService implements TcaServiceInterface {
 	}
 
 	/**
-	 * Returns the a possible additional table name used in MM relations.
+	 * Returns a possible additional table name used in MM relations.
 	 * If no table name exists, returns NULL.
 	 *
 	 * @return string|NULL
@@ -241,6 +241,31 @@ class FieldService implements TcaServiceInterface {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Returns a possible additional conditions for MM tables such as "tablenames", "fieldname", etc...
+	 *
+	 * @return array
+	 */
+	public function getAdditionalMMCondition() {
+		$additionalMMConditions = array();
+		$configuration = $this->getConfiguration();
+
+		if (!empty($configuration['MM_match_fields'])) {
+			$additionalMMConditions = $configuration['MM_match_fields'];
+		}
+
+		// Add in any case a table name for "group"
+		if ($this->isGroup()) {
+
+			// @todo check if $this->fieldName could be simply used as $result
+			$fieldParts = explode('.', $this->compositeField, 2);
+			$additionalMMConditions = array(
+				'tablenames' => $fieldParts[1],
+			);
+		}
+		return $additionalMMConditions;
 	}
 
 	/**

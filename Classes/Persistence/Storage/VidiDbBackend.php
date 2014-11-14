@@ -567,7 +567,6 @@ class VidiDbBackend {
 
 			$parentKeyFieldName = $table->field($fieldName)->isOppositeRelation() ? 'uid_foreign' : 'uid_local';
 			$childKeyFieldName = !$table->field($fieldName)->isOppositeRelation() ? 'uid_foreign' : 'uid_local';
-			$tableNameCondition = $table->field($fieldName)->getAdditionalTableNameCondition();
 
 			// MM table e.g sys_category_record_mm
 			$relationTableNameAlias = $this->generateAlias($relationTableName);
@@ -593,13 +592,32 @@ class VidiDbBackend {
 			);
 			$sql['unions'][$childTableNameAlias] = $join;
 
+			// Find a possible table name for a MM condition.
+			$tableNameCondition = $table->field($fieldName)->getAdditionalTableNameCondition();
 			if ($tableNameCondition) {
-				$additionalJoin = sprintf(' AND %s.tablenames = "%s"', $relationTableNameAlias, $tableNameCondition);
-				$sql['unions'][$relationTableNameAlias] .= $additionalJoin;
 
-				$additionalJoin = sprintf(' AND %s.tablenames = "%s"', $relationTableNameAlias, $tableNameCondition);
-				$sql['unions'][$childTableNameAlias] .= $additionalJoin;
+				// If we can find a source file name,  we can then retrieve more MM conditions from the TCA such as a field name.
+				$sourceFileName = $this->query->getSourceFieldName();
+				if (empty($sourceFileName)) {
+					$additionalMMConditions = array(
+						'tablenames' => $tableNameCondition,
+					);
+				} else {
+					$additionalMMConditions = TcaService::table($tableNameCondition)->field($sourceFileName)->getAdditionalMMCondition();
+				}
+
+				foreach ($additionalMMConditions as $additionalFieldName => $additionalMMCondition) {
+					$additionalJoin = sprintf(' AND %s.%s = "%s"', $relationTableNameAlias, $additionalFieldName, $additionalMMCondition);
+					$sql['unions'][$relationTableNameAlias] .= $additionalJoin;
+
+					$additionalJoin = sprintf(' AND %s.%s = "%s"', $relationTableNameAlias, $additionalFieldName, $additionalMMCondition);
+					$sql['unions'][$childTableNameAlias] .= $additionalJoin;
+				}
+
 			}
+
+
+
 		} elseif ($table->field($fieldName)->hasMany()) { // includes relations "many-to-one" and "csv" relations
 			$childTableNameAlias = $this->generateAlias($childTableName);
 			$this->currentChildTableNameAlias = $childTableNameAlias;

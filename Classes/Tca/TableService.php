@@ -22,7 +22,7 @@ use TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException;
 /**
  * A class to handle TCA ctrl.
  */
-class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
+class TableService implements TcaServiceInterface {
 
 	/**
 	 * @var array
@@ -38,6 +38,11 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	 * @var string
 	 */
 	protected $tableName;
+
+	/**
+	 * @var array
+	 */
+	protected $instances;
 
 	/**
 	 * @throws InvalidKeyInArrayException
@@ -377,11 +382,6 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 	}
 
 	/**
-	 * @var array
-	 */
-	protected $instances;
-
-	/**
 	 * @param string $fieldName
 	 * @throws \Exception
 	 * @return \TYPO3\CMS\Vidi\Tca\FieldService
@@ -426,4 +426,5 @@ class TableService implements \TYPO3\CMS\Vidi\Tca\TcaServiceInterface {
 		}
 		return $this->instances[$fieldName];
 	}
+
 }

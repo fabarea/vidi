@@ -31,11 +31,11 @@ class ContentRepositoryFactory implements SingletonInterface {
 	 * Returns a class instance of a repository.
 	 * If not data type is given, get the value from the module loader.
 	 *
-	 * @throws \RuntimeException
 	 * @param string $dataType
+	 * @param string $sourceFieldName
 	 * @return \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository
 	 */
-	static public function getInstance($dataType = NULL) {
+	static public function getInstance($dataType = NULL, $sourceFieldName = '') {
 
 		/** @var \TYPO3\CMS\Vidi\Module\ModuleLoader $moduleLoader */
 		if (is_null($dataType)) {
@@ -52,11 +52,13 @@ class ContentRepositoryFactory implements SingletonInterface {
 
 		if (empty(self::$instances[$dataType])) {
 			$className = 'TYPO3\CMS\Vidi\Domain\Repository\ContentRepository';
-
-			/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-			$objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
-			self::$instances[$dataType] = $objectManager->get($className, $dataType);
+			self::$instances[$dataType] = GeneralUtility::makeInstance($className, $dataType, $sourceFieldName);
 		}
-		return self::$instances[$dataType];
+
+		/** @var ContentRepository $contentRepository */
+		$contentRepository = self::$instances[$dataType];
+		$contentRepository->setSourceFieldName($sourceFieldName);
+		return $contentRepository;
 	}
+
 }

@@ -79,7 +79,7 @@ EOF;
 		foreach ($this->invalidFields as $invalidField) {
 			$helperText .= <<<EOF
 				<br />
-				In file EXT:my_ext/Configuration/TCA/{$invalidField}.php
+				In file EXT:my_ext/Configuration/TCA/{$this->getModuleLoader()->getDataType()}.php
 <pre>
 \$tca = array(
 	'columns' => array(
@@ -99,6 +99,7 @@ EOF;
 	),
 );
 
+// Those lines are only in case you need to override an existing TCA, not in your control.
 if (!empty(\$GLOBALS['TCA']['{$invalidField}'])) {
 	return \TYPO3\CMS\Core\Utility\GeneralUtility::array_merge_recursive_overrule(\$GLOBALS['TCA']['{$invalidField}'], \$tca);
 }

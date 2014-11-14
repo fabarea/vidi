@@ -30,9 +30,9 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface {
 	 * @return array
 	 */
 	public function processData() {
-		foreach ($GLOBALS['TCA'] as $tableName => $configuration) {
-			if (empty($configuration['grid']) && TcaService::table($tableName)->hasLabelField()) {
-				$GLOBALS['TCA'][$tableName]['grid'] = $this->getGridTca($tableName);
+		foreach ($GLOBALS['TCA'] as $dataType => $configuration) {
+			if (empty($configuration['grid']) && $this->hasLabelField($dataType)) {
+				$GLOBALS['TCA'][$dataType]['grid'] = $this->getGridTca($dataType);
 			}
 		}
 
@@ -43,8 +43,8 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface {
 	 * @param string $tableName
 	 * @return array
 	 */
-	protected function getGridTca($tableName){
-		$labelField = TcaService::table($tableName)->getLabelField();
+	protected function getGridTca($tableName) {
+		$labelField = $this->getLabelField($tableName);
 
 		$tca = array(
 			'facets' => array(
@@ -80,5 +80,25 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface {
 		);
 
 		return $tca;
+	}
+
+	/**
+	 * Get the label name of table name.
+	 *
+	 * @param string $dataType
+	 * @return bool
+	 */
+	protected function getLabelField($dataType) {
+		return $GLOBALS['TCA'][$dataType]['ctrl']['label'];
+	}
+
+	/**
+	 * Tell whether the table has a label field.
+	 *
+	 * @param string $dataType
+	 * @return bool
+	 */
+	protected function hasLabelField($dataType) {
+		return isset($GLOBALS['TCA'][$dataType]['ctrl']['label']);
 	}
 }

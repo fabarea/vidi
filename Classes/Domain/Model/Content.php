@@ -74,7 +74,7 @@ class Content implements \ArrayAccess {
 		// Get column to be displayed
 		foreach ($fields as $fieldName) {
 			if (array_key_exists($fieldName, $contentData) && !in_array($fieldName, $excludedFields)) {
-				$propertyName = Field::name($fieldName)->of($dataType)->toProperty();
+				$propertyName = Field::name($fieldName)->of($dataType)->toPropertyName();
 				$this->$propertyName = $contentData[$fieldName];
 			}
 		}
@@ -135,7 +135,7 @@ class Content implements \ArrayAccess {
 
 		// Get the foreign repository instance form the factory
 		/** @var \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository $foreignContentRepository */
-		$foreignContentRepository = ContentRepositoryFactory::getInstance($foreignDataType);
+		$foreignContentRepository = ContentRepositoryFactory::getInstance($foreignDataType, $fieldName);
 
 		if (TcaService::table($this->dataType)->field($fieldName)->hasRelationWithCommaSeparatedValues()) {
 
@@ -163,7 +163,7 @@ class Content implements \ArrayAccess {
 			// Date picker (type == group) are special fields because property path must contain the table name
 			// to determine the relation type. Example for sys_category, property path will look like "items.sys_file"
 			$propertyValue = $this->uid;
-			if (TcaService::table($foreignDataType)->field($foreignPropertyName)->isGroup()) {
+			if (TcaService::table($foreignDataType)->field($foreignFieldName)->isGroup()) {
 				$propertyValue = $this->dataType . '.' . $this->uid;
 			}
 

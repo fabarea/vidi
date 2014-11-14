@@ -47,6 +47,14 @@ class ContentRepository implements RepositoryInterface {
 	protected $dataType;
 
 	/**
+	 * The source field is useful in the context of MM relations to know who is the caller
+	 * e.g findByItems which eventually corresponds to a field name.
+	 *
+	 * @var string
+	 */
+	protected $sourceFieldName = '';
+
+	/**
 	 * @var array
 	 */
 	protected $errorMessages = array();
@@ -538,6 +546,7 @@ class ContentRepository implements RepositoryInterface {
 	public function createQuery() {
 		/** @var Query $query */
 		$query = $this->getObjectManager()->get('TYPO3\CMS\Vidi\Persistence\Query', $this->dataType);
+		$query->setSourceFieldName($this->sourceFieldName);
 
 		if ($this->defaultQuerySettings) {
 			$query->setQuerySettings($this->defaultQuerySettings);
@@ -702,6 +711,15 @@ class ContentRepository implements RepositoryInterface {
 	 */
 	public function getErrorMessages() {
 		return $this->errorMessages;
+	}
+
+	/**
+	 * @param string $sourceFieldName
+	 * @return $this
+	 */
+	public function setSourceFieldName($sourceFieldName) {
+		$this->sourceFieldName = $sourceFieldName;
+		return $this;
 	}
 
 	/**

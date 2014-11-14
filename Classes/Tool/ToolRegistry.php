@@ -80,7 +80,7 @@ class ToolRegistry implements SingletonInterface {
 	 * @return bool
 	 */
 	public function hasTools($dataType, $tool) {
-		return in_array($tool, $this->tools[$dataType]) || in_array($tool, $this->tools['*']);
+		return in_array($tool, $this->tools['*']) || in_array($tool, $this->tools[$dataType]);
 	}
 
 	/**
