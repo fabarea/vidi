@@ -41,7 +41,7 @@ class MatcherObjectFactory implements SingletonInterface {
 	 * @param string $dataType
 	 * @return Matcher
 	 */
-	public function getMatcher($matches = array(), $dataType = '') {
+	public function getMatcher(array $matches = array(), $dataType = '') {
 
 		if (empty($dataType)) {
 			$dataType = $this->getModuleLoader()->getDataType();

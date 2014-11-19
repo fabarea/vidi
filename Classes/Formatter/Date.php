@@ -15,6 +15,7 @@ namespace TYPO3\CMS\Vidi\Formatter;
  */
 
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Format a date that will be displayed in the Grid
@@ -30,8 +31,9 @@ class Date implements FormatterInterface, SingletonInterface {
 	public function format($value) {
 		$result = '';
 		if ($value > 0) {
+
 			/** @var $viewHelper \TYPO3\CMS\Fluid\ViewHelpers\Format\DateViewHelper */
-			$viewHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Fluid\ViewHelpers\Format\DateViewHelper');
+			$viewHelper = GeneralUtility::makeInstance('TYPO3\CMS\Fluid\ViewHelpers\Format\DateViewHelper');
 			$result = $viewHelper->render('@' . $value, $GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy']);
 		}
 		return $result;

@@ -31,8 +31,10 @@ class FacetSuggestionService {
 
 	/**
 	 * Constructor
+	 *
+	 * @param array $settings
 	 */
-	public function __construct($settings) {
+	public function __construct(array $settings) {
 		$this->settings = $settings;
 	}
 

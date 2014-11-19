@@ -29,9 +29,11 @@ Vidi.Grid = {
 		 */
 		var config = {
 			'bStateSave': true,
+			// stateSaveCallback - rename me after 10.4 migration
 			'fnStateSave': function(oSettings, oData) {
 				Vidi.Session.set('dataTables', JSON.stringify(oData));
 			},
+			// fnStateLoadCallback - rename me after 10.4 migration
 			'fnStateLoad': function(oSettings) {
 
 				var state = JSON.parse(Vidi.Session.get('dataTables'));

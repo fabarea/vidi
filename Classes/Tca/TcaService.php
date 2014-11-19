@@ -16,7 +16,7 @@ namespace TYPO3\CMS\Vidi\Tca;
 
 /**
  * A class to handle TCA ctrl.
- * @deprecated use simply class Tca
+ * @deprecated use class "Tca" instead will be removed in vidi 0.7 + 2 version.
  */
 class TcaService extends Tca {
 
