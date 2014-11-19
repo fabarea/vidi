@@ -289,8 +289,8 @@ class ContentRepository implements RepositoryInterface {
 			foreach ($fields as $fieldNameAndPath) {
 				if ($this->isSuitableForLike($fieldNameAndPath, $matcher->getSearchTerm())) {
 
-					$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
-					$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
+					$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $this->dataType);
+					$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $this->dataType);
 
 					if (TcaService::table($dataType)->hasField($fieldName) && TcaService::table($dataType)->field($fieldName)->hasRelation()) {
 						$foreignTable = TcaService::table($dataType)->field($fieldName)->getForeignTable();
@@ -320,8 +320,8 @@ class ContentRepository implements RepositoryInterface {
 		// TRUE means it is a string
 		if (!MathUtility::canBeInterpretedAsInteger($value)) {
 
-			$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
-			$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
+			$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $this->dataType);
+			$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $this->dataType);
 
 			if (TcaService::table($dataType)->field($fieldName)->isNumerical()
 				&& !TcaService::table($dataType)->field($fieldName)->hasRelation()

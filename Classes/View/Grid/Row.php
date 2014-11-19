@@ -465,14 +465,7 @@ class Row extends AbstractComponentView {
 
 		// Resolve the identifier in case of "select" or "radio button".
 		$fieldType = TcaService::table($object->getDataType())->field($fieldNameAndPath)->getType();
-		if ($fieldType === TcaService::RADIO || $fieldType === TcaService::SELECT) {
-
-			// Attempt to convert the value into a label for radio and select fields.
-			$label = TcaService::table($object->getDataType())->field($fieldNameAndPath)->getLabelForItem($value);
-			if ($label) {
-				$value = $label;
-			}
-		} elseif ($fieldType !== TcaService::TEXTAREA) {
+		if ($fieldType !== TcaService::TEXTAREA) {
 			$value = htmlspecialchars($value);
 		} elseif ($fieldType === TcaService::TEXTAREA && !$this->isClean($value)) {
 			$value = htmlspecialchars($value); // Avoid bad surprise, converts characters to HTML.

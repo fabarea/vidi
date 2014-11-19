@@ -90,22 +90,32 @@ class Content implements \ArrayAccess {
 	 * @api
 	 */
 	public function __call($methodName, $arguments) {
-		$result = NULL;
+		$value = NULL;
 		if (substr($methodName, 0, 3) === 'get' && strlen($methodName) > 4) {
 			$propertyName = strtolower(substr(substr($methodName, 3), 0, 1)) . substr(substr($methodName, 3), 1);
 
-			$result = $this->$propertyName;
+			$fieldName = Property::name($propertyName)->of($this)->toFieldName();
+			$field = TcaService::table($this->dataType)->field($fieldName);
+
+			$value = $this->$propertyName;
 
 			// TRUE means it is a relation and it is not yet resolved.
 			if ($this->hasRelation($propertyName) && is_scalar($this->$propertyName)) {
-				$result = $this->resolveRelation($propertyName);
+				$value = $this->resolveRelation($propertyName);
+			} elseif ($field->getType() === TcaService::RADIO || $field->getType() === TcaService::SELECT) {
+
+				// Attempt to convert the value into a label for radio and select fields.
+				$label = TcaService::table($this->getDataType())->field($fieldName)->getLabelForItem($value);
+				if ($label) {
+					$value = $label;
+				}
 			}
 
 		} elseif (substr($methodName, 0, 3) === 'set' && strlen($methodName) > 4 && isset($arguments[0])) {
 			$propertyName = strtolower(substr(substr($methodName, 3), 0, 1)) . substr(substr($methodName, 3), 1);
 			$this->$propertyName = $arguments[0];
 		}
-		return $result;
+		return $value;
 	}
 
 	/**
@@ -291,15 +301,7 @@ class Content implements \ArrayAccess {
 			$fieldName = Property::name($propertyName)->of($this)->toFieldName();
 
 			$field = TcaService::table($this->dataType)->field($fieldName);
-			$fieldType = $field->getType();
-			if ($fieldType === TcaService::RADIO || $fieldType === TcaService::SELECT) {
-
-				// Attempt to convert the value into a label for radio and select fields.
-				$label = TcaService::table($this->getDataType())->field($fieldName)->getLabelForItem($value);
-				if ($label) {
-					$value = $label;
-				}
-			} elseif ($fieldType === TcaService::FILE) {
+			if ($field->getType() === TcaService::FILE) {
 
 				if ($field->hasMany()) {
 					$files = FileReferenceService::getInstance()->findReferencedBy($propertyName, $this);
