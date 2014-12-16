@@ -17,7 +17,6 @@ Vidi.Export = {
 	exportSelectedRows: function(format) {
 
 		// Create Uri object which will receive the parameters.
-		var baseUrl = window.location.protocol + '//' + window.location.hostname + '/typo3/';
 		var uri = new Uri(Vidi.Grid.getStoredUrl());
 
 		// Add parameters to the Uri object.
@@ -26,8 +25,8 @@ Vidi.Export = {
 		uri.addQueryParam(Vidi.module.parameterPrefix + '[format]', format);
 		uri.addQueryParam(Vidi.module.parameterPrefix + '[matches][uid]', Vidi.Grid.getSelectedIdentifiers().join(','));
 
-		var url = baseUrl + uri.toString();
-		window.open(url);
+		// Open url
+		this.open(uri);
 	},
 
 	/**
@@ -39,7 +38,6 @@ Vidi.Export = {
 	exportSelection: function(format) {
 
 		// Create Uri object which will receive the parameters.
-		var baseUrl = window.location.protocol + '//' + window.location.hostname + '/typo3/';
 		var uri = new Uri(Vidi.Grid.getStoredUrl());
 
 		// Feed the Uri with parameter
@@ -55,7 +53,20 @@ Vidi.Export = {
 
 			uri.addQueryParam(parameter.name, parameter.value);
 		}
-		var url = baseUrl + uri.toString();
+
+		// Open url
+		this.open(uri);
+	},
+
+	/**
+	 * Opens Uri
+	 *
+	 * @param {Uri} uri
+	 * @return void
+	 */
+	open: function(uri) {
+		var baseUrl = window.location.protocol + '//' + window.location.hostname + '/typo3/';
+		var url = baseUrl + uri.toString().replace('.php/?', '.php?');
 		window.open(url);
 	}
 };
