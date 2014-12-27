@@ -407,8 +407,12 @@ class TableService implements TcaServiceInterface {
 		if (empty($this->columnTca[$fieldName]) && in_array($fieldName, TcaService::getSystemFields())) {
 			$this->columnTca[$fieldName] = array();
 		} elseif (empty($this->columnTca[$fieldName])) {
-
-			throw new \Exception(sprintf('Does the field really exist? No TCA entry found for field "%s"', $fieldName), 1385554481);
+			$message = sprintf(
+				'Does the field really exist? No TCA entry found for field "%s" for table "%s"',
+				$fieldName,
+				$this->tableName
+			);
+			throw new \Exception($message, 1385554481);
 		}
 
 
