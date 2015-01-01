@@ -334,6 +334,16 @@ class FieldService implements TcaServiceInterface {
 	}
 
 	/**
+	 * Return the default value.
+	 *
+	 * @return bool
+	 */
+	public function getDefaultValue() {
+		$configuration = $this->getConfiguration();
+		return isset($configuration['default']) ? $configuration['default'] : NULL;
+	}
+
+	/**
 	 * Get the translation of a label given a column.
 	 *
 	 * @return string
