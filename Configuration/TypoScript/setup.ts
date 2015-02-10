@@ -6,9 +6,15 @@ plugin.tx_vidi {
 		suggestionLimit = 1000
 	}
 	view {
-		templateRootPath = {$plugin.tx_vidi.view.templateRootPath}
-		partialRootPath = {$plugin.tx_vidi.view.partialRootPath}
-		layoutRootPath = {$plugin.tx_vidi.view.layoutRootPath}
+		templateRootPaths {
+			10 = {$plugin.tx_vidi.view.templateRootPath}
+		}
+		partialRootPaths {
+			10 = {$plugin.tx_vidi.view.partialRootPath}
+		}
+		layoutRootPaths {
+			10 = {$plugin.tx_vidi.view.layoutRootPath}
+		}
 		defaultPid = auto
 	}
 }
@@ -18,9 +24,15 @@ module.tx_vidi {
 	settings < plugin.tx_vidi.settings
 	view < plugin.tx_vidi.view
 	view {
-		templateRootPath = {$module.tx_vidi.view.templateRootPath}
-		partialRootPath = {$module.tx_vidi.view.partialRootPath}
-		layoutRootPath = {$module.tx_vidi.view.layoutRootPath}
+		templateRootPaths {
+			10 = {$module.tx_vidi.view.templateRootPath}
+		}
+		partialRootPaths {
+			10 = {$module.tx_vidi.view.partialRootPath}
+		}
+		layoutRootPaths {
+			10 = {$module.tx_vidi.view.layoutRootPath}
+		}
 	}
 }
 

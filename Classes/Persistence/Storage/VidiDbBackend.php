@@ -1030,9 +1030,7 @@ class VidiDbBackend {
 				// Ensure the backend handling is not broken (fallback to Get parameter 'L' if needed)
 				$overlaidRow = $this->doLanguageAndWorkspaceOverlay($this->query->getSource(), $row, $this->query->getQuerySettings());
 
-				if (!$this->query->getQuerySettings()->getReturnRawQueryResult()) {
-					$overlaidRow = GeneralUtility::makeInstance($this->objectType, $this->query->getType(), $overlaidRow);
-				}
+				$overlaidRow = GeneralUtility::makeInstance($this->objectType, $this->query->getType(), $overlaidRow);
 
 				$rows[] = $overlaidRow;
 			}
