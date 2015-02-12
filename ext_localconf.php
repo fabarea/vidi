@@ -3,6 +3,17 @@ if (!defined('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['setup'] = unserialize($_EXTCONF);
+
+if (FALSE === isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['setup']['autoload_typoscript']) || TRUE === (boolean) $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['setup']['autoload_typoscript']) {
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript($_EXTKEY, 'constants',
+		'<INCLUDE_TYPOSCRIPT: source="FILE:EXT:vidi/Configuration/TypoScript/constants.txt">'
+	);
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript($_EXTKEY, 'setup',
+		'<INCLUDE_TYPOSCRIPT: source="FILE:EXT:vidi/Configuration/TypoScript/setup.txt">'
+	);
+}
+
 // Configure commands that can be run from the cli_dispatch.phpsh script.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = 'TYPO3\CMS\Vidi\Command\VidiCommandController';
 

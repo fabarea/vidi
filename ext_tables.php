@@ -4,6 +4,16 @@ if (!defined('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
+/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+/** @var \TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility $configurationUtility */
+$configurationUtility = $objectManager->get('TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility');
+$configuration = $configurationUtility->getCurrentConfiguration('vidi');
+
+if (TRUE === isset($configuration['autoload_typoscript']['value']) && FALSE === (boolean) $configuration['autoload_typoscript']['value']) {
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Vidi: versatile and interactive display');
+}
+
 // Check from Vidi configuration what default module should be loaded.
 // Make sure the class exists to avoid a Runtime Error
 if (TYPO3_MODE == 'BE') {
