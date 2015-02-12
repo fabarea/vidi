@@ -3,9 +3,14 @@
 if (!defined('TYPO3_MODE')) {
 	die ('Access denied.');
 }
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['setup'] = unserialize($_EXTCONF);
 
-if (TRUE === isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['setup']['autoload']) && FALSE === (boolean) $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['setup']['autoload']) {
+/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+/** @var \TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility $configurationUtility */
+$configurationUtility = $objectManager->get('TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility');
+$configuration = $configurationUtility->getCurrentConfiguration('vidi');
+
+if (TRUE === isset($configuration['autoload_typoscript']['value']) && FALSE === (boolean) $configuration['autoload_typoscript']['value']) {
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Vidi: versatile and interactive display');
 }
 

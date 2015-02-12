@@ -5,7 +5,7 @@ if (!defined('TYPO3_MODE')) {
 
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['setup'] = unserialize($_EXTCONF);
 
-if (FALSE === isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['setup']['autoload']) || TRUE === (boolean) $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['setup']['autoload']) {
+if (FALSE === isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['setup']['autoload_typoscript']) || TRUE === (boolean) $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['setup']['autoload_typoscript']) {
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript($_EXTKEY, 'constants',
 		'<INCLUDE_TYPOSCRIPT: source="FILE:EXT:vidi/Configuration/TypoScript/constants.txt">'
 	);
