@@ -1,0 +1,10 @@
+module.tx_vidi {
+	view {
+		# cat=module.tx_vidi/file; type=string; label=Path to template root (BE)
+		templateRootPath = EXT:vidi/Resources/Private/Backend/Templates/
+		# cat=module.tx_vidi/file; type=string; label=Path to template partials (BE)
+		partialRootPath = EXT:vidi/Resources/Private/Backend/Partials/
+		# cat=module.tx_vidi/file; type=string; label=Path to template layouts (BE)
+		layoutRootPath = EXT:vidi/Resources/Private/Backend/Layouts/
+	}
+}

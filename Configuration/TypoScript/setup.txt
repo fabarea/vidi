@@ -5,18 +5,6 @@ plugin.tx_vidi {
 		# Limit the number of records for auto-suggestion in the search bar.
 		suggestionLimit = 1000
 	}
-	view {
-		templateRootPaths {
-			10 = {$plugin.tx_vidi.view.templateRootPath}
-		}
-		partialRootPaths {
-			10 = {$plugin.tx_vidi.view.partialRootPath}
-		}
-		layoutRootPaths {
-			10 = {$plugin.tx_vidi.view.layoutRootPath}
-		}
-		defaultPid = auto
-	}
 }
 
 # Module configuration

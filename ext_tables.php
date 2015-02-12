@@ -24,7 +24,8 @@ if (TYPO3_MODE == 'BE') {
 
 	/** @var \TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility $configurationUtility */
 	$configurationUtility = $objectManager->get('TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility');
-	$configuration = $configurationUtility->getCurrentConfiguration($_EXTKEY);
+	$configuration = $configurationUtility->getCurrentConfiguration('vidi');
+
 
 	// Loop around the data types and register them to be displayed within a BE module.
 	if ($configuration['data_types']['value']) {
@@ -42,6 +43,11 @@ if (TYPO3_MODE == 'BE') {
 				->setDefaultPid($configuration['default_pid']['value'])
 				->register();
 		}
+	}
+
+	// Possible Static TS loading
+	if (TRUE === isset($configuration['autoload_typoscript']['value']) && FALSE === (bool)$configuration['autoload_typoscript']['value']) {
+		\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Vidi: versatile and interactive display');
 	}
 
 	// Register List2 only if beta feature is enabled.

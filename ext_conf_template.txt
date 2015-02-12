@@ -9,3 +9,6 @@ data_types = fe_users,fe_groups
 
 # cat=basic//; type=string; label= Default pid: Set a default pid for all data types. The value can be overridden for a custom data type by User TSconfig. Refer to the documentation.
 default_pid = 1
+
+# cat=basic//; type=boolean; label=Autoload TypoScript: If enabled, Vidi will automatically load the TypoScript setup that is required. When un-checking make sure to include / load the TypoScript on your own as a Static TypoScript .
+autoload_typoscript = 1
