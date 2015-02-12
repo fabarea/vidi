@@ -3,6 +3,11 @@
 if (!defined('TYPO3_MODE')) {
 	die ('Access denied.');
 }
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['setup'] = unserialize($_EXTCONF);
+
+if (TRUE === isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['setup']['autoload']) && FALSE === (boolean) $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['setup']['autoload']) {
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Vidi: versatile and interactive display');
+}
 
 // Check from Vidi configuration what default module should be loaded.
 // Make sure the class exists to avoid a Runtime Error
