@@ -112,8 +112,10 @@
 		/**
 		 * Initialize Grid
 		 */
-		Vidi.grid = $('#content-list').dataTable(Vidi.Grid.getOptions());
-
+		Vidi.grid = $('#content-list').dataTable(Vidi.Grid.getOptions()).rowReordering({
+			sURL: Vidi.module.moduleUrl+'&'+Vidi.module.parameterPrefix+'[format]=json'+'&'+Vidi.module.parameterPrefix+'[controller]=Content'+'&'+Vidi.module.parameterPrefix+'[action]=sort',
+			sRequestType: 'GET'
+		});
 		// Add place holder for the search
 		$('.dataTables_filter input').attr('placeholder', Vidi.translate('search'));
 
