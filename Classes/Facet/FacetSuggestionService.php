@@ -78,10 +78,10 @@ class FacetSuggestionService {
 
 				// Fetch the adequate repository
 				/** @var \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository $contentRepository */
-				$contentRepository = ContentRepositoryFactory::getInstance();
+				$contentRepository = ContentRepositoryFactory::getInstance($dataType);
 
 				// Initialize some objects related to the query
-				$matcher = MatcherObjectFactory::getInstance()->getMatcher();
+				$matcher = MatcherObjectFactory::getInstance()->getMatcher(array(), $dataType);
 
 				// Count the number of objects.
 				$numberOfValues = $contentRepository->countDistinctValues($fieldName, $matcher);
