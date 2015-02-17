@@ -26,6 +26,7 @@ use TYPO3\CMS\Vidi\Persistence\Matcher;
 use TYPO3\CMS\Vidi\Persistence\Order;
 use TYPO3\CMS\Vidi\Persistence\Query;
 use TYPO3\CMS\Vidi\Tca\TcaService;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 
 /**
  * Repository for accessing Content
@@ -236,36 +237,40 @@ class ContentRepository implements RepositoryInterface {
 	 *
 	 * @param Query $query
 	 * @param Matcher $matcher
-	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface|NULL
+	 * @return ConstraintInterface|NULL
 	 */
 	protected function computeConstraints(Query $query, Matcher $matcher) {
 
-		$result = NULL;
+		$constraints = NULL;
 
-		$constraints = array();
+		$collectedConstraints = array();
 
 		// Search term
 		$constraint = $this->computeSearchTermConstraint($query, $matcher);
 		if ($constraint) {
-			$constraints[] = $constraint;
+			$collectedConstraints[] = $constraint;
 		}
 
 		foreach ($matcher->getSupportedOperators() as $operator) {
 			$constraint = $this->computeConstraint($query, $matcher, $operator);
 			if ($constraint) {
-				$constraints[] = $constraint;
+				$collectedConstraints[] = $constraint;
 			}
 		}
 
-		if (count($constraints) > 1) {
+		if (count($collectedConstraints) > 1) {
 			$logical = $matcher->getDefaultLogicalSeparator();
-			$result = $query->$logical($constraints);
-		} elseif (!empty($constraints)) {
+			$constraints = $query->$logical($collectedConstraints);
+		} elseif (!empty($collectedConstraints)) {
 
 			// true means there is one constraint only and should become the result
-			$result = current($constraints);
+			$constraints = current($collectedConstraints);
 		}
-		return $result;
+
+		// Trigger signal for post processing the computed constraints object.
+		$this->emitPostProcessConstraintsSignal($query, $constraints);
+
+		return $constraints;
 	}
 
 	/**
@@ -273,7 +278,7 @@ class ContentRepository implements RepositoryInterface {
 	 *
 	 * @param Query $query
 	 * @param Matcher $matcher
-	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface|NULL
+	 * @return ConstraintInterface|NULL
 	 */
 	protected function computeSearchTermConstraint(Query $query, Matcher $matcher) {
 
@@ -339,7 +344,7 @@ class ContentRepository implements RepositoryInterface {
 	 * @param Query $query
 	 * @param Matcher $matcher
 	 * @param string $operator
-	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface|NULL
+	 * @return ConstraintInterface|NULL
 	 */
 	protected function computeConstraint(Query $query, Matcher $matcher, $operator) {
 		$result = NULL;
@@ -764,6 +769,32 @@ class ContentRepository implements RepositoryInterface {
 	 */
 	protected function getLanguageValidator() {
 		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Domain\Validator\LanguageValidator');
+	}
+
+	/**
+	 * Signal that is called for post-processing the computed constraints object.
+	 *
+	 * @param Query $query
+	 * @param ConstraintInterface|NULL $constraints
+	 * @signal
+	 */
+	protected function emitPostProcessConstraintsSignal(Query $query, $constraints) {
+		$this->getSignalSlotDispatcher()->dispatch(
+			'TYPO3\CMS\Vidi\Domain\Repository\ContentRepository',
+			'postProcessConstraintsObject',
+			array(
+				$query,
+				$constraints,
+				$this->dataType
+			)
+		);
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+	 */
+	protected function getSignalSlotDispatcher() {
+		return $this->getObjectManager()->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
 	}
 
 }
