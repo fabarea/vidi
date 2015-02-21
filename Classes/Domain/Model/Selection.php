@@ -21,10 +21,14 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 class Selection extends AbstractEntity {
 
+	const VISIBILITY_EVERYONE = 0;
+	const VISIBILITY_PRIVATE = 1;
+	const VISIBILITY_ADMIN_ONLY = 2;
+
 	/**
 	 * @var int
 	 */
-	protected $type;
+	protected $visibility;
 
 	/**
 	 * @var string
@@ -90,19 +94,19 @@ class Selection extends AbstractEntity {
 	}
 
 	/**
-	 * @param int $type
+	 * @param int $visibility
 	 * @return $this
 	 */
-	public function setType($type) {
-		$this->type = $type;
+	public function setVisibility($visibility) {
+		$this->visibility = $visibility;
 		return $this;
 	}
 
 	/**
 	 * @return int
 	 */
-	public function getType() {
-		return $this->type;
+	public function getVisibility() {
+		return $this->visibility;
 	}
 
 }

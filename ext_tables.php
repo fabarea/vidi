@@ -24,8 +24,7 @@ if (TYPO3_MODE == 'BE') {
 
 	/** @var \TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility $configurationUtility */
 	$configurationUtility = $objectManager->get('TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility');
-	$configuration = $configurationUtility->getCurrentConfiguration('vidi');
-
+	$configuration = $configurationUtility->getCurrentConfiguration($_EXTKEY);
 
 	// Loop around the data types and register them to be displayed within a BE module.
 	if ($configuration['data_types']['value']) {
@@ -45,11 +44,6 @@ if (TYPO3_MODE == 'BE') {
 		}
 	}
 
-	// Possible Static TS loading
-	if (TRUE === isset($configuration['autoload_typoscript']['value']) && FALSE === (bool)$configuration['autoload_typoscript']['value']) {
-		\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Vidi: versatile and interactive display');
-	}
-
 	// Register List2 only if beta feature is enabled.
 	if ($configuration['activate_beta_features']['value']) {
 		$labelFile = 'LLL:EXT:vidi/Resources/Private/Language/locallang_module.xlf';
@@ -65,7 +59,8 @@ if (TYPO3_MODE == 'BE') {
 			array(
 				'Content' => 'index, list, delete, update, edit, copy, move, localize',
 				'Tool' => 'welcome, work',
-				'FacetValue' => 'list',
+				'Facet' => 'suggest',
+				'Selection' => 'edit, create, update',
 			), array(
 				'access' => 'user,group',
 				'icon' => 'EXT:vidi/Resources/Public/Images/list.png',

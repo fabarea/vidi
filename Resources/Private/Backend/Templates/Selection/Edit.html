@@ -1,0 +1,54 @@
+<div class="modal-selection-wrapper">
+	<div class="row">
+		<div class="span2 modal-selection-column-1">
+			<strong>
+				<f:translate key="visibility"/>
+			</strong>
+		</div>
+		<div class="span5 modal-selection-column-2">
+			<strong>
+				<f:translate key="selection_name"/>
+			</strong>
+		</div>
+	</div>
+
+	<f:for each="{selections}" as="selection">
+		<div class="row">
+			<f:form action="update" name="selection" object="{selection}" controller="Selection" method="post" class="form-horizontal">
+				<div class="span2 modal-selection-column-1">
+					<f:form.select property="visibility" options="{v:selection.visibilityOptions()}" />
+				</div>
+				<div class="span5 modal-selection-column-2">
+					<f:form.textfield property="name"/>
+					<a href="#">
+						<v:sprite name="actions-document-save"/></a>
+					<a href="#">
+						<v:sprite name="actions-edit-delete"/></a>
+				</div>
+			</f:form>
+		</div>
+	</f:for>
+
+	<br/>
+
+	<div class="row">
+		<f:form action="create" controller="Selection" id="form-selection-create" name="selection"  method="post" class="form-horizontal">
+			<f:form.hidden property="matches" class="field-matches"/>
+			<div class="span2 modal-selection-column-1">
+				<f:form.select options="{v:selection.visibilityOptions()}" property="visibility"/>
+			</div>
+			<div class="span5 modal-selection-column-2">
+				<f:form.textfield value="{selection.name}"
+				                  property="name"
+				                  placeholder="{f:translate(key: 'enter_name_for_selection')}"/>
+				<a href="#" onclick="$(this).closest('form').submit()">
+					<v:sprite name="actions-document-new"/></a>
+			</div>
+		</f:form>
+	</div>
+</div>
+
+<div class="modal-selection-waiting" style="display: none">
+	<img src="{v:publicPath()}Resources/Public/Images/loading.gif" width="40" height="" alt="" />
+</div>
+{namespace v=TYPO3\CMS\Vidi\ViewHelpers}

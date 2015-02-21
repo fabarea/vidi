@@ -8,7 +8,7 @@ return array(
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
 		'cruser_id' => 'cruser_id',
-		'dividers2tabs' => TRUE,
+		'hideTable' => TRUE,
 		'delete' => 'deleted',
 		'enablecolumns' => array(
 			'disabled' => 'hidden',
@@ -33,14 +33,15 @@ return array(
 				'type' => 'check',
 			),
 		),
-		'type' => array(
+		'visibility' => array(
 			'exclude' => 0,
-			'label' => 'LLL:EXT:vidi/Resources/Private/Language/tx_vidi_domain_model_selection.xlf:type',
+			'label' => 'LLL:EXT:vidi/Resources/Private/Language/tx_vidi_domain_model_selection.xlf:visibility',
 			'config' => array(
 				'type' => 'select',
 				'items' => array(
-					array('LLL:EXT:vidi/Resources/Private/Language/tx_vidi_domain_model_selection.xlf:type.public', 1),
-					array('LLL:EXT:vidi/Resources/Private/Language/tx_vidi_domain_model_selection.xlf:type.private', 2),
+					array('LLL:EXT:vidi/Resources/Private/Language/tx_vidi_domain_model_selection.xlf:visibility.everyone', 0),
+					array('LLL:EXT:vidi/Resources/Private/Language/tx_vidi_domain_model_selection.xlf:visibility.private', 1),
+					array('LLL:EXT:vidi/Resources/Private/Language/tx_vidi_domain_model_selection.xlf:visibility.admin_only', 2),
 				),
 				'size' => 1,
 				'maxitems' => 1,

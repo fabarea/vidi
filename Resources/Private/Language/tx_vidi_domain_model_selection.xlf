@@ -6,14 +6,17 @@
 			<trans-unit id="selection">
 				<source>Selection</source>
 			</trans-unit>
-			<trans-unit id="type">
-				<source>Type</source>
+			<trans-unit id="visibility">
+				<source>Visibility</source>
 			</trans-unit>
-			<trans-unit id="type.public">
-				<source>Public</source>
+			<trans-unit id="visibility.everyone">
+				<source>Everyone</source>
 			</trans-unit>
-			<trans-unit id="type.private">
+			<trans-unit id="visibility.private">
 				<source>Private</source>
+			</trans-unit>
+			<trans-unit id="visibility.admin_only">
+				<source>Admin only</source>
 			</trans-unit>
 			<trans-unit id="name">
 				<source>Name</source>

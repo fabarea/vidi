@@ -40,6 +40,12 @@ class ContentController extends ActionController {
 	protected $pageRenderer;
 
 	/**
+	 * @var \TYPO3\CMS\Vidi\Domain\Repository\SelectionRepository
+	 * @inject
+	 */
+	protected $selectionRepository;
+
+	/**
 	 * Initialize every action.
 	 */
 	public function initializeAction() {
@@ -52,6 +58,9 @@ class ContentController extends ActionController {
 	 * @return void
 	 */
 	public function indexAction() {
+		$dataType = $this->getModuleLoader()->getDataType();
+		$selections = $this->selectionRepository->findByDataTypeForCurrentBackendUser($dataType);
+		$this->view->assign('selections', $selections);
 		$this->view->assign('columns', TcaService::grid()->getFields());
 	}
 
@@ -377,6 +386,8 @@ class ContentController extends ActionController {
 	 * @param array $matches
 	 * @param int $language
 	 * @return string
+	 * @throws \Exception
+	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
 	 */
 	public function localizeAction($fieldNameAndPath, array $matches = array(), $language = 0) {
 
@@ -447,20 +458,6 @@ class ContentController extends ActionController {
 		// Set the result and render the JSON view.
 		$this->getJsonView()->setResult($result);
 		return $this->getJsonView()->render();
-	}
-
-	/**
-	 * Render an edit URI given an object.
-	 *
-	 * @param Content $object
-	 * @return string
-	 */
-	protected function getEditUri(Content $object) {
-		return sprintf('alt_doc.php?returnUrl=%s&edit[%s][%s]=edit',
-			rawurlencode($this->getModuleLoader()->getModuleUrl()),
-			rawurlencode($object->getDataType()),
-			$object->getUid()
-		);
 	}
 
 	/**
@@ -550,4 +547,14 @@ class ContentController extends ActionController {
 	protected function getLanguageService() {
 		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Language\LanguageService');
 	}
+
+	/**
+	 * Get the Vidi Module Loader.
+	 *
+	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 */
+	protected function getModuleLoader() {
+		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
+	}
+
 }

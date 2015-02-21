@@ -79,6 +79,9 @@
 			<trans-unit id="crdate">
 				<source>Creation date</source>
 			</trans-unit>
+			<trans-unit id="visibility">
+				<source>Visibility</source>
+			</trans-unit>
 			<trans-unit id="visibility_abbreviation">
 				<source>Vis.</source>
 			</trans-unit>
@@ -138,6 +141,15 @@
 			</trans-unit>
 			<trans-unit id="create_translation">
 				<source>Create new translation</source>
+			</trans-unit>
+			<trans-unit id="manage_selections">
+				<source>Manage Selections</source>
+			</trans-unit>
+			<trans-unit id="enter_name_for_selection">
+				<source>Enter the name for the current selection...</source>
+			</trans-unit>
+			<trans-unit id="selection_name">
+				<source>Selection name</source>
 			</trans-unit>
 		</body>
 	</file>

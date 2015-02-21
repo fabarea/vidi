@@ -169,6 +169,7 @@ Vidi.Grid = {
 			],
 			'fnInitComplete': function() {
 				Vidi.VisualSearch.initialize();
+				Vidi.Selection.initialize();
 
 				var query = Vidi.Session.get('visualSearch.query');
 				Vidi.VisualSearch.instance.searchBox.setQuery(query);

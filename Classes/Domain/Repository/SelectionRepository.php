@@ -14,11 +14,69 @@ namespace TYPO3\CMS\Vidi\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
+use TYPO3\CMS\Vidi\Domain\Model\Selection;
 
 /**
  * Repository for accessing Selections
  */
 class SelectionRepository extends Repository {
+
+	/**
+	 * Initialize Repository
+	 */
+	public function initializeObject() {
+		$querySettings = $this->objectManager->get('TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings');
+		$querySettings->setRespectStoragePage(FALSE);
+		$this->setDefaultQuerySettings($querySettings);
+	}
+
+	/**
+	 * @param string $dataType
+	 * @return QueryResult
+	 */
+	public function findByDataTypeForCurrentBackendUser($dataType) {
+		$query = $this->createQuery();
+
+		// Compute the OR part
+		if ($this->getBackendUser()->isAdmin()) {
+			$logicalOr = $query->logicalOr(
+				$query->equals('visibility', Selection::VISIBILITY_EVERYONE),
+				$query->equals('visibility', Selection::VISIBILITY_ADMIN_ONLY),
+				$query->equals('cruser_id', $this->getBackendUser()->user['uid'])
+			);
+		} else {
+			$logicalOr = $query->logicalOr(
+				$query->equals('visibility', Selection::VISIBILITY_EVERYONE),
+				$query->equals('cruser_id', $this->getBackendUser()->user['uid'])
+			);
+		}
+
+		// Add matching criteria
+		$query->matching(
+			$query->logicalAnd(
+				$query->equals('dataType', $dataType),
+				$logicalOr
+			)
+		);
+
+		// Set ordering
+		$query->setOrderings(
+			array('name' => QueryInterface::ORDER_ASCENDING)
+		);
+
+		return $query->execute();
+	}
+
+	/**
+	 * Returns an instance of the current Backend User.
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
 
 }

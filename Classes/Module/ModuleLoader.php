@@ -205,6 +205,7 @@ class ModuleLoader {
 					'Content' => 'index, list, delete, update, edit, copy, move, localize',
 					'Tool' => 'welcome, work',
 					'Facet' => 'suggest',
+					'Selection' => 'edit, create, update',
 				),
 				$moduleConfiguration
 
