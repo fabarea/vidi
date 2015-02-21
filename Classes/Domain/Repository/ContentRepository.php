@@ -26,6 +26,7 @@ use TYPO3\CMS\Vidi\Persistence\Matcher;
 use TYPO3\CMS\Vidi\Persistence\Order;
 use TYPO3\CMS\Vidi\Persistence\Query;
 use TYPO3\CMS\Vidi\Tca\TcaService;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 
 /**
  * Repository for accessing Content
@@ -265,6 +266,10 @@ class ContentRepository implements RepositoryInterface {
 			// true means there is one constraint only and should become the result
 			$result = current($constraints);
 		}
+
+		// Trigger signal for post processing the computed constraints object.
+		$this->emitPostProcessComputedConstraintsSignal($query, $result);
+
 		return $result;
 	}
 
@@ -764,6 +769,32 @@ class ContentRepository implements RepositoryInterface {
 	 */
 	protected function getLanguageValidator() {
 		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Domain\Validator\LanguageValidator');
+	}
+
+	/**
+	 * Signal that is called for post-processing the computed constraints object.
+	 *
+	 * @param Query $query
+	 * @param ConstraintInterface|NULL $constraints
+	 * @signal
+	 */
+	protected function emitPostProcessComputedConstraintsSignal(Query &$query, &$constraints) {
+		$this->getSignalSlotDispatcher()->dispatch(
+			'TYPO3\CMS\Vidi\Domain\Repository\ContentRepository',
+			'postProcessComputedConstraintsObject',
+			array(
+				&$query,
+				&$constraints,
+				$this->dataType
+			)
+		);
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+	 */
+	protected function getSignalSlotDispatcher() {
+		return $this->getObjectManager()->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
 	}
 
 }
