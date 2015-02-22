@@ -14,34 +14,25 @@ $EM_CONF[$_EXTKEY] = array (
   'category' => 'module',
   'author' => 'Fabien Udriot',
   'author_email' => 'fabien.udriot@typo3.org',
-  'shy' => '',
-  'priority' => '',
   'module' => '',
   'state' => 'beta',
-  'internal' => '',
   'uploadfolder' => '0',
-  'createDirs' => '',
   'modify_tables' => '',
   'clearCacheOnLoad' => 0,
-  'lockType' => '',
-  'version' => '0.8.0-dev',
-  'constraints' => 
+  'version' => '0.8.0',
+  'constraints' =>
   array (
-    'depends' => 
+    'depends' =>
     array (
       'cms' => '',
       'fluid' => '',
       'typo3' => '6.2.0-6.2.99',
     ),
-    'conflicts' => 
+    'conflicts' =>
     array (
     ),
-    'suggests' => 
+    'suggests' =>
     array (
     ),
-  ),
-  'user' => 'fab1en',
-  'comment' => 'Change log http://forge.typo3.org/versions/2962, bug fixes and improvements related to MM relations',
+  )
 );
-
-?>
