@@ -12,39 +12,26 @@ Veni, vidi, vici!
 Project info and releases
 -------------------------
 
-Stable version (not yet released):
-http://typo3.org/extensions/repository/view/vidi
+Home page of the project: https://github.com/fabarea/vidi
 
-Development version:
-https://git.typo3.org/TYPO3CMS/Extensions/vidi.git
+Stable version: http://typo3.org/extensions/repository/view/vidi
+
+Development version from Git:
 
 ::
 
-	git clone git://git.typo3.org/TYPO3CMS/Extensions/vidi.git
+	cd typ3conf/ext
+	git clone https://github.com/fabarea/vidi.git
 
-Github mirror:
-https://github.com/TYPO3-extensions/vidi
-
-Flash news about latest development are also announced on
-http://twitter.com/fudriot
+Flash news about latest development are also announced on http://twitter.com/fudriot
 
 
 Installation and requirement
 ============================
 
-The extension **requires TYPO3 6.2**. Install the extension as normal in the Extension Manager or download the Git version as follows::
-
-	# local installation
-	cd typo3conf/ext
-
-	# download the source
-	git clone git://git.typo3.org/TYPO3CMS/Extensions/vidi.git
-
-	-> next step, is to open the Extension Manager in the BE.
-
+The extension **requires TYPO3 6.2**. Install the extension as normal in the Extension Manager or download the Git version.
 
 .. _TER: typo3.org/extensions/repository/
-.. _master branch: https://github.com/TYPO3-extensions/vidi.git
 
 Configuration
 =============
