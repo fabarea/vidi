@@ -268,7 +268,7 @@ class ContentRepository implements RepositoryInterface {
 		}
 
 		// Trigger signal for post processing the computed constraints object.
-		$this->emitPostProcessConstraintsSignal($query, $constraints);
+		$constraints = $this->emitPostProcessConstraintsSignal($query, $constraints);
 
 		return $constraints;
 	}
@@ -776,18 +776,20 @@ class ContentRepository implements RepositoryInterface {
 	 *
 	 * @param Query $query
 	 * @param ConstraintInterface|NULL $constraints
+	 * @return ConstraintInterface|NULL $constraints
 	 * @signal
 	 */
 	protected function emitPostProcessConstraintsSignal(Query $query, $constraints) {
-		$this->getSignalSlotDispatcher()->dispatch(
+		$result = $this->getSignalSlotDispatcher()->dispatch(
 			'TYPO3\CMS\Vidi\Domain\Repository\ContentRepository',
 			'postProcessConstraintsObject',
 			array(
 				$query,
-				$constraints,
-				$this->dataType
+				$constraints
 			)
 		);
+
+		return $result[1];
 	}
 
 	/**
