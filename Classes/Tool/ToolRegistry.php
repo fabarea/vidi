@@ -52,6 +52,30 @@ class ToolRegistry implements SingletonInterface {
 	}
 
 	/**
+	 * Un-Register a tool for a given data type.
+	 *
+	 * @param string $dataType corresponds to the table name or can be "*" for all data types.
+	 * @param string $toolName class name which must implement "ToolInterface".
+	 * @return $this
+	 */
+	public function unRegister($dataType, $toolName) {
+		if ($this->hasTools($dataType, $toolName)) {
+
+			$toolPosition = array_search($toolName, $this->tools['*']);
+			if ($toolPosition !== FALSE) {
+				unset($this->tools['*'][$toolPosition]);
+			}
+
+			$toolPosition = array_search($toolName, $this->tools[$dataType]);
+			if ($toolPosition !== FALSE) {
+				unset($this->tools[$dataType][$toolPosition]);
+			}
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Tell whether the given data type has any tools registered.
 	 *
 	 * @param string $dataType
@@ -98,8 +122,12 @@ class ToolRegistry implements SingletonInterface {
 				$toolNames = $this->tools[$toolSource];
 
 				foreach ($toolNames as $toolName) {
+
+					/** @var ToolInterface $tool */
 					$tool = GeneralUtility::makeInstance($toolName);
-					$tools[] = $tool;
+					if ($tool->isShown()) {
+						$tools[] = $tool;
+					}
 				}
 			}
 		}
