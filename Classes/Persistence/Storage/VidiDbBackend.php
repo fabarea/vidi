@@ -100,7 +100,7 @@ class VidiDbBackend {
 	 *
 	 * @var array
 	 */
-	protected $tableNames = array(
+	protected $tableNameAliases = array(
 		'aliases' => array(),
 		'aliasIncrement' => array(),
 	);
@@ -299,7 +299,7 @@ class VidiDbBackend {
 	 * @return bool
 	 */
 	public function hasRecursiveMMRelation() {
-		return isset($this->tableNames['aliasIncrement'][$this->query->getType()]);
+		return isset($this->tableNameAliases['aliasIncrement'][$this->query->getType()]);
 
 	}
 
@@ -335,6 +335,7 @@ class VidiDbBackend {
 		if (!empty($statementParts['limit'])) {
 			$statement .= ' LIMIT ' . $statementParts['limit'];
 		}
+
 		return $statement;
 	}
 
@@ -1114,8 +1115,8 @@ class VidiDbBackend {
 	 */
 	protected function resolveTableNameAlias($tableNameOrAlias) {
 		$resolvedTableName = $tableNameOrAlias;
-		if (!empty($this->tableNames['aliases'][$tableNameOrAlias])) {
-			$resolvedTableName = $this->tableNames['aliases'][$tableNameOrAlias];
+		if (!empty($this->tableNameAliases['aliases'][$tableNameOrAlias])) {
+			$resolvedTableName = $this->tableNameAliases['aliases'][$tableNameOrAlias];
 		}
 		return $resolvedTableName;
 	}
@@ -1128,15 +1129,15 @@ class VidiDbBackend {
 	 */
 	protected function generateAlias($tableName) {
 
-		if (!isset($this->tableNames['aliasIncrement'][$tableName])) {
-			$this->tableNames['aliasIncrement'][$tableName] = 0;
+		if (!isset($this->tableNameAliases['aliasIncrement'][$tableName])) {
+			$this->tableNameAliases['aliasIncrement'][$tableName] = 0;
 		}
 
-		$numberOfAliases = $this->tableNames['aliasIncrement'][$tableName];
+		$numberOfAliases = $this->tableNameAliases['aliasIncrement'][$tableName];
 		$tableNameAlias = $tableName . $numberOfAliases;
 
-		$this->tableNames['aliasIncrement'][$tableName]++;
-		$this->tableNames['aliases'][$tableNameAlias] = $tableName;
+		$this->tableNameAliases['aliasIncrement'][$tableName]++;
+		$this->tableNameAliases['aliases'][$tableNameAlias] = $tableName;
 
 		return $tableNameAlias;
 	}

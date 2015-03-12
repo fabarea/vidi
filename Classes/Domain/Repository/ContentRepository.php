@@ -183,25 +183,55 @@ class ContentRepository implements RepositoryInterface {
 
 		$query = $this->createQuery();
 
-		$constraints = $this->computeConstraints($query, $matcher);
-
-		if ($constraints) {
-			$query->matching($constraints);
-		}
-
 		if ($limit) {
 			$query->setLimit($limit);
 		}
 
 		if ($order) {
 			$query->setOrderings($order->getOrderings());
+
+			// Loops around the orderings adding if necessary a dummy condition
+			// to make sure the relations can be resolved when transforming the query to plain SQL.
+			foreach ($order->getOrderings() as $ordering => $direction) {
+				if ($this->hasForeignRelationIn($ordering)) {
+					$relationalField = $this->getForeignRelationFrom($ordering);
+					$matcher->like($relationalField . '.uid', '');
+				}
+			}
 		}
 
 		if ($offset) {
 			$query->setOffset($offset);
 		}
 
+		$constraints = $this->computeConstraints($query, $matcher);
+
+		if ($constraints) {
+			$query->matching($constraints);
+		}
+
 		return $query->execute();
+	}
+
+	/**
+	 * Tell whether the order has a foreign table in its expression, e.g. "metadata.title".
+	 *
+	 * @param string $ordering
+	 * @return bool
+	 */
+	protected function hasForeignRelationIn($ordering) {
+		return strpos($ordering, '.') !== FALSE;
+	}
+
+	/**
+	 * Extract the foreign relation of the ordering "metadata.title" -> "metadata"
+	 *
+	 * @param string $ordering
+	 * @return string
+	 */
+	protected function getForeignRelationFrom($ordering) {
+		$parts = explode('.', $ordering);
+		return $parts[0];
 	}
 
 	/**
