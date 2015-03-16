@@ -7,7 +7,7 @@ extension ships two examples for FE Users / Groups but is configurable for any k
 
 Veni, vidi, vici!
 
-.. image:: https://raw.github.com/TYPO3-extensions/vidi/master/Documentation/List-01.png
+.. image:: https://raw.github.com/fabarea/vidi/master/Documentation/List-01.png
 
 Project info and releases
 -------------------------
@@ -193,7 +193,7 @@ columns should be rendered. Take inspiration of `this example`_ below for your o
 	),
 
 
-.. _this example: https://github.com/TYPO3-extensions/vidi/blob/master/Configuration/TCA/Overrides/fe_users.php#L21
+.. _this example: https://github.com/fabarea/vidi/blob/master/Configuration/TCA/Overrides/fe_users.php#L21
 
 TCA "grid.columns"
 ------------------
@@ -647,7 +647,7 @@ For more insight, consider the example of ``ext_tables.php`` of extension Media_
 
 Notice also for each Vidi module, you can add any kind of utility tools in a dedicated module (c.f. Add tools in a Vidi module).
 
-.. _Media: https://github.com/TYPO3-extensions/media/blob/master/ext_tables.php#L61
+.. _Media: https://github.com/fabarea/media/blob/master/ext_tables.php#L61
 
 FAQ
 ===
