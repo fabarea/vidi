@@ -36,6 +36,7 @@ class DatetimeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	private $subject;
 
 	public function setUp() {
+		date_default_timezone_set('GMT');
 		$this->subject = new \TYPO3\CMS\Vidi\Formatter\Datetime();
 		$GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] = 'd.m.Y';
 		$GLOBALS['TYPO3_CONF_VARS']['SYS']['hhmm'] = 'H:i';
@@ -50,7 +51,7 @@ class DatetimeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 */
 	public function canFormatDatetime() {
 		$foo = $this->subject->format('1351880525');
-		$this->assertEquals('02.11.2012 19:22', $foo);
+		$this->assertEquals('02.11.2012 18:22', $foo);
 
 	}
 }

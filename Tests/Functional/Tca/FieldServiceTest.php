@@ -25,13 +25,15 @@ namespace TYPO3\CMS\Vidi\Tca;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once dirname(dirname(__FILE__)) . '/AbstractFunctionalTestCase.php';
+
 /**
  * Test case for class \TYPO3\CMS\Vidi\Tca\FieldService.
  */
-class FieldServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
+class FieldServiceTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTestCase {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Tca\FieldService
+	 * @var \TYPO3\CMS\Vidi\Tca\TableService
 	 */
 	private $fixture;
 
@@ -46,6 +48,7 @@ class FieldServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	private $moduleCode = 'user_VidiFeUsersM1';
 
 	public function setUp() {
+		parent::setUp();
 
 		$moduleLoader = new \TYPO3\CMS\Vidi\Module\ModuleLoader($this->dataType);
 		$moduleLoader->register();
@@ -137,7 +140,7 @@ class FieldServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
 		$tableName = 'fe_users';
 		$serviceType = 'field';
-		$this->fixture = new \TYPO3\CMS\Vidi\Tca\FieldService($tableName, $serviceType);
+		$this->fixture =  \TYPO3\CMS\Vidi\Tca\Tca::table($tableName);
 	}
 
 	public function tearDown() {
@@ -150,45 +153,32 @@ class FieldServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	public function fieldsIncludesATitleFieldInTableSysFile() {
 		$actual = $this->fixture->getFields();
 		$this->assertTrue(is_array($actual));
-		$this->assertArrayHasKey('username', $actual);
+		$this->assertContains('username', $actual);
 	}
 
 	/**
 	 * @test
 	 */
 	public function fieldTypeReturnsInputForFieldTitleInTableSysFile() {
-		$actual = $this->fixture->getFieldType('title');
-		$this->assertEquals('input', $actual);
-	}
-
-	/**
-	 * @test
-	 */
-	public function fieldTypeReturnsWidgetForStringStartingWithWidget() {
-		$actual = $this->fixture->getFieldType('--widget--;' . uniqid());
-		$this->assertEquals('widget', $actual);
-	}
-
-	/**
-	 * @test
-	 */
-	public function fieldTypeReturnsPaletteForStringStartingWithPalette() {
-		$actual = $this->fixture->getFieldType('--palette--;' . uniqid());
-		$this->assertEquals('palette', $actual);
+		$field = $this->fixture->field('title');
+		$actual = $field->getType();
+		$this->assertEquals('text', $actual);
 	}
 
 	/**
 	 * @test
 	 */
 	public function fieldNameMustBeRequiredByDefault() {
-		$this->assertTrue($this->fixture->isRequired('username'));
+		$field = $this->fixture->field('username');
+		$this->assertTrue($field->isRequired());
 	}
 
 	/**
 	 * @test
 	 */
 	public function fieldTitleMustNotBeRequiredByDefault() {
-		$this->assertFalse($this->fixture->isRequired('email'));
+		$field = $this->fixture->field('email');
+		$this->assertFalse($field->isRequired());
 	}
 
 	/**
@@ -196,12 +186,13 @@ class FieldServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @dataProvider fieldProvider
 	 */
 	public function hasRelationReturnsFalseForFieldName($fieldName, $hasRelation, $hasRelationOneToMany, $hasRelationManyToMany) {
-		$this->assertEquals($hasRelation, $this->fixture->hasRelation($fieldName));
-		$this->assertNotEquals($hasRelation, $this->fixture->hasNoRelation($fieldName));
-		$this->assertEquals($hasRelationOneToMany, $this->fixture->hasRelationOneToMany($fieldName));
-		$this->assertEquals($hasRelationOneToMany, $this->fixture->hasRelationManyToOne($fieldName));
-		$this->assertEquals($hasRelationManyToMany, $this->fixture->hasRelationManyToMany($fieldName));
-		$this->assertEquals($hasRelationOneToMany, $this->fixture->hasRelationOneToOne($fieldName));
+		$field = $this->fixture->field($fieldName);
+		$this->assertEquals($hasRelation, $field->hasRelation());
+		$this->assertNotEquals($hasRelation, $field->hasNoRelation());
+		$this->assertEquals($hasRelationOneToMany, $field->hasRelationOneToMany());
+		$this->assertEquals($hasRelationOneToMany, $field->hasRelationManyToOne());
+		$this->assertEquals($hasRelationManyToMany, $field->hasRelationManyToMany());
+		$this->assertEquals($hasRelationOneToMany, $field->hasRelationOneToOne());
 	}
 
 	/**

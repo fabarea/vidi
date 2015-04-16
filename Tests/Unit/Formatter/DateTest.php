@@ -36,6 +36,7 @@ class DateTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	private $subject;
 
 	public function setUp() {
+		date_default_timezone_set('GMT');
 		$this->subject = new \TYPO3\CMS\Vidi\Formatter\Date();
 		$GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] = 'd.m.Y';
 	}

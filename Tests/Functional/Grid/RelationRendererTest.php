@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Tca;
+namespace TYPO3\CMS\Vidi\Grid;
 
 /***************************************************************
  *  Copyright notice
@@ -25,41 +25,47 @@ namespace TYPO3\CMS\Vidi\Tca;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once dirname(dirname(__FILE__)) . '/AbstractFunctionalTestCase.php';
+
 /**
- * Test case for class \TYPO3\CMS\Vidi\Tca\FormService.
+ * Test case for class \TYPO3\CMS\Vidi\Grid\CategoryRenderer.
  */
-class FormServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
+class RelationRendererTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTestCase {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Tca\FormService
+	 * @var \TYPO3\CMS\Vidi\Grid\RelationRenderer
 	 */
 	private $fixture;
 
+	/**
+	 * @var string
+	 */
+	private $dataType = 'fe_users';
+
+	/**
+	 * @var string
+	 */
+	private $moduleCode = 'user_VidiFeUsersM1';
+
 	public function setUp() {
-		$tableName = 'fe_users';
-		$serviceType = 'form';
-		$this->fixture = new \TYPO3\CMS\Vidi\Tca\FormService($tableName, $serviceType);
+		parent::setUp();
+		$moduleLoader = new \TYPO3\CMS\Vidi\Module\ModuleLoader($this->dataType);
+		$moduleLoader->register();
+		$GLOBALS['_GET']['M'] = $this->moduleCode;
+		$this->fixture = new \TYPO3\CMS\Vidi\Grid\RelationRenderer();
 	}
 
 	public function tearDown() {
-		unset($this->fixture);
+		unset($this->fixture, $GLOBALS['_GET']['M']);
 	}
 
 	/**
 	 * @test
 	 */
-	public function getTypesReturnANotEmptyArrayForTableSysFile() {
-		$actual = $this->fixture->getTypes();
-		$this->assertNotEmpty($actual);
+	public function renderAssetWithNoCategoryReturnsEmpty() {
+		$content = new \TYPO3\CMS\Vidi\Domain\Model\Content($this->dataType);
+		$this->markTestIncomplete(); # TCA must be faked
+		#$actual = $this->fixture->setObject($content)->render();
 	}
-
-	/**
-	 * @test
-	 * @expectedException \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
-	 */
-	public function raiseExceptionIfTypeDoesNotExist() {
-		$this->fixture->getFields(uniqid('foo'));
-	}
-
 }
 ?>
