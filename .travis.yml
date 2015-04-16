@@ -1,0 +1,44 @@
+language: php
+
+php:
+  - 5.5
+  - 5.6
+
+env:
+  - TYPO3_BRANCH=TYPO3_6-2
+  - TYPO3_BRANCH=TYPO3_7-1-0
+  - TYPO3_BRANCH=master
+
+matrix:
+  include:
+    - php: 5.3
+      env: TYPO3_BRANCH=TYPO3_6-2
+    - php: 5.4
+      env: TYPO3_BRANCH=TYPO3_6-2
+  allow_failures:
+    - env: TYPO3_BRANCH=TYPO3_7-1-0
+    - env: TYPO3_BRANCH=master
+  fast_finish: true
+
+before_script:
+  - cd ..
+  - git clone --branch $TYPO3_BRANCH --depth 1 https://github.com/TYPO3/TYPO3.CMS.git typo3_core
+  - mv typo3_core/* .
+  - composer install
+  - mkdir -p uploads typo3temp typo3conf/ext
+  - mv vidi typo3conf/ext/
+  - export typo3DatabaseName="typo3";
+  - export typo3DatabaseHost="localhost";
+  - export typo3DatabaseUsername="root";
+  - export typo3DatabasePassword="";
+
+script:
+  - ./bin/phpunit --coverage-clover=unit-tests-coverage.clover -c typo3conf/ext/vidi/Tests/Build/UnitTests.xml
+  - ./bin/phpunit --coverage-clover=functional-tests-coverage.clover -c typo3conf/ext/vidi/Tests/Build/FunctionalTests.xml
+
+after_script:
+  - echo "Uploading code coverage results";
+  - cp -R typo3conf/ext/vidi/.git .
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover unit-tests-coverage.clover
+  - php ocular.phar code-coverage:upload --format=php-clover functional-tests-coverage.clover

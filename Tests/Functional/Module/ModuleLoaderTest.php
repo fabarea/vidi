@@ -25,10 +25,12 @@ namespace TYPO3\CMS\Vidi;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once dirname(dirname(__FILE__)) . '/AbstractFunctionalTestCase.php';
+
 /**
  * Test case for class \TYPO3\CMS\Vidi\Module\ModuleLoader.
  */
-class ModuleLoaderTest extends \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCase {
+class ModuleLoaderTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTestCase {
 
 	/**
 	 * @var \TYPO3\CMS\Vidi\Module\ModuleLoader
@@ -47,6 +49,7 @@ class ModuleLoaderTest extends \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCase {
 
 
 	public function setUp() {
+		parent::setUp();
 		$this->fixture = new \TYPO3\CMS\Vidi\Module\ModuleLoader($this->dataType);
 		$this->fixture->register();
 	}

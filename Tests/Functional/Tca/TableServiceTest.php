@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Grid;
+namespace TYPO3\CMS\Vidi\Tca;
 
 /***************************************************************
  *  Copyright notice
@@ -25,44 +25,43 @@ namespace TYPO3\CMS\Vidi\Grid;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once dirname(dirname(__FILE__)) . '/AbstractFunctionalTestCase.php';
+
 /**
- * Test case for class \TYPO3\CMS\Vidi\Grid\CategoryRenderer.
+ * Test case for class \TYPO3\CMS\Vidi\Tca\TableService.
  */
-class RelationRendererTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
+class TableServiceTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTestCase {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Grid\RelationRenderer
+	 * @var \TYPO3\CMS\Vidi\Tca\TableService
 	 */
 	private $fixture;
 
-	/**
-	 * @var string
-	 */
-	private $dataType = 'fe_users';
-
-	/**
-	 * @var string
-	 */
-	private $moduleCode = 'user_VidiFeUsersM1';
-
 	public function setUp() {
-		$moduleLoader = new \TYPO3\CMS\Vidi\Module\ModuleLoader($this->dataType);
-		$moduleLoader->register();
-		$GLOBALS['_GET']['M'] = $this->moduleCode;
-		$this->fixture = new \TYPO3\CMS\Vidi\Grid\RelationRenderer();
+		parent::setUp();
+		$tableName = 'fe_users';
+		$serviceType = 'table';
+		$this->fixture = new \TYPO3\CMS\Vidi\Tca\TableService($tableName, $serviceType);
 	}
 
 	public function tearDown() {
-		unset($this->fixture, $GLOBALS['_GET']['M']);
+		unset($this->fixture);
 	}
 
 	/**
 	 * @test
 	 */
-	public function renderAssetWithNoCategoryReturnsEmpty() {
-		$content = new \TYPO3\CMS\Vidi\Domain\Model\Content($this->dataType);
-		$this->markTestIncomplete(); # TCA must be faked
-		#$actual = $this->fixture->setObject($content)->render();
+	public function getLabelReturnNameAsValue() {
+		$this->assertEquals('username', $this->fixture->getLabelField());
 	}
+
+	/**
+	 * @test
+	 */
+	public function getSearchableFieldsIsNotEmptyByDefaultForTableSysFile() {
+		$actual = $this->fixture->getSearchFields();
+		$this->assertNotEmpty($actual);
+	}
+
 }
 ?>

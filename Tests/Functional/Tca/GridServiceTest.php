@@ -25,10 +25,12 @@ namespace TYPO3\CMS\Vidi\Tca;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once dirname(dirname(__FILE__)) . '/AbstractFunctionalTestCase.php';
+
 /**
  * Test case for class \TYPO3\CMS\Vidi\Tca\GridService.
  */
-class GridServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
+class GridServiceTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTestCase {
 
 	/**
 	 * @var \TYPO3\CMS\Vidi\Tca\GridService
@@ -36,9 +38,15 @@ class GridServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	private $fixture;
 
 	public function setUp() {
+		parent::setUp();
 		$tableName = 'fe_users';
 		$serviceType = 'grid';
 		$this->fixture = new \TYPO3\CMS\Vidi\Tca\GridService($tableName, $serviceType);
+
+		// create language-object
+		global $LANG;
+		$LANG = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('language');
+		$LANG->init('default');
 	}
 
 	public function tearDown() {

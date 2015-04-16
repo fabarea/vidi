@@ -25,10 +25,12 @@ namespace TYPO3\CMS\Vidi\Domain\Model;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once dirname(dirname(dirname(__FILE__))) . '/AbstractFunctionalTestCase.php';
+
 /**
  * Test case for class \TYPO3\CMS\Vidi\Domain\Model\Content.
  */
-class ContentTest extends \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCase {
+class ContentTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTestCase {
 
 	/**
 	 * @var \TYPO3\CMS\Vidi\Domain\Model\Content
@@ -41,6 +43,7 @@ class ContentTest extends \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCase {
 	private $dataType = 'tx_foo_domain_model_bar';
 
 	public function setUp() {
+		parent::setUp();
 		$GLOBALS['TCA'][$this->dataType]['columns'] = array(
 			'foo' => array(),
 			'foo_bar' => array(),

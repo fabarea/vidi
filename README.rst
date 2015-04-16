@@ -1,5 +1,14 @@
-Vidi for TYPO3 CMS
-==================
+Vidi for TYPO3 CMS |badge_travis| |badge_scrutinizer| |badge_coverage|
+======================================================================
+
+.. |badge_travis| image:: https://travis-ci.org/fabarea/vidi.svg?branch=master
+    :target: https://travis-ci.org/fabarea/vidi
+
+.. |badge_scrutinizer| image:: https://scrutinizer-ci.com/g/fabarea/vidi/badges/quality-score.png?b=master
+   :target: https://scrutinizer-ci.com/g/fabarea/vidi
+
+.. |badge_coverage| image:: https://scrutinizer-ci.com/g/fabarea/vidi/badges/coverage.png?b=master
+   :target: https://scrutinizer-ci.com/g/fabarea/vidi
 
 Vidi stands for "versatile and interactive display" and is the code name of a list component
 designed for listing all kind of records along with advanced filtering capabilities. By default the

@@ -25,20 +25,23 @@ namespace TYPO3\CMS\Vidi\Tca;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+require_once dirname(dirname(__FILE__)) . '/AbstractFunctionalTestCase.php';
+
 /**
- * Test case for class \TYPO3\CMS\Vidi\Tca\TableService.
+ * Test case for class \TYPO3\CMS\Vidi\Tca\FormService.
  */
-class TableServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
+class FormServiceTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTestCase {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Tca\TableService
+	 * @var \TYPO3\CMS\Vidi\Tca\FormService
 	 */
 	private $fixture;
 
 	public function setUp() {
+		parent::setUp();
 		$tableName = 'fe_users';
-		$serviceType = 'table';
-		$this->fixture = new \TYPO3\CMS\Vidi\Tca\TableService($tableName, $serviceType);
+		$serviceType = 'form';
+		$this->fixture = new \TYPO3\CMS\Vidi\Tca\FormService($tableName, $serviceType);
 	}
 
 	public function tearDown() {
@@ -48,16 +51,17 @@ class TableServiceTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	/**
 	 * @test
 	 */
-	public function getLabelReturnNameAsValue() {
-		$this->assertEquals('username', $this->fixture->getLabelField());
+	public function getTypesReturnANotEmptyArrayForTableSysFile() {
+		$actual = $this->fixture->getTypes();
+		$this->assertNotEmpty($actual);
 	}
 
 	/**
 	 * @test
+	 * @expectedException \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
 	 */
-	public function getSearchableFieldsIsNotEmptyByDefaultForTableSysFile() {
-		$actual = $this->fixture->getSearchFields();
-		$this->assertNotEmpty($actual);
+	public function raiseExceptionIfTypeDoesNotExist() {
+		$this->fixture->getFields(uniqid('foo'));
 	}
 
 }
