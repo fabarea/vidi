@@ -32,7 +32,7 @@ class ToolValidator extends AbstractValidator {
 	public function isValid($tool) {
 
 		$dataType = $this->getModuleLoader()->getDataType();
-		$isValid = ToolRegistry::getInstance()->hasTools($dataType, $tool);
+		$isValid = ToolRegistry::getInstance()->isAllowed($dataType, $tool);
 
 		if (!$isValid) {
 			$message = sprintf('This Tool "%s" is not allowed for the current data type.', $tool);
