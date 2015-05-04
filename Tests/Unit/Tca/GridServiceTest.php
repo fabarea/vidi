@@ -1,36 +1,25 @@
 <?php
-namespace Fab\Vidi\Tca;
+namespace Fab\Vidi\Tests\Unit\Tca;
 
-/***************************************************************
- *  Copyright notice
+/**
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2013 Fabien Udriot <fabien.udriot@typo3.org>
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  All rights reserved
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
-require_once dirname(dirname(__FILE__)) . '/AbstractFunctionalTestCase.php';
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Test case for class \Fab\Vidi\Tca\GridService.
  */
-class GridServiceTest extends \Fab\Vidi\Tests\Functional\AbstractFunctionalTestCase {
+class GridServiceTest extends AbstractServiceTest {
 
 	/**
 	 * @var \Fab\Vidi\Tca\GridService
@@ -39,14 +28,7 @@ class GridServiceTest extends \Fab\Vidi\Tests\Functional\AbstractFunctionalTestC
 
 	public function setUp() {
 		parent::setUp();
-		$tableName = 'fe_users';
-		$serviceType = 'grid';
-		$this->fixture = new \Fab\Vidi\Tca\GridService($tableName, $serviceType);
-
-		// create language-object
-		global $LANG;
-		$LANG = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('language');
-		$LANG->init('default');
+		$this->fixture = new \Fab\Vidi\Tca\GridService('tx_foo', Tca::TYPE_GRID);
 	}
 
 	public function tearDown() {
@@ -99,14 +81,6 @@ class GridServiceTest extends \Fab\Vidi\Tests\Functional\AbstractFunctionalTestC
 	/**
 	 * @test
 	 */
-	public function labelOfColumnFooShouldBeEmpty() {
-		$this->markTestIncomplete(); # TCA must be faked
-		#$this->assertEmpty($this->fixture->getLabel(uniqid('foo_')));
-	}
-
-	/**
-	 * @test
-	 */
 	public function columnUsernameShouldBeSortableByDefault() {
 		$this->assertTrue($this->fixture->isSortable('username'));
 	}
@@ -115,7 +89,7 @@ class GridServiceTest extends \Fab\Vidi\Tests\Functional\AbstractFunctionalTestC
 	 * @test
 	 */
 	public function columnNumberShouldBeNotSortableByDefault() {
-		$this->assertFalse($this->fixture->isSortable('__buttons'));
+		$this->assertFalse($this->fixture->isSortable('usergroup'));
 	}
 
 	/**
@@ -152,4 +126,3 @@ class GridServiceTest extends \Fab\Vidi\Tests\Functional\AbstractFunctionalTestC
 	}
 
 }
-?>

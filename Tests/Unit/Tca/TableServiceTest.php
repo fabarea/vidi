@@ -1,5 +1,5 @@
 <?php
-namespace Fab\Vidi\Tca;
+namespace Fab\Vidi\Tests\Unit\Tca;
 
 /***************************************************************
  *  Copyright notice
@@ -25,23 +25,21 @@ namespace Fab\Vidi\Tca;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-require_once dirname(dirname(__FILE__)) . '/AbstractFunctionalTestCase.php';
+use Fab\Vidi\Tca\Tca;
 
 /**
- * Test case for class \Fab\Vidi\Tca\FormService.
+ * Test case for class \Fab\Vidi\Tca\TableService.
  */
-class FormServiceTest extends \Fab\Vidi\Tests\Functional\AbstractFunctionalTestCase {
+class TableServiceTest extends AbstractServiceTest {
 
 	/**
-	 * @var \Fab\Vidi\Tca\FormService
+	 * @var \Fab\Vidi\Tca\TableService
 	 */
 	private $fixture;
 
 	public function setUp() {
 		parent::setUp();
-		$tableName = 'fe_users';
-		$serviceType = 'form';
-		$this->fixture = new \Fab\Vidi\Tca\FormService($tableName, $serviceType);
+		$this->fixture = new \Fab\Vidi\Tca\TableService('tx_foo', Tca::TYPE_TABLE);
 	}
 
 	public function tearDown() {
@@ -51,18 +49,16 @@ class FormServiceTest extends \Fab\Vidi\Tests\Functional\AbstractFunctionalTestC
 	/**
 	 * @test
 	 */
-	public function getTypesReturnANotEmptyArrayForTableSysFile() {
-		$actual = $this->fixture->getTypes();
-		$this->assertNotEmpty($actual);
+	public function getLabelReturnNameAsValue() {
+		$this->assertEquals('username', $this->fixture->getLabelField());
 	}
 
 	/**
 	 * @test
-	 * @expectedException \Fab\Vidi\Exception\InvalidKeyInArrayException
 	 */
-	public function raiseExceptionIfTypeDoesNotExist() {
-		$this->fixture->getFields(uniqid('foo'));
+	public function getSearchableFieldsIsNotEmptyByDefaultForTableSysFile() {
+		$actual = $this->fixture->getSearchFields();
+		$this->assertNotEmpty($actual);
 	}
 
 }
-?>
