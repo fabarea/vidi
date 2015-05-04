@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Content;
+namespace Fab\Vidi\ViewHelpers\Content;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,9 +16,9 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Content;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory;
-use TYPO3\CMS\Vidi\Persistence\Matcher;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
+use Fab\Vidi\Persistence\Matcher;
+use Fab\Vidi\Tca\TcaService;
 
 /**
  * View helper which counts a result set.

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Resolver;
+namespace Fab\Vidi\Resolver;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,7 +16,7 @@ namespace TYPO3\CMS\Vidi\Resolver;
 
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\TcaService;
 
 /**
  * Class for retrieving value from a field name and path.
@@ -119,9 +119,9 @@ class FieldPathResolver implements SingletonInterface {
 	/**
 	 * Get the Vidi Module Loader.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 * @return \Fab\Vidi\Module\ModuleLoader
 	 */
 	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
+		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
 	}
 }

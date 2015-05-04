@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Controller\Backend;
+namespace Fab\Vidi\Controller\Backend;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -27,7 +27,7 @@ class FacetController extends ActionController {
 	 *
 	 * @param string $facet
 	 * @param string $searchTerm
-	 * @validate $facet TYPO3\CMS\Vidi\Domain\Validator\FacetValidator
+	 * @validate $facet Fab\Vidi\Domain\Validator\FacetValidator
 	 * @return void
 	 */
 	public function suggestAction($facet, $searchTerm) {
@@ -41,9 +41,9 @@ class FacetController extends ActionController {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Facet\FacetSuggestionService
+	 * @return \Fab\Vidi\Facet\FacetSuggestionService
 	 */
 	protected function getFacetSuggestionService () {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Facet\FacetSuggestionService', $this->settings);
+		return GeneralUtility::makeInstance('Fab\Vidi\Facet\FacetSuggestionService', $this->settings);
 	}
 }

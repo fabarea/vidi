@@ -101,7 +101,7 @@ As example, let display a list of all Frontend Users belonging to User Group "1"
 			</f:for>
 		</ul>
 	</f:if>
-	{namespace m=TYPO3\CMS\Vidi\ViewHelpers}
+	{namespace m=Fab\Vidi\ViewHelpers}
 
 
 **TODO**: Implement selection saving! There is in the pipeline the possibility to save a selection
@@ -116,7 +116,7 @@ For getting the adequate instance, the repository can be fetched by this code. :
 
 	// Fetch the adequate repository for a known data type.
 	$dataType = 'fe_users';
-	$contentRepository = \TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory::getInstance($dataType);
+	$contentRepository = \Fab\Vidi\Domain\Repository\ContentRepositoryFactory::getInstance($dataType);
 
 	// From there, you can query the repository as you are used to in Flow / Extbase.
 
@@ -133,8 +133,8 @@ For complex query, a matcher object can be instantiated where to add many criter
 Content Repository. Here is an example for retrieving a set of files::
 
 	// Initialize a Matcher object.
-	/** @var \TYPO3\CMS\Vidi\Persistence\Matcher $matcher */
-	$matcher = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher');
+	/** @var \Fab\Vidi\Persistence\Matcher $matcher */
+	$matcher = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Matcher');
 
 	// Add some criteria.
 	$matcher->equals('storage', '1');
@@ -161,11 +161,11 @@ To register your own Tool, add the following lines into in ``ext_tables.php``::
 	if (TYPO3_MODE == 'BE') {
 
 		// Register a Tool for a FE User content type only.
-		\TYPO3\CMS\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'TYPO3\CMS\Vidi\Tool\RelationAnalyserTool');
+		\Fab\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'Fab\Vidi\Tool\RelationAnalyserTool');
 
 
 		// Register some Tools for all Vidi modules.
-		\TYPO3\CMS\Vidi\Tool\ToolRegistry::getInstance()->register('fe_users', 'TYPO3\CMS\Vidi\Tool\RelationAnalyserTool');
+		\Fab\Vidi\Tool\ToolRegistry::getInstance()->register('fe_users', 'Fab\Vidi\Tool\RelationAnalyserTool');
 	}
 
 TCA Grid
@@ -277,7 +277,7 @@ Datatype
 	string
 
 Description
-	A full qualified class name implementing :code:`\TYPO3\CMS\Vidi\Formatter\FormatterInterface`
+	A full qualified class name implementing :code:`\Fab\Vidi\Formatter\FormatterInterface`
 
 Default
 	NULL
@@ -513,7 +513,7 @@ Basic Grid Renderer::
 	# "foo" is the name of a field and is assumed to have a complex rendering
 	'foo' => array(
 		'label' => 'LLL:EXT:lang/locallang_tca.xlf:tx_bar_domain_model.foo', // Label is required
-		'renderer' => 'TYPO3\CMS\Vidi\Grid\RelationRenderer',
+		'renderer' => 'Fab\Vidi\Grid\RelationRenderer',
 	),
 
 Grid Renderer with options::
@@ -521,7 +521,7 @@ Grid Renderer with options::
 	# "foo" is the name of a field and is assumed to have a complex rendering
 	'foo' => array(
 		'label' => 'LLL:EXT:lang/locallang_tca.xlf:tx_bar_domain_model.foo', // Label is required
-		'renderer' => new TYPO3\CMS\Vidi\Grid\GenericRendererComponent('TYPO3\CMS\Vidi\Grid\RelationRenderer', array('foo' => 'bar')),
+		'renderer' => new Fab\Vidi\Grid\GenericRendererComponent('Fab\Vidi\Grid\RelationRenderer', array('foo' => 'bar')),
 	),
 
 Multiple Grid Renderers with options::
@@ -529,7 +529,7 @@ Multiple Grid Renderers with options::
 	'foo' => array(
 		'label' => 'LLL:EXT:lang/locallang_tca.xlf:tx_bar_domain_model.foo', // Label is required
 		'renderers' => array(
-			new TYPO3\CMS\Vidi\Grid\GenericRendererComponent('TYPO3\CMS\Vidi\Grid\RelationRenderer', array('foo' => 'bar')),
+			new Fab\Vidi\Grid\GenericRendererComponent('Fab\Vidi\Grid\RelationRenderer', array('foo' => 'bar')),
 			... // more possible renderers to come
 		),
 	),
@@ -542,23 +542,23 @@ You can format the value of a column by using one of the built-in formatter of v
 
 There are two built-in formatters:
 
-* :code:`\TYPO3\CMS\Vidi\Formatter\Date` - formats a timestamp with d.m.Y
-* :code:`\TYPO3\CMS\Vidi\Formatter\Datetime` - formats a timestamp with d.m.Y - H:i
+* :code:`\Fab\Vidi\Formatter\Date` - formats a timestamp with d.m.Y
+* :code:`\Fab\Vidi\Formatter\Datetime` - formats a timestamp with d.m.Y - H:i
 
-If you want to provide a custom formatter, it has to implement :code:`\TYPO3\CMS\Vidi\Formatter\FormatterInterface`
+If you want to provide a custom formatter, it has to implement :code:`\Fab\Vidi\Formatter\FormatterInterface`
 
 Example, using a built-in formatter::
 
 	'starttime' => array(
 		'label' => ...
-		'format' => 'TYPO3\\CMS\\Vidi\\Formatter\Date',
+		'format' => 'Fab\Vidi\Formatter\Date',
 	),
 
 Example, using the custom FancyDate formatter from the Acme Package::
 
 	'starttime' => array(
 		'label' => ...
-		'format' => 'Acme\\Package\\Vidi\\Formatter\\FancyDate',
+		'format' => 'Acme\Package\Vidi\Formatter\FancyDate',
 	),
 
 TCA Service API
@@ -576,7 +576,7 @@ The API is meant to be generic and can be re-use for every data type within TYPO
 
 ::
 
-	use TYPO3\CMS\Vidi\Tca\TcaService;
+	use Fab\Vidi\Tca\TcaService;
 
 	# Return the field type
 	TcaService::table($tableName)->field($fieldName)->getType();
@@ -648,7 +648,7 @@ Module Loader
 If you need to hook into a module and add some custom behaviour for a new button or replacing a Component,
 you can configure the Module through the Vidi Module Loader. As a quick example::
 
-	$moduleLoader = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader', 'sys_file');
+	$moduleLoader = GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader', 'sys_file');
 	$moduleLoader->addJavaScriptFiles(...)
 
 

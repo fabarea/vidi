@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Tca;
+namespace Fab\Vidi\Tca;
 
 /***************************************************************
  *  Copyright notice
@@ -28,12 +28,12 @@ namespace TYPO3\CMS\Vidi\Tca;
 require_once dirname(dirname(__FILE__)) . '/AbstractFunctionalTestCase.php';
 
 /**
- * Test case for class \TYPO3\CMS\Vidi\Tca\GridService.
+ * Test case for class \Fab\Vidi\Tca\GridService.
  */
-class GridServiceTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTestCase {
+class GridServiceTest extends \Fab\Vidi\Tests\Functional\AbstractFunctionalTestCase {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Tca\GridService
+	 * @var \Fab\Vidi\Tca\GridService
 	 */
 	private $fixture;
 
@@ -41,7 +41,7 @@ class GridServiceTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctiona
 		parent::setUp();
 		$tableName = 'fe_users';
 		$serviceType = 'grid';
-		$this->fixture = new \TYPO3\CMS\Vidi\Tca\GridService($tableName, $serviceType);
+		$this->fixture = new \Fab\Vidi\Tca\GridService($tableName, $serviceType);
 
 		// create language-object
 		global $LANG;

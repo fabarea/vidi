@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Mvc;
+namespace Fab\Vidi\Mvc;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -54,7 +54,7 @@ class JsonView extends AbstractView {
 	}
 
 	/**
-	 * @param \TYPO3\CMS\Vidi\Mvc\JsonResult $result
+	 * @param \Fab\Vidi\Mvc\JsonResult $result
 	 * @return $this
 	 */
 	public function setResult(JsonResult $result) {

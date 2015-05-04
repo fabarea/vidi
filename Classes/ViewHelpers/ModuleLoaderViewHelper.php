@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers;
+namespace Fab\Vidi\ViewHelpers;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -30,8 +30,8 @@ class ModuleLoaderViewHelper extends AbstractViewHelper {
 	public function render($key) {
 		$getter = 'get' . ucfirst($key);
 
-		/** @var \TYPO3\CMS\Vidi\Module\ModuleLoader $moduleLoader */
-		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\Module\ModuleLoader');
+		/** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
+		$moduleLoader = $this->objectManager->get('Fab\Vidi\Module\ModuleLoader');
 		return $moduleLoader->$getter();
 	}
 

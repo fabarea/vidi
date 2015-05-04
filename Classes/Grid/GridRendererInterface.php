@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Grid;
+namespace Fab\Vidi\Grid;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -27,7 +27,7 @@ interface GridRendererInterface {
 	public function render();
 
 	/**
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param \Fab\Vidi\Domain\Model\Content $object
 	 * @return $this
 	 */
 	public function setObject($object);

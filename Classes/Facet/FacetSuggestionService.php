@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Facet;
+namespace Fab\Vidi\Facet;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,9 +15,9 @@ namespace TYPO3\CMS\Vidi\Facet;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory;
-use TYPO3\CMS\Vidi\Persistence\MatcherObjectFactory;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
+use Fab\Vidi\Persistence\MatcherObjectFactory;
+use Fab\Vidi\Tca\TcaService;
 
 /**
  * Class for configuring a custom Facet item.
@@ -77,7 +77,7 @@ class FacetSuggestionService {
 			} elseif (!TcaService::table($dataType)->field($fieldName)->isTextArea()) { // We don't want suggestion if field is text area.
 
 				// Fetch the adequate repository
-				/** @var \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository $contentRepository */
+				/** @var \Fab\Vidi\Domain\Repository\ContentRepository $contentRepository */
 				$contentRepository = ContentRepositoryFactory::getInstance($dataType);
 
 				// Initialize some objects related to the query
@@ -121,9 +121,9 @@ class FacetSuggestionService {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 * @return \Fab\Vidi\Resolver\FieldPathResolver
 	 */
 	protected function getFieldPathResolver() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
 	}
 }

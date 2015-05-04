@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Module;
+namespace Fab\Vidi\Module;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -17,7 +17,7 @@ namespace TYPO3\CMS\Vidi\Module;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\TcaService;
 
 /**
  * Service related to data type (AKA tablename)
@@ -32,10 +32,10 @@ class ModuleService implements SingletonInterface {
 	/**
 	 * Returns a class instance
 	 *
-	 * @return \TYPO3\CMS\Vidi\Module\ModuleService
+	 * @return \Fab\Vidi\Module\ModuleService
 	 */
 	static public function getInstance() {
-		return GeneralUtility::makeInstance('\TYPO3\CMS\Vidi\Module\ModuleService');
+		return GeneralUtility::makeInstance('\Fab\Vidi\Module\ModuleService');
 	}
 
 	/**
@@ -114,9 +114,9 @@ class ModuleService implements SingletonInterface {
 	/**
 	 * Get the Vidi Module Loader.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 * @return \Fab\Vidi\Module\ModuleLoader
 	 */
 	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
+		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
 	}
 }

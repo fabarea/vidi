@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Tca;
+namespace Fab\Vidi\Tca;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,10 +16,10 @@ namespace TYPO3\CMS\Vidi\Tca;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException;
-use TYPO3\CMS\Vidi\Facet\StandardFacet;
-use TYPO3\CMS\Vidi\Facet\FacetInterface;
-use TYPO3\CMS\Vidi\Grid\GenericRendererComponent;
+use Fab\Vidi\Exception\InvalidKeyInArrayException;
+use Fab\Vidi\Facet\StandardFacet;
+use Fab\Vidi\Facet\FacetInterface;
+use Fab\Vidi\Grid\GenericRendererComponent;
 
 /**
  * A class to handle TCA grid configuration
@@ -46,7 +46,7 @@ class GridService implements TcaServiceInterface {
 	 *
 	 * @throws InvalidKeyInArrayException
 	 * @param string $tableName
-	 * @return \TYPO3\CMS\Vidi\Tca\GridService
+	 * @return \Fab\Vidi\Tca\GridService
 	 */
 	public function __construct($tableName) {
 
@@ -412,7 +412,7 @@ class GridService implements TcaServiceInterface {
 	 * Returns a "facet" service instance.
 	 *
 	 * @param string|FacetInterface $facet
-	 * @return \TYPO3\CMS\Vidi\Tca\FacetService
+	 * @return \Fab\Vidi\Tca\FacetService
 	 */
 	public function facet($facet = '') {
 
@@ -420,14 +420,14 @@ class GridService implements TcaServiceInterface {
 			$label = TcaService::grid($this->tableName)->getLabel($facet);
 
 			/** @var StandardFacet $facet */
-			$facet = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Facet\StandardFacet', $facet, $label);
+			$facet = GeneralUtility::makeInstance('Fab\Vidi\Facet\StandardFacet', $facet, $label);
 		}
 
 		if (empty($this->instances[$facet->getName()])) {
 
-			/** @var \TYPO3\CMS\Vidi\Tca\FacetService $instance */
+			/** @var \Fab\Vidi\Tca\FacetService $instance */
 			$instance = GeneralUtility::makeInstance(
-				'TYPO3\CMS\Vidi\Tca\FacetService',
+				'Fab\Vidi\Tca\FacetService',
 				$facet,
 				$this->tableName
 			);
@@ -439,10 +439,10 @@ class GridService implements TcaServiceInterface {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 * @return \Fab\Vidi\Resolver\FieldPathResolver
 	 */
 	protected function getFieldPathResolver() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
 	}
 
 }

@@ -33,10 +33,10 @@ if (TYPO3_MODE == 'BE') {
 		$dataTypes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['data_types']['value']);
 		foreach ($dataTypes as $dataType) {
 
-			/** @var \TYPO3\CMS\Vidi\Module\ModuleLoader $moduleLoader */
-			$moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader', $dataType);
+			/** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
+			$moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader', $dataType);
 
-			/** @var \TYPO3\CMS\Vidi\Module\ModuleLoader $moduleLoader */
+			/** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
 			$moduleLoader->setIcon(sprintf('EXT:vidi/Resources/Public/Images/%s.png', $dataType))
 				->setModuleLanguageFile(sprintf('LLL:EXT:vidi/Resources/Private/Language/%s.xlf', $dataType))
 				->addJavaScriptFiles(array(sprintf('EXT:vidi/Resources/Public/JavaScript/%s.js', $dataType)))
@@ -92,24 +92,24 @@ if (TYPO3_MODE == 'BE') {
 
 	// Connect "processContentData" signal slot with the "ContentObjectProcessor".
 	$signalSlotDispatcher->connect(
-		'TYPO3\CMS\Vidi\Controller\Backend\ContentController',
+		'Fab\Vidi\Controller\Backend\ContentController',
 		'processContentData',
-		'TYPO3\CMS\Vidi\Processor\ContentObjectProcessor',
+		'Fab\Vidi\Processor\ContentObjectProcessor',
 		'processRelations',
 		TRUE
 	);
 
 	// Connect "processContentData" signal with the "MarkerProcessor".
 	$signalSlotDispatcher->connect(
-		'TYPO3\CMS\Vidi\Controller\Backend\ContentController',
+		'Fab\Vidi\Controller\Backend\ContentController',
 		'processContentData',
-		'TYPO3\CMS\Vidi\Processor\MarkerProcessor',
+		'Fab\Vidi\Processor\MarkerProcessor',
 		'processMarkers',
 		TRUE
 	);
 
 	// Register default Tools for Vidi.
-	\TYPO3\CMS\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'TYPO3\CMS\Vidi\Tool\RelationAnalyserTool');
+	\Fab\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'Fab\Vidi\Tool\RelationAnalyserTool');
 }
 
 // Add new sprite icon.

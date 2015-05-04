@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Content;
+namespace Fab\Vidi\ViewHelpers\Content;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,9 +16,9 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Content;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3\CMS\Vidi\Persistence\Matcher;
-use TYPO3\CMS\Vidi\Persistence\Order;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Persistence\Matcher;
+use Fab\Vidi\Persistence\Order;
+use Fab\Vidi\Tca\TcaService;
 
 /**
  * Abstract View helper for handling Content display mainly on the Frontend.
@@ -63,7 +63,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper {
 	protected function getMatcher($dataType, $matches = array()) {
 
 		/** @var $matcher Matcher */
-		$matcher = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher', array(), $dataType);
+		$matcher = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Matcher', array(), $dataType);
 
 		// @todo implement advanced selection parsing {or: {usergroup.title: {like: foo}}, {tstamp: {greaterThan: 1234}}}
 		foreach ($matches as $fieldNameAndPath => $value) {
@@ -122,7 +122,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper {
 	 *
 	 * @param string $dataType
 	 * @param array $order
-	 * @return \TYPO3\CMS\Vidi\Persistence\Order
+	 * @return \Fab\Vidi\Persistence\Order
 	 */
 	public function getOrder($dataType, array $order = array()) {
 		// Default orderings in case order is empty.
@@ -130,7 +130,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper {
 			$order = TcaService::table($dataType)->getDefaultOrderings();
 		}
 
-		$order = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Order', $order);
+		$order = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Order', $order);
 
 		// Trigger signal for post processing Order Object.
 		$this->emitPostProcessOrderObjectSignal($dataType, $order);
@@ -139,10 +139,10 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Persistence\ResultSetStorage
+	 * @return \Fab\Vidi\Persistence\ResultSetStorage
 	 */
 	public function getResultSetStorage() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\ResultSetStorage');
+		return GeneralUtility::makeInstance('Fab\Vidi\Persistence\ResultSetStorage');
 	}
 
 	/**
@@ -153,7 +153,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper {
 	 * @signal
 	 */
 	protected function emitPostProcessOrderObjectSignal($dataType, Order $order) {
-		$this->getSignalSlotDispatcher()->dispatch('TYPO3\CMS\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessOrderObject', array($order, $dataType));
+		$this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessOrderObject', array($order, $dataType));
 	}
 
 	/**
@@ -164,7 +164,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper {
 	 * @signal
 	 */
 	protected function emitPostProcessMatcherObjectSignal($dataType, Matcher $matcher) {
-		$this->getSignalSlotDispatcher()->dispatch('TYPO3\CMS\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessMatcherObject', array($matcher, $dataType));
+		$this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessMatcherObject', array($matcher, $dataType));
 	}
 
 	/**
@@ -175,7 +175,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper {
 	 * @signal
 	 */
 	protected function emitPostProcessLimitSignal($dataType, $limit) {
-		$this->getSignalSlotDispatcher()->dispatch('TYPO3\CMS\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessLimit', array($limit, $dataType));
+		$this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessLimit', array($limit, $dataType));
 	}
 
 	/**
@@ -186,7 +186,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper {
 	 * @signal
 	 */
 	protected function emitPostProcessOffsetSignal($dataType, $offset) {
-		$this->getSignalSlotDispatcher()->dispatch('TYPO3\CMS\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessLimit', array($offset, $dataType));
+		$this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessLimit', array($offset, $dataType));
 	}
 
 	/**
@@ -210,17 +210,17 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper {
 	 * @return \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface
 	 */
 	protected function getDefaultQuerySettings($ignoreEnableFields) {
-		/** @var \TYPO3\CMS\Vidi\Persistence\QuerySettings $defaultQuerySettings */
-		$defaultQuerySettings = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\QuerySettings');
+		/** @var \Fab\Vidi\Persistence\QuerySettings $defaultQuerySettings */
+		$defaultQuerySettings = GeneralUtility::makeInstance('Fab\Vidi\Persistence\QuerySettings');
 		$defaultQuerySettings->setIgnoreEnableFields($ignoreEnableFields);
 		return $defaultQuerySettings;
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 * @return \Fab\Vidi\Resolver\FieldPathResolver
 	 */
 	protected function getFieldPathResolver() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
 	}
 
 }

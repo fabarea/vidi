@@ -135,7 +135,7 @@ It is possible to load a custom form.
 		$controllerActions
 	);
 
-	\TYPO3\CMS\Vidi\AjaxDispatcher::addAllowedActions(
+	\Fab\Vidi\AjaxDispatcher::addAllowedActions(
 		$_EXTKEY,
 		'Pi1',
 		$controllerActions

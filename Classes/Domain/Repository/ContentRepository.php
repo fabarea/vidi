@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Domain\Repository;
+namespace Fab\Vidi\Domain\Repository;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -19,13 +19,13 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\RepositoryInterface;
-use TYPO3\CMS\Vidi\Converter\Property;
-use TYPO3\CMS\Vidi\DataHandler\ProcessAction;
-use TYPO3\CMS\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Vidi\Persistence\Matcher;
-use TYPO3\CMS\Vidi\Persistence\Order;
-use TYPO3\CMS\Vidi\Persistence\Query;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Converter\Property;
+use Fab\Vidi\DataHandler\ProcessAction;
+use Fab\Vidi\Domain\Model\Content;
+use Fab\Vidi\Persistence\Matcher;
+use Fab\Vidi\Persistence\Order;
+use Fab\Vidi\Persistence\Query;
+use Fab\Vidi\Tca\TcaService;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 
 /**
@@ -238,7 +238,7 @@ class ContentRepository implements RepositoryInterface {
 	 * Find one Content object given specified matches.
 	 *
 	 * @param Matcher $matcher
-	 * @internal param \TYPO3\CMS\Vidi\Persistence\Order $order The order
+	 * @internal param \Fab\Vidi\Persistence\Order $order The order
 	 * @internal param int $limit
 	 * @internal param int $offset
 	 * @return Content
@@ -580,7 +580,7 @@ class ContentRepository implements RepositoryInterface {
 	 */
 	public function createQuery() {
 		/** @var Query $query */
-		$query = $this->getObjectManager()->get('TYPO3\CMS\Vidi\Persistence\Query', $this->dataType);
+		$query = $this->getObjectManager()->get('Fab\Vidi\Persistence\Query', $this->dataType);
 		$query->setSourceFieldName($this->sourceFieldName);
 
 		if ($this->defaultQuerySettings) {
@@ -588,8 +588,8 @@ class ContentRepository implements RepositoryInterface {
 		} else {
 
 			// Initialize and pass the query settings at this level.
-			/** @var \TYPO3\CMS\Vidi\Persistence\QuerySettings $querySettings */
-			$querySettings = $this->getObjectManager()->get('TYPO3\CMS\Vidi\Persistence\QuerySettings');
+			/** @var \Fab\Vidi\Persistence\QuerySettings $querySettings */
+			$querySettings = $this->getObjectManager()->get('Fab\Vidi\Persistence\QuerySettings');
 
 			// Default choice for the BE.
 			if ($this->isBackendMode()) {
@@ -611,7 +611,7 @@ class ContentRepository implements RepositoryInterface {
 
 	/**
 	 * @param boolean $rawResult
-	 * @return \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository
+	 * @return \Fab\Vidi\Domain\Repository\ContentRepository
 	 */
 	public function setRawResult($rawResult) {
 		$this->rawResult = $rawResult;
@@ -638,7 +638,7 @@ class ContentRepository implements RepositoryInterface {
 		$fieldName = Property::name($propertyName)->of($this->dataType)->toFieldName();
 
 		/** @var $matcher Matcher */
-		$matcher = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher', array(), $this->getDataType());
+		$matcher = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Matcher', array(), $this->getDataType());
 
 		$table = TcaService::table($this->dataType);
 		if ($table->field($fieldName)->isGroup()) {
@@ -758,10 +758,10 @@ class ContentRepository implements RepositoryInterface {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\DataHandler\DataHandlerFactory
+	 * @return \Fab\Vidi\DataHandler\DataHandlerFactory
 	 */
 	protected function getDataHandlerFactory() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\DataHandler\DataHandlerFactory');
+		return GeneralUtility::makeInstance('Fab\Vidi\DataHandler\DataHandlerFactory');
 	}
 
 	/**
@@ -774,10 +774,10 @@ class ContentRepository implements RepositoryInterface {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 * @return \Fab\Vidi\Resolver\FieldPathResolver
 	 */
 	protected function getFieldPathResolver() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
 	}
 
 	/**
@@ -788,17 +788,17 @@ class ContentRepository implements RepositoryInterface {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Domain\Validator\ContentValidator
+	 * @return \Fab\Vidi\Domain\Validator\ContentValidator
 	 */
 	protected function getContentValidator() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Domain\Validator\ContentValidator');
+		return GeneralUtility::makeInstance('Fab\Vidi\Domain\Validator\ContentValidator');
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Domain\Validator\LanguageValidator
+	 * @return \Fab\Vidi\Domain\Validator\LanguageValidator
 	 */
 	protected function getLanguageValidator() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Domain\Validator\LanguageValidator');
+		return GeneralUtility::makeInstance('Fab\Vidi\Domain\Validator\LanguageValidator');
 	}
 
 	/**
@@ -811,7 +811,7 @@ class ContentRepository implements RepositoryInterface {
 	 */
 	protected function emitPostProcessConstraintsSignal(Query $query, $constraints) {
 		$result = $this->getSignalSlotDispatcher()->dispatch(
-			'TYPO3\CMS\Vidi\Domain\Repository\ContentRepository',
+			'Fab\Vidi\Domain\Repository\ContentRepository',
 			'postProcessConstraintsObject',
 			array(
 				$query,

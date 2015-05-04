@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Domain\Model;
+namespace Fab\Vidi\Domain\Model;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,11 +16,11 @@ namespace TYPO3\CMS\Vidi\Domain\Model;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException;
-use TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory;
-use TYPO3\CMS\Vidi\Converter\Field;
-use TYPO3\CMS\Vidi\Converter\Property;
-use TYPO3\CMS\Vidi\Service\FileReferenceService;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
+use Fab\Vidi\Converter\Field;
+use Fab\Vidi\Converter\Property;
+use Fab\Vidi\Service\FileReferenceService;
+use Fab\Vidi\Tca\TcaService;
 
 /**
  * Content representation.
@@ -42,14 +42,14 @@ class Content implements \ArrayAccess {
 	 *
 	 * @param string $dataType will basically correspond to a table name, e.g fe_users, tt_content, ...
 	 * @param array $contentData
-	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content
+	 * @return \Fab\Vidi\Domain\Model\Content
 	 */
 	public function __construct($dataType, array $contentData = array()) {
 
 		$this->dataType = $dataType;
 		$this->uid = empty($contentData['uid']) ? NULL : (int)$contentData['uid'];
 
-		/** @var \TYPO3\CMS\Vidi\Tca\TableService $table */
+		/** @var \Fab\Vidi\Tca\TableService $table */
 		$table = TcaService::table($dataType);
 
 		// Initialize the array containing the allowed fields to be filled-in.
@@ -144,7 +144,7 @@ class Content implements \ArrayAccess {
 		$foreignDataType = TcaService::table($this->dataType)->field($fieldName)->relationDataType();
 
 		// Get the foreign repository instance form the factory
-		/** @var \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository $foreignContentRepository */
+		/** @var \Fab\Vidi\Domain\Repository\ContentRepository $foreignContentRepository */
 		$foreignContentRepository = ContentRepositoryFactory::getInstance($foreignDataType, $fieldName);
 
 		if (TcaService::table($this->dataType)->field($fieldName)->hasRelationWithCommaSeparatedValues()) {

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Result;
+namespace Fab\Vidi\ViewHelpers\Result;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,7 +15,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Result;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Service\SpreadSheetService;
+use Fab\Vidi\Service\SpreadSheetService;
 
 /**
  * View helper for rendering a CSV export request.
@@ -66,10 +66,10 @@ class ToXlsViewHelper extends AbstractToFormatViewHelper {
 	protected function writeXlsFile(array $objects) {
 
 		/** @var SpreadSheetService $spreadSheet */
-		$spreadSheet = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Service\SpreadSheetService');
+		$spreadSheet = GeneralUtility::makeInstance('Fab\Vidi\Service\SpreadSheetService');
 
 		// Handle object header, get the first object and get the list of fields.
-		/** @var \TYPO3\CMS\Vidi\Domain\Model\Content $object */
+		/** @var \Fab\Vidi\Domain\Model\Content $object */
 		$object = reset($objects);
 		$spreadSheet->addRow($object->toFields());
 

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers;
+namespace Fab\Vidi\ViewHelpers;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -39,9 +39,9 @@ class LanguagesViewHelper extends AbstractViewHelper {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Language\LanguageService
+	 * @return \Fab\Vidi\Language\LanguageService
 	 */
 	protected function getLanguageService() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Language\LanguageService');
+		return GeneralUtility::makeInstance('Fab\Vidi\Language\LanguageService');
 	}
 }

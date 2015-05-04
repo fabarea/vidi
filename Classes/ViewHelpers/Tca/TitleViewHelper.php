@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Tca;
+namespace Fab\Vidi\ViewHelpers\Tca;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,8 +15,8 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Tca;
  */
 
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3\CMS\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Domain\Model\Content;
+use Fab\Vidi\Tca\TcaService;
 
 /**
  * View helper which returns the title of a content object.

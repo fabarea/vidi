@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Tool;
+namespace Fab\Vidi\Tool;
 
 /**
  * This file is part of the TYPO3 CMS project.

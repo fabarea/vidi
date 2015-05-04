@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Domain\Repository;
+namespace Fab\Vidi\Domain\Repository;
 
 /**
  * This file is part of the TYPO3 CMS project.

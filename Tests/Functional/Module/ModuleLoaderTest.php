@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi;
+namespace Fab\Vidi\Tests\Module\Functional;
 
 /***************************************************************
  *  Copyright notice
@@ -28,12 +28,12 @@ namespace TYPO3\CMS\Vidi;
 require_once dirname(dirname(__FILE__)) . '/AbstractFunctionalTestCase.php';
 
 /**
- * Test case for class \TYPO3\CMS\Vidi\Module\ModuleLoader.
+ * Test case for class \Fab\Vidi\Module\ModuleLoader.
  */
-class ModuleLoaderTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTestCase {
+class ModuleLoaderTest extends \Fab\Vidi\Tests\Functional\AbstractFunctionalTestCase {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 * @var \Fab\Vidi\Module\ModuleLoader
 	 */
 	private $fixture;
 
@@ -50,7 +50,7 @@ class ModuleLoaderTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunction
 
 	public function setUp() {
 		parent::setUp();
-		$this->fixture = new \TYPO3\CMS\Vidi\Module\ModuleLoader($this->dataType);
+		$this->fixture = new \Fab\Vidi\Module\ModuleLoader($this->dataType);
 		$this->fixture->register();
 	}
 
@@ -102,7 +102,7 @@ class ModuleLoaderTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunction
 	 * @test
 	 */
 	public function getModuleConfigurationReturnsArrayWithSomeKeys() {
-		$moduleLoader = new \TYPO3\CMS\Vidi\Module\ModuleLoader($this->dataType);
+		$moduleLoader = new \Fab\Vidi\Module\ModuleLoader($this->dataType);
 		$moduleLoader->register();
 		$GLOBALS['_GET']['M'] = $this->moduleCode;
 
@@ -117,7 +117,7 @@ class ModuleLoaderTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunction
 	 * @test
 	 */
 	public function getModuleConfigurationWithParameterDataTypeReturnsDataType() {
-		$moduleLoader = new \TYPO3\CMS\Vidi\Module\ModuleLoader($this->dataType);
+		$moduleLoader = new \Fab\Vidi\Module\ModuleLoader($this->dataType);
 		$moduleLoader->register();
 		$GLOBALS['_GET']['M'] = $this->moduleCode;
 		$this->assertEquals($this->dataType, $moduleLoader->getModuleConfiguration('dataType'));

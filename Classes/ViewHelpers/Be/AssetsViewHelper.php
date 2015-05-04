@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Be;
+namespace Fab\Vidi\ViewHelpers\Be;
 
 
 /**
@@ -34,8 +34,8 @@ class AssetsViewHelper extends AbstractBackendViewHelper {
 		$doc = $this->getDocInstance();
 		$pageRenderer = $doc->getPageRenderer();
 
-		/** @var \TYPO3\CMS\Vidi\Module\ModuleLoader $moduleLoader */
-		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\Module\ModuleLoader');
+		/** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
+		$moduleLoader = $this->objectManager->get('Fab\Vidi\Module\ModuleLoader');
 
 		foreach ($moduleLoader->getAdditionalStyleSheetFiles() as $addCssFile) {
 			$fileNameAndPath = $this->resolvePath($addCssFile);

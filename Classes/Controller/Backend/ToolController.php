@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Controller\Backend;
+namespace Fab\Vidi\Controller\Backend;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,8 +15,8 @@ namespace TYPO3\CMS\Vidi\Controller\Backend;
  */
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Vidi\Tool\ToolInterface;
-use TYPO3\CMS\Vidi\Tool\ToolRegistry;
+use Fab\Vidi\Tool\ToolInterface;
+use Fab\Vidi\Tool\ToolRegistry;
 
 /**
  * Controller which handles tools related to a Vidi module.
@@ -49,7 +49,7 @@ class ToolController extends ActionController {
 	 * @param string $tool
 	 * @param array $arguments
 	 * @return void
-	 * @validate $tool TYPO3\CMS\Vidi\Domain\Validator\ToolValidator
+	 * @validate $tool Fab\Vidi\Domain\Validator\ToolValidator
 	 */
 	public function workAction($tool, array $arguments = array()) {
 		/** @var ToolInterface $tool */
@@ -61,9 +61,9 @@ class ToolController extends ActionController {
 	/**
 	 * Get the Vidi Module Loader.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 * @return \Fab\Vidi\Module\ModuleLoader
 	 */
 	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
+		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
 	}
 }

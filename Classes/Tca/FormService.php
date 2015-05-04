@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Tca;
+namespace Fab\Vidi\Tca;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -32,14 +32,14 @@ class FormService implements TcaServiceInterface {
 	/**
 	 * __construct
 	 *
-	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
+	 * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
 	 * @param string $tableName
-	 * @return \TYPO3\CMS\Vidi\Tca\FieldService
+	 * @return \Fab\Vidi\Tca\FieldService
 	 */
 	public function __construct($tableName) {
 		$this->tableName = $tableName;
 		if (empty($GLOBALS['TCA'][$this->tableName])) {
-			throw new \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException('No TCA existence for table name: ' . $this->tableName, 1356945107);
+			throw new \Fab\Vidi\Exception\InvalidKeyInArrayException('No TCA existence for table name: ' . $this->tableName, 1356945107);
 		}
 		$this->tca = $GLOBALS['TCA'][$this->tableName];
 	}
@@ -56,7 +56,7 @@ class FormService implements TcaServiceInterface {
 	/**
 	 * Returns a list of fields. If type is not given, return the first one found.
 	 *
-	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
+	 * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
 	 * @param int $type
 	 * @return string
 	 */
@@ -67,7 +67,7 @@ class FormService implements TcaServiceInterface {
 		}
 
 		if (empty($this->tca['types'][$type]['showitem'])) {
-			throw new \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException('There is not such TCA for type :' . $type, 1356028574);
+			throw new \Fab\Vidi\Exception\InvalidKeyInArrayException('There is not such TCA for type :' . $type, 1356028574);
 		}
 		return $this->tca['types'][$type]['showitem'];
 	}

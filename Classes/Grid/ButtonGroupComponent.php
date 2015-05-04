@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Grid;
+namespace Fab\Vidi\Grid;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -28,7 +28,7 @@ class ButtonGroupComponent extends GenericRendererComponent {
 			'canBeHidden' => FALSE,
 			'width' => '70px',
 		);
-		$className = 'TYPO3\CMS\Vidi\Grid\ButtonGroupRenderer';
+		$className = 'Fab\Vidi\Grid\ButtonGroupRenderer';
 		parent::__construct($className, $configuration);
 	}
 }

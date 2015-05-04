@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Formatter;
+namespace Fab\Vidi\Formatter;
 
 /**
  * This file is part of the TYPO3 CMS project.

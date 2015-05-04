@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\View\Button;
+namespace Fab\Vidi\View\Button;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,8 +14,8 @@ namespace TYPO3\CMS\Vidi\View\Button;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Vidi\Tool\ToolRegistry;
-use TYPO3\CMS\Vidi\View\AbstractComponentView;
+use Fab\Vidi\Tool\ToolRegistry;
+use Fab\Vidi\View\AbstractComponentView;
 
 /**
  * View helper which renders a dropdown menu for storage.

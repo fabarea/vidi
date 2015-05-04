@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Module;
+namespace Fab\Vidi\Module;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ModulePlugin implements SingletonInterface {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 * @var \Fab\Vidi\Module\ModuleLoader
 	 * @inject
 	 */
 	protected $moduleLoader;
@@ -34,11 +34,11 @@ class ModulePlugin implements SingletonInterface {
 	/**
 	 * Gets a singleton instance of this class.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Module\ModulePlugin
+	 * @return \Fab\Vidi\Module\ModulePlugin
 	 */
 	static public function getInstance() {
 		$objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
-		return $objectManager->get('TYPO3\CMS\Vidi\Module\ModulePlugin');
+		return $objectManager->get('Fab\Vidi\Module\ModulePlugin');
 	}
 
 	/**

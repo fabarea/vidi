@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Tca;
+namespace Fab\Vidi\Tca;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -47,7 +47,7 @@ class FieldService implements TcaServiceInterface {
 	 * @param array $tca
 	 * @param string $tableName
 	 * @param string $compositeField
-	 * @return \TYPO3\CMS\Vidi\Tca\FieldService
+	 * @return \Fab\Vidi\Tca\FieldService
 	 */
 	public function __construct($fieldName, array $tca, $tableName, $compositeField = '') {
 		$this->fieldName = $fieldName;

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Formatter;
+namespace Fab\Vidi\Formatter;
 
 /***************************************************************
  *  Copyright notice
@@ -26,18 +26,18 @@ namespace TYPO3\CMS\Vidi\Formatter;
  ***************************************************************/
 
 /**
- * Test case for class \TYPO3\CMS\Vidi\Formatter\Datetime.
+ * Test case for class \Fab\Vidi\Formatter\Datetime.
  */
 class DatetimeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Formatter\Date
+	 * @var \Fab\Vidi\Formatter\Date
 	 */
 	private $subject;
 
 	public function setUp() {
 		date_default_timezone_set('GMT');
-		$this->subject = new \TYPO3\CMS\Vidi\Formatter\Datetime();
+		$this->subject = new \Fab\Vidi\Formatter\Datetime();
 		$GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] = 'd.m.Y';
 		$GLOBALS['TYPO3_CONF_VARS']['SYS']['hhmm'] = 'H:i';
 	}

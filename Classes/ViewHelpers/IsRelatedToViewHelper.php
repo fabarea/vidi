@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers;
+namespace Fab\Vidi\ViewHelpers;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -27,7 +27,7 @@ class IsRelatedToViewHelper extends AbstractViewHelper {
 	 * The $fieldName corresponds to the relational field name
 	 * between the first content object and the second.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $relatedContent
+	 * @param \Fab\Vidi\Domain\Model\Content $relatedContent
 	 * @return boolean
 	 */
 	public function render($relatedContent) {
@@ -38,14 +38,14 @@ class IsRelatedToViewHelper extends AbstractViewHelper {
 		$numberOfObjects = $this->templateVariableContainer->get('numberOfObjects');
 		if ($numberOfObjects === 1) {
 
-			/** @var \TYPO3\CMS\Vidi\Domain\Model\Content $content */
+			/** @var \Fab\Vidi\Domain\Model\Content $content */
 			$content = $this->templateVariableContainer->get('content');
 			$fieldName = $this->templateVariableContainer->get('fieldName');
 
 			// Build an array of user group uids
 			$relatedContentsIdentifiers = array();
 
-			/** @var \TYPO3\CMS\Vidi\Domain\Model\Content $contentObject */
+			/** @var \Fab\Vidi\Domain\Model\Content $contentObject */
 			foreach ($content[$fieldName] as $contentObject) {
 				$relatedContentsIdentifiers[] = $contentObject->getUid();
 			}

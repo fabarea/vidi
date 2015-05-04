@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Grid;
+namespace Fab\Vidi\Grid;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -29,7 +29,7 @@ class CheckBoxComponent extends GenericRendererComponent {
 			'canBeHidden' => FALSE,
 			'html' => '<input type="checkbox" class="checkbox-row-top"/>',
 		);
-		$className = 'TYPO3\CMS\Vidi\Grid\CheckBoxRenderer';
+		$className = 'Fab\Vidi\Grid\CheckBoxRenderer';
 		parent::__construct($className, $configuration);
 	}
 }

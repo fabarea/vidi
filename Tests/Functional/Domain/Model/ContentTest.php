@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Domain\Model;
+namespace Fab\Vidi\Domain\Model;
 
 /***************************************************************
  *  Copyright notice
@@ -28,12 +28,12 @@ namespace TYPO3\CMS\Vidi\Domain\Model;
 require_once dirname(dirname(dirname(__FILE__))) . '/AbstractFunctionalTestCase.php';
 
 /**
- * Test case for class \TYPO3\CMS\Vidi\Domain\Model\Content.
+ * Test case for class \Fab\Vidi\Domain\Model\Content.
  */
-class ContentTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTestCase {
+class ContentTest extends \Fab\Vidi\Tests\Functional\AbstractFunctionalTestCase {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Domain\Model\Content
+	 * @var \Fab\Vidi\Domain\Model\Content
 	 */
 	private $fixture;
 
@@ -48,7 +48,7 @@ class ContentTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTes
 			'foo' => array(),
 			'foo_bar' => array(),
 		);
-		$this->fixture = new \TYPO3\CMS\Vidi\Domain\Model\Content($this->dataType);
+		$this->fixture = new \Fab\Vidi\Domain\Model\Content($this->dataType);
 	}
 
 	public function tearDown() {
@@ -63,7 +63,7 @@ class ContentTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTes
 		$data = array(
 			$fieldName => 'foo data',
 		);
-		$object = new \TYPO3\CMS\Vidi\Domain\Model\Content($this->dataType, $data);
+		$object = new \Fab\Vidi\Domain\Model\Content($this->dataType, $data);
 		$this->assertObjectHasAttribute($propertyName, $object);
 	}
 
@@ -76,7 +76,7 @@ class ContentTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTes
 			$fieldName => 'foo data',
 		);
 		$this->markTestIncomplete(); # TCA must be faked
-		#$object = new \TYPO3\CMS\Vidi\Domain\Model\Content($this->dataType, $data);
+		#$object = new \Fab\Vidi\Domain\Model\Content($this->dataType, $data);
 		#$this->assertSame($data[$fieldName], $object[$fieldName]);
 	}
 
@@ -89,7 +89,7 @@ class ContentTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTes
 			$fieldName => 'foo data',
 		);
 		$this->markTestIncomplete(); # TCA must be faked
-		#$object = new \TYPO3\CMS\Vidi\Domain\Model\Content($this->dataType, $data);
+		#$object = new \Fab\Vidi\Domain\Model\Content($this->dataType, $data);
 		#$getter = 'get' . ucfirst($propertyName);
 		#$this->assertSame($data[$fieldName], $object->$getter());
 	}
@@ -102,7 +102,7 @@ class ContentTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTes
 		$data = array(
 			$fieldName => 'foo data',
 		);
-		$object = new \TYPO3\CMS\Vidi\Domain\Model\Content($this->dataType, $data);
+		$object = new \Fab\Vidi\Domain\Model\Content($this->dataType, $data);
 		$array = $object->toArray();
 		$this->assertArrayHasKey($fieldName, $array);
 	}

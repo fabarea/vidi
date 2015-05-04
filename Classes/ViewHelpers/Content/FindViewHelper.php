@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Content;
+namespace Fab\Vidi\ViewHelpers\Content;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,8 +14,8 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Content;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Vidi\Domain\Model\Selection;
-use TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory;
+use Fab\Vidi\Domain\Model\Selection;
+use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
 
 /**
  * View helper which returns a list of records.
@@ -43,8 +43,8 @@ class FindViewHelper extends AbstractContentViewHelper {
 
 		if ($selection > 0) {
 
-			/** @var \TYPO3\CMS\Vidi\Domain\Repository\SelectionRepository $selectionRepository */
-			$selectionRepository = $this->objectManager->get('TYPO3\CMS\Vidi\Domain\Repository\SelectionRepository');
+			/** @var \Fab\Vidi\Domain\Repository\SelectionRepository $selectionRepository */
+			$selectionRepository = $this->objectManager->get('Fab\Vidi\Domain\Repository\SelectionRepository');
 
 			/** @var Selection $selection */
 			$selection = $selectionRepository->findByUid($selection);

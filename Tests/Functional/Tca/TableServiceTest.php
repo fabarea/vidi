@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Tca;
+namespace Fab\Vidi\Tca;
 
 /***************************************************************
  *  Copyright notice
@@ -28,12 +28,12 @@ namespace TYPO3\CMS\Vidi\Tca;
 require_once dirname(dirname(__FILE__)) . '/AbstractFunctionalTestCase.php';
 
 /**
- * Test case for class \TYPO3\CMS\Vidi\Tca\TableService.
+ * Test case for class \Fab\Vidi\Tca\TableService.
  */
-class TableServiceTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTestCase {
+class TableServiceTest extends \Fab\Vidi\Tests\Functional\AbstractFunctionalTestCase {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Tca\TableService
+	 * @var \Fab\Vidi\Tca\TableService
 	 */
 	private $fixture;
 
@@ -41,7 +41,7 @@ class TableServiceTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunction
 		parent::setUp();
 		$tableName = 'fe_users';
 		$serviceType = 'table';
-		$this->fixture = new \TYPO3\CMS\Vidi\Tca\TableService($tableName, $serviceType);
+		$this->fixture = new \Fab\Vidi\Tca\TableService($tableName, $serviceType);
 	}
 
 	public function tearDown() {

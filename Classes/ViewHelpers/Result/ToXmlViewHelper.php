@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Result;
+namespace Fab\Vidi\ViewHelpers\Result;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -66,7 +66,7 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper {
 	protected function writeXmlFile(array $objects) {
 
 		// Handle CSV header, get first object of $objects
-		/** @var \TYPO3\CMS\Vidi\Domain\Model\Content $object */
+		/** @var \Fab\Vidi\Domain\Model\Content $object */
 		$object = reset($objects);
 		$this->checkWhetherObjectMayIncludeFiles($object);
 

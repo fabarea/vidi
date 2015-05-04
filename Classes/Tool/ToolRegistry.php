@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Tool;
+namespace Fab\Vidi\Tool;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -35,10 +35,10 @@ class ToolRegistry implements SingletonInterface {
 	/**
 	 * Returns a class instance.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Tool\ToolRegistry
+	 * @return \Fab\Vidi\Tool\ToolRegistry
 	 */
 	static public function getInstance() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Tool\ToolRegistry');
+		return GeneralUtility::makeInstance('Fab\Vidi\Tool\ToolRegistry');
 	}
 
 	/**

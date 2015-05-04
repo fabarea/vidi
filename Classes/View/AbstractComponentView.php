@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\View;
+namespace Fab\Vidi\View;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,7 +14,7 @@ namespace TYPO3\CMS\Vidi\View;
  * The TYPO3 project - inspiring people to share!
  */
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Domain\Model\Content;
+use Fab\Vidi\Domain\Model\Content;
 
 /**
  * Abstract Component View.
@@ -24,10 +24,10 @@ abstract class AbstractComponentView implements ViewComponentInterface {
 	/**
 	 * Get the Vidi Module Loader.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 * @return \Fab\Vidi\Module\ModuleLoader
 	 */
 	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
+		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
 	}
 
 	/**

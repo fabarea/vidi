@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Tca;
+namespace Fab\Vidi\Tca;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,8 +15,8 @@ namespace TYPO3\CMS\Vidi\Tca;
  */
 
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException;
-use TYPO3\CMS\Vidi\Facet\FacetInterface;
+use Fab\Vidi\Exception\InvalidKeyInArrayException;
+use Fab\Vidi\Facet\FacetInterface;
 
 /**
  * A class to handle TCA grid configuration
@@ -38,8 +38,8 @@ class FacetService implements TcaServiceInterface {
 	 *
 	 * @param FacetInterface $facet
 	 * @param string $tableName
-	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
-	 * @return \TYPO3\CMS\Vidi\Tca\FacetService
+	 * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
+	 * @return \Fab\Vidi\Tca\FacetService
 	 */
 	public function __construct($facet, $tableName) {
 

@@ -10,7 +10,7 @@ $tca = array(
 		),
 		'columns' => array(
 			'__checkbox' => array(
-				'renderer' => new \TYPO3\CMS\Vidi\Grid\CheckBoxComponent(),
+				'renderer' => new \Fab\Vidi\Grid\CheckBoxComponent(),
 			),
 			'uid' => array(
 				'visible' => FALSE,
@@ -33,12 +33,12 @@ $tca = array(
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:crdate',
 			),
 			'hidden' => array(
-				'renderer' => 'TYPO3\CMS\Vidi\Grid\VisibilityRenderer',
+				'renderer' => 'Fab\Vidi\Grid\VisibilityRenderer',
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:visibility_abbreviation',
 				'width' => '3%',
 			),
 			'__buttons' => array(
-				'renderer' => new \TYPO3\CMS\Vidi\Grid\ButtonGroupComponent(),
+				'renderer' => new \Fab\Vidi\Grid\ButtonGroupComponent(),
 			),
 		)
 	)

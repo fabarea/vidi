@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Tca;
+namespace Fab\Vidi\Tca;
 
 /***************************************************************
  *  Copyright notice
@@ -28,12 +28,12 @@ namespace TYPO3\CMS\Vidi\Tca;
 require_once dirname(dirname(__FILE__)) . '/AbstractFunctionalTestCase.php';
 
 /**
- * Test case for class \TYPO3\CMS\Vidi\Tca\FieldService.
+ * Test case for class \Fab\Vidi\Tca\FieldService.
  */
-class FieldServiceTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTestCase {
+class FieldServiceTest extends \Fab\Vidi\Tests\Functional\AbstractFunctionalTestCase {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Tca\TableService
+	 * @var \Fab\Vidi\Tca\TableService
 	 */
 	private $fixture;
 
@@ -50,7 +50,7 @@ class FieldServiceTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunction
 	public function setUp() {
 		parent::setUp();
 
-		$moduleLoader = new \TYPO3\CMS\Vidi\Module\ModuleLoader($this->dataType);
+		$moduleLoader = new \Fab\Vidi\Module\ModuleLoader($this->dataType);
 		$moduleLoader->register();
 		$GLOBALS['_GET']['M'] = $this->moduleCode;
 
@@ -140,7 +140,7 @@ class FieldServiceTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunction
 
 		$tableName = 'fe_users';
 		$serviceType = 'field';
-		$this->fixture =  \TYPO3\CMS\Vidi\Tca\Tca::table($tableName);
+		$this->fixture =  \Fab\Vidi\Tca\Tca::table($tableName);
 	}
 
 	public function tearDown() {

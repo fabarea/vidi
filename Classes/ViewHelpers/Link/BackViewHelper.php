@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Link;
+namespace Fab\Vidi\ViewHelpers\Link;
 
 /**
  * This file is part of the TYPO3 CMS project.

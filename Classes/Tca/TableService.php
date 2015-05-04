@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Tca;
+namespace Fab\Vidi\Tca;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -17,7 +17,7 @@ namespace TYPO3\CMS\Vidi\Tca;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException;
+use Fab\Vidi\Exception\InvalidKeyInArrayException;
 
 /**
  * A class to handle TCA ctrl.
@@ -47,7 +47,7 @@ class TableService implements TcaServiceInterface {
 	/**
 	 * @throws InvalidKeyInArrayException
 	 * @param string $tableName
-	 * @return \TYPO3\CMS\Vidi\Tca\TableService
+	 * @return \Fab\Vidi\Tca\TableService
 	 */
 	public function __construct($tableName) {
 		$this->tableName = $tableName;
@@ -61,7 +61,7 @@ class TableService implements TcaServiceInterface {
 	/**
 	 * Tell whether the table has a label field.
 	 *
-	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
+	 * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
 	 * @return string
 	 */
 	public function hasLabelField() {
@@ -71,7 +71,7 @@ class TableService implements TcaServiceInterface {
 	/**
 	 * Get the label name of table name.
 	 *
-	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
+	 * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
 	 * @return string
 	 */
 	public function getLabelField() {
@@ -111,7 +111,7 @@ class TableService implements TcaServiceInterface {
 	/**
 	 * Return the "disabled" field.
 	 *
-	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
+	 * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
 	 * @return string|NULL
 	 */
 	public function getHiddenField() {
@@ -126,7 +126,7 @@ class TableService implements TcaServiceInterface {
 	/**
 	 * Return the "starttime" field.
 	 *
-	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
+	 * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
 	 * @return string|NULL
 	 */
 	public function getStartTimeField() {
@@ -141,7 +141,7 @@ class TableService implements TcaServiceInterface {
 	/**
 	 * Return the "endtime" field.
 	 *
-	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
+	 * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
 	 * @return string|NULL
 	 */
 	public function getEndTimeField() {
@@ -384,7 +384,7 @@ class TableService implements TcaServiceInterface {
 	/**
 	 * @param string $fieldName
 	 * @throws \Exception
-	 * @return \TYPO3\CMS\Vidi\Tca\FieldService
+	 * @return \Fab\Vidi\Tca\FieldService
 	 */
 	public function field($fieldName) {
 
@@ -419,7 +419,7 @@ class TableService implements TcaServiceInterface {
 		if (empty($this->instances[$fieldName])) {
 
 			$instance = GeneralUtility::makeInstance(
-				'TYPO3\CMS\Vidi\Tca\FieldService',
+				'Fab\Vidi\Tca\FieldService',
 				$fieldName,
 				$this->columnTca[$fieldName],
 				$this->tableName,

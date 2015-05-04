@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Service;
+namespace Fab\Vidi\Service;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -19,8 +19,8 @@ use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Domain\Model\Content;
+use Fab\Vidi\Tca\TcaService;
 
 /**
  * File References service.
@@ -36,10 +36,10 @@ class FileReferenceService implements SingletonInterface {
 	/**
 	 * Returns a class instance
 	 *
-	 * @return \TYPO3\CMS\Vidi\Service\FileReferenceService
+	 * @return \Fab\Vidi\Service\FileReferenceService
 	 */
 	static public function getInstance() {
-		return GeneralUtility::makeInstance('\TYPO3\CMS\Vidi\Service\FileReferenceService');
+		return GeneralUtility::makeInstance('\Fab\Vidi\Service\FileReferenceService');
 	}
 
 	/**

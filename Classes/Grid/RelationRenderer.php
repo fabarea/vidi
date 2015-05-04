@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Grid;
+namespace Fab\Vidi\Grid;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,8 +16,8 @@ namespace TYPO3\CMS\Vidi\Grid;
 
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Domain\Model\Content;
+use Fab\Vidi\Tca\TcaService;
 
 /**
  * Class rendering relation
@@ -57,7 +57,7 @@ class RelationRenderer extends GridRendererAbstract {
 			if (!empty($this->object[$this->fieldName])) {
 				$template = '<li><a href="%s" data-uid="%s" class="btn-edit invisible">%s</a><span>%s</span></li>';
 
-				/** @var $foreignObject \TYPO3\CMS\Vidi\Domain\Model\Content */
+				/** @var $foreignObject \Fab\Vidi\Domain\Model\Content */
 				foreach ($this->object[$this->fieldName] as $foreignObject) {
 					$result .= sprintf($template,
 						$this->getEditUri($foreignObject),

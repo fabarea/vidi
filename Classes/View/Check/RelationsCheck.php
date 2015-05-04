@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\View\Check;
+namespace Fab\Vidi\View\Check;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,8 +14,8 @@ namespace TYPO3\CMS\Vidi\View\Check;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Vidi\View\AbstractComponentView;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\View\AbstractComponentView;
+use Fab\Vidi\Tca\TcaService;
 
 /**
  * View which renders check.
@@ -139,13 +139,13 @@ EOF;
 
 		# Config with key "__checkbox" must be replaced by:
 		'__checkbox' => array(
-			'renderer' => new \TYPO3\CMS\Vidi\Grid\CheckBoxComponent(),
+			'renderer' => new \Fab\Vidi\Grid\CheckBoxComponent(),
 		),
 		...
 
 		# Config with key "__buttons" must be replaced by:
 		'__buttons' => array(
-			'renderer' => new \TYPO3\CMS\Vidi\Grid\ButtonGroupComponent(),
+			'renderer' => new \Fab\Vidi\Grid\ButtonGroupComponent(),
 		),
 );
 </pre>

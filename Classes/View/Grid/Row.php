@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\View\Grid;
+namespace Fab\Vidi\View\Grid;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,11 +16,11 @@ namespace TYPO3\CMS\Vidi\View\Grid;
 
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Vidi\Language\LanguageService;
-use TYPO3\CMS\Vidi\Language\LocalizationStatus;
-use TYPO3\CMS\Vidi\Tca\TcaService;
-use TYPO3\CMS\Vidi\View\AbstractComponentView;
+use Fab\Vidi\Domain\Model\Content;
+use Fab\Vidi\Language\LanguageService;
+use Fab\Vidi\Language\LocalizationStatus;
+use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\View\AbstractComponentView;
 
 /**
  * View helper for rendering a row of a content object.
@@ -49,7 +49,7 @@ class Row extends AbstractComponentView {
 	/**
 	 * Render a row to be displayed in the Grid given an Content Object.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param \Fab\Vidi\Domain\Model\Content $object
 	 * @param int $rowIndex
 	 * @return array
 	 */
@@ -76,7 +76,7 @@ class Row extends AbstractComponentView {
 					// if is relation has one
 					foreach ($renderers as $rendererClassName => $rendererConfiguration) {
 
-						/** @var $rendererObject \TYPO3\CMS\Vidi\Grid\GridRendererInterface */
+						/** @var $rendererObject \Fab\Vidi\Grid\GridRendererInterface */
 						$rendererObject = GeneralUtility::makeInstance($rendererClassName);
 						$value .= $rendererObject
 							->setObject($object)
@@ -150,7 +150,7 @@ class Row extends AbstractComponentView {
 	/**
 	 * Store some often used variable values and speed up the processing.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param \Fab\Vidi\Domain\Model\Content $object
 	 * @param string $fieldNameAndPath
 	 * @return array
 	 */
@@ -384,7 +384,7 @@ class Row extends AbstractComponentView {
 	/**
 	 * Compute the value for the Content object according to a field name.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param \Fab\Vidi\Domain\Model\Content $object
 	 * @param string $fieldNameAndPath
 	 * @return string
 	 */
@@ -451,7 +451,7 @@ class Row extends AbstractComponentView {
 	 *       e.g DefaultValueGridProcessor, TextAreaGridProcessor, ...
 	 *
 	 * @param string $value
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param \Fab\Vidi\Domain\Model\Content $object
 	 * @param string $fieldNameAndPath
 	 * @return string
 	 */
@@ -490,7 +490,7 @@ class Row extends AbstractComponentView {
 		}
 		$className = $configuration['format'];
 
-		/** @var \TYPO3\CMS\Vidi\Formatter\FormatterInterface $formatter */
+		/** @var \Fab\Vidi\Formatter\FormatterInterface $formatter */
 		$formatter = GeneralUtility::makeInstance($className);
 		$value = $formatter->format($value);
 
@@ -567,16 +567,16 @@ class Row extends AbstractComponentView {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 * @return \Fab\Vidi\Resolver\FieldPathResolver
 	 */
 	protected function getFieldPathResolver() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
 	}
 	/**
-	 * @return \TYPO3\CMS\Vidi\Resolver\ContentObjectResolver
+	 * @return \Fab\Vidi\Resolver\ContentObjectResolver
 	 */
 	protected function getContentObjectResolver () {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\ContentObjectResolver');
+		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\ContentObjectResolver');
 	}
 
 	/**
@@ -590,7 +590,7 @@ class Row extends AbstractComponentView {
 	 * @return LanguageService
 	 */
 	protected function getLanguageService() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Language\LanguageService');
+		return GeneralUtility::makeInstance('Fab\Vidi\Language\LanguageService');
 	}
 
 }

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Result;
+namespace Fab\Vidi\ViewHelpers\Result;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -17,9 +17,9 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Result;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3\CMS\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Vidi\Service\FileReferenceService;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Domain\Model\Content;
+use Fab\Vidi\Service\FileReferenceService;
+use Fab\Vidi\Tca\TcaService;
 
 /**
  * Abstract View helper for rendering an Export request.
@@ -83,7 +83,7 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper {
 	 */
 	protected function initializeEnvironment(array $objects) {
 
-		/** @var \TYPO3\CMS\Vidi\Domain\Model\Content $object */
+		/** @var \Fab\Vidi\Domain\Model\Content $object */
 		$object = reset($objects);
 
 		$this->temporaryDirectory = PATH_site . 'typo3temp/' . uniqid() . '/';
@@ -100,7 +100,7 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper {
 	/**
 	 * Fetch the files given an object.
 	 *
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param \Fab\Vidi\Domain\Model\Content $object
 	 * @return void
 	 */
 	protected function collectFiles(Content $object) {
@@ -168,10 +168,10 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\ViewHelpers\Grid\RowsViewHelper
+	 * @return \Fab\Vidi\ViewHelpers\Grid\RowsViewHelper
 	 */
 	protected function getRowsViewHelper() {
-		return $this->objectManager->get('TYPO3\CMS\Vidi\ViewHelpers\Grid\RowsViewHelper');
+		return $this->objectManager->get('Fab\Vidi\ViewHelpers\Grid\RowsViewHelper');
 	}
 
 	/**

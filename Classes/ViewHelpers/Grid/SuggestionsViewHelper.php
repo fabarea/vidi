@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
+namespace Fab\Vidi\ViewHelpers\Grid;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,7 +16,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\TcaService;
 
 /**
  * View helper which returns suggestion for the Visual Search bar.
@@ -40,11 +40,11 @@ class SuggestionsViewHelper extends AbstractViewHelper {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Facet\FacetSuggestionService
+	 * @return \Fab\Vidi\Facet\FacetSuggestionService
 	 */
 	protected function getFacetSuggestionService () {
 		$settings = $this->templateVariableContainer->get('settings');
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Facet\FacetSuggestionService', $settings);
+		return GeneralUtility::makeInstance('Fab\Vidi\Facet\FacetSuggestionService', $settings);
 	}
 
 }

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Domain\Repository;
+namespace Fab\Vidi\Domain\Repository;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -33,15 +33,15 @@ class ContentRepositoryFactory implements SingletonInterface {
 	 *
 	 * @param string $dataType
 	 * @param string $sourceFieldName
-	 * @return \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository
+	 * @return \Fab\Vidi\Domain\Repository\ContentRepository
 	 */
 	static public function getInstance($dataType = NULL, $sourceFieldName = '') {
 
-		/** @var \TYPO3\CMS\Vidi\Module\ModuleLoader $moduleLoader */
+		/** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
 		if (is_null($dataType)) {
 
 			// Try to get the data type from the module loader.
-			$moduleLoader = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
+			$moduleLoader = GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
 			$dataType = $moduleLoader->getDataType();
 		}
 
@@ -51,7 +51,7 @@ class ContentRepositoryFactory implements SingletonInterface {
 		}
 
 		if (empty(self::$instances[$dataType])) {
-			$className = 'TYPO3\CMS\Vidi\Domain\Repository\ContentRepository';
+			$className = 'Fab\Vidi\Domain\Repository\ContentRepository';
 			self::$instances[$dataType] = GeneralUtility::makeInstance($className, $dataType, $sourceFieldName);
 		}
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace TYPO3\CMS\Vidi\Tests\Functional;
+namespace Fab\Vidi\Tests\Functional;
 
 abstract class AbstractFunctionalTestCase extends \TYPO3\CMS\Core\Tests\FunctionalTestCase
 {

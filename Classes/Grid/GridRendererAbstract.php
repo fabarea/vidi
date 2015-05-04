@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Grid;
+namespace Fab\Vidi\Grid;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -23,7 +23,7 @@ abstract class GridRendererAbstract implements GridRendererInterface {
 	/**
 	 * The content object.
 	 *
-	 * @var \TYPO3\CMS\Vidi\Domain\Model\Content
+	 * @var \Fab\Vidi\Domain\Model\Content
 	 */
 	 protected $object;
 
@@ -48,14 +48,14 @@ abstract class GridRendererAbstract implements GridRendererInterface {
 	protected $gridRendererConfiguration = array();
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content
+	 * @return \Fab\Vidi\Domain\Model\Content
 	 */
 	public function getObject() {
 		return $this->object;
 	}
 
 	/**
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param \Fab\Vidi\Domain\Model\Content $object
 	 * @return $this
 	 */
 	public function setObject($object) {
@@ -130,9 +130,9 @@ abstract class GridRendererAbstract implements GridRendererInterface {
 	/**
 	 * Get the Vidi Module Loader.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 * @return \Fab\Vidi\Module\ModuleLoader
 	 */
 	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
+		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
 	}
 }

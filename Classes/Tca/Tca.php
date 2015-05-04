@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Tca;
+namespace Fab\Vidi\Tca;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,8 +16,8 @@ namespace TYPO3\CMS\Vidi\Tca;
 
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Vidi\Exception\NotExistingClassException;
+use Fab\Vidi\Domain\Model\Content;
+use Fab\Vidi\Exception\NotExistingClassException;
 
 /**
  * A class to handle TCA ctrl.
@@ -69,13 +69,13 @@ class Tca implements SingletonInterface, TcaServiceInterface {
 	static protected function getService($dataType = '', $serviceType) {
 		if (TYPO3_MODE == 'BE' && empty($dataType)) {
 
-			/** @var \TYPO3\CMS\Vidi\Module\ModuleLoader $moduleLoader */
-			$moduleLoader = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
+			/** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
+			$moduleLoader = GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
 			$dataType = $moduleLoader->getDataType();
 		}
 
 		if (empty(self::$instances[$dataType][$serviceType])) {
-			$className = sprintf('TYPO3\CMS\Vidi\Tca\%sService', ucfirst($serviceType));
+			$className = sprintf('Fab\Vidi\Tca\%sService', ucfirst($serviceType));
 
 			// Signal to pre-process the TCA of the given $dataType.
 			self::emitPreProcessTcaSignal($dataType, $serviceType);
@@ -90,7 +90,7 @@ class Tca implements SingletonInterface, TcaServiceInterface {
 	 * Returns a "grid" service instance.
 	 *
 	 * @param string|Content $tableNameOrContentObject
-	 * @return \TYPO3\CMS\Vidi\Tca\GridService
+	 * @return \Fab\Vidi\Tca\GridService
 	 */
 	static public function grid($tableNameOrContentObject = '') {
 		$tableName = $tableNameOrContentObject instanceof Content ? $tableNameOrContentObject->getDataType() : $tableNameOrContentObject;
@@ -101,7 +101,7 @@ class Tca implements SingletonInterface, TcaServiceInterface {
 	 * Returns a "table" service instance ("ctrl" part of the TCA).
 	 *
 	 * @param string|Content $tableNameOrContentObject
-	 * @return \TYPO3\CMS\Vidi\Tca\TableService
+	 * @return \Fab\Vidi\Tca\TableService
 	 */
 	static public function table($tableNameOrContentObject = '') {
 		$tableName = $tableNameOrContentObject instanceof Content ? $tableNameOrContentObject->getDataType() : $tableNameOrContentObject;
@@ -132,7 +132,7 @@ class Tca implements SingletonInterface, TcaServiceInterface {
 	 * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
 	 */
 	static protected function emitPreProcessTcaSignal($dataType, $serviceType) {
-		self::getSignalSlotDispatcher()->dispatch('TYPO3\CMS\Vidi\Tca\Tca', 'preProcessTca', array($dataType, $serviceType));
+		self::getSignalSlotDispatcher()->dispatch('Fab\Vidi\Tca\Tca', 'preProcessTca', array($dataType, $serviceType));
 	}
 
 	/**

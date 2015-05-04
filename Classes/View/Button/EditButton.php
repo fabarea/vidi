@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\View\Button;
+namespace Fab\Vidi\View\Button;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -17,8 +17,8 @@ namespace TYPO3\CMS\Vidi\View\Button;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Vidi\View\AbstractComponentView;
-use TYPO3\CMS\Vidi\Domain\Model\Content;
+use Fab\Vidi\View\AbstractComponentView;
+use Fab\Vidi\Domain\Model\Content;
 
 /**
  * View which renders a "edit" button to be placed in the grid.
@@ -41,10 +41,10 @@ class EditButton extends AbstractComponentView {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\View\Uri\EditUri
+	 * @return \Fab\Vidi\View\Uri\EditUri
 	 */
 	protected function getUriRenderer() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\View\Uri\EditUri');
+		return GeneralUtility::makeInstance('Fab\Vidi\View\Uri\EditUri');
 	}
 
 }

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Signal;
+namespace Fab\Vidi\Signal;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,7 +14,7 @@ namespace TYPO3\CMS\Vidi\Signal;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Vidi\Persistence\Matcher;
+use Fab\Vidi\Persistence\Matcher;
 
 /**
  * Class for storing arguments of a "after find content objects" signal.
@@ -121,7 +121,7 @@ class AfterFindContentObjectsSignalArguments {
 	}
 
 	/**
-	 * @param \TYPO3\CMS\Vidi\Persistence\Matcher $matcher
+	 * @param \Fab\Vidi\Persistence\Matcher $matcher
 	 * @return $this
 	 */
 	public function setMatcher($matcher) {
@@ -130,7 +130,7 @@ class AfterFindContentObjectsSignalArguments {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Persistence\Matcher
+	 * @return \Fab\Vidi\Persistence\Matcher
 	 */
 	public function getMatcher() {
 		return $this->matcher;

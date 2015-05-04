@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\View\System;
+namespace Fab\Vidi\View\System;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,8 +15,8 @@ namespace TYPO3\CMS\Vidi\View\System;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Vidi\View\AbstractComponentView;
+use Fab\Vidi\Domain\Model\Content;
+use Fab\Vidi\View\AbstractComponentView;
 
 /**
  * View for rendering buttons in the grids according to a Content object.

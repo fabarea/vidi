@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Converter;
+namespace Fab\Vidi\Converter;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,7 +16,7 @@ namespace TYPO3\CMS\Vidi\Converter;
 
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Domain\Model\Content;
+use Fab\Vidi\Domain\Model\Content;
 
 /**
  * Convert a field name to property name.
@@ -40,12 +40,12 @@ class Field implements SingletonInterface {
 
 	/**
 	 * @param string $fieldName
-	 * @return \TYPO3\CMS\Vidi\Converter\Field
+	 * @return \Fab\Vidi\Converter\Field
 	 */
 	static public function name($fieldName) {
 		self::$currentField = $fieldName;
 		self::$currentTable = ''; // reset the table name value.
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Converter\Field');
+		return GeneralUtility::makeInstance('Fab\Vidi\Converter\Field');
 	}
 
 	/**

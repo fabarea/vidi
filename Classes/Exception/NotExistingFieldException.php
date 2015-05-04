@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Exception;
+namespace Fab\Vidi\Exception;
 
 /**
  * This file is part of the TYPO3 CMS project.

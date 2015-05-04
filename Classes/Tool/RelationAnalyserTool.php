@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Tool;
+namespace Fab\Vidi\Tool;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -79,19 +79,19 @@ class RelationAnalyserTool extends AbstractTool {
 	/**
 	 * Get the Vidi Module Loader.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 * @return \Fab\Vidi\Module\ModuleLoader
 	 */
 	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
+		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
 	}
 
 	/**
 	 * Get the Vidi Module Loader.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Grid\GridAnalyserService
+	 * @return \Fab\Vidi\Grid\GridAnalyserService
 	 */
 	protected function getGridAnalyserService() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Grid\GridAnalyserService');
+		return GeneralUtility::makeInstance('Fab\Vidi\Grid\GridAnalyserService');
 	}
 }
 
