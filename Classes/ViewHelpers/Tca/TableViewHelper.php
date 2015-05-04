@@ -15,7 +15,7 @@ namespace Fab\Vidi\ViewHelpers\Tca;
  */
 
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * View helper which wraps the TCA Table service.
@@ -30,7 +30,7 @@ class TableViewHelper extends AbstractViewHelper {
 	 * @return string
 	 */
 	public function render($key, $dataType = '') {
-		$result = TcaService::table($dataType)->getTca();
+		$result = Tca::table($dataType)->getTca();
 
 		// Explode segment and loop around.
 		$keys = explode('|', $key);

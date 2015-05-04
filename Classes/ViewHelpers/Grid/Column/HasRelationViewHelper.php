@@ -16,7 +16,7 @@ namespace Fab\Vidi\ViewHelpers\Grid\Column;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Tells whether the current field name has a relation to the main content (given by the Module Loader implicitly).
@@ -32,7 +32,7 @@ class HasRelationViewHelper extends AbstractViewHelper {
 		$fieldNameAndPath = $this->templateVariableContainer->get('columnName');
 		$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
 		$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
-		$hasRelation = TcaService::table($dataType)->field($fieldName)->hasRelation();
+		$hasRelation = Tca::table($dataType)->field($fieldName)->hasRelation();
 		return $hasRelation;
 	}
 

@@ -15,7 +15,7 @@ namespace Fab\Vidi\Domain\Validator;
  */
 
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Validate "columns" to be displayed in the BE module.
@@ -31,7 +31,7 @@ class ColumnsValidator extends AbstractValidator {
 	public function isValid($columns) {
 
 		foreach ($columns as $columnName) {
-			if (TcaService::grid()->hasNotField($columnName)) {
+			if (Tca::grid()->hasNotField($columnName)) {
 				$message = sprintf('Column "%s" is not allowed. Actually, it was not configured to be displayed in the grid.', $columnName);
 				$this->addError($message , 1380019718);
 			}

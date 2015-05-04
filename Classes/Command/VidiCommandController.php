@@ -16,7 +16,7 @@ namespace Fab\Vidi\Command;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Command Controller which handles actions related to Vidi.
@@ -37,7 +37,7 @@ class VidiCommandController extends CommandController {
 				continue;
 			}
 
-			$fields = TcaService::grid($tableName)->getFields();
+			$fields = Tca::grid($tableName)->getFields();
 			if (!empty($fields)) {
 
 				$relations = $this->getGridAnalyserService()->checkRelationForTable($tableName);

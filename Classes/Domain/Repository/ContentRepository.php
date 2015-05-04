@@ -25,7 +25,7 @@ use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Persistence\Matcher;
 use Fab\Vidi\Persistence\Order;
 use Fab\Vidi\Persistence\Query;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 
 /**
@@ -317,7 +317,7 @@ class ContentRepository implements RepositoryInterface {
 		// Search term case
 		if ($matcher->getSearchTerm()) {
 
-			$fields = GeneralUtility::trimExplode(',', TcaService::table($this->dataType)->getSearchFields(), TRUE);
+			$fields = GeneralUtility::trimExplode(',', Tca::table($this->dataType)->getSearchFields(), TRUE);
 
 			$constraints = array();
 			$likeClause = sprintf('%%%s%%', $matcher->getSearchTerm());
@@ -327,9 +327,9 @@ class ContentRepository implements RepositoryInterface {
 					$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $this->dataType);
 					$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $this->dataType);
 
-					if (TcaService::table($dataType)->hasField($fieldName) && TcaService::table($dataType)->field($fieldName)->hasRelation()) {
-						$foreignTable = TcaService::table($dataType)->field($fieldName)->getForeignTable();
-						$fieldNameAndPath = $fieldNameAndPath . '.' . TcaService::table($foreignTable)->getLabelField();
+					if (Tca::table($dataType)->hasField($fieldName) && Tca::table($dataType)->field($fieldName)->hasRelation()) {
+						$foreignTable = Tca::table($dataType)->field($fieldName)->getForeignTable();
+						$fieldNameAndPath = $fieldNameAndPath . '.' . Tca::table($foreignTable)->getLabelField();
 					}
 					$constraints[] = $query->like($fieldNameAndPath, $likeClause);
 				}
@@ -358,8 +358,8 @@ class ContentRepository implements RepositoryInterface {
 			$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $this->dataType);
 			$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $this->dataType);
 
-			if (TcaService::table($dataType)->field($fieldName)->isNumerical()
-				&& !TcaService::table($dataType)->field($fieldName)->hasRelation()
+			if (Tca::table($dataType)->field($fieldName)->isNumerical()
+				&& !Tca::table($dataType)->field($fieldName)->hasRelation()
 			) {
 				$isSuitable = FALSE;
 			}
@@ -397,12 +397,12 @@ class ContentRepository implements RepositoryInterface {
 				$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $this->dataType);
 				$fieldPath = $this->getFieldPathResolver()->stripFieldName($fieldNameAndPath, $this->dataType);
 
-				if (TcaService::table($dataType)->field($fieldName)->hasRelation()) {
+				if (Tca::table($dataType)->field($fieldName)->hasRelation()) {
 					if (MathUtility::canBeInterpretedAsInteger($operand)) {
 						$fieldNameAndPath = $fieldName . '.uid';
 					} else {
-						$foreignTableName = TcaService::table($dataType)->field($fieldName)->getForeignTable();
-						$foreignTable = TcaService::table($foreignTableName);
+						$foreignTableName = Tca::table($dataType)->field($fieldName)->getForeignTable();
+						$foreignTable = Tca::table($foreignTableName);
 						$fieldNameAndPath = $fieldName . '.' . $foreignTable->getLabelField();
 					}
 
@@ -640,7 +640,7 @@ class ContentRepository implements RepositoryInterface {
 		/** @var $matcher Matcher */
 		$matcher = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Matcher', array(), $this->getDataType());
 
-		$table = TcaService::table($this->dataType);
+		$table = Tca::table($this->dataType);
 		if ($table->field($fieldName)->isGroup()) {
 
 			$valueParts = explode('.', $value, 2);

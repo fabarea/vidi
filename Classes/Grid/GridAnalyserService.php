@@ -14,7 +14,7 @@ namespace Fab\Vidi\Grid;
  * The TYPO3 project - inspiring people to share!
  */
 
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Class for analysing the Grid, e.g. the relations
@@ -30,7 +30,7 @@ class GridAnalyserService {
 	public function checkRelationForTable($tableName){
 
 		$relations = array();
-		$table = TcaService::table($tableName);
+		$table = Tca::table($tableName);
 
 		$missingOppositionRelationMessage =<<<EOF
 
@@ -39,7 +39,7 @@ class GridAnalyserService {
   TCA configuration if so.';
 EOF;
 
-		foreach (TcaService::grid($tableName)->getFields() as $fieldName => $configuration) {
+		foreach (Tca::grid($tableName)->getFields() as $fieldName => $configuration) {
 
 			if ($table->hasField($fieldName)) {
 				if ($table->field($fieldName)->hasMany()) {
@@ -85,7 +85,7 @@ EOF;
 
 		$output = array();
 
-		$table = TcaService::table($tableName);
+		$table = Tca::table($tableName);
 		$output[] = sprintf('* field: "%s", relation: many-to-many', $fieldName);
 
 		$foreignTable = $table->field($fieldName)->getForeignTable();
@@ -118,7 +118,7 @@ EOF;
 
 		$output = array();
 
-		$table = TcaService::table($tableName);
+		$table = Tca::table($tableName);
 		$output[] = sprintf('* field: "%s", relation: %s', $fieldName, $relationType);
 
 		$foreignTable = $table->field($fieldName)->getForeignTable();

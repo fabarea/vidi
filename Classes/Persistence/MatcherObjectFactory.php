@@ -18,7 +18,7 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use Fab\Vidi\Module\ModuleLoader;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Factory class related to Matcher object.
@@ -125,7 +125,7 @@ class MatcherObjectFactory implements SingletonInterface {
 					$value = current($term);
 
 					// Check whether the field exists and set it as "equal" or "like".
-					if (TcaService::table($resolvedDataType)->hasField($fieldName)) {
+					if (Tca::table($resolvedDataType)->hasField($fieldName)) {
 						if ($this->isOperatorEquals($fieldNameAndPath, $dataType, $value)) {
 							$matcher->equals($fieldNameAndPath, $value);
 						} else {
@@ -154,8 +154,8 @@ class MatcherObjectFactory implements SingletonInterface {
 	 * @return bool
 	 */
 	protected function isOperatorEquals($fieldName, $dataType, $value) {
-		return (TcaService::table($dataType)->field($fieldName)->hasRelation() && MathUtility::canBeInterpretedAsInteger($value))
-			|| TcaService::table($dataType)->field($fieldName)->isNumerical();
+		return (Tca::table($dataType)->field($fieldName)->hasRelation() && MathUtility::canBeInterpretedAsInteger($value))
+			|| Tca::table($dataType)->field($fieldName)->isNumerical();
 	}
 
 	/**

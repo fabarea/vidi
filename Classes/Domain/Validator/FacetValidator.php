@@ -15,7 +15,7 @@ namespace Fab\Vidi\Domain\Validator;
  */
 
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Validate "facet" to be used in the repository.
@@ -30,7 +30,7 @@ class FacetValidator extends AbstractValidator {
 	 */
 	public function isValid($facet) {
 
-		if (! TcaService::grid()->hasFacet($facet)) {
+		if (! Tca::grid()->hasFacet($facet)) {
 			$message = sprintf('Facet "%s" is not allowed. Actually, it was not configured to be displayed in the grid.', $facet);
 			$this->addError($message, 1380019719);
 		}

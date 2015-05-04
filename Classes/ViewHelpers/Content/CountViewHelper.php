@@ -18,7 +18,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
 use Fab\Vidi\Persistence\Matcher;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * View helper which counts a result set.

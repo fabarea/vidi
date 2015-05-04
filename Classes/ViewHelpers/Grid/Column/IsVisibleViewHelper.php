@@ -15,7 +15,7 @@ namespace Fab\Vidi\ViewHelpers\Grid\Column;
  */
 
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Tells whether the field name is visible in the Grid.
@@ -29,7 +29,7 @@ class IsVisibleViewHelper extends AbstractViewHelper {
 	 * @return bool
 	 */
 	public function render($name) {
-		return TcaService::grid()->isVisible($name);
+		return Tca::grid()->isVisible($name);
 	}
 
 }

@@ -263,7 +263,7 @@ class TableService implements TcaServiceInterface {
 	 *
 	 * @param string $fieldName
 	 * @return bool
-	 * @deprecated use TcaService::table($tableName)->field($fieldName)->isSystem()
+	 * @deprecated use Tca::table($tableName)->field($fieldName)->isSystem()
 	 */
 	public function isSystem($fieldName) {
 		$systemFields = array(
@@ -308,10 +308,10 @@ class TableService implements TcaServiceInterface {
 
 			// Continue checking that the $strippedFieldName is of type "group"
 			if (isset($GLOBALS['TCA'][$this->tableName]['columns'][$strippedFieldName])) {
-				$hasField = TcaService::table($this->tableName)->field($strippedFieldName)->isGroup(); // Group
+				$hasField = Tca::table($this->tableName)->field($strippedFieldName)->isGroup(); // Group
 			}
 		} else {
-			$hasField = isset($this->columnTca[$fieldName]) || in_array($fieldName, TcaService::getSystemFields());
+			$hasField = isset($this->columnTca[$fieldName]) || in_array($fieldName, Tca::getSystemFields());
 		}
 		return $hasField;
 	}
@@ -404,7 +404,7 @@ class TableService implements TcaServiceInterface {
 		}
 
 		// True for system fields such as uid, pid that don't necessarily have a TCA.
-		if (empty($this->columnTca[$fieldName]) && in_array($fieldName, TcaService::getSystemFields())) {
+		if (empty($this->columnTca[$fieldName]) && in_array($fieldName, Tca::getSystemFields())) {
 			$this->columnTca[$fieldName] = array();
 		} elseif (empty($this->columnTca[$fieldName])) {
 			$message = sprintf(

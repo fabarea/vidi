@@ -17,7 +17,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Model\Content;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * A class for handling language in the Backend.
@@ -81,9 +81,9 @@ class LanguageService implements SingletonInterface {
 		if (empty($this->localizedRecordStorage[$objectHash][$language])) {
 
 			$clause = sprintf('%s = %s AND %s = %s',
-				TcaService::table($object)->getLanguageParentField(), // e.g. l10n_parent
+				Tca::table($object)->getLanguageParentField(), // e.g. l10n_parent
 				$object->getUid(),
-				TcaService::table($object)->getLanguageField(), // e.g. sys_language_uid
+				Tca::table($object)->getLanguageField(), // e.g. sys_language_uid
 				$language
 			);
 

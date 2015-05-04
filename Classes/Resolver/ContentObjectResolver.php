@@ -17,7 +17,7 @@ namespace Fab\Vidi\Resolver;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Model\Content;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Class for retrieving value from an object.

@@ -16,7 +16,7 @@ namespace Fab\Vidi\ViewHelpers\Grid;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * View helper which returns suggestion for the Visual Search bar.
@@ -31,8 +31,8 @@ class SuggestionsViewHelper extends AbstractViewHelper {
 	public function render() {
 
 		$suggestions = array();
-		foreach (TcaService::grid()->getFacets() as $facet) {
-			$name = TcaService::grid()->facet($facet)->getName();
+		foreach (Tca::grid()->getFacets() as $facet) {
+			$name = Tca::grid()->facet($facet)->getName();
 			$suggestions[$name] = $this->getFacetSuggestionService()->getSuggestions($name);
 		}
 

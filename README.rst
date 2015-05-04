@@ -597,16 +597,16 @@ The API is meant to be generic and can be re-use for every data type within TYPO
 
 ::
 
-	use Fab\Vidi\Tca\TcaService;
+	use Fab\Vidi\Tca\Tca;
 
 	# Return the field type
-	TcaService::table($tableName)->field($fieldName)->getType();
+	Tca::table($tableName)->field($fieldName)->getType();
 
 	# Return the translated label for a field
-	TcaService::table($tableName)->field($fieldName)->getLabel();
+	Tca::table($tableName)->field($fieldName)->getLabel();
 
 	# Get all field configured for a table name
-	TcaService::table($tableName)->getFields();
+	Tca::table($tableName)->getFields();
 
 	...
 

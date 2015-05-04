@@ -87,7 +87,7 @@ class GridService implements TcaServiceInterface {
 			// Important to notice the label can contains a path, e.g. metadata.categories and must be resolved.
 			$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $this->tableName);
 			$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $this->tableName);
-			$table = TcaService::table($dataType);
+			$table = Tca::table($dataType);
 
 			if ($table->hasField($fieldName) && $table->field($fieldName)->hasLabel()) {
 				$label = $table->field($fieldName)->getLabel();
@@ -417,7 +417,7 @@ class GridService implements TcaServiceInterface {
 	public function facet($facet = '') {
 
 		if (!$facet instanceof StandardFacet) {
-			$label = TcaService::grid($this->tableName)->getLabel($facet);
+			$label = Tca::grid($this->tableName)->getLabel($facet);
 
 			/** @var StandardFacet $facet */
 			$facet = GeneralUtility::makeInstance('Fab\Vidi\Facet\StandardFacet', $facet, $label);

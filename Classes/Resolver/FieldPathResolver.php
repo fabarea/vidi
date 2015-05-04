@@ -16,7 +16,7 @@ namespace Fab\Vidi\Resolver;
 
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Class for retrieving value from a field name and path.
@@ -83,7 +83,7 @@ class FieldPathResolver implements SingletonInterface {
 			// Compute the foreign data type.
 			$fieldParts = GeneralUtility::trimExplode('.', $fieldNameAndPath);
 			$fieldNameAndPath = $fieldParts[0];
-			$dataType = TcaService::table($dataType)->field($fieldNameAndPath)->getForeignTable();
+			$dataType = Tca::table($dataType)->field($fieldNameAndPath)->getForeignTable();
 		}
 		return $dataType;
 	}
@@ -112,7 +112,7 @@ class FieldPathResolver implements SingletonInterface {
 	 * @return boolean
 	 */
 	public function containsPath($fieldNameAndPath, $dataType) {
-		$doesContainPath = strpos($fieldNameAndPath, '.') > 0 && TcaService::table($dataType)->hasNotField($fieldNameAndPath); // -> will make sure it is not a composite field name.
+		$doesContainPath = strpos($fieldNameAndPath, '.') > 0 && Tca::table($dataType)->hasNotField($fieldNameAndPath); // -> will make sure it is not a composite field name.
 		return $doesContainPath;
 	}
 

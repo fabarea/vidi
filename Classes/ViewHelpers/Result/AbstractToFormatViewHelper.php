@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Service\FileReferenceService;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Abstract View helper for rendering an Export request.
@@ -137,11 +137,11 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper {
 	 * @return void
 	 */
 	protected function checkWhetherObjectMayIncludeFiles(Content $object) {
-		if (TcaService::grid($object->getDataType())->areFilesIncludedInExport()) {
+		if (Tca::grid($object->getDataType())->areFilesIncludedInExport()) {
 			foreach ($object->toFields() as $fieldName) {
-				$fieldType = TcaService::table($object->getDataType())->field($fieldName)->getType();
+				$fieldType = Tca::table($object->getDataType())->field($fieldName)->getType();
 
-				if ($fieldType === TcaService::FILE) {
+				if ($fieldType === FieldType::FILE) {
 					$this->fileTypeProperties[] = GeneralUtility::camelCaseToLowerCaseUnderscored($fieldName);
 				}
 			}

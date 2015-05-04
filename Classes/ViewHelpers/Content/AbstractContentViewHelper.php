@@ -18,7 +18,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Persistence\Matcher;
 use Fab\Vidi\Persistence\Order;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Abstract View helper for handling Content display mainly on the Frontend.
@@ -79,7 +79,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper {
 
 				// "equals" if in presence of a relation.
 				// "in" if not a relation.
-				if (TcaService::table($resolvedDataType)->field($resolvedFieldName)->hasRelation()) {
+				if (Tca::table($resolvedDataType)->field($resolvedFieldName)->hasRelation()) {
 					foreach ($explodedValues as $explodedValue) {
 						$matcher->equals($fieldNameAndPath, $explodedValue);
 					}
@@ -127,7 +127,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper {
 	public function getOrder($dataType, array $order = array()) {
 		// Default orderings in case order is empty.
 		if (empty($order)) {
-			$order = TcaService::table($dataType)->getDefaultOrderings();
+			$order = Tca::table($dataType)->getDefaultOrderings();
 		}
 
 		$order = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Order', $order);

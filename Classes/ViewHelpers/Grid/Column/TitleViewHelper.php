@@ -15,7 +15,7 @@ namespace Fab\Vidi\ViewHelpers\Grid\Column;
  */
 
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * View helper for rendering a column title in the grid.
@@ -29,7 +29,7 @@ class TitleViewHelper extends AbstractViewHelper {
 	 */
 	public function render() {
 		$columnName = $this->templateVariableContainer->get('columnName');
-		return TcaService::grid()->getLabel($columnName);
+		return Tca::grid()->getLabel($columnName);
 	}
 
 }

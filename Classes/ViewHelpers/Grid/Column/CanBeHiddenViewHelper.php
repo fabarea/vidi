@@ -15,7 +15,7 @@ namespace Fab\Vidi\ViewHelpers\Grid\Column;
  */
 
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Tells whether the column can be hidden or not.
@@ -29,7 +29,7 @@ class CanBeHiddenViewHelper extends AbstractViewHelper {
 	 * @return boolean
 	 */
 	public function render($name) {
-		return TcaService::grid()->canBeHidden($name);
+		return Tca::grid()->canBeHidden($name);
 	}
 
 }

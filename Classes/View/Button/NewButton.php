@@ -17,7 +17,7 @@ namespace Fab\Vidi\View\Button;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Module\Parameter;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 use Fab\Vidi\View\AbstractComponentView;
 
 /**
@@ -105,7 +105,7 @@ class NewButton extends AbstractComponentView {
 	protected function getStoragePid() {
 		if (GeneralUtility::_GP(Parameter::PID)) {
 			$pid = GeneralUtility::_GP(Parameter::PID);
-		} elseif (TcaService::table()->get('rootLevel')) {
+		} elseif (Tca::table()->get('rootLevel')) {
 			$pid = 0;
 		} else {
 			// Get configuration from User TSconfig if any

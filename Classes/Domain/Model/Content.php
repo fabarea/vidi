@@ -14,13 +14,14 @@ namespace Fab\Vidi\Domain\Model;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Tca\FieldType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException;
 use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
 use Fab\Vidi\Converter\Field;
 use Fab\Vidi\Converter\Property;
 use Fab\Vidi\Service\FileReferenceService;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Content representation.
@@ -50,7 +51,7 @@ class Content implements \ArrayAccess {
 		$this->uid = empty($contentData['uid']) ? NULL : (int)$contentData['uid'];
 
 		/** @var \Fab\Vidi\Tca\TableService $table */
-		$table = TcaService::table($dataType);
+		$table = Tca::table($dataType);
 
 		// Initialize the array containing the allowed fields to be filled-in.
 		$fields = array('pid');
@@ -69,7 +70,7 @@ class Content implements \ArrayAccess {
 		$fields = array_merge($fields, $table->getFields());
 
 		// Fetch excluded fields from the grid.
-		$excludedFields = TcaService::grid($this->dataType)->getExcludedFields();
+		$excludedFields = Tca::grid($this->dataType)->getExcludedFields();
 
 		// Get column to be displayed
 		foreach ($fields as $fieldName) {
@@ -95,17 +96,17 @@ class Content implements \ArrayAccess {
 			$propertyName = strtolower(substr(substr($methodName, 3), 0, 1)) . substr(substr($methodName, 3), 1);
 
 			$fieldName = Property::name($propertyName)->of($this)->toFieldName();
-			$field = TcaService::table($this->dataType)->field($fieldName);
+			$field = Tca::table($this->dataType)->field($fieldName);
 
 			$value = $this->$propertyName;
 
 			// TRUE means it is a relation and it is not yet resolved.
 			if ($this->hasRelation($propertyName) && is_scalar($this->$propertyName)) {
 				$value = $this->resolveRelation($propertyName);
-			} elseif ($field->getType() === TcaService::RADIO || $field->getType() === TcaService::SELECT) {
+			} elseif ($field->getType() === FieldType::RADIO || $field->getType() === FieldType::SELECT) {
 
 				// Attempt to convert the value into a label for radio and select fields.
-				$label = TcaService::table($this->getDataType())->field($fieldName)->getLabelForItem($value);
+				$label = Tca::table($this->getDataType())->field($fieldName)->getLabelForItem($value);
 				if ($label) {
 					$value = $label;
 				}
@@ -126,7 +127,7 @@ class Content implements \ArrayAccess {
 	 */
 	protected function hasRelation($propertyName) {
 		$fieldName = Property::name($propertyName)->of($this)->toFieldName();
-		return TcaService::table($this->dataType)->field($fieldName)->hasRelation();
+		return Tca::table($this->dataType)->field($fieldName)->hasRelation();
 	}
 
 	/**
@@ -141,23 +142,23 @@ class Content implements \ArrayAccess {
 
 		// Convert property name to field name and get the foreign data type.
 		$fieldName = Property::name($propertyName)->of($this)->toFieldName();
-		$foreignDataType = TcaService::table($this->dataType)->field($fieldName)->relationDataType();
+		$foreignDataType = Tca::table($this->dataType)->field($fieldName)->relationDataType();
 
 		// Get the foreign repository instance form the factory
 		/** @var \Fab\Vidi\Domain\Repository\ContentRepository $foreignContentRepository */
 		$foreignContentRepository = ContentRepositoryFactory::getInstance($foreignDataType, $fieldName);
 
-		if (TcaService::table($this->dataType)->field($fieldName)->hasRelationWithCommaSeparatedValues()) {
+		if (Tca::table($this->dataType)->field($fieldName)->hasRelationWithCommaSeparatedValues()) {
 
 			// Fetch values from repository
 			$values = GeneralUtility::trimExplode(',', $this->$propertyName);
 			$this->$propertyName = $foreignContentRepository->findIn('uid', $values);
-		} elseif (TcaService::table($this->dataType)->field($fieldName)->hasMany()) {
+		} elseif (Tca::table($this->dataType)->field($fieldName)->hasMany()) {
 			// Include relation many-to-many and one-to-many
-			// TcaService::table($this->dataType)->field($fieldName)->hasRelationOneToMany()
-			// TcaService::table($this->dataType)->field($fieldName)->hasRelationManyToMany()
+			// Tca::table($this->dataType)->field($fieldName)->hasRelationOneToMany()
+			// Tca::table($this->dataType)->field($fieldName)->hasRelationManyToMany()
 
-			$foreignFieldName = TcaService::table($this->dataType)->field($fieldName)->getForeignField();
+			$foreignFieldName = Tca::table($this->dataType)->field($fieldName)->getForeignField();
 			if (empty($foreignFieldName)) {
 				$message = sprintf('Missing "foreign_field" key for field "%s" in table "%s".',
 					$fieldName,
@@ -173,15 +174,15 @@ class Content implements \ArrayAccess {
 			// Date picker (type == group) are special fields because property path must contain the table name
 			// to determine the relation type. Example for sys_category, property path will look like "items.sys_file"
 			$propertyValue = $this->uid;
-			if (TcaService::table($foreignDataType)->field($foreignFieldName)->isGroup()) {
+			if (Tca::table($foreignDataType)->field($foreignFieldName)->isGroup()) {
 				$propertyValue = $this->dataType . '.' . $this->uid;
 			}
 
 			$this->$propertyName = $foreignContentRepository->$findByProperty($propertyValue);
 
-		} elseif (TcaService::table($this->dataType)->field($fieldName)->hasOne()) {
+		} elseif (Tca::table($this->dataType)->field($fieldName)->hasOne()) {
 
-			$fieldConfiguration = TcaService::table($this->dataType)->field($fieldName)->getConfiguration();
+			$fieldConfiguration = Tca::table($this->dataType)->field($fieldName)->getConfiguration();
 
 			// First case, we are on the "good side" of the relation, just query the repository
 			if (empty($fieldConfiguration['foreign_field'])) {
@@ -191,8 +192,8 @@ class Content implements \ArrayAccess {
 				// e.g. in case of one-to-one relation.
 
 				// We must query the opposite side to get the identifier of the foreign object.
-				$foreignDataType = TcaService::table($this->dataType)->field($fieldName)->getForeignTable();
-				$foreignField = TcaService::table($this->dataType)->field($fieldName)->getForeignField();
+				$foreignDataType = Tca::table($this->dataType)->field($fieldName)->getForeignTable();
+				$foreignField = Tca::table($this->dataType)->field($fieldName)->getForeignField();
 				$foreignContentRepository = ContentRepositoryFactory::getInstance($foreignDataType);
 				$find = 'findOneBy' . GeneralUtility::underscoredToUpperCamelCase($foreignField);
 
@@ -300,8 +301,8 @@ class Content implements \ArrayAccess {
 		foreach ($propertiesAndValues as $propertyName => $value) {
 			$fieldName = Property::name($propertyName)->of($this)->toFieldName();
 
-			$field = TcaService::table($this->dataType)->field($fieldName);
-			if ($field->getType() === TcaService::FILE) {
+			$field = Tca::table($this->dataType)->field($fieldName);
+			if ($field->getType() === FieldType::FILE) {
 
 				if ($field->hasMany()) {
 					$files = FileReferenceService::getInstance()->findReferencedBy($propertyName, $this);
@@ -358,7 +359,7 @@ class Content implements \ArrayAccess {
 	 * @return string
 	 */
 	public function __toString() {
-		$labelField = TcaService::table($this->dataType)->getLabelField();
+		$labelField = Tca::table($this->dataType)->getLabelField();
 		return $this[$labelField];
 	}
 

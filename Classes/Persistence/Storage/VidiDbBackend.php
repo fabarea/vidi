@@ -30,7 +30,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Qom\UpperCaseInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Frontend\Page\PageRepository;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * A Storage backend
@@ -585,7 +585,7 @@ class VidiDbBackend {
 	 */
 	protected function addUnionStatement(&$tableName, &$propertyPath, array &$sql) {
 
-		$table = TcaService::table($tableName);
+		$table = Tca::table($tableName);
 
 		$explodedPropertyPath = explode('.', $propertyPath, 2);
 		$fieldName = $explodedPropertyPath[0];
@@ -655,7 +655,7 @@ class VidiDbBackend {
 						'tablenames' => $tableNameCondition,
 					);
 				} else {
-					$additionalMMConditions = TcaService::table($tableNameCondition)->field($sourceFileName)->getAdditionalMMCondition();
+					$additionalMMConditions = Tca::table($tableNameCondition)->field($sourceFileName)->getAdditionalMMCondition();
 				}
 
 				foreach ($additionalMMConditions as $additionalFieldName => $additionalMMCondition) {
@@ -878,7 +878,7 @@ class VidiDbBackend {
 		}
 
 		// If the table is found to have "workspace" support, add the corresponding fields in the statement.
-		if (TcaService::table($tableName)->hasWorkspaceSupport()) {
+		if (Tca::table($tableName)->hasWorkspaceSupport()) {
 			if ($this->getBackendUser()->workspace === 0) {
 				$statement .= ' AND ' . $tableName . '.t3ver_state<=' . new VersionState(VersionState::DEFAULT_STATE);
 			} else {

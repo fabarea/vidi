@@ -17,7 +17,7 @@ namespace Fab\Vidi\Module;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Service related to data type (AKA tablename)
@@ -60,13 +60,13 @@ class ModuleService implements SingletonInterface {
 
 			$modules = array();
 			foreach ($GLOBALS['TCA'] as $dataType => $configuration) {
-				if (TcaService::table($dataType)->isNotHidden()) {
+				if (Tca::table($dataType)->isNotHidden()) {
 					$clause = 'pid = ' . $pid;
 					$clause .= BackendUtility::deleteClause($dataType);
 					$record = $this->getDatabaseConnection()->exec_SELECTgetSingleRow('uid', $dataType, $clause);
 					if (!empty($record)) {
 						$moduleName = 'Vidi' . GeneralUtility::underscoredToUpperCamelCase($dataType)  . 'M1';
-						$title = TcaService::table($dataType)->getTitle();
+						$title = Tca::table($dataType)->getTitle();
 						$modules[$moduleName] = $title;
 					}
 				}

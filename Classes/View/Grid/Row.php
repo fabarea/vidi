@@ -14,12 +14,13 @@ namespace Fab\Vidi\View\Grid;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Tca\FieldType;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Language\LanguageService;
 use Fab\Vidi\Language\LocalizationStatus;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 use Fab\Vidi\View\AbstractComponentView;
 
 /**
@@ -58,7 +59,7 @@ class Row extends AbstractComponentView {
 		// Initialize returned array
 		$output = array();
 
-		foreach(TcaService::grid()->getFields() as $fieldNameAndPath => $configuration) {
+		foreach(Tca::grid()->getFields() as $fieldNameAndPath => $configuration) {
 
 			$value = ''; // default is empty at first.
 
@@ -68,10 +69,10 @@ class Row extends AbstractComponentView {
 			if (in_array($fieldNameAndPath, $this->columns)) {
 
 				// Fetch value
-				if (TcaService::grid()->hasRenderers($fieldNameAndPath)) {
+				if (Tca::grid()->hasRenderers($fieldNameAndPath)) {
 
 					$value = '';
-					$renderers = TcaService::grid()->getRenderers($fieldNameAndPath);
+					$renderers = Tca::grid()->getRenderers($fieldNameAndPath);
 
 					// if is relation has one
 					foreach ($renderers as $rendererClassName => $rendererConfiguration) {
@@ -247,7 +248,7 @@ class Row extends AbstractComponentView {
 	 */
 	protected function hasIcon() {
 		$dataType = $this->getDataType();
-		return TcaService::table($dataType)->getLabelField() === $this->getFieldName();
+		return Tca::table($dataType)->getLabelField() === $this->getFieldName();
 	}
 
 	/**
@@ -262,8 +263,8 @@ class Row extends AbstractComponentView {
 		$fieldNameAndPath = $this->getFieldNameAndPath();
 
 		return $this->getLanguageService()->hasLanguages()
-			&& TcaService::grid($object)->isLocalized($fieldNameAndPath)
-			&& TcaService::table($dataType)->field($fieldName)->isLocalized();
+			&& Tca::grid($object)->isLocalized($fieldNameAndPath)
+			&& Tca::table($dataType)->field($fieldName)->isLocalized();
 	}
 
 	/**
@@ -280,7 +281,7 @@ class Row extends AbstractComponentView {
 		foreach ($localizedStructure as $index => $structure) {
 			if ($structure['status'] !== LocalizationStatus::NOT_YET_LOCALIZED) {
 				$localizedStructure[$index]['value'] = sprintf('<span class="%s" data-language="%s">%s</span>',
-					TcaService::table($dataType)->field($fieldName)->isTextArea()  ? 'editable-textarea' : 'editable-textfield',
+					Tca::table($dataType)->field($fieldName)->isTextArea()  ? 'editable-textarea' : 'editable-textfield',
 					$structure['language'],
 					$structure['value']
 				);
@@ -327,7 +328,7 @@ class Row extends AbstractComponentView {
 				$methodName = 'get' . $enableMethod . 'Field';
 
 				// Fetch possible hidden filed.
-				$enableField = TcaService::table($object)->$methodName();
+				$enableField = Tca::table($object)->$methodName();
 				if ($enableField) {
 					$recordData[$enableField] = $object[$enableField];
 				}
@@ -353,9 +354,9 @@ class Row extends AbstractComponentView {
 		$dataType = $this->getDataType();
 		$fieldName = $this->getFieldName();
 
-		return TcaService::grid()->isEditable($fieldNameAndPath)
-			&& TcaService::table($dataType)->hasField($fieldName)
-			&& TcaService::table($dataType)->field($fieldName)->hasNoRelation(); // relation are editable through Renderers only.
+		return Tca::grid()->isEditable($fieldNameAndPath)
+			&& Tca::table($dataType)->hasField($fieldName)
+			&& Tca::table($dataType)->field($fieldName)->hasNoRelation(); // relation are editable through Renderers only.
 	}
 
 	/**
@@ -405,8 +406,8 @@ class Row extends AbstractComponentView {
 			// TRUE means the field name does not contains a path. "title" vs "metadata.title"
 			// Fetch the default label
 			if ($fieldNameOfForeignTable === $fieldName) {
-				$foreignTable = TcaService::table($object->getDataType())->field($fieldName)->getForeignTable();
-				$fieldNameOfForeignTable = TcaService::table($foreignTable)->getLabelField();
+				$foreignTable = Tca::table($object->getDataType())->field($fieldName)->getForeignTable();
+				$fieldNameOfForeignTable = Tca::table($foreignTable)->getLabelField();
 			}
 
 			$value = $object[$fieldName][$fieldNameOfForeignTable];
@@ -459,17 +460,17 @@ class Row extends AbstractComponentView {
 
 		// Set default value if $field name correspond to the label of the table
 		$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
-		if (TcaService::table($object->getDataType())->getLabelField() === $fieldName && empty($value)) {
+		if (Tca::table($object->getDataType())->getLabelField() === $fieldName && empty($value)) {
 			$value = sprintf('[%s]', $this->getLabelService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.no_title', 1));
 		}
 
 		// Resolve the identifier in case of "select" or "radio button".
-		$fieldType = TcaService::table($object->getDataType())->field($fieldNameAndPath)->getType();
-		if ($fieldType !== TcaService::TEXTAREA) {
+		$fieldType = Tca::table($object->getDataType())->field($fieldNameAndPath)->getType();
+		if ($fieldType !== FieldType::TEXTAREA) {
 			$value = htmlspecialchars($value);
-		} elseif ($fieldType === TcaService::TEXTAREA && !$this->isClean($value)) {
+		} elseif ($fieldType === FieldType::TEXTAREA && !$this->isClean($value)) {
 			$value = htmlspecialchars($value); // Avoid bad surprise, converts characters to HTML.
-		} elseif ($fieldType === TcaService::TEXTAREA && !$this->hasHtml($value)) {
+		} elseif ($fieldType === FieldType::TEXTAREA && !$this->hasHtml($value)) {
 			$value = nl2br($value);
 		}
 
@@ -521,7 +522,7 @@ class Row extends AbstractComponentView {
 		if (is_null($this->variables['hasField'])) {
 			$dataType = $this->getDataType();
 			$fieldName = $this->getFieldName();
-			$this->variables['hasField'] = TcaService::table($dataType)->hasField($fieldName);
+			$this->variables['hasField'] = Tca::table($dataType)->hasField($fieldName);
 		}
 		return $this->variables['hasField'];
 	}

@@ -86,7 +86,7 @@ class FacetService implements TcaServiceInterface {
 	public function getLabel() {
 
 		if ($this->facet->getLabel() === $this->facet->getName()) {
-			$label = TcaService::table($this->tableName)->field($this->facet->getName())->getLabel();
+			$label = Tca::table($this->tableName)->field($this->facet->getName())->getLabel();
 		} else {
 			$label = LocalizationUtility::translate($this->facet->getLabel(), '');
 			if (empty($label)) {

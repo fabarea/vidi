@@ -14,6 +14,7 @@ namespace Fab\Vidi\Controller\Backend;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Tca\FieldType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -26,7 +27,7 @@ use Fab\Vidi\Persistence\MatcherObjectFactory;
 use Fab\Vidi\Persistence\OrderObjectFactory;
 use Fab\Vidi\Persistence\PagerObjectFactory;
 use Fab\Vidi\Signal\ProcessContentDataSignalArguments;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Controller which handles actions related to Vidi in the Backend.
@@ -52,7 +53,7 @@ class ContentController extends ActionController {
 	 * @return void
 	 */
 	public function indexAction() {
-		$this->view->assign('columns', TcaService::grid()->getFields());
+		$this->view->assign('columns', Tca::grid()->getFields());
 	}
 
 	/**
@@ -165,7 +166,7 @@ class ContentController extends ActionController {
 
 					/** @var Content $contentObject */
 					foreach ($updatedResult as $contentObject) {
-						$labelField = TcaService::table($contentObject)->getLabelField();
+						$labelField = Tca::table($contentObject)->getLabelField();
 						$values = array(
 							'uid' => $contentObject->getUid(),
 							'name' => $contentObject[$labelField],
@@ -176,7 +177,7 @@ class ContentController extends ActionController {
 					$updatedResult = $_updatedResult;
 				}
 
-				$labelField = TcaService::table($object)->getLabelField();
+				$labelField = Tca::table($object)->getLabelField();
 				$processedObjectData = array(
 					'uid' => $object->getUid(),
 					'name' => $object[$labelField],
@@ -215,7 +216,7 @@ class ContentController extends ActionController {
 		$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
 		$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
 
-		$fieldType = TcaService::table($dataType)->field($fieldName)->getType();
+		$fieldType = Tca::table($dataType)->field($fieldName)->getType();
 		$this->view->assign('fieldType', ucfirst($fieldType));
 		$this->view->assign('dataType', $dataType);
 		$this->view->assign('fieldName', $fieldName);
@@ -225,7 +226,7 @@ class ContentController extends ActionController {
 		$this->view->assign('editWholeSelection', empty($matches['uid'])); // necessary??
 
 		// Fetch content and its relations.
-		if ($fieldType === TcaService::MULTISELECT) {
+		if ($fieldType === FieldType::MULTISELECT) {
 
 			$object = ContentRepositoryFactory::getInstance()->findOneBy($matcher);
 			$identifier = $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, 'uid');
@@ -238,13 +239,13 @@ class ContentController extends ActionController {
 				throw new \Exception($message, 1402350182);
 			}
 
-			$relatedDataType = TcaService::table($dataType)->field($fieldName)->getForeignTable();
+			$relatedDataType = Tca::table($dataType)->field($fieldName)->getForeignTable();
 
 			// Initialize the matcher object.
 			$matcher = MatcherObjectFactory::getInstance()->getMatcher(array(), $relatedDataType);
 
 			// Default ordering for related data type.
-			$defaultOrderings = TcaService::table($relatedDataType)->getDefaultOrderings();
+			$defaultOrderings = Tca::table($relatedDataType)->getDefaultOrderings();
 			/** @var \Fab\Vidi\Persistence\Order $order */
 			$defaultOrder = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Order', $defaultOrderings);
 
@@ -254,7 +255,7 @@ class ContentController extends ActionController {
 			$this->view->assign('content', $content);
 			$this->view->assign('relatedContents', $relatedContents);
 			$this->view->assign('relatedDataType', $relatedDataType);
-			$this->view->assign('relatedContentTitle', TcaService::table($relatedDataType)->getTitle());
+			$this->view->assign('relatedContentTitle', Tca::table($relatedDataType)->getTitle());
 		}
 	}
 
@@ -274,7 +275,7 @@ class ContentController extends ActionController {
 		$contentService = $this->getContentService()->findBy($matcher);
 
 		// Compute the label field name of the table.
-		$tableTitleField = TcaService::table()->getLabelField();
+		$tableTitleField = Tca::table()->getLabelField();
 
 		// Get result object for storing data along the processing.
 		$result = $this->getJsonResult();
@@ -337,7 +338,7 @@ class ContentController extends ActionController {
 		$contentService = $this->getContentService()->findBy($matcher);
 
 		// Compute the label field name of the table.
-		$tableTitleField = TcaService::table()->getLabelField();
+		$tableTitleField = Tca::table()->getLabelField();
 
 		// Get result object for storing data along the processing.
 		$result = $this->getJsonResult();
@@ -386,7 +387,7 @@ class ContentController extends ActionController {
 		$contentService = $this->getContentService()->findBy($matcher);
 
 		// Compute the label field name of the table.
-		$tableTitleField = TcaService::table()->getLabelField();
+		$tableTitleField = Tca::table()->getLabelField();
 
 		// Get result object for storing data along the processing.
 		$result = $this->getJsonResult();

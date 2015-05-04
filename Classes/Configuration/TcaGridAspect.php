@@ -17,7 +17,7 @@ namespace Fab\Vidi\Configuration;
 use TYPO3\CMS\Core\Database\TableConfigurationPostProcessingHookInterface;
 use Fab\Vidi\Grid\ButtonGroupComponent;
 use Fab\Vidi\Grid\CheckBoxComponent;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Add a Grid TCA to each "data type" enabling to display a Vidi module in the BE.

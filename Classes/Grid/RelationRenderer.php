@@ -17,7 +17,7 @@ namespace Fab\Vidi\Grid;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Model\Content;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Class rendering relation
@@ -34,7 +34,7 @@ class RelationRenderer extends GridRendererAbstract {
 		$result = '';
 
 		// Get TCA table service.
-		$table = TcaService::table($this->object);
+		$table = Tca::table($this->object);
 
 		// Get label of the foreign table.
 		$foreignLabelField = $this->getForeignTableLabelField($this->fieldName);
@@ -94,11 +94,11 @@ class RelationRenderer extends GridRendererAbstract {
 	protected function getForeignTableLabelField($fieldName) {
 
 		// Get TCA table service.
-		$table = TcaService::table($this->object);
+		$table = Tca::table($this->object);
 
 		// Compute the label of the foreign table.
 		$relationDataType = $table->field($fieldName)->relationDataType();
-		return TcaService::table($relationDataType)->getLabelField();
+		return Tca::table($relationDataType)->getLabelField();
 	}
 
 }

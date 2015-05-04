@@ -16,7 +16,7 @@ namespace Fab\Vidi\ViewHelpers\Tca;
 
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Domain\Model\Content;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * View helper which returns the title of a content object.
@@ -30,7 +30,7 @@ class TitleViewHelper extends AbstractViewHelper {
 	 * @return string
 	 */
 	public function render(Content $content) {
-		$table = TcaService::table($content->getDataType());
+		$table = Tca::table($content->getDataType());
 		return $content[$table->getLabelField()];
 	}
 

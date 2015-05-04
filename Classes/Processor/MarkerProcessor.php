@@ -17,7 +17,7 @@ namespace Fab\Vidi\Processor;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Signal\ProcessContentDataSignalArguments;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Marker Utility class for replacing "known" markers within an expression.
@@ -111,7 +111,7 @@ class MarkerProcessor implements SingletonInterface {
 	 */
 	protected function getCreationTime(ProcessContentDataSignalArguments $signalArguments) {
 		$creationTime = 0;
-		$creationTimeField = TcaService::table($signalArguments->getContentObject()->getDataType())->getTimeCreationField();
+		$creationTimeField = Tca::table($signalArguments->getContentObject()->getDataType())->getTimeCreationField();
 		if ($creationTimeField) {
 			$creationTime = $this->getContentObjectResolver()->getValue(
 				$signalArguments->getContentObject(),

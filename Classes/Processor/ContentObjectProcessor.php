@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Behavior\SavingBehavior;
 use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Signal\ProcessContentDataSignalArguments;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Class for retrieving value from an object.
@@ -59,7 +59,7 @@ class ContentObjectProcessor implements SingletonInterface {
 
 			$resolvedObject = $this->getContentObjectResolver()->getObject($object, $fieldNameAndPath);
 
-			if (TcaService::table($resolvedObject)->field($fieldName)->hasMany()) {
+			if (Tca::table($resolvedObject)->field($fieldName)->hasMany()) {
 
 				// TRUE means CSV values must be converted to array.
 				if (!is_array($values)) {

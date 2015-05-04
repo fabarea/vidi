@@ -15,7 +15,7 @@ namespace Fab\Vidi\ViewHelpers\Grid;
  */
 
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * View helper which returns the json serialization of the search fields.
@@ -30,9 +30,9 @@ class FacetsViewHelper extends AbstractViewHelper {
 	public function render() {
 
 		$facets = array();
-		foreach (TcaService::grid()->getFacets() as $facetName) {
-			$name = TcaService::grid()->facet($facetName)->getName();
-			$facets[$name] = TcaService::grid()->facet($facetName)->getLabel();
+		foreach (Tca::grid()->getFacets() as $facetName) {
+			$name = Tca::grid()->facet($facetName)->getName();
+			$facets[$name] = Tca::grid()->facet($facetName)->getLabel();
 		}
 
 		return json_encode($facets);

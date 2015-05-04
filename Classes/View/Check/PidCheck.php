@@ -18,7 +18,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\View\AbstractComponentView;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 use Fab\Vidi\Module\Parameter;
-use Fab\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * View which renders check.
@@ -130,7 +130,7 @@ EOF;
 			return;
 		}
 
-		$isRootLevel = (bool)TcaService::table()->get('rootLevel');
+		$isRootLevel = (bool)Tca::table()->get('rootLevel');
 		if (!$isRootLevel) {
 			$this->errors[] = sprintf(
 				'You are not allowed to use page id "0" unless you set $GLOBALS[\'TCA\'][\'%1$s\'][\'ctrl\'][\'rootLevel\'] = 1;',
