@@ -168,6 +168,27 @@ To register your own Tool, add the following lines into in ``ext_tables.php``::
 		\Fab\Vidi\Tool\ToolRegistry::getInstance()->register('fe_users', 'Fab\Vidi\Tool\RelationAnalyserTool');
 	}
 
+Override permissions
+--------------------
+
+Permissions whether the Tool is accessible or not is defined in the Tool class itself. We can control
+through the method `isShown` what BE groups (admin, editors, ...) is allowed to access the tool.
+However, the rules can be overridden programmatically via the API by adding configuration in `ext_tables`.
+Assuming we want to allow the access to every BE Users for the "find duplicates" tool provided in Media_, we would do something::
+
+
+	\TYPO3\CMS\Vidi\Tool\ToolRegistry::getInstance()
+		->overridePermission('sys_file', 'Fab\Media\Tool\DuplicateFilesFinderTool', function() {
+		return TRUE;
+	});
+
+	# where:
+	# * sys_file: the scope of the, can be possibly '*' for every data type.
+	# * DuplicateFilesFinderTool: the name of the tool.
+	# * function(): the closure to override the default permissions.
+
+.. _Media: https://github.com/fabarea/media
+
 TCA Grid
 ========
 
@@ -652,11 +673,11 @@ you can configure the Module through the Vidi Module Loader. As a quick example:
 	$moduleLoader->addJavaScriptFiles(...)
 
 
-For more insight, consider the example of ``ext_tables.php`` of extension Media_.
+For more insight, consider the example of ``ext_tables.php`` in `extension Media`_.
 
 Notice also for each Vidi module, you can add any kind of utility tools in a dedicated module (c.f. Add tools in a Vidi module).
 
-.. _Media: https://github.com/fabarea/media/blob/master/ext_tables.php#L61
+.. _extension Media: https://github.com/fabarea/media/blob/master/ext_tables.php#L61
 
 FAQ
 ===
