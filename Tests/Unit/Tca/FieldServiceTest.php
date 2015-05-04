@@ -14,6 +14,8 @@ namespace Fab\Vidi\Tests\Unit\Tca;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Tca\FieldType;
+
 /**
  * Test case for class \Fab\Vidi\Tca\FieldService.
  */
@@ -65,6 +67,14 @@ class FieldServiceTest extends AbstractServiceTest {
 	public function fieldFirstNameMustNotBeRequiredByDefault() {
 		$field = $this->fixture->field('first_name');
 		$this->assertFalse($field->isRequired());
+	}
+
+	/**
+	 * @test
+	 */
+	public function getTypeForFieldStarTimeReturnsDataTime() {
+		$fieldType = $this->fixture->field('starttime')->getType();
+		$this->assertEquals(FieldType::DATETIME, $fieldType);
 	}
 
 	/**

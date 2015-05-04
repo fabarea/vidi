@@ -36,8 +36,7 @@ abstract class AbstractServiceTest extends UnitTestCase {
 				'tstamp' => 'tstamp',
 				'crdate' => 'crdate',
 				'cruser_id' => 'cruser_id',
-				'fe_cruser_id' => 'fe_cruser_id',
-				'title' => 'LLL:EXT:cms/locallang_tca.xlf:fe_users',
+				'title' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:tx_foo',
 				'delete' => 'deleted',
 				'enablecolumns' => [
 					'disabled' => 'disable',
@@ -47,13 +46,11 @@ abstract class AbstractServiceTest extends UnitTestCase {
 				'typeicon_classes' => [
 					'default' => 'status-user-frontend'
 				],
-				'useColumnsForDefaultValues' => 'usergroup,lockToDomain,disable,starttime,endtime',
-				'dividers2tabs' => 1,
 				'searchFields' => 'username,name,first_name,last_name'
 			],
 			'columns' => [
 				'username' => [
-					'label' => 'LLL:EXT:cms/locallang_tca.xlf:fe_users.username',
+					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:username',
 					'config' => [
 						'type' => 'input',
 						'size' => '20',
@@ -62,7 +59,7 @@ abstract class AbstractServiceTest extends UnitTestCase {
 					]
 				],
 				'password' => [
-					'label' => 'LLL:EXT:cms/locallang_tca.xlf:fe_users.password',
+					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:password',
 					'config' => [
 						'type' => 'input',
 						'size' => '10',
@@ -71,7 +68,7 @@ abstract class AbstractServiceTest extends UnitTestCase {
 					]
 				],
 				'usergroup' => [
-					'label' => 'LLL:EXT:cms/locallang_tca.xlf:fe_users.usergroup',
+					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:usergroup',
 					'config' => [
 						'type' => 'select',
 						'foreign_table' => 'fe_groups',
@@ -82,8 +79,7 @@ abstract class AbstractServiceTest extends UnitTestCase {
 					]
 				],
 				'name' => [
-					'exclude' => 1,
-					'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.name',
+					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:name',
 					'config' => [
 						'type' => 'input',
 						'size' => '40',
@@ -92,8 +88,7 @@ abstract class AbstractServiceTest extends UnitTestCase {
 					]
 				],
 				'first_name' => [
-					'exclude' => 1,
-					'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.first_name',
+					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:first_name',
 					'config' => [
 						'type' => 'input',
 						'size' => '25',
@@ -101,14 +96,32 @@ abstract class AbstractServiceTest extends UnitTestCase {
 						'max' => '50'
 					]
 				],
+				'birthday' => [
+					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:birthday',
+					'config' => [
+						'type' => 'input',
+						'size' => '25',
+						'eval' => 'date',
+						'max' => '50'
+					]
+				],
 				'last_name' => [
-					'exclude' => 1,
-					'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.last_name',
+					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:last_name',
 					'config' => [
 						'type' => 'input',
 						'size' => '25',
 						'eval' => 'trim',
 						'max' => '50'
+					]
+				],
+				'starttime' => [
+					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:starttime',
+					'config' => [
+						'type' => 'input',
+						'size' => '13',
+						'max' => '20',
+						'eval' => 'datetime',
+						'default' => '0'
 					]
 				],
 			],
@@ -116,12 +129,12 @@ abstract class AbstractServiceTest extends UnitTestCase {
 				'columns' => [
 					'username' => [
 						'visible' => TRUE,
-						'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:username',
+						'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:username',
 						'editable' => TRUE,
 					],
 					'name' => [
 						'visible' => TRUE,
-						'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:name',
+						'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:name',
 						'editable' => TRUE,
 					],
 					'usergroup' => [
@@ -132,19 +145,13 @@ abstract class AbstractServiceTest extends UnitTestCase {
 						],
 						'editable' => TRUE,
 						'sortable' => FALSE,
-						'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:usergroup',
+						'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:usergroup',
 					],
 				]
 			]
 		];
 
-		$GLOBALS['TYPO3_DB'] = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection', []);
-
-		// create language-object
-		global $LANG;
-		$LANG = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('language');
-		$LANG->init('default');
-
+		$GLOBALS['TYPO3_DB'] = $this->getMock('TYPO3\CMS\Core\Database\DatabaseConnection', []);
 
 		/*
 		#################
@@ -235,7 +242,7 @@ abstract class AbstractServiceTest extends UnitTestCase {
 	}
 
 	public function tearDown() {
-		unset($this->fixture, $GLOBALS['TCA']);
+		unset($this->fixture, $GLOBALS['TCA'], $GLOBALS['TYPO3_DB']);
 	}
 
 }

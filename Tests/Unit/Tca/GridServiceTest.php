@@ -14,6 +14,8 @@ namespace Fab\Vidi\Tests\Unit\Tca;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Formatter\Date;
+use Fab\Vidi\Formatter\Datetime;
 use Fab\Vidi\Tca\Tca;
 
 /**
@@ -39,6 +41,8 @@ class GridServiceTest extends AbstractServiceTest {
 	 * @test
 	 */
 	public function getLabelReturnNameAsValue() {
+		$GLOBALS['LANG'] = $this->getMock('TYPO3\CMS\Lang\LanguageService', array(), array(), '', FALSE);
+		$GLOBALS['LANG']->expects($this->once())->method('sL')->will($this->returnValue('Name'));
 		$this->assertEquals('Name', $this->fixture->getLabel('name'));
 	}
 
@@ -56,10 +60,42 @@ class GridServiceTest extends AbstractServiceTest {
 	/**
 	 * @test
 	 */
-	public function getColumnsReturnsNotEmpty() {
+	public function getColumnsReturnsAnNotEmptyArray() {
 		$actual = $this->fixture->getFields();
 		$this->assertTrue(is_array($actual));
 		$this->assertNotEmpty($actual);
+	}
+
+	/**
+	 * @test
+	 */
+	public function getFieldsReturnsGreaterThanNumberOfColumns() {
+		$actual = $this->fixture->getFields();
+		$this->assertGreaterThanOrEqual(count($actual), count($GLOBALS['TCA']['tx_foo']['columns']));
+	}
+
+	/**
+	 * @test
+	 */
+	public function additionalFieldsAreHiddenByDefault() {
+		$actual = $this->fixture->getFields();
+		$this->assertFalse($actual['birthday']['visible']);
+	}
+
+	/**
+	 * @test
+	 */
+	public function additionalFieldBirthDayIsFormattedAsDate() {
+		$actual = $this->fixture->getFields();
+		$this->assertEquals(Date::class, $actual['birthday']['format']);
+	}
+
+	/**
+	 * @test
+	 */
+	public function additionalFieldStartTimeIsFormattedAsDateTime() {
+		$actual = $this->fixture->getFields();
+		$this->assertEquals(DateTime::class, $actual['starttime']['format']);
 	}
 
 	/**
@@ -74,8 +110,9 @@ class GridServiceTest extends AbstractServiceTest {
 	/**
 	 * @test
 	 */
-	public function labelOfColumnUsernameShouldBeUsernameByDefault() {
-		$this->assertEquals('Username', $this->fixture->getLabel('username'));
+	public function additionalColumnFirstNameShouldNotBeVisible() {
+		$actual = $this->fixture->isVisible('first_name');
+		$this->assertFalse($actual);
 	}
 
 	/**
@@ -101,17 +138,11 @@ class GridServiceTest extends AbstractServiceTest {
 
 	/**
 	 * @test
+	 * @expectedException \Fab\Vidi\Exception\InvalidKeyInArrayException
 	 */
-	public function columnFooHasNoRenderer() {
-		$this->assertFalse($this->fixture->hasRenderers(uniqid('foo')));
-	}
-
-	/**
-	 * @test
-	 */
-	public function getTheRendererOfColumnFooIsEmptyArray() {
+	public function getConfigurationOfNotExistingColumnReturnsAnException() {
 		$expected = array();
-		$this->assertEquals($expected, $this->fixture->getRenderers(uniqid('foo')));
+		$this->assertEquals($expected, $this->fixture->getRenderers('bar'));
 	}
 
 	/**
@@ -123,6 +154,14 @@ class GridServiceTest extends AbstractServiceTest {
 			$actual = $this->fixture->getFieldNameByPosition($index);
 			$this->assertSame($fields[$index], $actual);
 		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function canGetLabelKeyCodeForFakeFieldUserGroups() {
+		$fieldName = 'usergroup';
+		$this->assertEquals($GLOBALS['TCA']['tx_foo']['grid']['columns'][$fieldName]['label'], $this->fixture->getLabelKey($fieldName));
 	}
 
 }

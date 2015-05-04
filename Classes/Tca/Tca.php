@@ -36,8 +36,6 @@ class Tca implements SingletonInterface, TcaServiceInterface {
 		'crdate',
 		'deleted',
 		'hidden',
-		'starttime',
-		'endtime',
 		'sys_language_uid',
 		'l18n_parent',
 		'l18n_diffsource',
