@@ -204,7 +204,7 @@ class ModuleLoader {
 				array(
 					'Content' => 'index, list, delete, update, edit, copy, move, localize',
 					'Tool' => 'welcome, work',
-					'Facet' => 'suggest',
+					'Facet' => 'autoSuggest, autoSuggests',
 				),
 				$moduleConfiguration
 
