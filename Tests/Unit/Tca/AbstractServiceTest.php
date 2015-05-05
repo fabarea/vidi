@@ -96,21 +96,39 @@ abstract class AbstractServiceTest extends UnitTestCase {
 						'max' => '50'
 					]
 				],
-				'birthday' => [
-					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:birthday',
-					'config' => [
-						'type' => 'input',
-						'size' => '25',
-						'eval' => 'date',
-						'max' => '50'
-					]
-				],
 				'last_name' => [
 					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:last_name',
 					'config' => [
 						'type' => 'input',
 						'size' => '25',
 						'eval' => 'trim',
+						'max' => '50'
+					]
+				],
+				'middle_name' => [
+					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:middle_name',
+					'config' => [
+						'type' => 'input',
+						'size' => '25',
+						'eval' => 'trim',
+						'max' => '50'
+					]
+				],
+				'alternative_name' => [
+					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:alternative_name',
+					'config' => [
+						'type' => 'input',
+						'size' => '25',
+						'eval' => 'trim',
+						'max' => '50'
+					]
+				],
+				'birthday' => [
+					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:birthday',
+					'config' => [
+						'type' => 'input',
+						'size' => '25',
+						'eval' => 'date',
 						'max' => '50'
 					]
 				],
@@ -126,6 +144,7 @@ abstract class AbstractServiceTest extends UnitTestCase {
 				],
 			],
 			'grid' => [
+				'excluded_fields' => 'middle_name, alternative_name',
 				'columns' => [
 					'username' => [
 						'visible' => TRUE,

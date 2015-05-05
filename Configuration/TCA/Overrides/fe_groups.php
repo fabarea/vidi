@@ -8,6 +8,15 @@ $tca = array(
 			'title',
 			'description',
 		),
+		'vidi' => array(
+			// Special case when the field name does not follow the conventions.
+			// Vidi needs a bit of help to find the equivalence fieldName <-> propertyName.
+			'mappings' => array(
+				'lockToDomain' => 'lockToDomain',
+				'TSconfig' => 'tsConfig',
+				'felogin_redirectPid' => 'feLoginRedirectPid',
+			),
+		),
 		'columns' => array(
 			'__checkbox' => array(
 				'renderer' => new \Fab\Vidi\Grid\CheckBoxComponent(),

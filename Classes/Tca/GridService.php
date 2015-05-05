@@ -171,9 +171,6 @@ class GridService implements TcaServiceInterface {
 	 */
 	public function getField($fieldName) {
 		$fields = $this->getFields();
-		if (empty($fields[$fieldName])) {
-			throw new InvalidKeyInArrayException('I could not find field ' . $fieldName, 1430765279);
-		}
 		return $fields[$fieldName];
 	}
 
@@ -215,7 +212,13 @@ class GridService implements TcaServiceInterface {
 					}
 				}
 				$fields[$lastColumnKey] = $lastColumn;
+			}
 
+			// Unset excluded fields
+			foreach ($this->getExcludedFields() as $excludedField) {
+				if (isset($fields[$excludedField])) {
+					unset($fields[$excludedField]);
+				}
 			}
 			$this->fields = $fields;
 		}
@@ -473,9 +476,10 @@ class GridService implements TcaServiceInterface {
 	 */
 	public function getExcludedFields() {
 		$excludedFields = array();
-		if (!empty($this->tca['export']['excluded_fields'])) {
+		if (!empty($this->tca['excluded_fields'])) {
+			$excludedFields = GeneralUtility::trimExplode(',', $this->tca['excluded_fields'], TRUE);
+		} elseif (!empty($this->tca['export']['excluded_fields'])) { // only for export for legacy reason.
 			$excludedFields = GeneralUtility::trimExplode(',', $this->tca['export']['excluded_fields'], TRUE);
-
 		}
 		return $excludedFields;
 	}

@@ -33,7 +33,7 @@
 							<a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#" style="padding: 0 4px;">
 								<span class="caret"></span>
 							</a>
-							<ul class="dropdown-menu">
+							<ul class="dropdown-menu" style="max-height: 800px; overflow-y: scroll;">
 								<f:for each="{columns}" key="columnName" as="configuration" iteration="iterator">
 									<li>
 										<f:if condition="{v:grid.column.canBeHidden(name: '{columnName}')}">

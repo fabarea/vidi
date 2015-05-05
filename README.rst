@@ -225,6 +225,56 @@ columns should be rendered. Take inspiration of `this example`_ below for your o
 
 .. _this example: https://github.com/fabarea/vidi/blob/master/Configuration/TCA/Overrides/fe_users.php#L21
 
+
+TCA "grid"
+----------
+
+::
+
+	'grid' => [
+		'excluded_fields' => 'foo, bar',
+		'export' => [],
+		'facets' => [],
+		'columns' => []
+	],
+
+.. container:: table-row
+
+Key
+	**excluded_fields**
+
+
+Description
+	Whenever there are fields to be excluded from the Grid
+
+.. container:: table-row
+
+Key
+	**export**
+
+
+Description
+	Configuration for data export, CSV, XML, ...
+
+.. container:: table-row
+
+Key
+	**facets**
+
+
+Description
+	Configuration for the facets
+
+.. container:: table-row
+
+Key
+	**columns**
+
+
+Description
+	Configuration for the columns in the Grid
+
+
 TCA "grid.columns"
 ------------------
 
@@ -451,22 +501,11 @@ Configuration of ``$GLOBALS['TCA']['tx_foo']['grid']['export']`` as example::
 
 	'grid' => array(
 		'export' => array(
-			'excluded_fields' => 'lockToDomain, TSconfig, felogin_redirectPid, felogin_forgotHash',
 			'include_files' => FALSE,
 		),
 	),
 
 Possible key and values that can be assigned for key ``export``
-
-.. container:: table-row
-
-Key
-	**excluded_fields**
-
-
-Description
-	Whenever there are fields to be excluded from the CSV, XML, ... export
-
 
 .. container:: table-row
 

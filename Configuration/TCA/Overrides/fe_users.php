@@ -19,8 +19,8 @@ $tca = array(
 		),
 	),
 	'grid' => array(
+		'excluded_fields' => 'lockToDomain, TSconfig, felogin_redirectPid, felogin_forgotHash, auth_token',
 		'export' => array(
-			'excluded_fields' => 'lockToDomain, TSconfig, felogin_redirectPid, felogin_forgotHash',
 			'include_files' => FALSE,
 		),
 		'facets' => array(

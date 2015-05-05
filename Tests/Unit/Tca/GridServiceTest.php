@@ -132,13 +132,28 @@ class GridServiceTest extends AbstractServiceTest {
 	/**
 	 * @test
 	 */
+	public function getExcludedFieldsReturnsArray() {
+		$result = $this->fixture->getExcludedFields();
+		$this->assertInternalType('array', $result);
+	}
+
+	/**
+	 * @test
+	 */
+	public function getFieldsRemoveFieldMiddleNameFromResultSet() {
+		$result = $this->fixture->getFields();
+		$this->assertArrayNotHasKey('middle_name', $result);
+	}
+
+	/**
+	 * @test
+	 */
 	public function columnUsernameShouldBeVisibleByDefault() {
 		$this->assertTrue($this->fixture->isVisible('username'));
 	}
 
 	/**
 	 * @test
-	 * @expectedException \Fab\Vidi\Exception\InvalidKeyInArrayException
 	 */
 	public function getConfigurationOfNotExistingColumnReturnsAnException() {
 		$expected = array();
