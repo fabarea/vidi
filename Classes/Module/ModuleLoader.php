@@ -38,7 +38,7 @@ class ModuleLoader {
 	protected $defaultPid;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $showPageTree;
 
@@ -55,7 +55,7 @@ class ModuleLoader {
 	/**
 	 * @var string
 	 */
-	protected $mainModule = 'user';
+	protected $mainModule = 'content';
 
 	/**
 	 * @var string
@@ -480,7 +480,7 @@ class ModuleLoader {
 	}
 
 	/**
-	 * @param string $isPageTreeShown
+	 * @param bool $isPageTreeShown
 	 * @return $this
 	 */
 	public function showPageTree($isPageTreeShown) {

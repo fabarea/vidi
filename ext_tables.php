@@ -19,13 +19,30 @@ if (TYPO3_MODE == 'BE') {
 		'vidi'
 	);
 
+	// Add content main module before 'user'
+	// There are not API for doing this... ;(
+	if (!isset($GLOBALS['TBE_MODULES']['content'])) {
+		$modules = array();
+		foreach ($GLOBALS['TBE_MODULES'] as $key => $val) {
+			if ($key == 'user') {
+				$modules['content'] = '';
+			}
+			$modules[$key] = $val;
+		}
+		$GLOBALS['TBE_MODULES'] = $modules;
+		\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+			'content',
+			'',
+			'',
+			\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('vidi') . 'mod/content/');
+	}
+
 	/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
 	$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
 
 	/** @var \TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility $configurationUtility */
 	$configurationUtility = $objectManager->get('TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility');
 	$configuration = $configurationUtility->getCurrentConfiguration('vidi');
-
 
 	// Loop around the data types and register them to be displayed within a BE module.
 	if ($configuration['data_types']['value']) {
@@ -59,7 +76,7 @@ if (TYPO3_MODE == 'BE') {
 		}
 
 		\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-			$_EXTKEY, 'web', // Make newsletter module a submodule of 'user'
+			$_EXTKEY, 'web', // Make module a submodule of 'web'
 			'm1', // Submodule key
 			'after:list', // Position
 			array(
