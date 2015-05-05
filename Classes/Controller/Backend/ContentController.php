@@ -450,6 +450,51 @@ class ContentController extends ActionController {
 	}
 
 	/**
+	 * Set the sorting of a record giving the previous and the next record uid
+	 * @param array $matches
+	 * @param int $previous
+	 * @return string
+	 * @throws \TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException
+	 */
+	public function sortAction(array $matches = array(), $previous = null){
+
+		$matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
+
+		// Fetch objects via the Content Service.
+		$contentService = $this->getContentService()->findBy($matcher);
+
+		// Compute the label field name of the table.
+		$tableTitleField = TcaService::table()->getLabelField();
+
+		$dataHandler = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+		// Get result object for storing data along the processing.
+		$result = $this->getJsonResult();
+		$result->setNumberOfObjects($contentService->getNumberOfObjects());
+		foreach ($contentService->getObjects() as $object) {
+
+			// Store the first object, so that the "action" message can be more explicit when deleting only one record.
+			if ($contentService->getNumberOfObjects() === 1) {
+				$tableTitleValue = $object[$tableTitleField];
+				$processedObjectData = array(
+					'uid' => $object->getUid(),
+					'name' => $tableTitleValue,
+				);
+				$result->setProcessedObject($processedObjectData);
+			}
+			$target=is_null($previous)?$object->getPid():(-(int)$previous);
+			$dataHandler->moveRecord($object['dataType'],$object->getUid(),$target);
+
+			// Get the possible error messages and store them.
+			$errorMessages = ContentRepositoryFactory::getInstance()->getErrorMessages();
+			$result->addErrorMessages($errorMessages);
+		}
+
+		// Set the result and render the JSON view.
+		$this->getJsonView()->setResult($result);
+		return $this->getJsonView()->render();
+	}
+
+	/**
 	 * Render an edit URI given an object.
 	 *
 	 * @param Content $object
