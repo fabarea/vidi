@@ -206,9 +206,9 @@ class GridService implements TcaServiceInterface {
 					// Try to guess the format
 					$fieldType = Tca::table($this->tableName)->field($additionalField)->getType();
 					if ($fieldType === FieldType::DATE) {
-						$fields[$additionalField]['format'] = Date::class;
+						$fields[$additionalField]['format'] = 'Fab\Vidi\Formatter\Date';
 					} elseif ($fieldType === FieldType::DATETIME) {
-						$fields[$additionalField]['format'] = DateTime::class;
+						$fields[$additionalField]['format'] = 'Fab\Vidi\Formatter\Datetime';
 					}
 				}
 				$fields[$lastColumnKey] = $lastColumn;

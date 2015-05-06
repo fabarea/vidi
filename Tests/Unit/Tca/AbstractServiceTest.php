@@ -29,8 +29,8 @@ abstract class AbstractServiceTest extends UnitTestCase {
 	public function setUp() {
 		parent::setUp();
 
-		$GLOBALS['TCA']['tx_foo'] = [
-			'ctrl' => [
+		$GLOBALS['TCA']['tx_foo'] = array(
+			'ctrl' => array(
 				'label' => 'username',
 				'default_sortby' => 'ORDER BY username',
 				'tstamp' => 'tstamp',
@@ -38,139 +38,139 @@ abstract class AbstractServiceTest extends UnitTestCase {
 				'cruser_id' => 'cruser_id',
 				'title' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:tx_foo',
 				'delete' => 'deleted',
-				'enablecolumns' => [
+				'enablecolumns' => array(
 					'disabled' => 'disable',
 					'starttime' => 'starttime',
 					'endtime' => 'endtime'
-				],
-				'typeicon_classes' => [
+				),
+				'typeicon_classes' => array(
 					'default' => 'status-user-frontend'
-				],
+				),
 				'searchFields' => 'username,name,first_name,last_name'
-			],
-			'columns' => [
-				'username' => [
+			),
+			'columns' => array(
+				'username' => array(
 					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:username',
-					'config' => [
+					'config' => array(
 						'type' => 'input',
 						'size' => '20',
 						'max' => '255',
 						'eval' => 'nospace,lower,uniqueInPid,required'
-					]
-				],
-				'password' => [
+					),
+				),
+				'password' => array(
 					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:password',
-					'config' => [
+					'config' => array(
 						'type' => 'input',
 						'size' => '10',
 						'max' => '40',
 						'eval' => 'nospace,required,password'
-					]
-				],
-				'usergroup' => [
+					),
+				),
+				'usergroup' => array(
 					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:usergroup',
-					'config' => [
+					'config' => array(
 						'type' => 'select',
 						'foreign_table' => 'fe_groups',
 						'foreign_table_where' => 'ORDER BY fe_groups.title',
 						'size' => '6',
 						'minitems' => '1',
 						'maxitems' => '50'
-					]
-				],
-				'name' => [
+					),
+				),
+				'name' => array(
 					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:name',
-					'config' => [
+					'config' => array(
 						'type' => 'input',
 						'size' => '40',
 						'eval' => 'trim',
 						'max' => '80'
-					]
-				],
-				'first_name' => [
+					),
+				),
+				'first_name' => array(
 					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:first_name',
-					'config' => [
+					'config' => array(
 						'type' => 'input',
 						'size' => '25',
 						'eval' => 'trim',
 						'max' => '50'
-					]
-				],
-				'last_name' => [
+					),
+				),
+				'last_name' => array(
 					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:last_name',
-					'config' => [
+					'config' => array(
 						'type' => 'input',
 						'size' => '25',
 						'eval' => 'trim',
 						'max' => '50'
-					]
-				],
-				'middle_name' => [
+					),
+				),
+				'middle_name' => array(
 					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:middle_name',
-					'config' => [
+					'config' => array(
 						'type' => 'input',
 						'size' => '25',
 						'eval' => 'trim',
 						'max' => '50'
-					]
-				],
-				'alternative_name' => [
+					),
+				),
+				'alternative_name' => array(
 					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:alternative_name',
-					'config' => [
+					'config' => array(
 						'type' => 'input',
 						'size' => '25',
 						'eval' => 'trim',
 						'max' => '50'
-					]
-				],
-				'birthday' => [
+					),
+				),
+				'birthday' => array(
 					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:birthday',
-					'config' => [
+					'config' => array(
 						'type' => 'input',
 						'size' => '25',
 						'eval' => 'date',
 						'max' => '50'
-					]
-				],
-				'starttime' => [
+					),
+				),
+				'starttime' => array(
 					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:starttime',
-					'config' => [
+					'config' => array(
 						'type' => 'input',
 						'size' => '13',
 						'max' => '20',
 						'eval' => 'datetime',
 						'default' => '0'
-					]
-				],
-			],
-			'grid' => [
+					),
+				),
+			),
+			'grid' => array(
 				'excluded_fields' => 'middle_name, alternative_name',
-				'columns' => [
-					'username' => [
+				'columns' => array(
+					'username' => array(
 						'visible' => TRUE,
 						'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:username',
 						'editable' => TRUE,
-					],
-					'name' => [
+					),
+					'name' => array(
 						'visible' => TRUE,
 						'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:name',
 						'editable' => TRUE,
-					],
-					'usergroup' => [
+					),
+					'usergroup' => array(
 						'visible' => TRUE,
-						'renderers' => [
+						'renderers' => array(
 							'Fab\Vidi\Grid\RelationEditRenderer',
 							'Fab\Vidi\Grid\RelationRenderer',
-						],
+						),
 						'editable' => TRUE,
 						'sortable' => FALSE,
 						'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:usergroup',
-					],
-				]
-			]
-		];
+					),
+				),
+			),
+		);
 
-		$GLOBALS['TYPO3_DB'] = $this->getMock('TYPO3\CMS\Core\Database\DatabaseConnection', []);
+		$GLOBALS['TYPO3_DB'] = $this->getMock('TYPO3\CMS\Core\Database\DatabaseConnection', array());
 
 		/*
 		#################

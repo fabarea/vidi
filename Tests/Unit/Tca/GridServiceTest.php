@@ -87,7 +87,7 @@ class GridServiceTest extends AbstractServiceTest {
 	 */
 	public function additionalFieldBirthDayIsFormattedAsDate() {
 		$actual = $this->fixture->getFields();
-		$this->assertEquals(Date::class, $actual['birthday']['format']);
+		$this->assertEquals('Fab\Vidi\Formatter\Date', $actual['birthday']['format']);
 	}
 
 	/**
@@ -95,7 +95,7 @@ class GridServiceTest extends AbstractServiceTest {
 	 */
 	public function additionalFieldStartTimeIsFormattedAsDateTime() {
 		$actual = $this->fixture->getFields();
-		$this->assertEquals(DateTime::class, $actual['starttime']['format']);
+		$this->assertEquals('Fab\Vidi\Formatter\Datetime', $actual['starttime']['format']);
 	}
 
 	/**
