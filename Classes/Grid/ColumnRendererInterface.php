@@ -15,11 +15,9 @@ namespace Fab\Vidi\Grid;
  */
 
 /**
- * Interface dealing with rendering a media in someway.
- *
- * @deprecated use ColumnRendererInterface, will be removed in 0.10 + 2 version
+ * Interface for rendering a column in the Grid
  */
-interface GridRendererInterface {
+interface ColumnRendererInterface {
 
 	/**
 	 * Render a media in someway.

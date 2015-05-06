@@ -16,6 +16,8 @@ namespace Fab\Vidi\Grid;
 
 /**
  *  Interface for configuring a Grid Renderer in the Grid TCA.
+ *
+ * @deprecated use ColumnInterface, will be removed in 0.10 + 2 version
  */
 interface GridComponentInterface {
 

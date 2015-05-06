@@ -15,10 +15,22 @@ namespace Fab\Vidi\Grid;
  */
 
 /**
- * Class for configuring a Grid Renderer in the Grid TCA.
- *
- * @deprecated use GenericColumn, will be removed in 0.10 + 2 version
+ *  Interface for configuring a column in the Grid.
  */
-class GenericRendererComponent extends GenericColumn {
+interface ColumnInterface {
 
+	/**
+	 * @return string
+	 */
+	public function getClassName();
+
+	/**
+	 * @return array
+	 */
+	public function getConfiguration();
+
+	/**
+	 * @return string
+	 */
+	public function toArray();
 }
