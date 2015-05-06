@@ -420,6 +420,15 @@ class ModuleLoader {
 	}
 
 	/**
+	 * @param string $fileNameAndPath
+	 * @return $this
+	 */
+	public function addJavaScriptFile($fileNameAndPath) {
+		$this->additionalJavaScriptFiles[] = $fileNameAndPath;
+		return $this;
+	}
+
+	/**
 	 * @param array $files
 	 * @return $this
 	 */
@@ -427,6 +436,15 @@ class ModuleLoader {
 		foreach ($files as $file) {
 			$this->additionalStyleSheetFiles[] = $file;
 		}
+		return $this;
+	}
+
+	/**
+	 * @param string $fileNameAndPath
+	 * @return $this
+	 */
+	public function addStyleSheetFile($fileNameAndPath) {
+		$this->additionalStyleSheetFiles[] = $fileNameAndPath;
 		return $this;
 	}
 
