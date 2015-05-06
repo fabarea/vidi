@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Render;
+namespace Fab\Vidi\ViewHelpers\Render;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,7 +15,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Render;
  */
 
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3\CMS\Vidi\Module\ModuleLoader;
+use Fab\Vidi\Module\ModuleLoader;
 
 /**
  * View helper for rendering components
@@ -37,7 +37,7 @@ class ComponentsViewHelper extends AbstractViewHelper {
 	public function render($part) {
 
 		/** @var ModuleLoader $moduleLoader */
-		$moduleLoader = $this->objectManager->get('TYPO3\CMS\Vidi\Module\ModuleLoader');
+		$moduleLoader = $this->objectManager->get('Fab\Vidi\Module\ModuleLoader');
 
 		$getComponents = 'get' . ucfirst($part) . 'Components';
 		$components = $moduleLoader->$getComponents();

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\DataHandler;
+namespace Fab\Vidi\DataHandler;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -37,7 +37,7 @@ class DataHandlerFactory implements SingletonInterface {
 	 *
 	 * @var string
 	 */
-	protected $defaultDataHandler = 'TYPO3\CMS\Vidi\DataHandler\CoreDataHandler';
+	protected $defaultDataHandler = 'Fab\Vidi\DataHandler\CoreDataHandler';
 
 	/**
 	 * @param string $actionName

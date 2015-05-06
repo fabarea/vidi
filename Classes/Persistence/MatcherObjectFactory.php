@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Persistence;
+namespace Fab\Vidi\Persistence;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -17,8 +17,8 @@ namespace TYPO3\CMS\Vidi\Persistence;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Vidi\Module\ModuleLoader;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Module\ModuleLoader;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Factory class related to Matcher object.
@@ -28,10 +28,10 @@ class MatcherObjectFactory implements SingletonInterface {
 	/**
 	 * Gets a singleton instance of this class.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Persistence\MatcherObjectFactory
+	 * @return \Fab\Vidi\Persistence\MatcherObjectFactory
 	 */
 	static public function getInstance() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\MatcherObjectFactory');
+		return GeneralUtility::makeInstance('Fab\Vidi\Persistence\MatcherObjectFactory');
 	}
 
 	/**
@@ -48,7 +48,7 @@ class MatcherObjectFactory implements SingletonInterface {
 		}
 
 		/** @var $matcher Matcher */
-		$matcher = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher', array(), $dataType);
+		$matcher = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Matcher', array(), $dataType);
 
 		$matcher = $this->applyCriteriaFromDataTables($matcher, $dataType);
 		$matcher = $this->applyCriteriaFromMatchesArgument($matcher, $matches);
@@ -125,7 +125,7 @@ class MatcherObjectFactory implements SingletonInterface {
 					$value = current($term);
 
 					// Check whether the field exists and set it as "equal" or "like".
-					if (TcaService::table($resolvedDataType)->hasField($fieldName)) {
+					if (Tca::table($resolvedDataType)->hasField($fieldName)) {
 						if ($this->isOperatorEquals($fieldNameAndPath, $dataType, $value)) {
 							$matcher->equals($fieldNameAndPath, $value);
 						} else {
@@ -154,8 +154,8 @@ class MatcherObjectFactory implements SingletonInterface {
 	 * @return bool
 	 */
 	protected function isOperatorEquals($fieldName, $dataType, $value) {
-		return (TcaService::table($dataType)->field($fieldName)->hasRelation() && MathUtility::canBeInterpretedAsInteger($value))
-			|| TcaService::table($dataType)->field($fieldName)->isNumerical();
+		return (Tca::table($dataType)->field($fieldName)->hasRelation() && MathUtility::canBeInterpretedAsInteger($value))
+			|| Tca::table($dataType)->field($fieldName)->isNumerical();
 	}
 
 	/**
@@ -169,11 +169,11 @@ class MatcherObjectFactory implements SingletonInterface {
 		if (strlen($matcher->getDataType()) <= 0) {
 
 			/** @var ModuleLoader $moduleLoader */
-			$moduleLoader = $this->getObjectManager()->get('TYPO3\CMS\Vidi\Module\ModuleLoader');
+			$moduleLoader = $this->getObjectManager()->get('Fab\Vidi\Module\ModuleLoader');
 			$matcher->setDataType($moduleLoader->getDataType());
 		}
 
-		$this->getSignalSlotDispatcher()->dispatch('TYPO3\CMS\Vidi\Controller\Backend\ContentController', 'postProcessMatcherObject', array($matcher, $matcher->getDataType()));
+		$this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\Controller\Backend\ContentController', 'postProcessMatcherObject', array($matcher, $matcher->getDataType()));
 	}
 
 	/**
@@ -195,17 +195,17 @@ class MatcherObjectFactory implements SingletonInterface {
 	/**
 	 * Get the Vidi Module Loader.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 * @return \Fab\Vidi\Module\ModuleLoader
 	 */
 	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
+		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 * @return \Fab\Vidi\Resolver\FieldPathResolver
 	 */
 	protected function getFieldPathResolver() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
 	}
 
 }

@@ -58,6 +58,32 @@ Vidi.VisualSearch = {
 				}
 			}
 		});
+
+		// Load facet suggestions.
+		Vidi.VisualSearch.loadAutoSuggestions();
+	},
+
+	/**
+	 * Load facet suggestions.
+	 *
+	 * @return void
+	 * @private
+	 */
+	loadAutoSuggestions: function() {
+
+		// Fetch the suggestion values for the facet.
+		$.ajax({
+			url: $('#link-auto-suggests').attr('href'),
+			dataType: "json",
+			success: function(data) {
+				Vidi.module.grid.suggestions = data;
+				//Vidi.module.grid.suggestions[facetName] = data;
+				//callback(Vidi.module.grid.suggestions[facetName])
+			},
+			error: function() {
+				Vidi.VisualSearch.showError();
+			}
+		});
 	},
 
 	/**
@@ -154,7 +180,7 @@ Vidi.VisualSearch = {
 
 			// Fetch the suggestion values for the facet.
 			$.ajax({
-				url: $('#link-facet-suggest').attr('href'),
+				url: $('#link-auto-suggest').attr('href'),
 				dataType: "json",
 				data: Vidi.VisualSearch.getParameters(facetName, searchTerm),
 				success: function(data) {

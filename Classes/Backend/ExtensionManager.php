@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Backend;
+namespace Fab\Vidi\Backend;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,7 +15,7 @@ namespace TYPO3\CMS\Vidi\Backend;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Configuration\ConfigurationUtility;
+use Fab\Vidi\Configuration\ConfigurationUtility;
 
 /**
  * Display custom fields in the Extension Manager.

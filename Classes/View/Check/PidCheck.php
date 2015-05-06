@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\View\Check;
+namespace Fab\Vidi\View\Check;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,10 +15,10 @@ namespace TYPO3\CMS\Vidi\View\Check;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\View\AbstractComponentView;
+use Fab\Vidi\View\AbstractComponentView;
 use TYPO3\CMS\Frontend\Page\PageRepository;
-use TYPO3\CMS\Vidi\Module\Parameter;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Module\Parameter;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * View which renders check.
@@ -130,7 +130,7 @@ EOF;
 			return;
 		}
 
-		$isRootLevel = (bool)TcaService::table()->get('rootLevel');
+		$isRootLevel = (bool)Tca::table()->get('rootLevel');
 		if (!$isRootLevel) {
 			$this->errors[] = sprintf(
 				'You are not allowed to use page id "0" unless you set $GLOBALS[\'TCA\'][\'%1$s\'][\'ctrl\'][\'rootLevel\'] = 1;',

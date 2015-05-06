@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Tca;
+namespace Fab\Vidi\ViewHelpers\Tca;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,7 +15,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Tca;
  */
 
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * View helper which returns the label of a field.
@@ -30,7 +30,7 @@ class LabelViewHelper extends AbstractViewHelper {
 	 * @return string
 	 */
 	public function render($dataType, $fieldName) {
-		return TcaService::table($dataType)->field($fieldName)->getLabel();
+		return Tca::table($dataType)->field($fieldName)->getLabel();
 	}
 
 }

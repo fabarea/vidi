@@ -1,39 +1,28 @@
 <?php
-namespace TYPO3\CMS\Vidi\Domain\Model;
+namespace Fab\Vidi\Domain\Model;
 
-/***************************************************************
- *  Copyright notice
+/**
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2013 Fabien Udriot <fabien.udriot@typo3.org>
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  All rights reserved
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 require_once dirname(dirname(dirname(__FILE__))) . '/AbstractFunctionalTestCase.php';
 
 /**
- * Test case for class \TYPO3\CMS\Vidi\Domain\Model\Content.
+ * Test case for class \Fab\Vidi\Domain\Model\Content.
  */
-class ContentTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTestCase {
+class ContentTest extends \Fab\Vidi\Tests\Functional\AbstractFunctionalTestCase {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Domain\Model\Content
+	 * @var \Fab\Vidi\Domain\Model\Content
 	 */
 	private $fixture;
 
@@ -48,7 +37,7 @@ class ContentTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTes
 			'foo' => array(),
 			'foo_bar' => array(),
 		);
-		$this->fixture = new \TYPO3\CMS\Vidi\Domain\Model\Content($this->dataType);
+		$this->fixture = new \Fab\Vidi\Domain\Model\Content($this->dataType);
 	}
 
 	public function tearDown() {
@@ -63,7 +52,7 @@ class ContentTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTes
 		$data = array(
 			$fieldName => 'foo data',
 		);
-		$object = new \TYPO3\CMS\Vidi\Domain\Model\Content($this->dataType, $data);
+		$object = new \Fab\Vidi\Domain\Model\Content($this->dataType, $data);
 		$this->assertObjectHasAttribute($propertyName, $object);
 	}
 
@@ -76,7 +65,7 @@ class ContentTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTes
 			$fieldName => 'foo data',
 		);
 		$this->markTestIncomplete(); # TCA must be faked
-		#$object = new \TYPO3\CMS\Vidi\Domain\Model\Content($this->dataType, $data);
+		#$object = new \Fab\Vidi\Domain\Model\Content($this->dataType, $data);
 		#$this->assertSame($data[$fieldName], $object[$fieldName]);
 	}
 
@@ -89,7 +78,7 @@ class ContentTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTes
 			$fieldName => 'foo data',
 		);
 		$this->markTestIncomplete(); # TCA must be faked
-		#$object = new \TYPO3\CMS\Vidi\Domain\Model\Content($this->dataType, $data);
+		#$object = new \Fab\Vidi\Domain\Model\Content($this->dataType, $data);
 		#$getter = 'get' . ucfirst($propertyName);
 		#$this->assertSame($data[$fieldName], $object->$getter());
 	}
@@ -102,7 +91,7 @@ class ContentTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTes
 		$data = array(
 			$fieldName => 'foo data',
 		);
-		$object = new \TYPO3\CMS\Vidi\Domain\Model\Content($this->dataType, $data);
+		$object = new \Fab\Vidi\Domain\Model\Content($this->dataType, $data);
 		$array = $object->toArray();
 		$this->assertArrayHasKey($fieldName, $array);
 	}
@@ -138,4 +127,3 @@ class ContentTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTes
 		);
 	}
 }
-?>

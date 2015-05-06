@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
+namespace Fab\Vidi\ViewHelpers\Grid\Column;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,7 +15,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
  */
 
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Tells whether the column can be hidden or not.
@@ -29,7 +29,7 @@ class CanBeHiddenViewHelper extends AbstractViewHelper {
 	 * @return boolean
 	 */
 	public function render($name) {
-		return TcaService::grid()->canBeHidden($name);
+		return Tca::grid()->canBeHidden($name);
 	}
 
 }

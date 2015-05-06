@@ -101,7 +101,7 @@ As example, let display a list of all Frontend Users belonging to User Group "1"
 			</f:for>
 		</ul>
 	</f:if>
-	{namespace m=TYPO3\CMS\Vidi\ViewHelpers}
+	{namespace m=Fab\Vidi\ViewHelpers}
 
 
 **TODO**: Implement selection saving! There is in the pipeline the possibility to save a selection
@@ -116,7 +116,7 @@ For getting the adequate instance, the repository can be fetched by this code. :
 
 	// Fetch the adequate repository for a known data type.
 	$dataType = 'fe_users';
-	$contentRepository = \TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory::getInstance($dataType);
+	$contentRepository = \Fab\Vidi\Domain\Repository\ContentRepositoryFactory::getInstance($dataType);
 
 	// From there, you can query the repository as you are used to in Flow / Extbase.
 
@@ -133,8 +133,8 @@ For complex query, a matcher object can be instantiated where to add many criter
 Content Repository. Here is an example for retrieving a set of files::
 
 	// Initialize a Matcher object.
-	/** @var \TYPO3\CMS\Vidi\Persistence\Matcher $matcher */
-	$matcher = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Matcher');
+	/** @var \Fab\Vidi\Persistence\Matcher $matcher */
+	$matcher = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Matcher');
 
 	// Add some criteria.
 	$matcher->equals('storage', '1');
@@ -161,12 +161,33 @@ To register your own Tool, add the following lines into in ``ext_tables.php``::
 	if (TYPO3_MODE == 'BE') {
 
 		// Register a Tool for a FE User content type only.
-		\TYPO3\CMS\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'TYPO3\CMS\Vidi\Tool\RelationAnalyserTool');
+		\Fab\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'Fab\Vidi\Tool\RelationAnalyserTool');
 
 
 		// Register some Tools for all Vidi modules.
-		\TYPO3\CMS\Vidi\Tool\ToolRegistry::getInstance()->register('fe_users', 'TYPO3\CMS\Vidi\Tool\RelationAnalyserTool');
+		\Fab\Vidi\Tool\ToolRegistry::getInstance()->register('fe_users', 'Fab\Vidi\Tool\RelationAnalyserTool');
 	}
+
+Override permissions
+--------------------
+
+Permissions whether the Tool is accessible or not is defined in the Tool class itself. We can control
+through the method `isShown` what BE groups (admin, editors, ...) is allowed to access the tool.
+However, the rules can be overridden programmatically via the API by adding configuration in `ext_tables`.
+Assuming we want to allow the access to every BE Users for the "find duplicates" tool provided in Media_, we would do something::
+
+
+	\TYPO3\CMS\Vidi\Tool\ToolRegistry::getInstance()
+		->overridePermission('sys_file', 'Fab\Media\Tool\DuplicateFilesFinderTool', function() {
+		return TRUE;
+	});
+
+	# where:
+	# * sys_file: the scope of the, can be possibly '*' for every data type.
+	# * DuplicateFilesFinderTool: the name of the tool.
+	# * function(): the closure to override the default permissions.
+
+.. _Media: https://github.com/fabarea/media
 
 TCA Grid
 ========
@@ -203,6 +224,56 @@ columns should be rendered. Take inspiration of `this example`_ below for your o
 
 
 .. _this example: https://github.com/fabarea/vidi/blob/master/Configuration/TCA/Overrides/fe_users.php#L21
+
+
+TCA "grid"
+----------
+
+::
+
+	'grid' => [
+		'excluded_fields' => 'foo, bar',
+		'export' => [],
+		'facets' => [],
+		'columns' => []
+	],
+
+.. container:: table-row
+
+Key
+	**excluded_fields**
+
+
+Description
+	Whenever there are fields to be excluded from the Grid
+
+.. container:: table-row
+
+Key
+	**export**
+
+
+Description
+	Configuration for data export, CSV, XML, ...
+
+.. container:: table-row
+
+Key
+	**facets**
+
+
+Description
+	Configuration for the facets
+
+.. container:: table-row
+
+Key
+	**columns**
+
+
+Description
+	Configuration for the columns in the Grid
+
 
 TCA "grid.columns"
 ------------------
@@ -277,7 +348,7 @@ Datatype
 	string
 
 Description
-	A full qualified class name implementing :code:`\TYPO3\CMS\Vidi\Formatter\FormatterInterface`
+	A full qualified class name implementing :code:`\Fab\Vidi\Formatter\FormatterInterface`
 
 Default
 	NULL
@@ -430,22 +501,11 @@ Configuration of ``$GLOBALS['TCA']['tx_foo']['grid']['export']`` as example::
 
 	'grid' => array(
 		'export' => array(
-			'excluded_fields' => 'lockToDomain, TSconfig, felogin_redirectPid, felogin_forgotHash',
 			'include_files' => FALSE,
 		),
 	),
 
 Possible key and values that can be assigned for key ``export``
-
-.. container:: table-row
-
-Key
-	**excluded_fields**
-
-
-Description
-	Whenever there are fields to be excluded from the CSV, XML, ... export
-
 
 .. container:: table-row
 
@@ -513,7 +573,7 @@ Basic Grid Renderer::
 	# "foo" is the name of a field and is assumed to have a complex rendering
 	'foo' => array(
 		'label' => 'LLL:EXT:lang/locallang_tca.xlf:tx_bar_domain_model.foo', // Label is required
-		'renderer' => 'TYPO3\CMS\Vidi\Grid\RelationRenderer',
+		'renderer' => 'Fab\Vidi\Grid\RelationRenderer',
 	),
 
 Grid Renderer with options::
@@ -521,7 +581,7 @@ Grid Renderer with options::
 	# "foo" is the name of a field and is assumed to have a complex rendering
 	'foo' => array(
 		'label' => 'LLL:EXT:lang/locallang_tca.xlf:tx_bar_domain_model.foo', // Label is required
-		'renderer' => new TYPO3\CMS\Vidi\Grid\GenericRendererComponent('TYPO3\CMS\Vidi\Grid\RelationRenderer', array('foo' => 'bar')),
+		'renderer' => new Fab\Vidi\Grid\GenericRendererComponent('Fab\Vidi\Grid\RelationRenderer', array('foo' => 'bar')),
 	),
 
 Multiple Grid Renderers with options::
@@ -529,7 +589,7 @@ Multiple Grid Renderers with options::
 	'foo' => array(
 		'label' => 'LLL:EXT:lang/locallang_tca.xlf:tx_bar_domain_model.foo', // Label is required
 		'renderers' => array(
-			new TYPO3\CMS\Vidi\Grid\GenericRendererComponent('TYPO3\CMS\Vidi\Grid\RelationRenderer', array('foo' => 'bar')),
+			new Fab\Vidi\Grid\GenericRendererComponent('Fab\Vidi\Grid\RelationRenderer', array('foo' => 'bar')),
 			... // more possible renderers to come
 		),
 	),
@@ -542,23 +602,23 @@ You can format the value of a column by using one of the built-in formatter of v
 
 There are two built-in formatters:
 
-* :code:`\TYPO3\CMS\Vidi\Formatter\Date` - formats a timestamp with d.m.Y
-* :code:`\TYPO3\CMS\Vidi\Formatter\Datetime` - formats a timestamp with d.m.Y - H:i
+* :code:`\Fab\Vidi\Formatter\Date` - formats a timestamp with d.m.Y
+* :code:`\Fab\Vidi\Formatter\Datetime` - formats a timestamp with d.m.Y - H:i
 
-If you want to provide a custom formatter, it has to implement :code:`\TYPO3\CMS\Vidi\Formatter\FormatterInterface`
+If you want to provide a custom formatter, it has to implement :code:`\Fab\Vidi\Formatter\FormatterInterface`
 
 Example, using a built-in formatter::
 
 	'starttime' => array(
 		'label' => ...
-		'format' => 'TYPO3\\CMS\\Vidi\\Formatter\Date',
+		'format' => 'Fab\Vidi\Formatter\Date',
 	),
 
 Example, using the custom FancyDate formatter from the Acme Package::
 
 	'starttime' => array(
 		'label' => ...
-		'format' => 'Acme\\Package\\Vidi\\Formatter\\FancyDate',
+		'format' => 'Acme\Package\Vidi\Formatter\FancyDate',
 	),
 
 TCA Service API
@@ -576,16 +636,16 @@ The API is meant to be generic and can be re-use for every data type within TYPO
 
 ::
 
-	use TYPO3\CMS\Vidi\Tca\TcaService;
+	use Fab\Vidi\Tca\Tca;
 
 	# Return the field type
-	TcaService::table($tableName)->field($fieldName)->getType();
+	Tca::table($tableName)->field($fieldName)->getType();
 
 	# Return the translated label for a field
-	TcaService::table($tableName)->field($fieldName)->getLabel();
+	Tca::table($tableName)->field($fieldName)->getLabel();
 
 	# Get all field configured for a table name
-	TcaService::table($tableName)->getFields();
+	Tca::table($tableName)->getFields();
 
 	...
 
@@ -648,15 +708,15 @@ Module Loader
 If you need to hook into a module and add some custom behaviour for a new button or replacing a Component,
 you can configure the Module through the Vidi Module Loader. As a quick example::
 
-	$moduleLoader = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader', 'sys_file');
+	$moduleLoader = GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader', 'sys_file');
 	$moduleLoader->addJavaScriptFiles(...)
 
 
-For more insight, consider the example of ``ext_tables.php`` of extension Media_.
+For more insight, consider the example of ``ext_tables.php`` in `extension Media`_.
 
 Notice also for each Vidi module, you can add any kind of utility tools in a dedicated module (c.f. Add tools in a Vidi module).
 
-.. _Media: https://github.com/fabarea/media/blob/master/ext_tables.php#L61
+.. _extension Media: https://github.com/fabarea/media/blob/master/ext_tables.php#L61
 
 FAQ
 ===

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Persistence;
+namespace Fab\Vidi\Persistence;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -113,7 +113,7 @@ class Query implements QueryInterface {
 	/**
 	 * The query settings.
 	 *
-	 * @var \TYPO3\CMS\Vidi\Persistence\QuerySettings
+	 * @var \Fab\Vidi\Persistence\QuerySettings
 	 * @inject
 	 */
 	protected $querySettings;
@@ -171,7 +171,7 @@ class Query implements QueryInterface {
 	 * Returns the Query Settings.
 	 *
 	 * @throws \Exception
-	 * @return \TYPO3\CMS\Vidi\Persistence\QuerySettings $querySettings The Query Settings
+	 * @return \Fab\Vidi\Persistence\QuerySettings $querySettings The Query Settings
 	 * @api This method is not part of FLOW3 API
 	 */
 	public function getQuerySettings() {
@@ -248,8 +248,8 @@ class Query implements QueryInterface {
 	 * @api
 	 */
 	public function execute($returnRawQueryResult = FALSE) {
-		/** @var \TYPO3\CMS\Vidi\Persistence\Storage\VidiDbBackend $backend */
-		$backend = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\Storage\VidiDbBackend', $this);
+		/** @var \Fab\Vidi\Persistence\Storage\VidiDbBackend $backend */
+		$backend = $this->objectManager->get('Fab\Vidi\Persistence\Storage\VidiDbBackend', $this);
 		return $backend->fetchResult();
 	}
 
@@ -552,8 +552,8 @@ class Query implements QueryInterface {
 	 * @api
 	 */
 	public function count() {
-		/** @var \TYPO3\CMS\Vidi\Persistence\Storage\VidiDbBackend $backend */
-		$backend = $this->objectManager->get('TYPO3\CMS\Vidi\Persistence\Storage\VidiDbBackend', $this);
+		/** @var \Fab\Vidi\Persistence\Storage\VidiDbBackend $backend */
+		$backend = $this->objectManager->get('Fab\Vidi\Persistence\Storage\VidiDbBackend', $this);
 		return $backend->countResult();
 	}
 

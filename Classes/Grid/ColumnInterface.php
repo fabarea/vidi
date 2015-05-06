@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi;
+namespace Fab\Vidi\Grid;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,10 +15,22 @@ namespace TYPO3\CMS\Vidi;
  */
 
 /**
- * Service class used in other extensions to register a vidi based backend module.
- *
- * @deprecated use \TYPO3\CMS\Vidi\Module\ModuleLoader instead, will be removed in Vidi 0.4.0 + 2 version
+ *  Interface for configuring a column in the Grid.
  */
-class ModuleLoader extends \TYPO3\CMS\Vidi\Module\ModuleLoader {
+interface ColumnInterface {
 
+	/**
+	 * @return string
+	 */
+	public function getClassName();
+
+	/**
+	 * @return array
+	 */
+	public function getConfiguration();
+
+	/**
+	 * @return string
+	 */
+	public function toArray();
 }

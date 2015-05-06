@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Result;
+namespace Fab\Vidi\ViewHelpers\Result;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -69,7 +69,7 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper {
 		$output = fopen($this->exportFileNameAndPath, 'w');
 
 		// Handle CSV header, get the first object and get the list of fields.
-		/** @var \TYPO3\CMS\Vidi\Domain\Model\Content $object */
+		/** @var \Fab\Vidi\Domain\Model\Content $object */
 		$object = reset($objects);
 		fputcsv($output, $object->toFields());
 		$this->checkWhetherObjectMayIncludeFiles($object);

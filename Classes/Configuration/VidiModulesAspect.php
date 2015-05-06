@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Configuration;
+namespace Fab\Vidi\Configuration;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -29,8 +29,8 @@ class VidiModulesAspect implements TableConfigurationPostProcessingHookInterface
 	 */
 	public function processData() {
 
-		/** @var \TYPO3\CMS\Vidi\Module\ModuleLoader $moduleLoader */
-		$moduleLoader = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
+		/** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
+		$moduleLoader = GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
 
 		// Each data data can be displayed in a Vidi module
 		foreach ($GLOBALS['TCA'] as $dataType => $configuration) {

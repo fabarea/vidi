@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Grid;
+namespace Fab\Vidi\Grid;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -23,7 +23,7 @@ class RelationEditComponent extends GenericRendererComponent {
 	 * Constructor for a "Edit Relation" Grid Renderer Component.
 	 */
 	public function __construct() {
-		$className = 'TYPO3\CMS\Vidi\Grid\RelationEditRenderer';
+		$className = 'Fab\Vidi\Grid\RelationEditRenderer';
 		parent::__construct($className, array());
 	}
 }

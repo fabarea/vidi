@@ -1,39 +1,28 @@
 <?php
-namespace TYPO3\CMS\Vidi;
+namespace Fab\Vidi\Tests\Module\Functional;
 
-/***************************************************************
- *  Copyright notice
+/**
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2013 Fabien Udriot <fabien.udriot@typo3.org>
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  All rights reserved
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * The TYPO3 project - inspiring people to share!
+ */
 
 require_once dirname(dirname(__FILE__)) . '/AbstractFunctionalTestCase.php';
 
 /**
- * Test case for class \TYPO3\CMS\Vidi\Module\ModuleLoader.
+ * Test case for class \Fab\Vidi\Module\ModuleLoader.
  */
-class ModuleLoaderTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunctionalTestCase {
+class ModuleLoaderTest extends \Fab\Vidi\Tests\Functional\AbstractFunctionalTestCase {
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 * @var \Fab\Vidi\Module\ModuleLoader
 	 */
 	private $fixture;
 
@@ -50,7 +39,7 @@ class ModuleLoaderTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunction
 
 	public function setUp() {
 		parent::setUp();
-		$this->fixture = new \TYPO3\CMS\Vidi\Module\ModuleLoader($this->dataType);
+		$this->fixture = new \Fab\Vidi\Module\ModuleLoader($this->dataType);
 		$this->fixture->register();
 	}
 
@@ -102,7 +91,7 @@ class ModuleLoaderTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunction
 	 * @test
 	 */
 	public function getModuleConfigurationReturnsArrayWithSomeKeys() {
-		$moduleLoader = new \TYPO3\CMS\Vidi\Module\ModuleLoader($this->dataType);
+		$moduleLoader = new \Fab\Vidi\Module\ModuleLoader($this->dataType);
 		$moduleLoader->register();
 		$GLOBALS['_GET']['M'] = $this->moduleCode;
 
@@ -117,10 +106,9 @@ class ModuleLoaderTest extends \TYPO3\CMS\Vidi\Tests\Functional\AbstractFunction
 	 * @test
 	 */
 	public function getModuleConfigurationWithParameterDataTypeReturnsDataType() {
-		$moduleLoader = new \TYPO3\CMS\Vidi\Module\ModuleLoader($this->dataType);
+		$moduleLoader = new \Fab\Vidi\Module\ModuleLoader($this->dataType);
 		$moduleLoader->register();
 		$GLOBALS['_GET']['M'] = $this->moduleCode;
 		$this->assertEquals($this->dataType, $moduleLoader->getModuleConfiguration('dataType'));
 	}
 }
-?>

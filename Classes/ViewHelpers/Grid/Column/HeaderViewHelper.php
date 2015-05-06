@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
+namespace Fab\Vidi\ViewHelpers\Grid\Column;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,7 +15,7 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
  */
 
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Return a possible column header.
@@ -29,7 +29,7 @@ class HeaderViewHelper extends AbstractViewHelper {
 	 * @return boolean
 	 */
 	public function render($name) {
-		return TcaService::grid()->getHeader($name);
+		return Tca::grid()->getHeader($name);
 	}
 
 }

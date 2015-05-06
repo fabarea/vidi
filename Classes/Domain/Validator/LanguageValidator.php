@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Domain\Validator;
+namespace Fab\Vidi\Domain\Validator;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -36,10 +36,10 @@ class LanguageValidator {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Language\LanguageService
+	 * @return \Fab\Vidi\Language\LanguageService
 	 */
 	protected function getLanguageService() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Language\LanguageService');
+		return GeneralUtility::makeInstance('Fab\Vidi\Language\LanguageService');
 	}
 
 }

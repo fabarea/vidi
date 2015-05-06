@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\DataHandler;
+namespace Fab\Vidi\DataHandler;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -13,7 +13,7 @@ namespace TYPO3\CMS\Vidi\DataHandler;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use TYPO3\CMS\Vidi\Domain\Model\Content;
+use Fab\Vidi\Domain\Model\Content;
 
 /**
  * Interface dealing with Data Handling.

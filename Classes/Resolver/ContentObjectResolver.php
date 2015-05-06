@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Resolver;
+namespace Fab\Vidi\Resolver;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,8 +16,8 @@ namespace TYPO3\CMS\Vidi\Resolver;
 
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Domain\Model\Content;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Class for retrieving value from an object.
@@ -91,16 +91,16 @@ class ContentObjectResolver implements SingletonInterface {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 * @return \Fab\Vidi\Resolver\FieldPathResolver
 	 */
 	protected function getFieldPathResolver() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Language\LanguageService
+	 * @return \Fab\Vidi\Language\LanguageService
 	 */
 	protected function getLanguageService() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Language\LanguageService');
+		return GeneralUtility::makeInstance('Fab\Vidi\Language\LanguageService');
 	}
 }

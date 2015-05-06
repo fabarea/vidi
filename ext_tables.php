@@ -19,6 +19,24 @@ if (TYPO3_MODE == 'BE') {
 		'vidi'
 	);
 
+	// Add content main module before 'user'
+	// There are not API for doing this... ;(
+	if (!isset($GLOBALS['TBE_MODULES']['content'])) {
+		$modules = array();
+		foreach ($GLOBALS['TBE_MODULES'] as $key => $val) {
+			if ($key == 'user') {
+				$modules['content'] = '';
+			}
+			$modules[$key] = $val;
+		}
+		$GLOBALS['TBE_MODULES'] = $modules;
+		\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+			'content',
+			'',
+			'',
+			\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('vidi') . 'mod/content/');
+	}
+
 	/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
 	$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
 
@@ -26,17 +44,16 @@ if (TYPO3_MODE == 'BE') {
 	$configurationUtility = $objectManager->get('TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility');
 	$configuration = $configurationUtility->getCurrentConfiguration('vidi');
 
-
 	// Loop around the data types and register them to be displayed within a BE module.
 	if ($configuration['data_types']['value']) {
 
 		$dataTypes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['data_types']['value']);
 		foreach ($dataTypes as $dataType) {
 
-			/** @var \TYPO3\CMS\Vidi\Module\ModuleLoader $moduleLoader */
-			$moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader', $dataType);
+			/** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
+			$moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader', $dataType);
 
-			/** @var \TYPO3\CMS\Vidi\Module\ModuleLoader $moduleLoader */
+			/** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
 			$moduleLoader->setIcon(sprintf('EXT:vidi/Resources/Public/Images/%s.png', $dataType))
 				->setModuleLanguageFile(sprintf('LLL:EXT:vidi/Resources/Private/Language/%s.xlf', $dataType))
 				->addJavaScriptFiles(array(sprintf('EXT:vidi/Resources/Public/JavaScript/%s.js', $dataType)))
@@ -59,7 +76,7 @@ if (TYPO3_MODE == 'BE') {
 		}
 
 		\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-			$_EXTKEY, 'web', // Make newsletter module a submodule of 'user'
+			$_EXTKEY, 'web', // Make module a submodule of 'web'
 			'm1', // Submodule key
 			'after:list', // Position
 			array(
@@ -92,24 +109,24 @@ if (TYPO3_MODE == 'BE') {
 
 	// Connect "processContentData" signal slot with the "ContentObjectProcessor".
 	$signalSlotDispatcher->connect(
-		'TYPO3\CMS\Vidi\Controller\Backend\ContentController',
+		'Fab\Vidi\Controller\Backend\ContentController',
 		'processContentData',
-		'TYPO3\CMS\Vidi\Processor\ContentObjectProcessor',
+		'Fab\Vidi\Processor\ContentObjectProcessor',
 		'processRelations',
 		TRUE
 	);
 
 	// Connect "processContentData" signal with the "MarkerProcessor".
 	$signalSlotDispatcher->connect(
-		'TYPO3\CMS\Vidi\Controller\Backend\ContentController',
+		'Fab\Vidi\Controller\Backend\ContentController',
 		'processContentData',
-		'TYPO3\CMS\Vidi\Processor\MarkerProcessor',
+		'Fab\Vidi\Processor\MarkerProcessor',
 		'processMarkers',
 		TRUE
 	);
 
 	// Register default Tools for Vidi.
-	\TYPO3\CMS\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'TYPO3\CMS\Vidi\Tool\RelationAnalyserTool');
+	\Fab\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'Fab\Vidi\Tool\RelationAnalyserTool');
 }
 
 // Add new sprite icon.

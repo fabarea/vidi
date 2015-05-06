@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Domain\Validator;
+namespace Fab\Vidi\Domain\Validator;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,7 +16,7 @@ namespace TYPO3\CMS\Vidi\Domain\Validator;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
-use TYPO3\CMS\Vidi\Tool\ToolRegistry;
+use Fab\Vidi\Tool\ToolRegistry;
 
 /**
  * Validate the Tool class name before being instantiated.
@@ -48,9 +48,9 @@ class ToolValidator extends AbstractValidator {
 	/**
 	 * Get the Vidi Module Loader.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 * @return \Fab\Vidi\Module\ModuleLoader
 	 */
 	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
+		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
 	}
 }

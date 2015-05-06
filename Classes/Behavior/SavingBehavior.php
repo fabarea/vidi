@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Behavior;
+namespace Fab\Vidi\Behavior;
 
 /**
  * This file is part of the TYPO3 CMS project.

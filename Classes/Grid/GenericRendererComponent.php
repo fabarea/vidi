@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Grid;
+namespace Fab\Vidi\Grid;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,61 +16,9 @@ namespace TYPO3\CMS\Vidi\Grid;
 
 /**
  * Class for configuring a Grid Renderer in the Grid TCA.
+ *
+ * @deprecated use GenericColumn, will be removed in 0.10 + 2 version
  */
-class GenericRendererComponent implements GridComponentInterface {
+class GenericRendererComponent extends GenericColumn {
 
-	/**
-	 * @var string
-	 */
-	protected $className;
-
-	/**
-	 * @var array
-	 */
-	protected $configuration = array();
-
-	/**
-	 * Constructor of a Generic component in Vidi.
-	 *
-	 * @param string $className
-	 * @param array $configuration
-	 */
-	public function __construct($className, $configuration = array()) {
-		$this->className = $className;
-		$this->configuration = $configuration;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getClassName() {
-		return $this->className;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getConfiguration() {
-		return $this->configuration;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function toArray() {
-		return array(
-			'partial' => $this->getClassName(),
-			'configuration' => $this->getConfiguration(),
-		);
-	}
-
-	/**
-	 * Magic method implementation for retrieving state.
-	 *
-	 * @param array $states
-	 * @return GenericRendererComponent
-	 */
-	static public function __set_state($states) {
-		return new GenericRendererComponent($states['className'], $states['configuration']);
-	}
 }

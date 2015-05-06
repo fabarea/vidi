@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Persistence\Storage;
+namespace Fab\Vidi\Persistence\Storage;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -30,7 +30,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Qom\UpperCaseInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Frontend\Page\PageRepository;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * A Storage backend
@@ -91,7 +91,7 @@ class VidiDbBackend {
 	protected $environmentService;
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Persistence\Query
+	 * @var \Fab\Vidi\Persistence\Query
 	 */
 	protected $query;
 
@@ -117,7 +117,7 @@ class VidiDbBackend {
 	 *
 	 * @var string
 	 */
-	protected $objectType = 'TYPO3\CMS\Vidi\Domain\Model\Content';
+	protected $objectType = 'Fab\Vidi\Domain\Model\Content';
 
 	/**
 	 * Constructor. takes the database handle from $GLOBALS['TYPO3_DB']
@@ -585,7 +585,7 @@ class VidiDbBackend {
 	 */
 	protected function addUnionStatement(&$tableName, &$propertyPath, array &$sql) {
 
-		$table = TcaService::table($tableName);
+		$table = Tca::table($tableName);
 
 		$explodedPropertyPath = explode('.', $propertyPath, 2);
 		$fieldName = $explodedPropertyPath[0];
@@ -655,7 +655,7 @@ class VidiDbBackend {
 						'tablenames' => $tableNameCondition,
 					);
 				} else {
-					$additionalMMConditions = TcaService::table($tableNameCondition)->field($sourceFileName)->getAdditionalMMCondition();
+					$additionalMMConditions = Tca::table($tableNameCondition)->field($sourceFileName)->getAdditionalMMCondition();
 				}
 
 				foreach ($additionalMMConditions as $additionalFieldName => $additionalMMCondition) {
@@ -878,7 +878,7 @@ class VidiDbBackend {
 		}
 
 		// If the table is found to have "workspace" support, add the corresponding fields in the statement.
-		if (TcaService::table($tableName)->hasWorkspaceSupport()) {
+		if (Tca::table($tableName)->hasWorkspaceSupport()) {
 			if ($this->getBackendUser()->workspace === 0) {
 				$statement .= ' AND ' . $tableName . '.t3ver_state<=' . new VersionState(VersionState::DEFAULT_STATE);
 			} else {
@@ -1191,10 +1191,10 @@ class VidiDbBackend {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 * @return \Fab\Vidi\Resolver\FieldPathResolver
 	 */
 	protected function getFieldPathResolver() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
 	}
 
 	/**

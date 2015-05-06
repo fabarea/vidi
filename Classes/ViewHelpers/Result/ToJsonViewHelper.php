@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Result;
+namespace Fab\Vidi\ViewHelpers\Result;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -65,9 +65,9 @@ class ToJsonViewHelper extends AbstractViewHelper {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\ViewHelpers\Grid\RowsViewHelper
+	 * @return \Fab\Vidi\ViewHelpers\Grid\RowsViewHelper
 	 */
 	protected function getRowsViewHelper() {
-		return $this->objectManager->get('TYPO3\CMS\Vidi\ViewHelpers\Grid\RowsViewHelper');
+		return $this->objectManager->get('Fab\Vidi\ViewHelpers\Grid\RowsViewHelper');
 	}
 }

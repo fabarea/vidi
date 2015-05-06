@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Persistence;
+namespace Fab\Vidi\Persistence;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -105,7 +105,7 @@ class Matcher {
 	 *
 	 * @param array $matches associative array($field => $value)
 	 * @param string $dataType which corresponds to an entry of the TCA (table name).
-	 * @return \TYPO3\CMS\Vidi\Persistence\Matcher
+	 * @return \Fab\Vidi\Persistence\Matcher
 	 */
 	public function __construct($matches = array(), $dataType = '') {
 		$this->dataType = $dataType;
@@ -114,7 +114,7 @@ class Matcher {
 
 	/**
 	 * @param string $searchTerm
-	 * @return \TYPO3\CMS\Vidi\Persistence\Matcher
+	 * @return \Fab\Vidi\Persistence\Matcher
 	 */
 	public function setSearchTerm($searchTerm) {
 		$this->searchTerm = $searchTerm;

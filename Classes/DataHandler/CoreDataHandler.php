@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\DataHandler;
+namespace Fab\Vidi\DataHandler;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,8 +15,8 @@ namespace TYPO3\CMS\Vidi\DataHandler;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Domain\Model\Content;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Data Handler which wraps the Core Data Handler
@@ -41,7 +41,7 @@ class CoreDataHandler extends AbstractDataHandler {
 
 		// Check the field to be updated exists
 		foreach ($content->toArray() as $fieldName => $value) {
-			if (TcaService::table($content->getDataType())->hasNotField($fieldName)) {
+			if (Tca::table($content->getDataType())->hasNotField($fieldName)) {
 				$message = sprintf('It looks field "%s" does not exist for data type "%s"', $fieldName, $content->getDataType());
 				throw new \Exception($message, 1390668497);
 			}

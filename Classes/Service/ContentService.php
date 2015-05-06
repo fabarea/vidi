@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Service;
+namespace Fab\Vidi\Service;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,10 +15,10 @@ namespace TYPO3\CMS\Vidi\Service;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory;
-use TYPO3\CMS\Vidi\Persistence\Matcher;
-use TYPO3\CMS\Vidi\Persistence\Order;
-use TYPO3\CMS\Vidi\Signal\AfterFindContentObjectsSignalArguments;
+use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
+use Fab\Vidi\Persistence\Matcher;
+use Fab\Vidi\Persistence\Order;
+use Fab\Vidi\Signal\AfterFindContentObjectsSignalArguments;
 
 /**
  * File References service.
@@ -32,7 +32,7 @@ class ContentService {
 	protected $dataType;
 
 	/**
-	 * @var \TYPO3\CMS\Vidi\Domain\Model\Content[]
+	 * @var \Fab\Vidi\Domain\Model\Content[]
 	 */
 	protected $objects = array();
 
@@ -45,7 +45,7 @@ class ContentService {
 	 * Constructor
 	 *
 	 * @param string $dataType
-	 * @return \TYPO3\CMS\Vidi\Service\ContentService
+	 * @return \Fab\Vidi\Service\ContentService
 	 */
 	public function __construct($dataType = '') {
 		if (empty($dataType)) {
@@ -87,7 +87,7 @@ class ContentService {
 	 * Signal that is called after the content objects have been found.
 	 *
 	 * @param array $contentObjects
-	 * @param \TYPO3\CMS\Vidi\Persistence\Matcher $matcher
+	 * @param \Fab\Vidi\Persistence\Matcher $matcher
 	 * @param int $limit
 	 * @param int $offset
 	 * @return AfterFindContentObjectsSignalArguments
@@ -95,8 +95,8 @@ class ContentService {
 	 */
 	protected function emitAfterFindContentObjectsSignal($contentObjects, Matcher $matcher, $limit = 0, $offset = 0) {
 
-		/** @var \TYPO3\CMS\Vidi\Signal\AfterFindContentObjectsSignalArguments $signalArguments */
-		$signalArguments = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Signal\AfterFindContentObjectsSignalArguments');
+		/** @var \Fab\Vidi\Signal\AfterFindContentObjectsSignalArguments $signalArguments */
+		$signalArguments = GeneralUtility::makeInstance('Fab\Vidi\Signal\AfterFindContentObjectsSignalArguments');
 		$signalArguments->setDataType($this->dataType)
 			->setContentObjects($contentObjects)
 			->setMatcher($matcher)
@@ -104,17 +104,17 @@ class ContentService {
 			->setOffset($offset)
 			->setHasBeenProcessed(FALSE);
 
-		$signalResult = $this->getSignalSlotDispatcher()->dispatch('TYPO3\CMS\Vidi\Service\ContentService', 'afterFindContentObjects', array($signalArguments));
+		$signalResult = $this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\Service\ContentService', 'afterFindContentObjects', array($signalArguments));
 		return $signalResult[0];
 	}
 
 	/**
 	 * Get the Vidi Module Loader.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Module\ModuleLoader
+	 * @return \Fab\Vidi\Module\ModuleLoader
 	 */
 	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Module\ModuleLoader');
+		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
 	}
 
 	/**
@@ -129,7 +129,7 @@ class ContentService {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content[]
+	 * @return \Fab\Vidi\Domain\Model\Content[]
 	 */
 	public function getObjects() {
 		return $this->objects;

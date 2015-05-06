@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Module;
+namespace Fab\Vidi\Module;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -17,8 +17,8 @@ namespace TYPO3\CMS\Vidi\Module;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
-use TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException;
-use TYPO3\CMS\Vidi\Service\BackendUserPreferenceService;
+use Fab\Vidi\Exception\InvalidKeyInArrayException;
+use Fab\Vidi\Service\BackendUserPreferenceService;
 
 /**
  * Service class used in other extensions to register a vidi based backend module.
@@ -38,7 +38,7 @@ class ModuleLoader {
 	protected $defaultPid;
 
 	/**
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $showPageTree;
 
@@ -55,7 +55,7 @@ class ModuleLoader {
 	/**
 	 * @var string
 	 */
-	protected $mainModule = 'user';
+	protected $mainModule = 'content';
 
 	/**
 	 * @var string
@@ -97,36 +97,36 @@ class ModuleLoader {
 			ModulePosition::TOP => array(
 				ModulePosition::LEFT => array(),
 				ModulePosition::RIGHT => array(
-					'TYPO3\CMS\Vidi\View\Button\ToolButton',
+					'Fab\Vidi\View\Button\ToolButton',
 				),
 			),
 			ModulePosition::BOTTOM => array(
 				ModulePosition::LEFT => array(
-					'TYPO3\CMS\Vidi\View\Button\NewButton',
-					'TYPO3\CMS\Vidi\ViewHelpers\Link\BackViewHelper',
+					'Fab\Vidi\View\Button\NewButton',
+					'Fab\Vidi\ViewHelpers\Link\BackViewHelper',
 				),
 				ModulePosition::RIGHT => array(),
 			),
 		),
 		ModulePosition::GRID => array(
 			ModulePosition::TOP => array(
-				'TYPO3\CMS\Vidi\View\Check\PidCheck',
-				'TYPO3\CMS\Vidi\View\Check\RelationsCheck',
-				'TYPO3\CMS\Vidi\View\Tab\DataTypeTab',
+				'Fab\Vidi\View\Check\PidCheck',
+				'Fab\Vidi\View\Check\RelationsCheck',
+				'Fab\Vidi\View\Tab\DataTypeTab',
 			),
 			ModulePosition::BUTTONS => array(
-				'TYPO3\CMS\Vidi\View\Button\EditButton',
-				'TYPO3\CMS\Vidi\View\Button\DeleteButton',
+				'Fab\Vidi\View\Button\EditButton',
+				'Fab\Vidi\View\Button\DeleteButton',
 			),
 			ModulePosition::BOTTOM => array(),
 		),
 		ModulePosition::MENU_MASS_ACTION => array(
-			'TYPO3\CMS\Vidi\View\MenuItem\ExportXlsMenuItem',
-			'TYPO3\CMS\Vidi\View\MenuItem\ExportXmlMenuItem',
-			'TYPO3\CMS\Vidi\View\MenuItem\ExportCsvMenuItem',
-			'TYPO3\CMS\Vidi\View\MenuItem\DividerMenuItem',
-			'TYPO3\CMS\Vidi\View\MenuItem\MassDeleteMenuItem',
-			#'TYPO3\CMS\Vidi\View\MenuItem\MassEditMenuItem',
+			'Fab\Vidi\View\MenuItem\ExportXlsMenuItem',
+			'Fab\Vidi\View\MenuItem\ExportXmlMenuItem',
+			'Fab\Vidi\View\MenuItem\ExportCsvMenuItem',
+			'Fab\Vidi\View\MenuItem\DividerMenuItem',
+			'Fab\Vidi\View\MenuItem\MassDeleteMenuItem',
+			#'Fab\Vidi\View\MenuItem\MassEditMenuItem',
 		),
 	);
 
@@ -204,7 +204,7 @@ class ModuleLoader {
 				array(
 					'Content' => 'index, list, delete, update, edit, copy, move, localize',
 					'Tool' => 'welcome, work',
-					'Facet' => 'suggest',
+					'Facet' => 'autoSuggest, autoSuggests',
 				),
 				$moduleConfiguration
 
@@ -420,6 +420,15 @@ class ModuleLoader {
 	}
 
 	/**
+	 * @param string $fileNameAndPath
+	 * @return $this
+	 */
+	public function addJavaScriptFile($fileNameAndPath) {
+		$this->additionalJavaScriptFiles[] = $fileNameAndPath;
+		return $this;
+	}
+
+	/**
 	 * @param array $files
 	 * @return $this
 	 */
@@ -427,6 +436,15 @@ class ModuleLoader {
 		foreach ($files as $file) {
 			$this->additionalStyleSheetFiles[] = $file;
 		}
+		return $this;
+	}
+
+	/**
+	 * @param string $fileNameAndPath
+	 * @return $this
+	 */
+	public function addStyleSheetFile($fileNameAndPath) {
+		$this->additionalStyleSheetFiles[] = $fileNameAndPath;
 		return $this;
 	}
 
@@ -480,7 +498,7 @@ class ModuleLoader {
 	}
 
 	/**
-	 * @param string $isPageTreeShown
+	 * @param bool $isPageTreeShown
 	 * @return $this
 	 */
 	public function showPageTree($isPageTreeShown) {

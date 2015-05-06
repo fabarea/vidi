@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\View\Uri;
+namespace Fab\Vidi\View\Uri;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,8 +14,8 @@ namespace TYPO3\CMS\Vidi\View\Uri;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Vidi\View\AbstractComponentView;
-use TYPO3\CMS\Vidi\Domain\Model\Content;
+use Fab\Vidi\View\AbstractComponentView;
+use Fab\Vidi\Domain\Model\Content;
 
 /**
  * View which renders a "edit" button to be placed in the grid.

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Service;
+namespace Fab\Vidi\Service;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -24,10 +24,10 @@ class BackendUserPreferenceService {
 	/**
 	 * Returns a class instance
 	 *
-	 * @return \TYPO3\CMS\Vidi\Service\BackendUserPreferenceService
+	 * @return \Fab\Vidi\Service\BackendUserPreferenceService
 	 */
 	static public function getInstance() {
-		return GeneralUtility::makeInstance('\TYPO3\CMS\Vidi\Service\BackendUserPreferenceService');
+		return GeneralUtility::makeInstance('\Fab\Vidi\Service\BackendUserPreferenceService');
 	}
 
 	/**

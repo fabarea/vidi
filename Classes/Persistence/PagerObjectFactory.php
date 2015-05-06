@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Persistence;
+namespace Fab\Vidi\Persistence;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -25,21 +25,21 @@ class PagerObjectFactory implements SingletonInterface {
 	/**
 	 * Gets a singleton instance of this class.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Persistence\PagerObjectFactory
+	 * @return \Fab\Vidi\Persistence\PagerObjectFactory
 	 */
 	static public function getInstance() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\PagerObjectFactory');
+		return GeneralUtility::makeInstance('Fab\Vidi\Persistence\PagerObjectFactory');
 	}
 
 	/**
 	 * Returns a pager object.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Persistence\Pager
+	 * @return \Fab\Vidi\Persistence\Pager
 	 */
 	public function getPager() {
 
-		/** @var $pager \TYPO3\CMS\Vidi\Persistence\Pager */
-		$pager = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Pager');
+		/** @var $pager \Fab\Vidi\Persistence\Pager */
+		$pager = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Pager');
 
 		// Set items per page
 		if (GeneralUtility::_GET('iDisplayLength') !== NULL) {

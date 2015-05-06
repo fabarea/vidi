@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Language;
+namespace Fab\Vidi\Language;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,8 +16,8 @@ namespace TYPO3\CMS\Vidi\Language;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Domain\Model\Content;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * A class for handling language in the Backend.
@@ -81,9 +81,9 @@ class LanguageService implements SingletonInterface {
 		if (empty($this->localizedRecordStorage[$objectHash][$language])) {
 
 			$clause = sprintf('%s = %s AND %s = %s',
-				TcaService::table($object)->getLanguageParentField(), // e.g. l10n_parent
+				Tca::table($object)->getLanguageParentField(), // e.g. l10n_parent
 				$object->getUid(),
-				TcaService::table($object)->getLanguageField(), // e.g. sys_language_uid
+				Tca::table($object)->getLanguageField(), // e.g. sys_language_uid
 				$language
 			);
 
@@ -91,7 +91,7 @@ class LanguageService implements SingletonInterface {
 			$localizedRecord = $this->getDatabaseConnection()->exec_SELECTgetSingleRow('*', $object->getDataType(), $clause);
 
 			if ($localizedRecord) {
-				$localizedContent = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Domain\Model\Content', $object->getDataType(), $localizedRecord);
+				$localizedContent = GeneralUtility::makeInstance('Fab\Vidi\Domain\Model\Content', $object->getDataType(), $localizedRecord);
 				$this->localizedRecordStorage[$objectHash][$language] = $localizedContent;
 			} else {
 				$this->localizedRecordStorage[$objectHash][$language] = array(); // We want an array at least, even if empty.

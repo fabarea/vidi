@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Processor;
+namespace Fab\Vidi\Processor;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,10 +16,10 @@ namespace TYPO3\CMS\Vidi\Processor;
 
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Behavior\SavingBehavior;
-use TYPO3\CMS\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Vidi\Signal\ProcessContentDataSignalArguments;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Behavior\SavingBehavior;
+use Fab\Vidi\Domain\Model\Content;
+use Fab\Vidi\Signal\ProcessContentDataSignalArguments;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Class for retrieving value from an object.
@@ -47,7 +47,7 @@ class ContentObjectProcessor implements SingletonInterface {
 	}
 
 	/**
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param \Fab\Vidi\Domain\Model\Content $object
 	 * @param $fieldNameAndPath
 	 * @param array $contentData
 	 * @param string $savingBehavior
@@ -59,7 +59,7 @@ class ContentObjectProcessor implements SingletonInterface {
 
 			$resolvedObject = $this->getContentObjectResolver()->getObject($object, $fieldNameAndPath);
 
-			if (TcaService::table($resolvedObject)->field($fieldName)->hasMany()) {
+			if (Tca::table($resolvedObject)->field($fieldName)->hasMany()) {
 
 				// TRUE means CSV values must be converted to array.
 				if (!is_array($values)) {
@@ -104,7 +104,7 @@ class ContentObjectProcessor implements SingletonInterface {
 	}
 
 	/**
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $object
+	 * @param \Fab\Vidi\Domain\Model\Content $object
 	 * @param string $fieldNameAndPath
 	 * @param string $fieldName
 	 * @return array
@@ -125,16 +125,16 @@ class ContentObjectProcessor implements SingletonInterface {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Resolver\ContentObjectResolver
+	 * @return \Fab\Vidi\Resolver\ContentObjectResolver
 	 */
 	protected function getContentObjectResolver() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\ContentObjectResolver');
+		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\ContentObjectResolver');
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 * @return \Fab\Vidi\Resolver\FieldPathResolver
 	 */
 	protected function getFieldPathResolver() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
 	}
 }

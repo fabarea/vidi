@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Configuration;
+namespace Fab\Vidi\Configuration;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -35,16 +35,16 @@ class ConfigurationUtility implements SingletonInterface {
 	/**
 	 * Returns a class instance.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Configuration\ConfigurationUtility
+	 * @return \Fab\Vidi\Configuration\ConfigurationUtility
 	 */
 	static public function getInstance() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Configuration\ConfigurationUtility');
+		return GeneralUtility::makeInstance('Fab\Vidi\Configuration\ConfigurationUtility');
 	}
 
 	/**
 	 * Constructor
 	 *
-	 * @return \TYPO3\CMS\Vidi\Configuration\ConfigurationUtility
+	 * @return \Fab\Vidi\Configuration\ConfigurationUtility
 	 */
 	public function __construct() {
 

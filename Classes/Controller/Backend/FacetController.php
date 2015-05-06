@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Controller\Backend;
+namespace Fab\Vidi\Controller\Backend;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,6 +14,7 @@ namespace TYPO3\CMS\Vidi\Controller\Backend;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Tca\Tca;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
@@ -23,27 +24,49 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 class FacetController extends ActionController {
 
 	/**
-	 * Suggest values according to a facet. Output a json list of key / values.
+	 * Suggest values according to a facet.
+	 * Output a json list of key / values.
 	 *
 	 * @param string $facet
 	 * @param string $searchTerm
-	 * @validate $facet TYPO3\CMS\Vidi\Domain\Validator\FacetValidator
+	 * @validate $facet Fab\Vidi\Domain\Validator\FacetValidator
 	 * @return void
 	 */
-	public function suggestAction($facet, $searchTerm) {
+	public function autoSuggestAction($facet, $searchTerm) {
 
-		$values = $this->getFacetSuggestionService()->getSuggestions($facet);
+		$suggestions = $this->getFacetSuggestionService()->getSuggestions($facet);
 
 		# Json header is not automatically sent in the BE...
 		$this->response->setHeader('Content-Type', 'application/json');
 		$this->response->sendHeaders();
-		return json_encode($values, JSON_FORCE_OBJECT);
+		return json_encode($suggestions, JSON_FORCE_OBJECT);
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Facet\FacetSuggestionService
+	 * Suggest values for all configured facets in the Grid.
+	 * Output a json list of key / values.
+	 *
+	 * @return void
+	 */
+	public function autoSuggestsAction() {
+
+		$suggestions = array();
+		foreach (Tca::grid()->getFacets() as $facet) {
+			$name = Tca::grid()->facet($facet)->getName();
+			$suggestions[$name] = $this->getFacetSuggestionService()->getSuggestions($name);
+		}
+
+		# Json header is not automatically sent in the BE...
+		$this->response->setHeader('Content-Type', 'application/json');
+		$this->response->sendHeaders();
+		return json_encode($suggestions, JSON_FORCE_OBJECT);
+	}
+
+	/**
+	 * @return \Fab\Vidi\Facet\FacetSuggestionService
 	 */
 	protected function getFacetSuggestionService () {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Facet\FacetSuggestionService', $this->settings);
+		return GeneralUtility::makeInstance('Fab\Vidi\Facet\FacetSuggestionService', $this->settings);
 	}
+
 }

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Facet;
+namespace Fab\Vidi\Facet;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,9 +15,9 @@ namespace TYPO3\CMS\Vidi\Facet;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory;
-use TYPO3\CMS\Vidi\Persistence\MatcherObjectFactory;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
+use Fab\Vidi\Persistence\MatcherObjectFactory;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Class for configuring a custom Facet item.
@@ -51,16 +51,16 @@ class FacetSuggestionService {
 		$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
 		$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
 
-		if (TcaService::grid()->facet($fieldNameAndPath)->hasSuggestions()) {
-			$values = TcaService::grid()->facet($fieldNameAndPath)->getSuggestions();
-		} else if (TcaService::table($dataType)->hasField($fieldName)) {
+		if (Tca::grid()->facet($fieldNameAndPath)->hasSuggestions()) {
+			$values = Tca::grid()->facet($fieldNameAndPath)->getSuggestions();
+		} else if (Tca::table($dataType)->hasField($fieldName)) {
 
-			if (TcaService::table($dataType)->field($fieldName)->hasRelation()) {
+			if (Tca::table($dataType)->field($fieldName)->hasRelation()) {
 
 				// Fetch the adequate repository
-				$foreignTable = TcaService::table($dataType)->field($fieldName)->getForeignTable();
+				$foreignTable = Tca::table($dataType)->field($fieldName)->getForeignTable();
 				$contentRepository = ContentRepositoryFactory::getInstance($foreignTable);
-				$table = TcaService::table($foreignTable);
+				$table = Tca::table($foreignTable);
 
 				// Initialize the matcher object.
 				$matcher = MatcherObjectFactory::getInstance()->getMatcher(array(), $foreignTable);
@@ -74,10 +74,10 @@ class FacetSuggestionService {
 						$values[$content->getUid()] = $content[$table->getLabelField()];
 					}
 				}
-			} elseif (!TcaService::table($dataType)->field($fieldName)->isTextArea()) { // We don't want suggestion if field is text area.
+			} elseif (!Tca::table($dataType)->field($fieldName)->isTextArea()) { // We don't want suggestion if field is text area.
 
 				// Fetch the adequate repository
-				/** @var \TYPO3\CMS\Vidi\Domain\Repository\ContentRepository $contentRepository */
+				/** @var \Fab\Vidi\Domain\Repository\ContentRepository $contentRepository */
 				$contentRepository = ContentRepositoryFactory::getInstance($dataType);
 
 				// Initialize some objects related to the query
@@ -95,8 +95,8 @@ class FacetSuggestionService {
 					foreach ($contents as $content) {
 						$value = $content[$fieldName];
 						$label = $content[$fieldName];
-						if (TcaService::table($dataType)->field($fieldName)->isSelect()) {
-							$label = TcaService::table($dataType)->field($fieldName)->getLabelForItem($value);
+						if (Tca::table($dataType)->field($fieldName)->isSelect()) {
+							$label = Tca::table($dataType)->field($fieldName)->getLabelForItem($value);
 						}
 
 						$values[$value] = $label;
@@ -121,9 +121,9 @@ class FacetSuggestionService {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 * @return \Fab\Vidi\Resolver\FieldPathResolver
 	 */
 	protected function getFieldPathResolver() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
 	}
 }

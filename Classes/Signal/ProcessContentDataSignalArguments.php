@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Signal;
+namespace Fab\Vidi\Signal;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,7 +14,7 @@ namespace TYPO3\CMS\Vidi\Signal;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Vidi\Domain\Model\Content;
+use Fab\Vidi\Domain\Model\Content;
 
 /**
  * Class for storing arguments of a "post processing content data" signal.
@@ -68,7 +68,7 @@ class ProcessContentDataSignalArguments {
 	}
 
 	/**
-	 * @param \TYPO3\CMS\Vidi\Domain\Model\Content $contentObject
+	 * @param \Fab\Vidi\Domain\Model\Content $contentObject
 	 * @return $this
 	 */
 	public function setContentObject($contentObject) {
@@ -77,7 +77,7 @@ class ProcessContentDataSignalArguments {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Domain\Model\Content
+	 * @return \Fab\Vidi\Domain\Model\Content
 	 */
 	public function getContentObject() {
 		return $this->contentObject;

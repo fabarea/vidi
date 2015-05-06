@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\View\MenuItem;
+namespace Fab\Vidi\View\MenuItem;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -18,7 +18,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Vidi\View\AbstractComponentView;
+use Fab\Vidi\View\AbstractComponentView;
 
 /**
  * View which renders a "mass delete" menu item to be placed in the grid menu.

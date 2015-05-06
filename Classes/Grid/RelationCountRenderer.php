@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Grid;
+namespace Fab\Vidi\Grid;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -18,7 +18,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Class rendering relation
@@ -60,7 +60,7 @@ class RelationCountRenderer extends GridRendererAbstract {
 
 		$template = '<a href="%s&returnUrl=%s&search=%s&query=%s:%s">%s %s<span class="invisible" style="padding-left: 5px">%s</span></a>';
 
-		$foreignField = TcaService::table($this->object)->field($this->fieldName)->getForeignField();
+		$foreignField = Tca::table($this->object)->field($this->fieldName)->getForeignField();
 		$search = json_encode(array(array($foreignField => $this->object->getUid())));
 
 		$moduleTarget = empty($this->gridRendererConfiguration['targetModule']) ? '' : $this->gridRendererConfiguration['targetModule'];

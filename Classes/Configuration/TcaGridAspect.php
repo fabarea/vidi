@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Configuration;
+namespace Fab\Vidi\Configuration;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,9 +15,9 @@ namespace TYPO3\CMS\Vidi\Configuration;
  */
 
 use TYPO3\CMS\Core\Database\TableConfigurationPostProcessingHookInterface;
-use TYPO3\CMS\Vidi\Grid\ButtonGroupComponent;
-use TYPO3\CMS\Vidi\Grid\CheckBoxComponent;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Grid\ButtonGroupComponent;
+use Fab\Vidi\Grid\CheckBoxComponent;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Add a Grid TCA to each "data type" enabling to display a Vidi module in the BE.

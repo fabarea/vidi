@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Tca;
+namespace Fab\Vidi\Tca;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -47,7 +47,7 @@ class FieldService implements TcaServiceInterface {
 	 * @param array $tca
 	 * @param string $tableName
 	 * @param string $compositeField
-	 * @return \TYPO3\CMS\Vidi\Tca\FieldService
+	 * @return \Fab\Vidi\Tca\FieldService
 	 */
 	public function __construct($fieldName, array $tca, $tableName, $compositeField = '') {
 		$this->fieldName = $fieldName;
@@ -62,7 +62,7 @@ class FieldService implements TcaServiceInterface {
 	 * @return bool
 	 */
 	public function isSystem() {
-		return in_array($this->fieldName, TcaService::getSystemFields());
+		return in_array($this->fieldName, Tca::getSystemFields());
 	}
 
 	/**
@@ -114,7 +114,7 @@ class FieldService implements TcaServiceInterface {
 			$manyToManyTable = $this->getManyToManyTable();
 
 			// Load TCA service of foreign field.
-			$tcaForeignTableService = TcaService::table($foreignTable);
+			$tcaForeignTableService = Tca::table($foreignTable);
 
 			// Look into the MM relations checking for the opposite field
 			foreach ($tcaForeignTableService->getFields() as $fieldName) {
@@ -287,7 +287,7 @@ class FieldService implements TcaServiceInterface {
 	public function getType() {
 
 		if ($this->isSystem()) {
-			$fieldType = TcaService::NUMBER;
+			$fieldType = FieldType::NUMBER;
 		} else {
 			$configuration = $this->getConfiguration();
 
@@ -297,29 +297,29 @@ class FieldService implements TcaServiceInterface {
 
 			$fieldType = $configuration['type'];
 
-			if ($configuration['type'] === TcaService::SELECT && !empty($configuration['size']) && $configuration['size'] > 1) {
-				$fieldType = TcaService::MULTISELECT;
+			if ($configuration['type'] === FieldType::SELECT && !empty($configuration['size']) && $configuration['size'] > 1) {
+				$fieldType = FieldType::MULTISELECT;
 			} elseif (!empty($configuration['foreign_table'])
 				&& ($configuration['foreign_table'] == 'sys_file_reference' || $configuration['foreign_table'] == 'sys_file')) {
-				$fieldType = TcaService::FILE;
+				$fieldType = FieldType::FILE;
 			} elseif (!empty($configuration['eval'])) {
 				$parts = GeneralUtility::trimExplode(',', $configuration['eval']);
 				if (in_array('datetime', $parts)) {
-					$fieldType = TcaService::DATETIME;
+					$fieldType = FieldType::DATETIME;
 				} elseif (in_array('date', $parts)) {
-					$fieldType = TcaService::DATE;
+					$fieldType = FieldType::DATE;
 				} elseif (in_array('email', $parts)) {
-					$fieldType = TcaService::EMAIL;
+					$fieldType = FieldType::EMAIL;
 				} elseif (in_array('int', $parts)) {
-					$fieldType = TcaService::NUMBER;
+					$fieldType = FieldType::NUMBER;
 				}
 			}
 
 			// Do some legacy conversion
 			if ($fieldType === 'input') {
-				$fieldType = TcaService::TEXT;
+				$fieldType = FieldType::TEXT;
 			} elseif ($fieldType === 'text') {
-				$fieldType = TcaService::TEXTAREA;
+				$fieldType = FieldType::TEXTAREA;
 			}
 		}
 		return $fieldType;
@@ -480,7 +480,7 @@ class FieldService implements TcaServiceInterface {
 	 * @return bool
 	 */
 	public function isTextArea() {
-		return $this->getType() === TcaService::TEXTAREA;
+		return $this->getType() === FieldType::TEXTAREA;
 	}
 
 	/**
@@ -489,7 +489,7 @@ class FieldService implements TcaServiceInterface {
 	 * @return bool
 	 */
 	public function isSelect() {
-		return $this->getType() === TcaService::SELECT;
+		return $this->getType() === FieldType::SELECT;
 	}
 
 	/**
@@ -498,7 +498,7 @@ class FieldService implements TcaServiceInterface {
 	 * @return bool
 	 */
 	public function isCheckBox() {
-		return $this->getType() === TcaService::CHECKBOX;
+		return $this->getType() === FieldType::CHECKBOX;
 	}
 
 	/**
@@ -615,7 +615,7 @@ class FieldService implements TcaServiceInterface {
 
 			// Load TCA service of the foreign field.
 			$foreignTable = $this->getForeignTable();
-			$result = $this->hasOne() && TcaService::table($foreignTable)->field($foreignField)->hasMany();
+			$result = $this->hasOne() && Tca::table($foreignTable)->field($foreignField)->hasMany();
 		}
 		return $result;
 	}
@@ -633,7 +633,7 @@ class FieldService implements TcaServiceInterface {
 
 			// Load TCA service of the foreign field.
 			$foreignTable = $this->getForeignTable();
-			$result = $this->hasMany() && TcaService::table($foreignTable)->field($foreignField)->hasOne();
+			$result = $this->hasMany() && Tca::table($foreignTable)->field($foreignField)->hasOne();
 		}
 		return $result;
 	}
@@ -651,7 +651,7 @@ class FieldService implements TcaServiceInterface {
 
 			// Load TCA service of foreign field.
 			$foreignTable = $this->getForeignTable();
-			$result = $this->hasOne() && TcaService::table($foreignTable)->field($foreignField)->hasOne();
+			$result = $this->hasOne() && Tca::table($foreignTable)->field($foreignField)->hasOne();
 		}
 		return $result;
 	}

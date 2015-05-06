@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\DataHandler;
+namespace Fab\Vidi\DataHandler;
 
 /**
  * This file is part of the TYPO3 CMS project.

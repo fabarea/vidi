@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\View\Tab;
+namespace Fab\Vidi\View\Tab;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -17,9 +17,9 @@ namespace TYPO3\CMS\Vidi\View\Tab;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\FormProtection\FormProtectionFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Module\Parameter;
-use TYPO3\CMS\Vidi\Module\ModuleService;
-use TYPO3\CMS\Vidi\View\AbstractComponentView;
+use Fab\Vidi\Module\Parameter;
+use Fab\Vidi\Module\ModuleService;
+use Fab\Vidi\View\AbstractComponentView;
 
 /**
  * View component which renders a data type menu for the List2 module.

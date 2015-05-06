@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Domain\Validator;
+namespace Fab\Vidi\Domain\Validator;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,8 +14,8 @@ namespace TYPO3\CMS\Vidi\Domain\Validator;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Vidi\Exception\MissingIdentifierException;
+use Fab\Vidi\Domain\Model\Content;
+use Fab\Vidi\Exception\MissingIdentifierException;
 
 /**
  * Validate "content"

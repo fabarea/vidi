@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Persistence;
+namespace Fab\Vidi\Persistence;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,7 +16,7 @@ namespace TYPO3\CMS\Vidi\Persistence;
 
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Factory class related to Order object.
@@ -26,33 +26,33 @@ class OrderObjectFactory implements SingletonInterface {
 	/**
 	 * Gets a singleton instance of this class.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Persistence\OrderObjectFactory
+	 * @return \Fab\Vidi\Persistence\OrderObjectFactory
 	 */
 	static public function getInstance() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\OrderObjectFactory');
+		return GeneralUtility::makeInstance('Fab\Vidi\Persistence\OrderObjectFactory');
 	}
 
 	/**
 	 * Returns an order object.
 	 *
 	 * @param string $dataType
-	 * @return \TYPO3\CMS\Vidi\Persistence\Order
+	 * @return \Fab\Vidi\Persistence\Order
 	 */
 	public function getOrder($dataType = '') {
 
 		// Default ordering
-		$order = TcaService::table($dataType)->getDefaultOrderings();
+		$order = Tca::table($dataType)->getDefaultOrderings();
 
 		// Retrieve a possible id of the column from the request
 		$columnPosition = GeneralUtility::_GP('iSortCol_0');
 		if ($columnPosition > 0) {
-			$field = TcaService::grid()->getFieldNameByPosition($columnPosition);
+			$field = Tca::grid()->getFieldNameByPosition($columnPosition);
 
 			$direction = GeneralUtility::_GP('sSortDir_0');
 			$order = array(
 				$field => strtoupper($direction)
 			);
 		}
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Order', $order);
+		return GeneralUtility::makeInstance('Fab\Vidi\Persistence\Order', $order);
 	}
 }

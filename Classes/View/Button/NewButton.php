@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\View\Button;
+namespace Fab\Vidi\View\Button;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,9 +16,9 @@ namespace TYPO3\CMS\Vidi\View\Button;
 
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Module\Parameter;
-use TYPO3\CMS\Vidi\Tca\TcaService;
-use TYPO3\CMS\Vidi\View\AbstractComponentView;
+use Fab\Vidi\Module\Parameter;
+use Fab\Vidi\Tca\Tca;
+use Fab\Vidi\View\AbstractComponentView;
 
 /**
  * View which renders a "new" button to be placed in the doc header.
@@ -105,7 +105,7 @@ class NewButton extends AbstractComponentView {
 	protected function getStoragePid() {
 		if (GeneralUtility::_GP(Parameter::PID)) {
 			$pid = GeneralUtility::_GP(Parameter::PID);
-		} elseif (TcaService::table()->get('rootLevel')) {
+		} elseif (Tca::table()->get('rootLevel')) {
 			$pid = 0;
 		} else {
 			// Get configuration from User TSconfig if any

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Grid;
+namespace Fab\Vidi\Grid;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,6 +16,8 @@ namespace TYPO3\CMS\Vidi\Grid;
 
 /**
  *  Interface for configuring a Grid Renderer in the Grid TCA.
+ *
+ * @deprecated use ColumnInterface, will be removed in 0.10 + 2 version
  */
 interface GridComponentInterface {
 

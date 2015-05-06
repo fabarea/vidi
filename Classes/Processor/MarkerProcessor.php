@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Processor;
+namespace Fab\Vidi\Processor;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,8 +16,8 @@ namespace TYPO3\CMS\Vidi\Processor;
 
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Vidi\Signal\ProcessContentDataSignalArguments;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Signal\ProcessContentDataSignalArguments;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Marker Utility class for replacing "known" markers within an expression.
@@ -111,7 +111,7 @@ class MarkerProcessor implements SingletonInterface {
 	 */
 	protected function getCreationTime(ProcessContentDataSignalArguments $signalArguments) {
 		$creationTime = 0;
-		$creationTimeField = TcaService::table($signalArguments->getContentObject()->getDataType())->getTimeCreationField();
+		$creationTimeField = Tca::table($signalArguments->getContentObject()->getDataType())->getTimeCreationField();
 		if ($creationTimeField) {
 			$creationTime = $this->getContentObjectResolver()->getValue(
 				$signalArguments->getContentObject(),
@@ -123,10 +123,10 @@ class MarkerProcessor implements SingletonInterface {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Resolver\ContentObjectResolver
+	 * @return \Fab\Vidi\Resolver\ContentObjectResolver
 	 */
 	protected function getContentObjectResolver() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\ContentObjectResolver');
+		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\ContentObjectResolver');
 	}
 
 }

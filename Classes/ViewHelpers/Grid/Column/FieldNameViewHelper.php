@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
+namespace Fab\Vidi\ViewHelpers\Grid\Column;
 
 /**
  * This file is part of the TYPO3 CMS project.

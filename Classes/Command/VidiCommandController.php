@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Command;
+namespace Fab\Vidi\Command;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,7 +16,7 @@ namespace TYPO3\CMS\Vidi\Command;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Command Controller which handles actions related to Vidi.
@@ -37,7 +37,7 @@ class VidiCommandController extends CommandController {
 				continue;
 			}
 
-			$fields = TcaService::grid($tableName)->getFields();
+			$fields = Tca::grid($tableName)->getFields();
 			if (!empty($fields)) {
 
 				$relations = $this->getGridAnalyserService()->checkRelationForTable($tableName);
@@ -57,9 +57,9 @@ class VidiCommandController extends CommandController {
 	/**
 	 * Get the Vidi Module Loader.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Grid\GridAnalyserService
+	 * @return \Fab\Vidi\Grid\GridAnalyserService
 	 */
 	protected function getGridAnalyserService() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Grid\GridAnalyserService');
+		return GeneralUtility::makeInstance('Fab\Vidi\Grid\GridAnalyserService');
 	}
 }

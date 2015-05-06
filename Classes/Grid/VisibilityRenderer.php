@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Grid;
+namespace Fab\Vidi\Grid;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,7 +15,7 @@ namespace TYPO3\CMS\Vidi\Grid;
  */
 
 use TYPO3\CMS\Backend\Utility\IconUtility;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Class rendering visibility for the Grid.
@@ -30,7 +30,7 @@ class VisibilityRenderer extends GridRendererAbstract {
 	public function render() {
 
 		$result = '';
-		$hiddenField = TcaService::table()->getHiddenField();
+		$hiddenField = Tca::table()->getHiddenField();
 
 		if ($hiddenField) {
 			$spriteName = $this->object[$hiddenField] ? 'actions-edit-unhide' : 'actions-edit-hide';

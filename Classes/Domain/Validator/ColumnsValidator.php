@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Domain\Validator;
+namespace Fab\Vidi\Domain\Validator;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -15,7 +15,7 @@ namespace TYPO3\CMS\Vidi\Domain\Validator;
  */
 
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Validate "columns" to be displayed in the BE module.
@@ -31,9 +31,9 @@ class ColumnsValidator extends AbstractValidator {
 	public function isValid($columns) {
 
 		foreach ($columns as $columnName) {
-			if (TcaService::grid()->hasNotField($columnName)) {
+			if (Tca::grid()->hasNotField($columnName)) {
 				$message = sprintf('Column "%s" is not allowed. Actually, it was not configured to be displayed in the grid.', $columnName);
-				$this->addError($message , 1380019718);
+				$this->addError($message , 1380019720);
 			}
 		}
 	}

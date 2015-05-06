@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\View\Check;
+namespace Fab\Vidi\View\Check;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,8 +14,8 @@ namespace TYPO3\CMS\Vidi\View\Check;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Vidi\View\AbstractComponentView;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\View\AbstractComponentView;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * View which renders check.
@@ -117,13 +117,13 @@ EOF;
 	protected function isTcaValid() {
 
 		$dataType = $this->getModuleLoader()->getDataType();
-		$table = TcaService::table($dataType);
+		$table = Tca::table($dataType);
 
 		// Hunt for System Fields which has been removed
 		// @todo remove me in 0.6 + 2 versions
 		$systemFields = array();
-		foreach (TcaService::grid($dataType)->getFields() as $fieldName => $configuration) {
-			if (TcaService::grid($dataType)->isSystem($fieldName) && !TcaService::grid($dataType)->hasRenderers($fieldName)) {
+		foreach (Tca::grid($dataType)->getFields() as $fieldName => $configuration) {
+			if (Tca::grid($dataType)->isSystem($fieldName) && !Tca::grid($dataType)->hasRenderers($fieldName)) {
 				$systemFields[] =  $fieldName;
 			}
 		}
@@ -139,13 +139,13 @@ EOF;
 
 		# Config with key "__checkbox" must be replaced by:
 		'__checkbox' => array(
-			'renderer' => new \TYPO3\CMS\Vidi\Grid\CheckBoxComponent(),
+			'renderer' => new \Fab\Vidi\Grid\CheckBoxComponent(),
 		),
 		...
 
 		# Config with key "__buttons" must be replaced by:
 		'__buttons' => array(
-			'renderer' => new \TYPO3\CMS\Vidi\Grid\ButtonGroupComponent(),
+			'renderer' => new \Fab\Vidi\Grid\ButtonGroupComponent(),
 		),
 );
 </pre>
@@ -155,7 +155,7 @@ EOF;
 			exit();
 		}
 
-		foreach (TcaService::grid($dataType)->getFields() as $fieldName => $configuration) {
+		foreach (Tca::grid($dataType)->getFields() as $fieldName => $configuration) {
 
 			if ($table->hasField($fieldName) && $table->field($fieldName)->hasMany()) {
 				if ($table->field($fieldName)->hasRelationManyToMany()) {

@@ -15,10 +15,10 @@ if (FALSE === isset($configuration['autoload_typoscript']) || TRUE === (bool)$co
 }
 
 // Configure commands that can be run from the cli_dispatch.phpsh script.
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = 'TYPO3\CMS\Vidi\Command\VidiCommandController';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = 'Fab\Vidi\Command\VidiCommandController';
 
 // Initialize generic Vidi modules after the TCA is loaded.
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing'][] = 'EXT:vidi/Classes/Configuration/VidiModulesAspect.php:TYPO3\CMS\Vidi\Configuration\VidiModulesAspect';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing'][] = 'EXT:vidi/Classes/Configuration/VidiModulesAspect.php:Fab\Vidi\Configuration\VidiModulesAspect';
 
 // Initialize generic grid TCA for all data types
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing'][] = 'EXT:vidi/Classes/Configuration/TcaGridAspect.php:TYPO3\CMS\Vidi\Configuration\TcaGridAspect';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing'][] = 'EXT:vidi/Classes/Configuration/TcaGridAspect.php:Fab\Vidi\Configuration\TcaGridAspect';

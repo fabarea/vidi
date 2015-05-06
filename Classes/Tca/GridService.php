@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Tca;
+namespace Fab\Vidi\Tca;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,12 +14,15 @@ namespace TYPO3\CMS\Vidi\Tca;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Formatter\Date;
+use Fab\Vidi\Formatter\Datetime;
+use Fab\Vidi\Grid\GridRendererInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Vidi\Exception\InvalidKeyInArrayException;
-use TYPO3\CMS\Vidi\Facet\StandardFacet;
-use TYPO3\CMS\Vidi\Facet\FacetInterface;
-use TYPO3\CMS\Vidi\Grid\GenericRendererComponent;
+use Fab\Vidi\Exception\InvalidKeyInArrayException;
+use Fab\Vidi\Facet\StandardFacet;
+use Fab\Vidi\Facet\FacetInterface;
+use Fab\Vidi\Grid\GenericRendererComponent;
 
 /**
  * A class to handle TCA grid configuration
@@ -39,6 +42,11 @@ class GridService implements TcaServiceInterface {
 	/**
 	 * @var array
 	 */
+	protected $fields;
+
+	/**
+	 * @var array
+	 */
 	protected $instances;
 
 	/**
@@ -46,7 +54,7 @@ class GridService implements TcaServiceInterface {
 	 *
 	 * @throws InvalidKeyInArrayException
 	 * @param string $tableName
-	 * @return \TYPO3\CMS\Vidi\Tca\GridService
+	 * @return \Fab\Vidi\Tca\GridService
 	 */
 	public function __construct($tableName) {
 
@@ -69,6 +77,36 @@ class GridService implements TcaServiceInterface {
 	}
 
 	/**
+	 * Get the label key.
+	 *
+	 * @param string $fieldNameAndPath
+	 * @return string
+	 */
+	public function getLabelKey($fieldNameAndPath) {
+
+		$field = $this->getField($fieldNameAndPath);
+
+		// First option is to get the label from the Grid TCA.
+		$rawLabel = '';
+		if (isset($field['label'])) {
+			$rawLabel = $field['label'];
+		}
+
+		// Second option is to fetch the label from the Column Renderer object.
+		if (! $rawLabel && $this->hasRenderers($fieldNameAndPath)) {
+			$renderers = $this->getRenderers($fieldNameAndPath);
+			/** @var $renderer GridRendererInterface */
+			foreach ($renderers as $renderer) {
+				if (isset($renderer['label'])) {
+					$rawLabel = $renderer['label'];
+					break;
+				}
+			}
+		}
+		return $rawLabel;
+	}
+
+	/**
 	 * Get the translation of a label given a column name.
 	 *
 	 * @param string $fieldNameAndPath
@@ -77,22 +115,23 @@ class GridService implements TcaServiceInterface {
 	public function getLabel($fieldNameAndPath) {
 		$label = '';
 		if ($this->hasLabel($fieldNameAndPath)) {
-			$field = $this->getField($fieldNameAndPath);
-			$label = LocalizationUtility::translate($field['label'], '');
+			$labelKey = $this->getLabelKey($fieldNameAndPath);
+			$label = LocalizationUtility::translate($labelKey, '');
 			if (is_null($label)) {
-				$label = $field['label'];
+				$label = $labelKey;
 			}
 		} else {
 
 			// Important to notice the label can contains a path, e.g. metadata.categories and must be resolved.
 			$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $this->tableName);
 			$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $this->tableName);
-			$table = TcaService::table($dataType);
+			$table = Tca::table($dataType);
 
 			if ($table->hasField($fieldName) && $table->field($fieldName)->hasLabel()) {
 				$label = $table->field($fieldName)->getLabel();
 			}
 		}
+
 		return $label;
 	}
 
@@ -101,7 +140,7 @@ class GridService implements TcaServiceInterface {
 	 *
 	 * @param string $fieldName
 	 * @return boolean
-	 * @deprecated will be removed in 0.6 + 2 versions.
+	 * @deprecated will be removed in 0.6 + 2 versions. Must be removed in class RelationsCheck as well.
 	 */
 	public function isSystem($fieldName) {
 		return strpos($fieldName, '__') === 0;
@@ -124,33 +163,67 @@ class GridService implements TcaServiceInterface {
 	}
 
 	/**
-	 * Tell whether the column is not internal.
-	 *
-	 * @param string $fieldName
-	 * @return boolean
-	 * @deprecated will be removed in 0.6 + 2 versions.
-	 */
-	public function isNotSystem($fieldName) {
-		return !$this->isSystem($fieldName);
-	}
-
-	/**
-	 * Returns an array containing the configuration of an column.
+	 * Returns a field name.
 	 *
 	 * @param string $fieldName
 	 * @return array
+	 * @throws InvalidKeyInArrayException
 	 */
 	public function getField($fieldName) {
-		return $this->tca['columns'][$fieldName];
+		$fields = $this->getFields();
+		return $fields[$fieldName];
 	}
 
 	/**
-	 * Returns an array containing column names.
+	 * Returns an array containing column names for the Grid.
 	 *
 	 * @return array
 	 */
 	public function getFields() {
-		return is_array($this->tca['columns']) ? $this->tca['columns'] : array();
+		if (is_null($this->fields)) {
+
+			$fields = is_array($this->tca['columns']) ? $this->tca['columns'] : array();
+			$gridFieldNames = array_keys($fields);
+
+			// Merge missing fields.
+			$tableFieldNames = Tca::table($this->tableName)->getFields();
+			$additionalFields = array_diff($tableFieldNames, $gridFieldNames);
+
+			if (!empty($additionalFields)) {
+
+				// Pop out last element of the key
+				// Idea is to place new un-configured columns in between. By default, they will be hidden.
+				end($fields);
+				$lastColumnKey = key($fields);
+				$lastColumn = array_pop($fields);
+
+				// Feed up the grid fields with un configured elements
+				foreach ($additionalFields as $additionalField) {
+					$fields[$additionalField] = array(
+						'visible' => FALSE
+					);
+
+					// Try to guess the format
+					$fieldType = Tca::table($this->tableName)->field($additionalField)->getType();
+					if ($fieldType === FieldType::DATE) {
+						$fields[$additionalField]['format'] = 'Fab\Vidi\Formatter\Date';
+					} elseif ($fieldType === FieldType::DATETIME) {
+						$fields[$additionalField]['format'] = 'Fab\Vidi\Formatter\Datetime';
+					}
+				}
+				$fields[$lastColumnKey] = $lastColumn;
+			}
+
+			// Unset excluded fields
+			foreach ($this->getExcludedFields() as $excludedField) {
+				if (isset($fields[$excludedField])) {
+					unset($fields[$excludedField]);
+				}
+			}
+			$this->fields = $fields;
+		}
+
+		return $this->fields;
 	}
 
 	/**
@@ -160,7 +233,8 @@ class GridService implements TcaServiceInterface {
 	 * @return bool
 	 */
 	public function hasField($fieldName) {
-		return isset($this->tca['columns'][$fieldName]);
+		$fields = $this->getFields();
+		return isset($fields[$fieldName]);
 	}
 
 	/**
@@ -369,12 +443,25 @@ class GridService implements TcaServiceInterface {
 	/**
 	 * Returns whether the column has a label.
 	 *
-	 * @param string $fieldName
+	 * @param string $fieldNameAndPath
 	 * @return bool
 	 */
-	public function hasLabel($fieldName) {
-		$field = $this->getField($fieldName);
-		return empty($field['label']) ? FALSE : TRUE;
+	public function hasLabel($fieldNameAndPath) {
+		$field = $this->getField($fieldNameAndPath);
+
+		$hasLabel = empty($field['label']) ? FALSE : TRUE;
+
+		if (! $hasLabel && $this->hasRenderers($fieldNameAndPath)) {
+			$renderers = $this->getRenderers($fieldNameAndPath);
+			/** @var $renderer GridRendererInterface */
+			foreach ($renderers as $renderer) {
+				if (isset($renderer['label'])) {
+					$hasLabel = TRUE;
+					break;
+				}
+			}
+		}
+		return $hasLabel;
 	}
 
 	/**
@@ -389,9 +476,10 @@ class GridService implements TcaServiceInterface {
 	 */
 	public function getExcludedFields() {
 		$excludedFields = array();
-		if (!empty($this->tca['export']['excluded_fields'])) {
+		if (!empty($this->tca['excluded_fields'])) {
+			$excludedFields = GeneralUtility::trimExplode(',', $this->tca['excluded_fields'], TRUE);
+		} elseif (!empty($this->tca['export']['excluded_fields'])) { // only for export for legacy reason.
 			$excludedFields = GeneralUtility::trimExplode(',', $this->tca['export']['excluded_fields'], TRUE);
-
 		}
 		return $excludedFields;
 	}
@@ -412,22 +500,22 @@ class GridService implements TcaServiceInterface {
 	 * Returns a "facet" service instance.
 	 *
 	 * @param string|FacetInterface $facet
-	 * @return \TYPO3\CMS\Vidi\Tca\FacetService
+	 * @return \Fab\Vidi\Tca\FacetService
 	 */
 	public function facet($facet = '') {
 
 		if (!$facet instanceof StandardFacet) {
-			$label = TcaService::grid($this->tableName)->getLabel($facet);
+			$label = Tca::grid($this->tableName)->getLabel($facet);
 
 			/** @var StandardFacet $facet */
-			$facet = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Facet\StandardFacet', $facet, $label);
+			$facet = GeneralUtility::makeInstance('Fab\Vidi\Facet\StandardFacet', $facet, $label);
 		}
 
 		if (empty($this->instances[$facet->getName()])) {
 
-			/** @var \TYPO3\CMS\Vidi\Tca\FacetService $instance */
+			/** @var \Fab\Vidi\Tca\FacetService $instance */
 			$instance = GeneralUtility::makeInstance(
-				'TYPO3\CMS\Vidi\Tca\FacetService',
+				'Fab\Vidi\Tca\FacetService',
 				$facet,
 				$this->tableName
 			);
@@ -439,10 +527,10 @@ class GridService implements TcaServiceInterface {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 * @return \Fab\Vidi\Resolver\FieldPathResolver
 	 */
 	protected function getFieldPathResolver() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
 	}
 
 }

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Tca;
+namespace Fab\Vidi\Tca;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -20,29 +20,64 @@ namespace TYPO3\CMS\Vidi\Tca;
  */
 class TcaService extends Tca {
 
-	// @todo move me to an enumeration
+	/**
+	 * @deprecated -> use FieldType
+	 */
 	const TEXT = 'text';
 
+	/**
+	 * @deprecated -> use FieldType
+	 */
 	const NUMBER = 'number';
 
+	/**
+	 * @deprecated -> use FieldType
+	 */
 	const EMAIL = 'email';
 
+	/**
+	 * @deprecated -> use FieldType
+	 */
 	const DATE = 'date';
 
+	/**
+	 * @deprecated -> use FieldType
+	 */
 	const DATETIME = 'datetime';
 
+	/**
+	 * @deprecated -> use FieldType
+	 */
 	const TEXTAREA = 'textarea';
 
+	/**
+	 * @deprecated -> use FieldType
+	 */
 	const SELECT = 'select';
 
+	/**
+	 * @deprecated -> use FieldType
+	 */
 	const RADIO = 'radio';
 
+	/**
+	 * @deprecated -> use FieldType
+	 */
 	const CHECKBOX = 'check';
 
+	/**
+	 * @deprecated -> use FieldType
+	 */
 	const FILE = 'file';
 
+	/**
+	 * @deprecated -> use FieldType
+	 */
 	const MULTISELECT = 'multiselect';
 
+	/**
+	 * @deprecated -> use FieldType
+	 */
 	const TREE = 'tree';
 
 }

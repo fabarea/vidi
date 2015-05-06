@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Controller\Backend;
+namespace Fab\Vidi\Controller\Backend;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -14,19 +14,20 @@ namespace TYPO3\CMS\Vidi\Controller\Backend;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Tca\FieldType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Vidi\Behavior\SavingBehavior;
-use TYPO3\CMS\Vidi\Domain\Repository\ContentRepositoryFactory;
-use TYPO3\CMS\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Vidi\Mvc\JsonView;
-use TYPO3\CMS\Vidi\Mvc\JsonResult;
-use TYPO3\CMS\Vidi\Persistence\MatcherObjectFactory;
-use TYPO3\CMS\Vidi\Persistence\OrderObjectFactory;
-use TYPO3\CMS\Vidi\Persistence\PagerObjectFactory;
-use TYPO3\CMS\Vidi\Signal\ProcessContentDataSignalArguments;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Behavior\SavingBehavior;
+use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
+use Fab\Vidi\Domain\Model\Content;
+use Fab\Vidi\Mvc\JsonView;
+use Fab\Vidi\Mvc\JsonResult;
+use Fab\Vidi\Persistence\MatcherObjectFactory;
+use Fab\Vidi\Persistence\OrderObjectFactory;
+use Fab\Vidi\Persistence\PagerObjectFactory;
+use Fab\Vidi\Signal\ProcessContentDataSignalArguments;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * Controller which handles actions related to Vidi in the Backend.
@@ -52,7 +53,7 @@ class ContentController extends ActionController {
 	 * @return void
 	 */
 	public function indexAction() {
-		$this->view->assign('columns', TcaService::grid()->getFields());
+		$this->view->assign('columns', Tca::grid()->getFields());
 	}
 
 	/**
@@ -60,8 +61,8 @@ class ContentController extends ActionController {
 	 *
 	 * @param array $columns corresponds to columns to be rendered.
 	 * @param array $matches
-	 * @validate $columns TYPO3\CMS\Vidi\Domain\Validator\ColumnsValidator
-	 * @validate $matches TYPO3\CMS\Vidi\Domain\Validator\MatchesValidator
+	 * @validate $columns Fab\Vidi\Domain\Validator\ColumnsValidator
+	 * @validate $matches Fab\Vidi\Domain\Validator\MatchesValidator
 	 * @return void
 	 */
 	public function listAction(array $columns = array(), $matches = array()) {
@@ -142,7 +143,7 @@ class ContentController extends ActionController {
 			$contentData['uid'] = $identifier;
 
 			/** @var Content $dataObject */
-			$dataObject = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Domain\Model\Content', $dataType, $contentData);
+			$dataObject = GeneralUtility::makeInstance('Fab\Vidi\Domain\Model\Content', $dataType, $contentData);
 
 			// Properly update object.
 			ContentRepositoryFactory::getInstance($dataType)->update($dataObject);
@@ -165,7 +166,7 @@ class ContentController extends ActionController {
 
 					/** @var Content $contentObject */
 					foreach ($updatedResult as $contentObject) {
-						$labelField = TcaService::table($contentObject)->getLabelField();
+						$labelField = Tca::table($contentObject)->getLabelField();
 						$values = array(
 							'uid' => $contentObject->getUid(),
 							'name' => $contentObject[$labelField],
@@ -176,7 +177,7 @@ class ContentController extends ActionController {
 					$updatedResult = $_updatedResult;
 				}
 
-				$labelField = TcaService::table($object)->getLabelField();
+				$labelField = Tca::table($object)->getLabelField();
 				$processedObjectData = array(
 					'uid' => $object->getUid(),
 					'name' => $object[$labelField],
@@ -215,7 +216,7 @@ class ContentController extends ActionController {
 		$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
 		$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
 
-		$fieldType = TcaService::table($dataType)->field($fieldName)->getType();
+		$fieldType = Tca::table($dataType)->field($fieldName)->getType();
 		$this->view->assign('fieldType', ucfirst($fieldType));
 		$this->view->assign('dataType', $dataType);
 		$this->view->assign('fieldName', $fieldName);
@@ -225,7 +226,7 @@ class ContentController extends ActionController {
 		$this->view->assign('editWholeSelection', empty($matches['uid'])); // necessary??
 
 		// Fetch content and its relations.
-		if ($fieldType === TcaService::MULTISELECT) {
+		if ($fieldType === FieldType::MULTISELECT) {
 
 			$object = ContentRepositoryFactory::getInstance()->findOneBy($matcher);
 			$identifier = $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, 'uid');
@@ -238,15 +239,15 @@ class ContentController extends ActionController {
 				throw new \Exception($message, 1402350182);
 			}
 
-			$relatedDataType = TcaService::table($dataType)->field($fieldName)->getForeignTable();
+			$relatedDataType = Tca::table($dataType)->field($fieldName)->getForeignTable();
 
 			// Initialize the matcher object.
 			$matcher = MatcherObjectFactory::getInstance()->getMatcher(array(), $relatedDataType);
 
 			// Default ordering for related data type.
-			$defaultOrderings = TcaService::table($relatedDataType)->getDefaultOrderings();
-			/** @var \TYPO3\CMS\Vidi\Persistence\Order $order */
-			$defaultOrder = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Persistence\Order', $defaultOrderings);
+			$defaultOrderings = Tca::table($relatedDataType)->getDefaultOrderings();
+			/** @var \Fab\Vidi\Persistence\Order $order */
+			$defaultOrder = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Order', $defaultOrderings);
 
 			// Fetch related contents
 			$relatedContents = ContentRepositoryFactory::getInstance($relatedDataType)->findBy($matcher, $defaultOrder);
@@ -254,7 +255,7 @@ class ContentController extends ActionController {
 			$this->view->assign('content', $content);
 			$this->view->assign('relatedContents', $relatedContents);
 			$this->view->assign('relatedDataType', $relatedDataType);
-			$this->view->assign('relatedContentTitle', TcaService::table($relatedDataType)->getTitle());
+			$this->view->assign('relatedContentTitle', Tca::table($relatedDataType)->getTitle());
 		}
 	}
 
@@ -274,7 +275,7 @@ class ContentController extends ActionController {
 		$contentService = $this->getContentService()->findBy($matcher);
 
 		// Compute the label field name of the table.
-		$tableTitleField = TcaService::table()->getLabelField();
+		$tableTitleField = Tca::table()->getLabelField();
 
 		// Get result object for storing data along the processing.
 		$result = $this->getJsonResult();
@@ -337,7 +338,7 @@ class ContentController extends ActionController {
 		$contentService = $this->getContentService()->findBy($matcher);
 
 		// Compute the label field name of the table.
-		$tableTitleField = TcaService::table()->getLabelField();
+		$tableTitleField = Tca::table()->getLabelField();
 
 		// Get result object for storing data along the processing.
 		$result = $this->getJsonResult();
@@ -386,7 +387,7 @@ class ContentController extends ActionController {
 		$contentService = $this->getContentService()->findBy($matcher);
 
 		// Compute the label field name of the table.
-		$tableTitleField = TcaService::table()->getLabelField();
+		$tableTitleField = Tca::table()->getLabelField();
 
 		// Get result object for storing data along the processing.
 		$result = $this->getJsonResult();
@@ -434,8 +435,8 @@ class ContentController extends ActionController {
 					throw new \Exception($message, 1412343099);
 				}
 
-				/** @var \TYPO3\CMS\Vidi\View\Uri\EditUri $uri */
-				$uriRenderer = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\View\Uri\EditUri');
+				/** @var \Fab\Vidi\View\Uri\EditUri $uri */
+				$uriRenderer = GeneralUtility::makeInstance('Fab\Vidi\View\Uri\EditUri');
 				$uri = $uriRenderer->render($localizedContent);
 				HttpUtility::redirect($uri);
 				break; // no need to further continue
@@ -466,24 +467,24 @@ class ContentController extends ActionController {
 	/**
 	 * Get the Vidi Module Loader.
 	 *
-	 * @return \TYPO3\CMS\Vidi\Service\ContentService
+	 * @return \Fab\Vidi\Service\ContentService
 	 */
 	protected function getContentService() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Service\ContentService');
+		return GeneralUtility::makeInstance('Fab\Vidi\Service\ContentService');
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Resolver\ContentObjectResolver
+	 * @return \Fab\Vidi\Resolver\ContentObjectResolver
 	 */
 	protected function getContentObjectResolver() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\ContentObjectResolver');
+		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\ContentObjectResolver');
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 * @return \Fab\Vidi\Resolver\FieldPathResolver
 	 */
 	protected function getFieldPathResolver() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
 	}
 
 	/**
@@ -495,7 +496,7 @@ class ContentController extends ActionController {
 	protected function getJsonView() {
 		if (!$this->view instanceof JsonView) {
 			/** @var JsonView $view */
-			$this->view = $this->objectManager->get('TYPO3\CMS\Vidi\Mvc\JsonView');
+			$this->view = $this->objectManager->get('Fab\Vidi\Mvc\JsonView');
 			$this->view->setResponse($this->response);
 		}
 		return $this->view;
@@ -505,7 +506,7 @@ class ContentController extends ActionController {
 	 * @return JsonResult
 	 */
 	protected function getJsonResult() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Mvc\JsonResult');
+		return GeneralUtility::makeInstance('Fab\Vidi\Mvc\JsonResult');
 	}
 
 	/**
@@ -522,8 +523,8 @@ class ContentController extends ActionController {
 	 */
 	protected function emitProcessContentDataSignal(Content $contentObject, $fieldNameAndPath, $contentData, $counter, $savingBehavior, $language) {
 
-		/** @var \TYPO3\CMS\Vidi\Signal\ProcessContentDataSignalArguments $signalArguments */
-		$signalArguments = GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Signal\ProcessContentDataSignalArguments');
+		/** @var \Fab\Vidi\Signal\ProcessContentDataSignalArguments $signalArguments */
+		$signalArguments = GeneralUtility::makeInstance('Fab\Vidi\Signal\ProcessContentDataSignalArguments');
 		$signalArguments->setContentObject($contentObject)
 			->setFieldNameAndPath($fieldNameAndPath)
 			->setContentData($contentData)
@@ -531,7 +532,7 @@ class ContentController extends ActionController {
 			->setSavingBehavior($savingBehavior)
 			->setLanguage($language);
 
-		$signalResult = $this->getSignalSlotDispatcher()->dispatch('TYPO3\CMS\Vidi\Controller\Backend\ContentController', 'processContentData', array($signalArguments));
+		$signalResult = $this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\Controller\Backend\ContentController', 'processContentData', array($signalArguments));
 		return $signalResult[0];
 	}
 
@@ -545,9 +546,9 @@ class ContentController extends ActionController {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Language\LanguageService
+	 * @return \Fab\Vidi\Language\LanguageService
 	 */
 	protected function getLanguageService() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Language\LanguageService');
+		return GeneralUtility::makeInstance('Fab\Vidi\Language\LanguageService');
 	}
 }

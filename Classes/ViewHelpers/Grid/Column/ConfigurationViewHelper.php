@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
+namespace Fab\Vidi\ViewHelpers\Grid\Column;
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -16,8 +16,8 @@ namespace TYPO3\CMS\Vidi\ViewHelpers\Grid\Column;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3\CMS\Vidi\Exception\NotExistingFieldException;
-use TYPO3\CMS\Vidi\Tca\TcaService;
+use Fab\Vidi\Exception\NotExistingFieldException;
+use Fab\Vidi\Tca\Tca;
 
 /**
  * View helper for rendering configuration that will be consumed by Javascript
@@ -33,7 +33,7 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 	public function render() {
 		$output = '';
 
-		foreach(TcaService::grid()->getFields() as $fieldNameAndPath => $configuration) {
+		foreach(Tca::grid()->getFields() as $fieldNameAndPath => $configuration) {
 
 			// Early failure if field does not exist.
 			if (!$this->isAllowed($fieldNameAndPath)) {
@@ -47,10 +47,10 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 			// columnName: whole field name with path
 			$output .= sprintf('Vidi._columns.push({ "mData": "%s", "bSortable": %s, "bVisible": %s, "sWidth": "%s", "sClass": "%s", "columnName": "%s" });' . PHP_EOL,
 				$this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath), // Suitable field name for the DataTable plugin.
-				TcaService::grid()->isSortable($fieldNameAndPath) ? 'true' : 'false',
-				TcaService::grid()->isVisible($fieldNameAndPath) ? 'true' : 'false',
-				TcaService::grid()->getWidth($fieldNameAndPath),
-				TcaService::grid()->getClass($fieldNameAndPath),
+				Tca::grid()->isSortable($fieldNameAndPath) ? 'true' : 'false',
+				Tca::grid()->isVisible($fieldNameAndPath) ? 'true' : 'false',
+				Tca::grid()->getWidth($fieldNameAndPath),
+				Tca::grid()->getClass($fieldNameAndPath),
 				$fieldNameAndPath
 			);
 		}
@@ -69,11 +69,9 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 		$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
 
 		$isAllowed = FALSE;
-		if (TcaService::grid()->isSystem($fieldNameAndPath)) {
-			$isAllowed = TRUE; // @todo remove me in 0.6 + 2 versions
-		} elseif (TcaService::grid()->hasRenderers($fieldNameAndPath)) {
+		if (Tca::grid()->hasRenderers($fieldNameAndPath)) {
 			$isAllowed = TRUE;
-		} elseif (TcaService::table()->field($fieldNameAndPath)->isSystem() || TcaService::table($dataType)->hasField($fieldName)) {
+		} elseif (Tca::table()->field($fieldNameAndPath)->isSystem() || Tca::table($dataType)->hasField($fieldName)) {
 			$isAllowed = TRUE;
 		}
 
@@ -81,9 +79,9 @@ class ConfigurationViewHelper extends AbstractViewHelper {
 	}
 
 	/**
-	 * @return \TYPO3\CMS\Vidi\Resolver\FieldPathResolver
+	 * @return \Fab\Vidi\Resolver\FieldPathResolver
 	 */
 	protected function getFieldPathResolver() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Vidi\Resolver\FieldPathResolver');
+		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
 	}
 }

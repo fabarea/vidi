@@ -8,9 +8,18 @@ $tca = array(
 			'title',
 			'description',
 		),
+		'vidi' => array(
+			// Special case when the field name does not follow the conventions.
+			// Vidi needs a bit of help to find the equivalence fieldName <-> propertyName.
+			'mappings' => array(
+				'lockToDomain' => 'lockToDomain',
+				'TSconfig' => 'tsConfig',
+				'felogin_redirectPid' => 'feLoginRedirectPid',
+			),
+		),
 		'columns' => array(
 			'__checkbox' => array(
-				'renderer' => new \TYPO3\CMS\Vidi\Grid\CheckBoxComponent(),
+				'renderer' => new \Fab\Vidi\Grid\CheckBoxComponent(),
 			),
 			'uid' => array(
 				'visible' => FALSE,
@@ -33,12 +42,12 @@ $tca = array(
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:crdate',
 			),
 			'hidden' => array(
-				'renderer' => 'TYPO3\CMS\Vidi\Grid\VisibilityRenderer',
+				'renderer' => 'Fab\Vidi\Grid\VisibilityRenderer',
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:visibility_abbreviation',
 				'width' => '3%',
 			),
 			'__buttons' => array(
-				'renderer' => new \TYPO3\CMS\Vidi\Grid\ButtonGroupComponent(),
+				'renderer' => new \Fab\Vidi\Grid\ButtonGroupComponent(),
 			),
 		)
 	)

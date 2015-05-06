@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\CMS\Vidi\Language;
+namespace Fab\Vidi\Language;
 
 /**
  * This file is part of the TYPO3 CMS project.
