@@ -81,6 +81,11 @@ EOF;
 				<br />
 				In file EXT:my_ext/Configuration/TCA/{$this->getModuleLoader()->getDataType()}.php
 <pre>
+
+# Solution 1: remove field "{$invalidField}" from the Grid.
+\$GLOBALS['TCA']['{$this->getModuleLoader()->getDataType()}']['grid']['excluded_fields'] => '$invalidField',
+
+# Solution 2: configure field "{$invalidField}".
 \$tca = array(
 	'columns' => array(
 		'CHANGE_ME' => array(
@@ -99,10 +104,12 @@ EOF;
 	),
 );
 
-// Those lines are only in case you need to override an existing TCA, not in your control.
+# Those lines are only in case you need to override an existing TCA, not in your control.
 if (!empty(\$GLOBALS['TCA']['{$invalidField}'])) {
 	return \TYPO3\CMS\Core\Utility\GeneralUtility::array_merge_recursive_overrule(\$GLOBALS['TCA']['{$invalidField}'], \$tca);
 }
+
+
 </pre>
 EOF;
 		}
