@@ -97,22 +97,21 @@ class PidCheck extends AbstractComponentView {
 					<p>{$error}</p>
 					New records cannot be created with this page id. The configuration can be changed at different levels:
 					<ul>
-						<li>Settings in the Extension Manager which is the fall-back configuration.</li>
+						<li>Settings in the Extension Manager as fallback configuration.</li>
 						<li>In some ext_tables.php file, by allowing this record type on any pages.<br />
 						\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('{$this->dataType}')
 						</li>
 						<li>By User TSconfig:</li>
 					</ul>
 <pre>
-# User TSconfig defining default pid for "{$this->dataType}" in Vidi:
-tx_vidi {
-	dataType {
-		{$this->dataType} {
-			storagePid = xx
-		}
-	}
-}
+# User TSconfig to be placed in your ext_tables.php:
+TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('
+
+	# Default pid for "{$this->dataType}" in Vidi:
+	tx_vidi.dataType.{$this->dataType}.storagePid = xx
+');
 </pre>
+
 				</div>
 			</div>
 EOF;

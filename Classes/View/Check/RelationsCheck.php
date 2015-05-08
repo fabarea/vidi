@@ -109,7 +109,6 @@ if (!empty(\$GLOBALS['TCA']['{$invalidField}'])) {
 	return \TYPO3\CMS\Core\Utility\GeneralUtility::array_merge_recursive_overrule(\$GLOBALS['TCA']['{$invalidField}'], \$tca);
 }
 
-
 </pre>
 EOF;
 		}
