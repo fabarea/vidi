@@ -26,6 +26,16 @@ use Fab\Vidi\Service\BackendUserPreferenceService;
 class ModuleLoader {
 
 	/**
+	 * Define the default main module
+	 */
+	const DEFAULT_MAIN_MODULE = 'content';
+
+	/**
+	 * Define the default pid
+	 */
+	const DEFAULT_PID = 0;
+
+	/**
 	 * The type of data being listed (which corresponds to a table name in TCA)
 	 *
 	 * @var string
@@ -55,7 +65,7 @@ class ModuleLoader {
 	/**
 	 * @var string
 	 */
-	protected $mainModule = 'content';
+	protected $mainModule;
 
 	/**
 	 * @var string
@@ -133,7 +143,7 @@ class ModuleLoader {
 	/**
 	 * @param string $dataType
 	 */
-	public function __construct($dataType = '') {
+	public function __construct($dataType = NULL) {
 		$this->dataType = $dataType;
 	}
 
@@ -149,31 +159,19 @@ class ModuleLoader {
 	}
 
 	/**
-	 * Compute the internal module code
-	 *
-	 * @param NULL|string $dataType
-	 * @return string
-	 */
-	protected function getInternalModuleCode($dataType = NULL) {
-		if (is_null($dataType)) {
-			$dataType = $this->dataType;
-		}
-		$subModuleName = $dataType . '_' . $this->moduleKey;
-		return 'Vidi' . GeneralUtility::underscoredToUpperCamelCase($subModuleName);
-	}
-
-	/**
 	 * Register the module
 	 *
 	 * @return void
 	 */
 	public function register() {
 
+		$this->initializeDefaultValues();
 		$internalModuleCode = $this->getInternalModuleCode();
 
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleCode] = array();
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleCode]['dataType'] = $this->dataType;
-		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleCode]['defaultPid'] = is_null($this->defaultPid) ? 0 : $this->defaultPid;
+		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleCode]['mainModule'] = $this->mainModule;
+		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleCode]['defaultPid'] = $this->defaultPid;
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleCode]['additionalJavaScriptFiles'] = $this->additionalJavaScriptFiles;
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleCode]['additionalStyleSheetFiles'] = $this->additionalStyleSheetFiles;
 		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleCode]['components'] = $this->components;
@@ -373,6 +371,9 @@ class ModuleLoader {
 	 * @return string
 	 */
 	public function getMainModule() {
+		if (is_null($this->mainModule)) {
+			$this->mainModule = $this->getModuleConfiguration('mainModule');
+		}
 		return $this->mainModule;
 	}
 
@@ -452,7 +453,7 @@ class ModuleLoader {
 	 * @return string
 	 */
 	public function getDataType() {
-		if (empty($this->dataType)) {
+		if (is_null($this->dataType)) {
 			$this->dataType = $this->getModuleConfiguration('dataType');
 		}
 		return $this->dataType;
@@ -869,4 +870,34 @@ class ModuleLoader {
 	public function getComponents() {
 		return $this->components;
 	}
+
+	/**
+	 * Compute the internal module code
+	 *
+	 * @param NULL|string $dataType
+	 * @return string
+	 */
+	protected function getInternalModuleCode($dataType = NULL) {
+		if (is_null($dataType)) {
+			$dataType = $this->dataType;
+		}
+		$subModuleName = $dataType . '_' . $this->moduleKey;
+		return 'Vidi' . GeneralUtility::underscoredToUpperCamelCase($subModuleName);
+	}
+
+	/**
+	 * Make sure default values are correctly initialized for the module.
+	 *
+	 * @return void
+	 */
+	protected function initializeDefaultValues() {
+		if (is_null($this->mainModule)) {
+			$this->mainModule = self::DEFAULT_MAIN_MODULE;
+		}
+
+		if (is_null($this->defaultPid)) {
+			$this->defaultPid = self::DEFAULT_PID;
+		}
+	}
+
 }

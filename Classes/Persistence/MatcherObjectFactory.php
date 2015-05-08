@@ -14,6 +14,7 @@ namespace Fab\Vidi\Persistence;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Module\ModuleName;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -61,15 +62,19 @@ class MatcherObjectFactory implements SingletonInterface {
 	}
 
 	/**
-	 * Apply criteria given by some parameter in the URL.
+	 * Get a possible id from the URL and apply as filter criteria.
+	 * Except if the main module belongs to the File. The id would be a combined identifier
+	 * including the storage and a mount point.
 	 *
 	 * @param Matcher $matcher
 	 * @return Matcher $matcher
 	 */
 	protected function applyCriteriaFromUrl(Matcher $matcher) {
-		if (GeneralUtility::_GP('id')) {
+
+		if (GeneralUtility::_GP('id') && $this->getModuleLoader()->getMainModule() !== ModuleName::FILE) {
 			$matcher->equals('pid', GeneralUtility::_GP('id'));
 		}
+
 		return $matcher;
 	}
 
