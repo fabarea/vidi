@@ -177,7 +177,7 @@ However, the rules can be overridden programmatically via the API by adding conf
 Assuming we want to allow the access to every BE Users for the "find duplicates" tool provided in Media_, we would do something::
 
 
-	\TYPO3\CMS\Vidi\Tool\ToolRegistry::getInstance()
+	\Fab\Vidi\Tool\ToolRegistry::getInstance()
 		->overridePermission('sys_file', 'Fab\Media\Tool\DuplicateFilesFinderTool', function() {
 		return TRUE;
 	});
