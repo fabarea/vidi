@@ -238,9 +238,6 @@ class ContentRepository implements RepositoryInterface {
 	 * Find one Content object given specified matches.
 	 *
 	 * @param Matcher $matcher
-	 * @internal param \Fab\Vidi\Persistence\Order $order The order
-	 * @internal param int $limit
-	 * @internal param int $offset
 	 * @return Content
 	 */
 	public function findOneBy(Matcher $matcher) {
