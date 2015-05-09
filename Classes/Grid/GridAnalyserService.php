@@ -36,7 +36,7 @@ class GridAnalyserService {
 
   WARNING! Could not define relation precisely. This is not necessarily a problem
   if the opposite relation is not required in a Grid. But consider adding the opposite
-  TCA configuration if so.';
+  TCA configuration if so.
 EOF;
 
 		foreach (Tca::grid($tableName)->getFields() as $fieldName => $configuration) {
@@ -97,7 +97,7 @@ EOF;
 		} elseif (!$foreignTable) {
 			$output[] = sprintf('  ERROR! Can not found foreign table for "%s". Perhaps missing opposite configuration?', $fieldName);
 		} elseif (!$manyToManyTable) {
-			$output = sprintf('  ERROR! Can not found relation table (MM) for "%s". Perhaps missing opposite configuration?', $fieldName);
+			$output[] = sprintf('  ERROR! Can not found relation table (MM) for "%s". Perhaps missing opposite configuration?', $fieldName);
 		} else {
 			$output[] = sprintf('  %s.%s <--> %s <--> %s.%s', $tableName, $fieldName, $manyToManyTable, $foreignTable, $foreignField);
 		}
