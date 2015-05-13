@@ -25,20 +25,6 @@ use Fab\Vidi\Tca\Tca;
 class FacetSuggestionService {
 
 	/**
-	 * @var array
-	 */
-	protected $settings;
-
-	/**
-	 * Constructor
-	 *
-	 * @param array $settings
-	 */
-	public function __construct(array $settings) {
-		$this->settings = $settings;
-	}
-
-	/**
 	 * Retrieve possible suggestions for a field name
 	 *
 	 * @param string $fieldNameAndPath
@@ -113,7 +99,8 @@ class FacetSuggestionService {
 	 * @return int
 	 */
 	protected function getLimit() {
-		$suggestionLimit = (int)$this->settings['suggestionLimit'];
+		$settings = $this->getSettings();
+		$suggestionLimit = (int)$settings['suggestionLimit'];
 		if ($suggestionLimit <= 0) {
 			$suggestionLimit = 1000;
 		}
@@ -126,4 +113,18 @@ class FacetSuggestionService {
 	protected function getFieldPathResolver() {
 		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
 	}
+
+	/**
+	 * Returns the module settings.
+	 *
+	 * @return array
+	 */
+	protected function getSettings() {
+		/** @var \TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager $backendConfigurationManager */
+		$objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+		$backendConfigurationManager = $objectManager->get('TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager');
+		$configuration = $backendConfigurationManager->getTypoScriptSetup();
+		return $configuration['module.']['tx_vidi.']['settings.'];
+	}
+
 }

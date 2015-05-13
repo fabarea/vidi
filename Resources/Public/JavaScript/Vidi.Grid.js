@@ -38,6 +38,9 @@ Vidi.Grid = {
 
 				var state = JSON.parse(Vidi.Session.get('dataTables'));
 
+				// Load session data from User Settings
+				// @todo
+
 				// Mark or un-mark checkbox corresponding to column visibility.
 				if (state) {
 					$('.check-visible-toggle').each(function(index) {
@@ -163,16 +166,15 @@ Vidi.Grid = {
 				$('#content-list').css('opacity', 0.3);
 			},
 			'aoColumns': Vidi._columns,
-			'aLengthMenu': [
-				[10, 25, 50, 100, 200, 500],
-				[10, 25, 50, 100, 200, 500]
-			],
+			'aLengthMenu': [Vidi.module.lengthMenu, Vidi.module.lengthMenu],
+			'iDisplayLength' : Vidi.module.defaultLength,
 			'fnInitComplete': function() {
 				Vidi.VisualSearch.initialize();
 
 				var query = Vidi.Session.get('visualSearch.query');
 				Vidi.VisualSearch.instance.searchBox.setQuery(query);
 			},
+
 			/**
 			 * Override the default Ajax call of DataTable.
 			 *
@@ -390,6 +392,18 @@ Vidi.Grid = {
 		}
 		columnPosition = Vidi.grid.fnGetPosition(cell)[2];
 		return columnPosition;
+	},
+
+	/**
+	 * Apply effect telling the User a row was edited.
+	 *
+	 * @return void
+	 * @private
+	 */
+	clearPreferences: function() {
+		// Reset session data
+		Vidi.Session.reset('dataTables');
+		window.location = window.location;
 	},
 
 	/**

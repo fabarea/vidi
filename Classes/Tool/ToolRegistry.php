@@ -18,7 +18,7 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Relation Analyser for a Vidi module.
+ * Tool registry for a Vidi module.
  */
 class ToolRegistry implements SingletonInterface {
 

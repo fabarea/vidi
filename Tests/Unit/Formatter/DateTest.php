@@ -42,6 +42,5 @@ class DateTest extends UnitTestCase {
 	public function canFormatDate() {
 		$foo = $this->subject->format('1351880525');
 		$this->assertEquals('02.11.2012', $foo);
-
 	}
 }

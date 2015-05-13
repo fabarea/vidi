@@ -30,7 +30,12 @@ class GridServiceTest extends AbstractServiceTest {
 
 	public function setUp() {
 		parent::setUp();
-		$this->fixture = new \Fab\Vidi\Tca\GridService('tx_foo', Tca::TYPE_GRID);
+		$this->fixture = $this->getMock('Fab\Vidi\Tca\GridService', array('getModulePreferences'), array('tx_foo', Tca::TYPE_GRID));
+
+		// Configure the ModulePreferences
+		$mockModulePreferences = $this->getMock('Fab\Vidi\Module\ModulePreferences');
+		$mockModulePreferences->expects($this->once())->method('get')->will($this->returnValue(array()));
+		$this->fixture->expects($this->once())->method('getModulePreferences')->will($this->returnValue($mockModulePreferences));
 	}
 
 	public function tearDown() {
