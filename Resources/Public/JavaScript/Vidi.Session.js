@@ -48,7 +48,7 @@ Vidi.Session = {
 	reset: function (key) {
 		if (window.sessionStorage) {
 			key = this._getKey(key);
-			sessionStorage.setItem(key, '');
+			sessionStorage.setItem(key, null);
 		}
 	},
 
@@ -70,6 +70,6 @@ Vidi.Session = {
 	 * @private
 	 */
 	_getKey: function (key) {
-		return 'vidi.' + Vidi.module.dataType + '.' + key;
+		return 'vidi.' + Vidi.module.dataType + '.' + Vidi.module.preferenceSignature + '.' + key;
 	}
 };

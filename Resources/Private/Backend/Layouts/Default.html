@@ -12,7 +12,6 @@
 		0:'{f:uri.resource(path:\'JavaScript/JQuery/jquery-1.11.2.min.js\')}'
 		}">
 
-
 	<v:be.assets />
 
 	<script type="text/javascript">
@@ -24,6 +23,7 @@
 		Vidi.module = {};
 		Vidi.module.publicPath = '{v:publicPath()}';
 		Vidi.module.dataType = '{v:moduleLoader(key: "dataType")}';
+		Vidi.module.preferenceSignature = '{v:modulePreferences(key: "signature")}';
 		Vidi.module.parameterPrefix = '{v:parameterPrefix()}';
 		Vidi.module.moduleUrl = '{v:moduleLoader(key: "moduleUrl") -> f:format.raw()}';
 		Vidi.module.moduleCode = '{v:moduleLoader(key: "moduleCode")}';
@@ -32,6 +32,8 @@
 		Vidi.module.grid.suggestions = {};
 		Vidi.module.table = {};
 		Vidi.module.table.label = '{v:tca.table(key: "label")}';
+		Vidi.module.lengthMenu = [{v:grid.preferences(key: "menuVisibleItems")}];
+		Vidi.module.defaultLength = '{v:grid.preferences(key: "menuVisibleItemsDefault")}';
 
 		Vidi._columns = [];
 		{v:grid.column.configuration()}

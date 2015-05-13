@@ -13,7 +13,9 @@ namespace Fab\Vidi\Tool;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * Relation Analyser for a Vidi module.
@@ -26,7 +28,10 @@ class RelationAnalyserTool extends AbstractTool {
 	 * @return string
 	 */
 	public function getTitle() {
-		return sprintf('Analyse Relations for "%s"', $this->getModuleLoader()->getDataType());
+		return LocalizationUtility::translate(
+			'analyse_relations',
+			'vidi'
+		);
 	}
 
 	/**
@@ -38,6 +43,7 @@ class RelationAnalyserTool extends AbstractTool {
 		$templateNameAndPath = 'EXT:vidi/Resources/Private/Backend/Standalone/Tool/RelationAnalyser/Launcher.html';
 		$view = $this->initializeStandaloneView($templateNameAndPath);
 		$view->assign('sitePath', PATH_site);
+		$view->assign('dataType', $this->getModuleLoader()->getDataType());
 		return $view->render();
 	}
 

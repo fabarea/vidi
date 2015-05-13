@@ -16,6 +16,7 @@ namespace Fab\Vidi\View\Button;
 
 use Fab\Vidi\Tool\ToolRegistry;
 use Fab\Vidi\View\AbstractComponentView;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * View helper which renders a dropdown menu for storage.
@@ -39,9 +40,11 @@ class ToolButton extends AbstractComponentView {
 		$dataType = $this->getModuleLoader()->getDataType();
 
 		if (ToolRegistry::getInstance()->hasAnyTools($dataType)) {
-			$result = sprintf('<div class="pull-right"><a href="%s&returnUrl=%s" class="btn btn-mini btn-doc-header"><span class="icon-cog"></span></a></div>',
+			$result = sprintf(
+				'<div class="pull-right"><a href="%s&returnUrl=%s" class="btn btn-mini btn-doc-header" title="%s"><span class="icon-cog"></span></a></div>',
 				$this->getModuleLoader()->getModuleUrl($additionalParameters),
-				urlencode($this->getModuleLoader()->getModuleUrl())
+				urlencode($this->getModuleLoader()->getModuleUrl()),
+				LocalizationUtility::translate('open_tools', 'vidi')
 			);
 		}
 		return $result;

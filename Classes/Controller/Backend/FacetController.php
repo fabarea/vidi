@@ -66,7 +66,7 @@ class FacetController extends ActionController {
 	 * @return \Fab\Vidi\Facet\FacetSuggestionService
 	 */
 	protected function getFacetSuggestionService () {
-		return GeneralUtility::makeInstance('Fab\Vidi\Facet\FacetSuggestionService', $this->settings);
+		return GeneralUtility::makeInstance('Fab\Vidi\Facet\FacetSuggestionService');
 	}
 
 }

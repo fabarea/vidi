@@ -17,6 +17,8 @@ namespace Fab\Vidi\Tca;
 use Fab\Vidi\Formatter\Date;
 use Fab\Vidi\Formatter\Datetime;
 use Fab\Vidi\Grid\GridRendererInterface;
+use Fab\Vidi\Module\ConfigurablePart;
+use Fab\Vidi\Module\ModulePreferences;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Fab\Vidi\Exception\InvalidKeyInArrayException;
@@ -40,9 +42,18 @@ class GridService implements TcaServiceInterface {
 	protected $tableName;
 
 	/**
+	 * All fields available in the Grid.
+	 *
 	 * @var array
 	 */
 	protected $fields;
+
+	/**
+	 * All fields regardless whether they have been excluded or not.
+	 *
+	 * @var array
+	 */
+	protected $allFields;
 
 	/**
 	 * @var array
@@ -73,7 +84,18 @@ class GridService implements TcaServiceInterface {
 	 * @return array
 	 */
 	public function getFieldNames() {
-		return array_keys($this->tca['columns']);
+		$fields = $this->getFields();
+		return array_keys($fields);
+	}
+
+	/**
+	 * Returns an array containing column names.
+	 *
+	 * @return array
+	 */
+	public function getAllFieldNames() {
+		$allFields = $this->getAllFields();
+		return array_keys($allFields);
 	}
 
 	/**
@@ -180,12 +202,46 @@ class GridService implements TcaServiceInterface {
 	 * @return array
 	 */
 	public function getFields() {
+
+		// Cache this operation since it can take some time.
 		if (is_null($this->fields)) {
+
+			// Fetch all fields
+			$fields = $this->getAllFields();
+
+			// Unset excluded fields.
+			foreach ($this->getExcludedFields() as $excludedField) {
+				if (isset($fields[$excludedField])) {
+					unset($fields[$excludedField]);
+				}
+			}
+			$this->fields = $fields;
+		}
+
+		return $this->fields;
+	}
+
+	/**
+	 * @return ModulePreferences
+	 */
+	protected function getModulePreferences() {
+		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModulePreferences');
+	}
+
+	/**
+	 * Returns an array containing column names for the Grid.
+	 *
+	 * @return array
+	 */
+	public function getAllFields() {
+
+		// Cache this operation since it can take some time.
+		if (is_null($this->allFields)) {
 
 			$fields = is_array($this->tca['columns']) ? $this->tca['columns'] : array();
 			$gridFieldNames = array_keys($fields);
 
-			// Merge missing fields.
+			// Fetch all fields of the TCA and merge it back to the fields configured for Grid.
 			$tableFieldNames = Tca::table($this->tableName)->getFields();
 			$additionalFields = array_diff($tableFieldNames, $gridFieldNames);
 
@@ -203,7 +259,7 @@ class GridService implements TcaServiceInterface {
 						'visible' => FALSE
 					);
 
-					// Try to guess the format
+					// Try to guess the format of the field.
 					$fieldType = Tca::table($this->tableName)->field($additionalField)->getType();
 					if ($fieldType === FieldType::DATE) {
 						$fields[$additionalField]['format'] = 'Fab\Vidi\Formatter\Date';
@@ -214,16 +270,10 @@ class GridService implements TcaServiceInterface {
 				$fields[$lastColumnKey] = $lastColumn;
 			}
 
-			// Unset excluded fields
-			foreach ($this->getExcludedFields() as $excludedField) {
-				if (isset($fields[$excludedField])) {
-					unset($fields[$excludedField]);
-				}
-			}
-			$this->fields = $fields;
+			$this->allFields = $fields;
 		}
 
-		return $this->fields;
+		return $this->allFields;
 	}
 
 	/**
@@ -480,6 +530,12 @@ class GridService implements TcaServiceInterface {
 			$excludedFields = GeneralUtility::trimExplode(',', $this->tca['excluded_fields'], TRUE);
 		} elseif (!empty($this->tca['export']['excluded_fields'])) { // only for export for legacy reason.
 			$excludedFields = GeneralUtility::trimExplode(',', $this->tca['export']['excluded_fields'], TRUE);
+		}
+
+		// Add excluded fields from the preferences.
+		$additionalExcludedFields = $this->getModulePreferences()->get(ConfigurablePart::EXCLUDED_FIELDS);
+		if (is_array($additionalExcludedFields)) {
+			$excludedFields = array_merge($excludedFields, $additionalExcludedFields);
 		}
 		return $excludedFields;
 	}

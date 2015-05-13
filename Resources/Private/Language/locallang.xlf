@@ -139,6 +139,39 @@
 			<trans-unit id="create_translation">
 				<source>Create new translation</source>
 			</trans-unit>
+			<trans-unit id="menu_visible_items">
+				<source>Entries displayed in the menu "number of visible items"</source>
+			</trans-unit>
+			<trans-unit id="menu_visible_items_default">
+				<source>Default entry in the menu "number of visible items"</source>
+			</trans-unit>
+			<trans-unit id="preferences_for">
+				<source>Preferences for</source>
+			</trans-unit>
+			<trans-unit id="module_preferences_for">
+				<source>Module preferences for %s</source>
+			</trans-unit>
+			<trans-unit id="visible_columns">
+				<source>Visible columns</source>
+			</trans-unit>
+			<trans-unit id="edit_preferences">
+				<source>Edit preferences for this module</source>
+			</trans-unit>
+			<trans-unit id="analyse_relations">
+				<source>Analyse relations in TCA</source>
+			</trans-unit>
+			<trans-unit id="clear_module_cache">
+				<source>Clear module cache</source>
+			</trans-unit>
+			<trans-unit id="reload_data">
+				<source>Reload data</source>
+			</trans-unit>
+			<trans-unit id="show_hide_columns">
+				<source>Show / hide columns</source>
+			</trans-unit>
+			<trans-unit id="open_tools">
+				<source>Open tools</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

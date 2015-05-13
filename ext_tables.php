@@ -126,6 +126,7 @@ if (TYPO3_MODE == 'BE') {
 	);
 
 	// Register default Tools for Vidi.
+	\Fab\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'Fab\Vidi\Tool\ModulePreferencesTool');
 	\Fab\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'Fab\Vidi\Tool\RelationAnalyserTool');
 }
 
