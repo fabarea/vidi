@@ -1,7 +1,7 @@
 #
 # Table structure for table 'tx_vidi_domain_model_selection'
 #
-CREATE TABLE tx_vidi_domain_model_selection (
+CREATE TABLE tx_vidi_selection (
 	uid int(11) NOT NULL auto_increment,
 	pid int(11) DEFAULT '0' NOT NULL,
 
@@ -15,6 +15,20 @@ CREATE TABLE tx_vidi_domain_model_selection (
 	name varchar(255) DEFAULT '' NOT NULL,
 	data_type varchar(255) DEFAULT '' NOT NULL,
 	matches text,
+
+	PRIMARY KEY (uid),
+	KEY parent (pid),
+);
+
+#
+# Table structure for table 'tx_vidi_preference'
+#
+CREATE TABLE tx_vidi_preference (
+	uid int(11) NOT NULL auto_increment,
+	pid int(11) DEFAULT '0' NOT NULL,
+
+	data_type varchar(255) DEFAULT '' NOT NULL,
+	preferences text,
 
 	PRIMARY KEY (uid),
 	KEY parent (pid),
