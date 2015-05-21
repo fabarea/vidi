@@ -1,5 +1,5 @@
 #
-# Table structure for table 'tx_vidi_domain_model_selection'
+# Table structure for table 'tx_vidi_selection'
 #
 CREATE TABLE tx_vidi_selection (
 	uid int(11) NOT NULL auto_increment,
