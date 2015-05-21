@@ -533,7 +533,7 @@ class GridService implements TcaServiceInterface {
 		}
 
 		// Add excluded fields from the preferences.
-		$additionalExcludedFields = $this->getModulePreferences()->get(ConfigurablePart::EXCLUDED_FIELDS);
+		$additionalExcludedFields = $this->getModulePreferences()->get(ConfigurablePart::EXCLUDED_FIELDS, $this->tableName);
 		if (is_array($additionalExcludedFields)) {
 			$excludedFields = array_merge($excludedFields, $additionalExcludedFields);
 		}
