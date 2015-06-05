@@ -13,6 +13,16 @@ body {
 	font-size: 12px;
 }
 
+h1,
+h4 {
+	font-family: Share, Verdana, Arial, Helvetica, sans-serif;
+	color: #555;
+	font-size: 2em;
+	line-height: 1.1em;
+	font-variant: normal;
+	font-weight: normal;
+}
+
 label, input, button, select, textarea {
     font-size: 12px;
 }
