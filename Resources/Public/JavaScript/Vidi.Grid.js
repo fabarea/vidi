@@ -29,10 +29,12 @@ Vidi.Grid = {
 		 */
 		var config = {
 			'bStateSave': true,
+
 			// stateSaveCallback - rename me after 10.4 migration
 			'fnStateSave': function(oSettings, oData) {
 				Vidi.Session.set('dataTables', JSON.stringify(oData));
 			},
+
 			// fnStateLoadCallback - rename me after 10.4 migration
 			'fnStateLoad': function(oSettings) {
 
@@ -158,6 +160,8 @@ Vidi.Grid = {
 				// Get the parameter related to filter from the URL and "re-inject" them into the Ajax request
 				var parameterPrefix = 'tx_vidi_' + Vidi.module.moduleCode.toLowerCase();
 
+				aoData = Vidi.Grid.addAjaxAdditionalParameters(aoData, parameterPrefix);
+
 				aoData.push({ 'name': parameterPrefix + '[action]', 'value': 'list' });
 				aoData.push({ 'name': parameterPrefix + '[controller]', 'value': 'Content' });
 				aoData.push({ 'name': parameterPrefix + '[format]', 'value': 'json' });
@@ -246,6 +250,28 @@ Vidi.Grid = {
 
 		config = this.initializeDefaultSearch(config);
 		return config;
+	},
+
+	/**
+	 * Add possible additional parameters for Ajax.
+	 *
+	 * @return {Object}
+	 */
+	addAjaxAdditionalParameters: function(data, parameterPrefix) {
+
+		var additionalParametersList = $('#ajax-additional-parameters').val();
+		if (additionalParametersList) {
+			var additionalParameters = additionalParametersList.split('&');
+			for (var i = 0; i < additionalParameters.length; i++) {
+				var splitValues = additionalParameters[i].split('=');
+				if (splitValues.length === 2) {
+					var parameterName = splitValues[0];
+					var parameterValue = splitValues[1];
+					data.push({ 'name': parameterPrefix + '[' + parameterName +']', 'value': parameterValue});
+				}
+			}
+		}
+		return data;
 	},
 
 	/**
