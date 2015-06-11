@@ -22,7 +22,7 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 class ModuleLoaderViewHelper extends AbstractViewHelper {
 
 	/**
-	 * Interface with the Module Loader
+	 * Interface with the Module Loader.
 	 *
 	 * @param string $key
 	 * @return string

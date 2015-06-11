@@ -24,9 +24,9 @@
 		Vidi.module.publicPath = '{v:publicPath()}';
 		Vidi.module.dataType = '{v:moduleLoader(key: "dataType")}';
 		Vidi.module.preferenceSignature = '{v:modulePreferences(key: "signature")}';
-		Vidi.module.parameterPrefix = '{v:parameterPrefix()}';
+		Vidi.module.parameterPrefix = '{v:moduleLoader(key: "parameterPrefix")}';
 		Vidi.module.moduleUrl = '{v:moduleLoader(key: "moduleUrl") -> f:format.raw()}';
-		Vidi.module.moduleCode = '{v:moduleLoader(key: "moduleCode")}';
+		Vidi.module.signature = '{v:moduleLoader(key: "signature")}';
 		Vidi.module.grid = {};
 		Vidi.module.grid.facets = {v:grid.facets()};
 		Vidi.module.grid.suggestions = {};

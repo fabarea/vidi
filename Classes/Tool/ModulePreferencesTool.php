@@ -74,7 +74,6 @@ class ModulePreferencesTool extends AbstractTool {
 		$templateNameAndPath = 'EXT:vidi/Resources/Private/Backend/Standalone/Tool/ModulePreferences/WorkResult.html';
 		$view = $this->initializeStandaloneView($templateNameAndPath);
 
-		$view->assign('moduleCode', $this->getModuleLoader()->getModuleCode());
 		$view->assign('title', Tca::table($this->getModuleLoader()->getDataType())->getTitle());
 
 		// Fetch the menu of visible items.

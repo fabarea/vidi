@@ -149,8 +149,8 @@ class ContentController extends ActionController {
 			ContentRepositoryFactory::getInstance($dataType)->update($dataObject);
 
 			// Get the possible error messages and store them.
-			$errorMessage = ContentRepositoryFactory::getInstance()->getErrorMessages();
-			$result->addErrorMessages($errorMessage);
+			$errorMessages = ContentRepositoryFactory::getInstance()->getErrorMessages();
+			$result->addErrorMessages($errorMessages);
 
 			// We only want to see the detail result if there is one object updated.
 			// Required for inline editing + it will display some useful info on the GUI in the flash messages.

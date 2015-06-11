@@ -154,8 +154,8 @@ class ModuleLoader {
 	 * @return bool
 	 */
 	public function isRegistered($dataType) {
-		$internalModuleCode = $this->getInternalModuleCode($dataType);
-		return !empty($GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleCode]);
+		$internalModuleSignature = $this->getInternalModuleSignature($dataType);
+		return !empty($GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]);
 	}
 
 	/**
@@ -166,15 +166,15 @@ class ModuleLoader {
 	public function register() {
 
 		$this->initializeDefaultValues();
-		$internalModuleCode = $this->getInternalModuleCode();
+		$internalModuleSignature = $this->getInternalModuleSignature();
 
-		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleCode] = array();
-		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleCode]['dataType'] = $this->dataType;
-		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleCode]['mainModule'] = $this->mainModule;
-		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleCode]['defaultPid'] = $this->defaultPid;
-		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleCode]['additionalJavaScriptFiles'] = $this->additionalJavaScriptFiles;
-		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleCode]['additionalStyleSheetFiles'] = $this->additionalStyleSheetFiles;
-		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleCode]['components'] = $this->components;
+		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature] = array();
+		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['dataType'] = $this->dataType;
+		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['mainModule'] = $this->mainModule;
+		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['defaultPid'] = $this->defaultPid;
+		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['additionalJavaScriptFiles'] = $this->additionalJavaScriptFiles;
+		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['additionalStyleSheetFiles'] = $this->additionalStyleSheetFiles;
+		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['components'] = $this->components;
 
 		// Register and displays module in the BE only if told, default is TRUE.
 		if ($this->isShown) {
@@ -215,7 +215,7 @@ class ModuleLoader {
 	 *
 	 * @return string
 	 */
-	public function getModuleCode() {
+	public function getSignature() {
 		return GeneralUtility::_GP(Parameter::MODULE);
 	}
 
@@ -269,7 +269,7 @@ class ModuleLoader {
 				}
 			}
 		} else {
-			$moduleCode = $this->getModuleCode();
+			$moduleCode = $this->getSignature();
 
 			// Remove first part which is separated "_"
 			$delimiter = strpos($moduleCode, '_') + 1;
@@ -286,7 +286,7 @@ class ModuleLoader {
 	 * @return string
 	 */
 	public function getModuleUrl(array $additionalParameters = array()) {
-		$moduleCode = $this->getModuleCode();
+		$moduleCode = $this->getSignature();
 
 		// Add possible submodule if current module has page tree.
 		if ($this->copeWithPageTree() && !isset($additionalParameters[Parameter::SUBMODULE])) {
@@ -308,7 +308,7 @@ class ModuleLoader {
 	 * @return string
 	 */
 	public function getParameterPrefix() {
-		return 'tx_vidi_' . strtolower($this->getModuleCode());
+		return 'tx_vidi_' . strtolower($this->getSignature());
 	}
 
 	/**
@@ -547,24 +547,6 @@ class ModuleLoader {
 	}
 
 	/**
-	 * @param array $components
-	 * @return $this
-	 * @deprecated will be removed in 0.4.0 + 2 version.
-	 */
-	public function setNavigationTopLeftComponents(array $components) {
-		return $this->setDocHeaderTopLeftComponents($components);
-	}
-
-	/**
-	 * @param array $components
-	 * @return $this
-	 * @deprecated will be removed in 0.4.0 + 2 version.
-	 */
-	public function addNavigationTopLeftComponents(array $components) {
-		return $this->addDocHeaderTopLeftComponents($components);
-	}
-
-	/**
 	 * @return $array
 	 */
 	public function getDocHeaderTopRightComponents() {
@@ -592,24 +574,6 @@ class ModuleLoader {
 		$currentComponents = $this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::RIGHT];
 		$this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::RIGHT] = array_merge($currentComponents, $components);
 		return $this;
-	}
-
-	/**
-	 * @param array $components
-	 * @return $this
-	 * @deprecated will be removed in 0.4.0 + 2 version.
-	 */
-	public function setNavigationTopRightComponents(array $components) {
-		return $this->setDocHeaderTopRightComponents($components);
-	}
-
-	/**
-	 * @param array $components
-	 * @return $this
-	 * @deprecated will be removed in 0.4.0 + 2 version.
-	 */
-	public function addNavigationTopRightComponents(array $components) {
-		return $this->addDocHeaderTopRightComponents($components);
 	}
 
 	/**
@@ -643,24 +607,6 @@ class ModuleLoader {
 	}
 
 	/**
-	 * @param array $components
-	 * @return $this
-	 * @deprecated will be removed in 0.4.0 + 2 version.
-	 */
-	public function setNavigationBottomLeftComponents(array $components) {
-		return $this->setDocHeaderBottomLeftComponents($components);
-	}
-
-	/**
-	 * @param array $components
-	 * @return $this
-	 * @deprecated will be removed in 0.4.0 + 2 version.
-	 */
-	public function addNavigationBottomLeftComponents(array $components) {
-		return $this->addDocHeaderBottomLeftComponents($components);
-	}
-
-	/**
 	 * @return $array
 	 */
 	public function getDocHeaderBottomRightComponents() {
@@ -688,24 +634,6 @@ class ModuleLoader {
 		$currentComponents = $this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::RIGHT];
 		$this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::RIGHT] = array_merge($currentComponents, $components);
 		return $this;
-	}
-
-	/**
-	 * @param array $components
-	 * @return $this
-	 * @deprecated will be removed in 0.4.0 + 2 version.
-	 */
-	public function setNavigationBottomRightComponents(array $components) {
-		return $this->setDocHeaderBottomRightComponents($components);
-	}
-
-	/**
-	 * @param array $components
-	 * @return $this
-	 * @deprecated will be removed in 0.4.0 + 2 version.
-	 */
-	public function addNavigationBottomRightComponents(array $components) {
-		return $this->addDocHeaderBottomRightComponents($components);
 	}
 
 	/**
@@ -877,7 +805,7 @@ class ModuleLoader {
 	 * @param NULL|string $dataType
 	 * @return string
 	 */
-	protected function getInternalModuleCode($dataType = NULL) {
+	protected function getInternalModuleSignature($dataType = NULL) {
 		if (is_null($dataType)) {
 			$dataType = $this->dataType;
 		}

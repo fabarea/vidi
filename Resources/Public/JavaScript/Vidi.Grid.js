@@ -157,14 +157,11 @@ Vidi.Grid = {
 					}
 				});
 
-				// Get the parameter related to filter from the URL and "re-inject" them into the Ajax request
-				var parameterPrefix = 'tx_vidi_' + Vidi.module.moduleCode.toLowerCase();
+				aoData = Vidi.Grid.addAjaxAdditionalParameters(aoData, Vidi.module.parameterPrefix);
 
-				aoData = Vidi.Grid.addAjaxAdditionalParameters(aoData, parameterPrefix);
-
-				aoData.push({ 'name': parameterPrefix + '[action]', 'value': 'list' });
-				aoData.push({ 'name': parameterPrefix + '[controller]', 'value': 'Content' });
-				aoData.push({ 'name': parameterPrefix + '[format]', 'value': 'json' });
+				aoData.push({ 'name': Vidi.module.parameterPrefix + '[action]', 'value': 'list' });
+				aoData.push({ 'name': Vidi.module.parameterPrefix + '[controller]', 'value': 'Content' });
+				aoData.push({ 'name': Vidi.module.parameterPrefix + '[format]', 'value': 'json' });
 
 				// Visual effect
 				$('#content-list').css('opacity', 0.3);

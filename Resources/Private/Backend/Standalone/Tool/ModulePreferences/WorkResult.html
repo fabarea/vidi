@@ -34,7 +34,7 @@
 		{title}
 	</h4>
 
-	<f:form action="work" class="" controller="Tool" extensionName="vidi" pluginName="{moduleCode}"
+	<f:form action="work" class="" controller="Tool" extensionName="vidi" pluginName="{v:moduleLoader(key: 'signature')}"
 	        additionalParams="{returnUrl: '{v:gp(argument: \'returnUrl\', encode: false)}'}">
 		<f:form.hidden name="tool" value="Fab\Vidi\Tool\ModulePreferencesTool"/>
 
