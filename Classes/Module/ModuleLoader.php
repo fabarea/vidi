@@ -800,6 +800,21 @@ class ModuleLoader {
 	}
 
 	/**
+	 * @param string $pluginName
+	 * @return bool
+	 */
+	public function hasPlugin($pluginName = '') {
+		$parameterPrefix = $this->getParameterPrefix();
+		$parameters = GeneralUtility::_GET($parameterPrefix);
+
+		$hasPlugin = !empty($parameters['plugins']) && is_array($parameters['plugins']);
+		if ($hasPlugin && $pluginName) {
+			$hasPlugin = in_array($pluginName, $parameters['plugins']);
+		}
+		return $hasPlugin;
+	}
+
+	/**
 	 * Compute the internal module code
 	 *
 	 * @param NULL|string $dataType

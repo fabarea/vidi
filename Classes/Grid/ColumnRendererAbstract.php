@@ -135,4 +135,5 @@ abstract class ColumnRendererAbstract implements ColumnRendererInterface {
 	protected function getModuleLoader() {
 		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
 	}
+
 }
