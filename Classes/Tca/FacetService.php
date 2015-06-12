@@ -124,12 +124,4 @@ class FacetService implements TcaServiceInterface {
 		return $values;
 	}
 
-	/**
-	 * Return the facet "callBack".
-	 *
-	 * @return string
-	 */
-	public function getCallBack() {
-		return $this->facet->getCallBackClassName();
-	}
 }

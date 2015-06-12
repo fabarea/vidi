@@ -57,7 +57,7 @@ class FacetSuggestionService {
 					$contents = $contentRepository->findBy($matcher);
 
 					foreach ($contents as $content) {
-						$values[$content->getUid()] = $content[$table->getLabelField()];
+						$values[] = array($content->getUid() => $content[$table->getLabelField()]);
 					}
 				}
 			} elseif (!Tca::table($dataType)->field($fieldName)->isTextArea()) { // We don't want suggestion if field is text area.
@@ -79,13 +79,14 @@ class FacetSuggestionService {
 					$contents = $contentRepository->findDistinctValues($fieldName, $matcher);
 
 					foreach ($contents as $content) {
+
 						$value = $content[$fieldName];
 						$label = $content[$fieldName];
 						if (Tca::table($dataType)->field($fieldName)->isSelect()) {
 							$label = Tca::table($dataType)->field($fieldName)->getLabelForItem($value);
 						}
 
-						$values[$value] = $label;
+						$values[] = $label;
 					}
 				}
 			}

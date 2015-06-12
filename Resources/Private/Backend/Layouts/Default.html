@@ -27,9 +27,10 @@
 		Vidi.module.parameterPrefix = '{v:moduleLoader(key: "parameterPrefix")}';
 		Vidi.module.moduleUrl = '{v:moduleLoader(key: "moduleUrl") -> f:format.raw()}';
 		Vidi.module.signature = '{v:moduleLoader(key: "signature")}';
-		Vidi.module.grid = {};
-		Vidi.module.grid.facets = {v:grid.facets()};
-		Vidi.module.grid.suggestions = {};
+		Vidi.module.search = {};
+		Vidi.module.search.facets = {v:grid.facets()};
+		Vidi.module.search.labels = {};
+		Vidi.module.search.values = {};
 		Vidi.module.table = {};
 		Vidi.module.table.label = '{v:tca.table(key: "label")}';
 		Vidi.module.lengthMenu = [{v:grid.preferences(key: "menuVisibleItems")}];

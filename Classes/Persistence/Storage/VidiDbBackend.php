@@ -1030,10 +1030,8 @@ class VidiDbBackend {
 				// Get language uid from querySettings.
 				// Ensure the backend handling is not broken (fallback to Get parameter 'L' if needed)
 				$overlaidRow = $this->doLanguageAndWorkspaceOverlay($this->query->getSource(), $row, $this->query->getQuerySettings());
-
-				$overlaidRow = GeneralUtility::makeInstance($this->objectType, $this->query->getType(), $overlaidRow);
-
-				$rows[] = $overlaidRow;
+				$contentObject = GeneralUtility::makeInstance($this->objectType, $this->query->getType(), $overlaidRow);
+				$rows[] = $contentObject;
 			}
 		}
 

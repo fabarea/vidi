@@ -39,7 +39,7 @@ class FacetController extends ActionController {
 		# Json header is not automatically sent in the BE...
 		$this->response->setHeader('Content-Type', 'application/json');
 		$this->response->sendHeaders();
-		return json_encode($suggestions, JSON_FORCE_OBJECT);
+		return json_encode($suggestions);
 	}
 
 	/**
@@ -59,7 +59,7 @@ class FacetController extends ActionController {
 		# Json header is not automatically sent in the BE...
 		$this->response->setHeader('Content-Type', 'application/json');
 		$this->response->sendHeaders();
-		return json_encode($suggestions, JSON_FORCE_OBJECT);
+		return json_encode($suggestions);
 	}
 
 	/**

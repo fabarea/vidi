@@ -22,7 +22,6 @@ Vidi.VisualSearch = {
 		Vidi.VisualSearch.instance = VS.init({
 			container: $('.visual-search-container'),
 			//query: '', // default query string.
-			showFacets: true,
 			unquotable: [], // unquotable for integer values.
 			callbacks: {
 				search: function(query, searchCollection) {
@@ -38,10 +37,10 @@ Vidi.VisualSearch = {
 				facetMatches: function(callback) {
 					var facets = [];
 
-					_.each(Vidi.module.grid.facets, function(label) {
+					_.each(Vidi.module.search.facets, function(label) {
 						facets.push(label);
 					});
-					callback(facets);
+					callback(facets, {preserveOrder: true});
 				},
 				valueMatches: function(facetLabel, searchTerm, callback) {
 
@@ -75,15 +74,54 @@ Vidi.VisualSearch = {
 		$.ajax({
 			url: $('#link-auto-suggests').attr('href'),
 			dataType: "json",
-			success: function(data) {
-				Vidi.module.grid.suggestions = data;
-				//Vidi.module.grid.suggestions[facetName] = data;
-				//callback(Vidi.module.grid.suggestions[facetName])
+			success: function(collections) {
+				_.each(collections, function(values, fieldName) {
+					Vidi.VisualSearch.processValues(fieldName, values);
+				});
 			},
 			error: function() {
 				Vidi.VisualSearch.showError();
 			}
 		});
+	},
+
+	/**
+	 * Dispatch values between:
+	 *
+	 * - "labels" which only contains the label for the VisualSearch bar.
+	 * - "values" which contains a key => value object to convert back label to value later.
+	 *
+	 * @param {string} fieldName
+	 * @param {array|object} values
+	 * @private
+	 */
+	processValues: function(fieldName, values) {
+
+		var labels = [];
+		var valueObject = {};
+
+		_.each(values, function(value) {
+
+			if (typeof(value) === 'object') {
+
+				// retrieve keys.
+				var keys = Object.keys(value);
+				var key = keys[0];
+				var label = value[key];
+
+				// Feed array labels
+				labels.push(label);
+
+				// Feed value object.
+				valueObject[key] = label
+
+			} else {
+				labels.push(value)
+			}
+		});
+
+		Vidi.module.search.values[fieldName] = valueObject;
+		Vidi.module.search.labels[fieldName] = labels;
 	},
 
 	/**
@@ -98,7 +136,7 @@ Vidi.VisualSearch = {
 		// The server will know how to handle that.
 		var facetName = facetLabel;
 
-		_.each(Vidi.module.grid.facets, function(label, _facetName) {
+		_.each(Vidi.module.search.facets, function(label, _facetName) {
 			if (label == facetLabel) {
 				facetName = _facetName;
 			}
@@ -152,7 +190,7 @@ Vidi.VisualSearch = {
 		var value = searchTerm;
 
 		// Search for an equivalence label <-> value.
-		_.each(Vidi.module.grid.suggestions[facetName], function(label, _value) {
+		_.each(Vidi.module.search.values[facetName], function(label, _value) {
 			if (label == searchTerm) {
 				value = _value;
 			}
@@ -173,7 +211,7 @@ Vidi.VisualSearch = {
 	 */
 	suggest: function(facetName, searchTerm, callback) {
 
-		if (Vidi.module.grid.suggestions[facetName] == undefined) {
+		if (Vidi.module.search.labels[facetName] == undefined) {
 
 			// BEWARE! This code is never used as implemented but should be in the future.
 			// @todo suggestions[facetName] must be destroyed in some cases after inline editing.
@@ -183,16 +221,16 @@ Vidi.VisualSearch = {
 				url: $('#link-auto-suggest').attr('href'),
 				dataType: "json",
 				data: Vidi.VisualSearch.getParameters(facetName, searchTerm),
-				success: function(data) {
-					Vidi.module.grid.suggestions[facetName] = data;
-					callback(Vidi.module.grid.suggestions[facetName])
+				success: function(values) {
+					Vidi.VisualSearch.processValues(facetName, values);
+					callback(Vidi.module.search.labels[facetName])
 				},
 				error: function() {
 					Vidi.VisualSearch.showError();
 				}
 			});
 		} else {
-			callback(Vidi.module.grid.suggestions[facetName]);
+			callback(Vidi.module.search.labels[facetName]);
 		}
 	},
 
@@ -223,4 +261,5 @@ Vidi.VisualSearch = {
 		var fadeOut = false;
 		Vidi.FlashMessage.showAll(fadeOut);
 	}
+
 };
