@@ -189,4 +189,5 @@ class LanguageService implements SingletonInterface {
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
 	}
+
 }

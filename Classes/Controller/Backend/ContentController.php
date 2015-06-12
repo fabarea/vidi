@@ -539,4 +539,5 @@ class ContentController extends ActionController {
 	protected function getLanguageService() {
 		return GeneralUtility::makeInstance('Fab\Vidi\Language\LanguageService');
 	}
+
 }

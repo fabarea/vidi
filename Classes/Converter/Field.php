@@ -118,4 +118,5 @@ class Field implements SingletonInterface {
 		}
 		return $tableName;
 	}
+
 }
