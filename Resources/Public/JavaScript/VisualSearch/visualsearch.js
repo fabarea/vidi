@@ -740,9 +740,10 @@ VS.ui.SearchFacet = Backbone.View.extend({
     if (!direction) direction = 1;
     this.closeAutocomplete();
     this.app.searchBox.searchEvent(e);
-    _.defer(_.bind(function() {
-      this.app.searchBox.focusNextFacet(this, direction, {viewPosition: this.options.order});
-    }, this));
+	// @reminder commented by Fabien following Marc's request 23.10.12
+    //_.defer(_.bind(function() {
+    //  this.app.searchBox.focusNextFacet(this, direction, {viewPosition: this.options.order});
+    //}, this));
   },
 
   // Begin editing the facet's input. This is called when the user enters
@@ -1292,9 +1293,10 @@ VS.ui.SearchInput = Backbone.View.extend({
     if (!direction) direction = 0;
     this.closeAutocomplete();
     this.app.searchBox.searchEvent(e);
-    _.defer(_.bind(function() {
-      this.app.searchBox.focusNextFacet(this, direction);
-    }, this));
+	// @reminder commented by Fabien following Marc's request 23.10.12
+    //_.defer(_.bind(function() {
+    //  this.app.searchBox.focusNextFacet(this, direction);
+    //}, this));
   },
 
   // Callback fired on key press in the search box. We search when they hit return.
