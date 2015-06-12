@@ -14,10 +14,12 @@ namespace Fab\Vidi\Tests\Functional;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Tests\FunctionalTestCase;
+
 /**
  * Class AbstractFunctionalTestCase
  */
-abstract class AbstractFunctionalTestCase extends \TYPO3\CMS\Core\Tests\FunctionalTestCase {
+abstract class AbstractFunctionalTestCase extends FunctionalTestCase {
 
 	/** @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface The object manager */
 	protected $objectManager;

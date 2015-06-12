@@ -14,12 +14,14 @@ namespace Fab\Vidi\Grid;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Tests\Functional\AbstractFunctionalTestCase;
+
 require_once dirname(dirname(__FILE__)) . '/AbstractFunctionalTestCase.php';
 
 /**
  * Test case for class \Fab\Vidi\Grid\CategoryRenderer.
  */
-class RelationRendererTest extends \Fab\Vidi\Tests\Functional\AbstractFunctionalTestCase {
+class RelationRendererTest extends AbstractFunctionalTestCase {
 
 	/**
 	 * @var \Fab\Vidi\Grid\RelationRenderer

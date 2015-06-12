@@ -14,12 +14,14 @@ namespace Fab\Vidi\Domain\Model;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Tests\Functional\AbstractFunctionalTestCase;
+
 require_once dirname(dirname(dirname(__FILE__))) . '/AbstractFunctionalTestCase.php';
 
 /**
  * Test case for class \Fab\Vidi\Domain\Model\Content.
  */
-class ContentTest extends \Fab\Vidi\Tests\Functional\AbstractFunctionalTestCase {
+class ContentTest extends AbstractFunctionalTestCase {
 
 	/**
 	 * @var \Fab\Vidi\Domain\Model\Content
