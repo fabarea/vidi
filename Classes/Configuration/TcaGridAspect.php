@@ -65,12 +65,12 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface {
 				),
 				'tstamp' => array(
 					'visible' => FALSE,
-					'format' => 'date',
+					'format' => 'Fab\Vidi\Formatter\Date',
 					'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:tstamp',
 				),
 				'crdate' => array(
 					'visible' => FALSE,
-					'format' => 'date',
+					'format' => 'Fab\Vidi\Formatter\Date',
 					'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:crdate',
 				),
 				'__buttons' => array(
