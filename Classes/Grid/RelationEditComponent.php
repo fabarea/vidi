@@ -17,7 +17,7 @@ namespace Fab\Vidi\Grid;
 /**
  * Class for configuring a "Edit Relation" Grid Renderer in the Grid TCA.
  */
-class RelationEditComponent extends GenericRendererComponent {
+class RelationEditComponent extends GenericColumn {
 
 	/**
 	 * Constructor for a "Edit Relation" Grid Renderer Component.

@@ -16,6 +16,7 @@ namespace Fab\Vidi\Tca;
 
 use Fab\Vidi\Formatter\Date;
 use Fab\Vidi\Formatter\Datetime;
+use Fab\Vidi\Grid\GenericColumn;
 use Fab\Vidi\Grid\GridRendererInterface;
 use Fab\Vidi\Module\ConfigurablePart;
 use Fab\Vidi\Module\ModulePreferences;
@@ -24,7 +25,6 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Fab\Vidi\Exception\InvalidKeyInArrayException;
 use Fab\Vidi\Facet\StandardFacet;
 use Fab\Vidi\Facet\FacetInterface;
-use Fab\Vidi\Grid\GenericRendererComponent;
 
 /**
  * A class to handle TCA grid configuration
@@ -465,15 +465,15 @@ class GridService implements TcaServiceInterface {
 	}
 
 	/**
-	 * @param string|GenericRendererComponent $renderer
+	 * @param string|GenericColumn $renderer
 	 * @return array
 	 */
 	public function convertRendererToArray($renderer) {
 		$result = array();
 		if (is_string($renderer)) {
 			$result[$renderer] = array();
-		} elseif ($renderer instanceof GenericRendererComponent) {
-			/** @var GenericRendererComponent $renderer */
+		} elseif ($renderer instanceof GenericColumn) {
+			/** @var GenericColumn $renderer */
 			$result[$renderer->getClassName()] = $renderer->getConfiguration();
 		}
 		return $result;

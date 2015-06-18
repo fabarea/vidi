@@ -68,9 +68,9 @@ class GenericColumn implements ColumnInterface {
 	 * Magic method implementation for retrieving state.
 	 *
 	 * @param array $states
-	 * @return GenericRendererComponent
+	 * @return GenericColumn
 	 */
 	static public function __set_state($states) {
-		return new GenericRendererComponent($states['className'], $states['configuration']);
+		return new GenericColumn($states['className'], $states['configuration']);
 	}
 }

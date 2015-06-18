@@ -17,7 +17,7 @@ namespace Fab\Vidi\Grid;
 /**
  * Class for configuring a "Button Group" Grid Renderer.
  */
-class ButtonGroupComponent extends GenericRendererComponent {
+class ButtonGroupComponent extends GenericColumn {
 
 	/**
 	 * Configure the "Button Group" Grid Renderer.

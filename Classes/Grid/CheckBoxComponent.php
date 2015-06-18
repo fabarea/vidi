@@ -17,7 +17,7 @@ namespace Fab\Vidi\Grid;
 /**
  * Class for configuring the "Check Box" Grid Renderer.
  */
-class CheckBoxComponent extends GenericRendererComponent {
+class CheckBoxComponent extends GenericColumn {
 
 	/**
 	 * Configure the "Check Box" Grid Renderer.
