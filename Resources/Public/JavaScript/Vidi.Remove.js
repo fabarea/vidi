@@ -42,7 +42,7 @@ Vidi.Remove = {
 						url = $(Vidi.Remove.scope).attr('href');
 						row = $(Vidi.Remove.scope).closest("tr").get(0);
 
-						// Send Ajax request to delete media
+						// Send Ajax request to delete the content.
 						$.get(url,
 							function(response) {
 

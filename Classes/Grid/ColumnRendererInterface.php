@@ -15,12 +15,12 @@ namespace Fab\Vidi\Grid;
  */
 
 /**
- * Interface for rendering a column in the Grid
+ * Interface for rendering a column in the Grid.
  */
 interface ColumnRendererInterface {
 
 	/**
-	 * Render a media in someway.
+	 * Render a column in the Grid.
 	 *
 	 * @return string
 	 */

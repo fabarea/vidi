@@ -113,7 +113,7 @@ class VidiDbBackend {
 	protected $currentChildTableNameAlias = '';
 
 	/**
-	 * The default object type being returned for the Media Object Factory
+	 * The default object type being returned.
 	 *
 	 * @var string
 	 */
