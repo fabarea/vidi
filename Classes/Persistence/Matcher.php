@@ -172,10 +172,12 @@ class Matcher {
 	/**
 	 * @param $fieldNameAndPath
 	 * @param $operand
+	 * @param bool $addWildCard
 	 * @return $this
 	 */
-	public function like($fieldNameAndPath, $operand) {
-		$this->likeCriteria[] = array('fieldNameAndPath' => $fieldNameAndPath, 'operand' => '%' . $operand . '%');
+	public function like($fieldNameAndPath, $operand, $addWildCard = TRUE) {
+		$wildCardSymbol = $addWildCard ? '%' : '';
+		$this->likeCriteria[] = array('fieldNameAndPath' => $fieldNameAndPath, 'operand' => $wildCardSymbol . $operand . $wildCardSymbol);
 		return $this;
 	}
 
@@ -186,7 +188,7 @@ class Matcher {
 	 * @deprecated Use method "like" instead which is inline with the Query Interface. Will be removed in 0.7 + 2 versions.
 	 */
 	public function likes($fieldNameAndPath, $operand) {
-		return $this->like($fieldNameAndPath, $operand);
+		return $this->like($fieldNameAndPath, $operand, TRUE);
 	}
 
 	/**
