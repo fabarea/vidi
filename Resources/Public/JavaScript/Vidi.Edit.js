@@ -197,6 +197,34 @@ Vidi.Edit = {
 		return uri.toString().replace('.php/?', '.php?');
 	},
 
+
+	/**
+	 * Set possible additional parameters for Ajax.
+	 *
+	 * @param {string} url
+	 * @return {string}
+	 */
+	setAjaxAdditionalParameters: function(url) {
+
+		var additionalParametersList = $('#ajax-additional-parameters').val();
+		if (additionalParametersList) {
+			//var uri = new Uri(url);
+			var additionalParameters = additionalParametersList.split('&');
+			for (var i = 0; i < additionalParameters.length; i++) {
+				var splitValues = additionalParameters[i].split('=');
+				if (splitValues.length === 2) {
+					var parameterName = splitValues[0];
+					var parameterValue = splitValues[1];
+
+					// Add parameters to the Uri object.
+					url += '&' + Vidi.module.parameterPrefix + '[' + parameterName +']=' + parameterValue;
+				}
+			}
+			//url = uri.toString();
+		}
+		return url;
+	},
+
 	/**
 	 * Load content by ajax.
 	 *
@@ -204,6 +232,10 @@ Vidi.Edit = {
 	 * @return Vidi.Edit
 	 */
 	loadContent: function (url) {
+
+		// Inject additional parameters for the ajax request
+		url = Vidi.Edit.setAjaxAdditionalParameters(url);
+
 		// Load content by ajax for the modal window.
 		$.ajax(
 			{

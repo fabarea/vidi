@@ -203,9 +203,10 @@ class ContentController extends ActionController {
 	 *
 	 * @param string $fieldNameAndPath
 	 * @param array $matches
+	 * @param bool $hasRecursiveSelection
 	 * @throws \Exception
 	 */
-	public function editAction($fieldNameAndPath, array $matches = array()) {
+	public function editAction($fieldNameAndPath, array $matches = array(), $hasRecursiveSelection = FALSE) {
 
 		// Instantiate the Matcher object according different rules.
 		$matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
@@ -223,6 +224,7 @@ class ContentController extends ActionController {
 		$this->view->assign('matches', $matches);
 		$this->view->assign('fieldNameAndPath', $fieldNameAndPath);
 		$this->view->assign('numberOfObjects', $contentService->getNumberOfObjects());
+		$this->view->assign('hasRecursiveSelection', $hasRecursiveSelection);
 		$this->view->assign('editWholeSelection', empty($matches['uid'])); // necessary??
 
 		// Fetch content and its relations.
@@ -242,7 +244,7 @@ class ContentController extends ActionController {
 			$relatedDataType = Tca::table($dataType)->field($fieldName)->getForeignTable();
 
 			// Initialize the matcher object.
-			$matcher = MatcherObjectFactory::getInstance()->getMatcher(array(), $relatedDataType);
+			$matcher = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Matcher', array(), $relatedDataType);
 
 			// Default ordering for related data type.
 			$defaultOrderings = Tca::table($relatedDataType)->getDefaultOrderings();
