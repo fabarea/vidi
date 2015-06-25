@@ -77,7 +77,7 @@ class Row extends AbstractComponentView {
 					// if is relation has one
 					foreach ($renderers as $rendererClassName => $rendererConfiguration) {
 
-						/** @var $rendererObject \Fab\Vidi\Grid\GridRendererInterface */
+						/** @var $rendererObject \Fab\Vidi\Grid\ColumnRendererInterface */
 						$rendererObject = GeneralUtility::makeInstance($rendererClassName);
 						$value .= $rendererObject
 							->setObject($object)

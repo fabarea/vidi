@@ -23,7 +23,7 @@ use Fab\Vidi\Tca\Tca;
 /**
  * Class rendering relation
  */
-class RelationCountRenderer extends GridRendererAbstract {
+class RelationCountRenderer extends ColumnRendererAbstract {
 
 	/**
 	 * @var \TYPO3\CMS\Fluid\ViewHelpers\TranslateViewHelper
@@ -75,4 +75,5 @@ class RelationCountRenderer extends GridRendererAbstract {
 			IconUtility::getSpriteIcon('extensions-vidi-go')
 		);
 	}
+
 }

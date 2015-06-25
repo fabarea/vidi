@@ -14,13 +14,12 @@ namespace Fab\Vidi\Grid;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class for rendering the "Button Group" in the Grid, e.g. edit, delete, etc..
  */
-class ButtonGroupRenderer extends GridRendererAbstract {
+class ButtonGroupRenderer extends ColumnRendererAbstract {
 
 	/**
 	 * Render the "Button Group" in the Grid, e.g. edit, delete, etc..

@@ -15,14 +15,13 @@ namespace Fab\Vidi\Grid;
  */
 
 use TYPO3\CMS\Backend\Utility\IconUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Tca\Tca;
 
 /**
  * Class rendering relation
  */
-class RelationRenderer extends GridRendererAbstract {
+class RelationRenderer extends ColumnRendererAbstract {
 
 	/**
 	 * Render a representation of the relation on the GUI.

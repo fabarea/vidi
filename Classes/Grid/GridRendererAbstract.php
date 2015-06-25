@@ -13,7 +13,6 @@ namespace Fab\Vidi\Grid;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class rendering relation

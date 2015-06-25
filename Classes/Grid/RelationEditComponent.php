@@ -26,4 +26,5 @@ class RelationEditComponent extends GenericColumn {
 		$className = 'Fab\Vidi\Grid\RelationEditRenderer';
 		parent::__construct($className, array());
 	}
+
 }

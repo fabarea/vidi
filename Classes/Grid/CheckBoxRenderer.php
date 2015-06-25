@@ -14,13 +14,10 @@ namespace Fab\Vidi\Grid;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Backend\Utility\IconUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /**
  * Class for rendering the "Check Box" in the Grid.
  */
-class CheckBoxRenderer extends GridRendererAbstract {
+class CheckBoxRenderer extends ColumnRendererAbstract {
 
 	/**
 	 * Render the "Check Box" in the Grid.

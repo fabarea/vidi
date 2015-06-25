@@ -20,7 +20,7 @@ use Fab\Vidi\Tca\Tca;
 /**
  * Class rendering visibility for the Grid.
  */
-class VisibilityRenderer extends GridRendererAbstract {
+class VisibilityRenderer extends ColumnRendererAbstract {
 
 	/**
 	 * Render visibility for the Grid.

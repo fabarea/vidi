@@ -15,12 +15,11 @@ namespace Fab\Vidi\Grid;
  */
 
 use TYPO3\CMS\Backend\Utility\IconUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class for editing mm relation between objects.
  */
-class RelationEditRenderer extends GridRendererAbstract {
+class RelationEditRenderer extends ColumnRendererAbstract {
 
 	/**
 	 * Render a representation of the relation on the GUI.

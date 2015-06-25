@@ -14,10 +14,8 @@ namespace Fab\Vidi\Tca;
  * The TYPO3 project - inspiring people to share!
  */
 
-use Fab\Vidi\Formatter\Date;
-use Fab\Vidi\Formatter\Datetime;
+use Fab\Vidi\Grid\ColumnRendererInterface;
 use Fab\Vidi\Grid\GenericColumn;
-use Fab\Vidi\Grid\GridRendererInterface;
 use Fab\Vidi\Module\ConfigurablePart;
 use Fab\Vidi\Module\ModulePreferences;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -117,7 +115,7 @@ class GridService implements TcaServiceInterface {
 		// Second option is to fetch the label from the Column Renderer object.
 		if (! $rawLabel && $this->hasRenderers($fieldNameAndPath)) {
 			$renderers = $this->getRenderers($fieldNameAndPath);
-			/** @var $renderer GridRendererInterface */
+			/** @var $renderer ColumnRendererInterface */
 			foreach ($renderers as $renderer) {
 				if (isset($renderer['label'])) {
 					$rawLabel = $renderer['label'];
@@ -503,7 +501,7 @@ class GridService implements TcaServiceInterface {
 
 		if (! $hasLabel && $this->hasRenderers($fieldNameAndPath)) {
 			$renderers = $this->getRenderers($fieldNameAndPath);
-			/** @var $renderer GridRendererInterface */
+			/** @var $renderer ColumnRendererInterface */
 			foreach ($renderers as $renderer) {
 				if (isset($renderer['label'])) {
 					$hasLabel = TRUE;
