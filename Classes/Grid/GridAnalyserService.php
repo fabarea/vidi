@@ -34,7 +34,7 @@ class GridAnalyserService {
 
 		$missingOppositionRelationMessage =<<<EOF
 
-  WARNING! Could not define relation precisely. This is not necessary a problem
+  WARNING! Could not define relation precisely. This is not necessarily a problem
   if the opposite relation is not required in a Grid. But consider adding the opposite
   TCA configuration if so.';
 EOF;
