@@ -220,7 +220,6 @@ Vidi.Edit = {
 					url += '&' + Vidi.module.parameterPrefix + '[' + parameterName +']=' + parameterValue;
 				}
 			}
-			//url = uri.toString();
 		}
 		return url;
 	},
