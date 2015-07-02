@@ -389,7 +389,7 @@ class FieldService implements TcaServiceInterface {
 		}
 
 		// Try fetching a label from a possible itemsProcFunc
-		if (!isset($label)) {
+		if (!isset($label) && is_scalar($itemValue)) {
 			$items = $this->fetchItemsFromUserFunction();
 			if (!empty($items[$itemValue])) {
 				$label = $items[$itemValue];
