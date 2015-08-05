@@ -295,33 +295,59 @@ class Content implements \ArrayAccess {
 	/**
 	 * Convert this object to an array containing the resolved values.
 	 *
+	 * @param bool $resolveRelations
 	 * @return array
+	 * @throws \Exception
 	 */
-	public function toValues() {
+	public function toValues($resolveRelations = TRUE) {
 		$result['uid'] = $this->uid;
 		$propertiesAndValues = json_decode(json_encode($this), TRUE);
 
 		foreach ($propertiesAndValues as $propertyName => $value) {
 			$fieldName = Property::name($propertyName)->of($this)->toFieldName();
 
-			$field = Tca::table($this->dataType)->field($fieldName);
-			if ($field->getType() === FieldType::FILE) {
+			$result[$fieldName] = $value;
+			if ($resolveRelations) {
+				$field = Tca::table($this->dataType)->field($fieldName);
 
-				if ($field->hasMany()) {
-					$files = FileReferenceService::getInstance()->findReferencedBy($propertyName, $this);
+				$resolvedValue = '';
+				if ($field->getType() === FieldType::FILE) {
 
-					$value = array();
-					foreach ($files as $file) {
-						$value[] = $file->getIdentifier();
+					if ($field->hasMany()) {
+						$files = FileReferenceService::getInstance()->findReferencedBy($propertyName, $this);
+
+						$resolvedValue = array();
+						foreach ($files as $file) {
+							$resolvedValue[] = $file->getIdentifier();
+						}
+					} else {
+						$files = FileReferenceService::getInstance()->findReferencedBy($propertyName, $this);
+						if (!empty($files)) {
+							$resolvedValue = current($files)->getIdentifier();
+						}
 					}
-				} else {
-					$files = FileReferenceService::getInstance()->findReferencedBy($propertyName, $this);
-					if (!empty($files)) {
-						$value = current($files)->getIdentifier();
+
+					// Reset value
+					$result[$fieldName] = $resolvedValue;
+
+				} elseif (Tca::table($this->dataType)->field($fieldName)->hasRelation()) {
+					$objects = $this[$fieldName];
+					if (is_array($objects)) {
+						$resolvedValue = array();
+						foreach ($objects as $object) {
+							/** @var $object Content */
+							$labelField = Tca::table($object->getDataType())->getLabelField();
+							$resolvedValue[] = $object[$labelField];
+						}
+					} elseif ($objects instanceof Content) {
+						$labelField = Tca::table($objects->getDataType())->getLabelField();
+						$resolvedValue = $objects[$labelField];
 					}
+
+					// Reset value
+					$result[$fieldName] = $resolvedValue;
 				}
 			}
-			$result[$fieldName] = $value;
 		}
 
 		return $result;
