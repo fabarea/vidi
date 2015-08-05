@@ -21,7 +21,7 @@ use Fab\Vidi\Facet\FacetInterface;
 /**
  * A class to handle TCA grid configuration
  */
-class FacetService implements TcaServiceInterface {
+class FacetService extends AbstractTca {
 
 	/**
 	 * @var FacetInterface

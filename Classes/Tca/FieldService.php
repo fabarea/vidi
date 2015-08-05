@@ -20,7 +20,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 /**
  * A class to handle TCA field configuration.
  */
-class FieldService implements TcaServiceInterface {
+class FieldService extends AbstractTca {
 
 	/**
 	 * @var string
@@ -300,7 +300,8 @@ class FieldService implements TcaServiceInterface {
 			if ($configuration['type'] === FieldType::SELECT && !empty($configuration['size']) && $configuration['size'] > 1) {
 				$fieldType = FieldType::MULTISELECT;
 			} elseif (!empty($configuration['foreign_table'])
-				&& ($configuration['foreign_table'] == 'sys_file_reference' || $configuration['foreign_table'] == 'sys_file')) {
+				&& ($configuration['foreign_table'] == 'sys_file_reference' || $configuration['foreign_table'] == 'sys_file')
+			) {
 				$fieldType = FieldType::FILE;
 			} elseif (!empty($configuration['eval'])) {
 				$parts = GeneralUtility::trimExplode(',', $configuration['eval']);
@@ -454,6 +455,23 @@ class FieldService implements TcaServiceInterface {
 	 */
 	public function hasLabel() {
 		return empty($this->tca['label']) ? FALSE : TRUE;
+	}
+
+	/**
+	 * Tell whether the current BE User has access to this field.
+	 *
+	 * @return bool
+	 */
+	public function hasAccess() {
+		$hasAccess = TRUE;
+		if ($this->isBackendMode()
+			&& Tca::table($this->tableName)->hasAccess()
+			&& isset($this->tca['exclude'])
+			&& $this->tca['exclude']
+		) {
+			$hasAccess = $this->getBackendUser()->check('non_exclude_fields', $this->tableName . ':' . $this->fieldName);
+		}
+		return $hasAccess;
 	}
 
 	/**
@@ -708,15 +726,6 @@ class FieldService implements TcaServiceInterface {
 	}
 
 	/**
-	 * Returns whether the current mode is Frontend
-	 *
-	 * @return bool
-	 */
-	protected function isFrontendMode() {
-		return TYPO3_MODE == 'FE';
-	}
-
-	/**
 	 * Returns an instance of the Frontend object.
 	 *
 	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
@@ -724,6 +733,5 @@ class FieldService implements TcaServiceInterface {
 	protected function getFrontendObject() {
 		return $GLOBALS['TSFE'];
 	}
-
 
 }

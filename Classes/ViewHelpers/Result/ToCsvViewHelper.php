@@ -43,7 +43,7 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper {
 			// We must generate a zip archive since there are files included.
 			if ($this->hasCollectedFiles()) {
 
-				$this->writeZipFile($objects);
+				$this->writeZipFile();
 				$this->sendZipHttpHeaders();
 
 				readfile($this->zipFileNameAndPath);

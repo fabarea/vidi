@@ -70,11 +70,14 @@ class Content implements \ArrayAccess {
 		$fields = array_merge($fields, $table->getFields());
 
 		// Fetch excluded fields from the grid.
-		$excludedFields = Tca::grid($this->dataType)->getExcludedFields();
+		if ($this->isBackendMode()) {
+			$fields = $this->filterForConfiguration($fields);
+			$fields = $this->filterForBackendUser($fields);
+		}
 
 		// Get column to be displayed
 		foreach ($fields as $fieldName) {
-			if (array_key_exists($fieldName, $contentData) && !in_array($fieldName, $excludedFields)) {
+			if (array_key_exists($fieldName, $contentData)) {
 				$propertyName = Field::name($fieldName)->of($dataType)->toPropertyName();
 				$this->$propertyName = $contentData[$fieldName];
 			}
@@ -361,6 +364,60 @@ class Content implements \ArrayAccess {
 	public function __toString() {
 		$labelField = Tca::table($this->dataType)->getLabelField();
 		return $this[$labelField];
+	}
+
+	/**
+	 * Remove fields according to BE User permission.
+	 *
+	 * @param $fields
+	 * @return array
+	 * @throws \Exception
+	 */
+	protected function filterForBackendUser($fields) {
+		if (!$this->getBackendUser()->isAdmin()) {
+			foreach ($fields as $key => $fieldName) {
+				if (Tca::table($this->dataType)->hasField($fieldName) && !Tca::table($this->dataType)->field($fieldName)->hasAccess()) {
+					unset($fields[$key]);
+				}
+			}
+		}
+		return $fields;
+	}
+
+	/**
+	 * Remove fields according to Grid configuration.
+	 *
+	 * @param $fields
+	 * @return array
+	 */
+	protected function filterForConfiguration($fields) {
+
+		$excludedFields = Tca::grid($this->dataType)->getExcludedFields();
+		foreach ($fields as $key => $field) {
+			if (in_array($field, $excludedFields)) {
+				unset($fields[$key]);
+			}
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * Returns an instance of the current Backend User.
+	 *
+	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+	 */
+	protected function getBackendUser() {
+		return $GLOBALS['BE_USER'];
+	}
+
+	/**
+	 * Returns whether the current mode is Backend
+	 *
+	 * @return bool
+	 */
+	protected function isBackendMode() {
+		return TYPO3_MODE == 'BE';
 	}
 
 }

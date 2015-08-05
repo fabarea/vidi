@@ -43,7 +43,7 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper {
 			// We must generate a zip archive since there are files included.
 			if ($this->hasCollectedFiles()) {
 
-				$this->writeZipFile($objects);
+				$this->writeZipFile();
 				$this->sendZipHttpHeaders();
 
 				readfile($this->zipFileNameAndPath);
@@ -55,7 +55,6 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper {
 			GeneralUtility::rmdir($this->temporaryDirectory, TRUE);
 		}
 	}
-
 
 	/**
 	 * Write the XML file to a temporary location.
@@ -86,7 +85,7 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper {
 	/*
 	 * Convert an array to xml
 	 *
-	 * @return void
+	 * @return \SimpleXMLElement
 	 */
 	protected function arrayToXml($array, \SimpleXMLElement $xml) {
 		foreach ($array as $key => $value) {

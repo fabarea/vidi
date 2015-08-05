@@ -27,7 +27,7 @@ use Fab\Vidi\Facet\FacetInterface;
 /**
  * A class to handle TCA grid configuration
  */
-class GridService implements TcaServiceInterface {
+class GridService extends AbstractTca {
 
 	/**
 	 * @var array
@@ -204,15 +204,13 @@ class GridService implements TcaServiceInterface {
 		// Cache this operation since it can take some time.
 		if (is_null($this->fields)) {
 
-			// Fetch all fields
+			// Fetch all available fields first.
 			$fields = $this->getAllFields();
 
-			// Unset excluded fields.
-			foreach ($this->getExcludedFields() as $excludedField) {
-				if (isset($fields[$excludedField])) {
-					unset($fields[$excludedField]);
-				}
-			}
+			// Then remove the not allowed.
+			$fields = $this->filterForBackendUser($fields);
+			$fields = $this->filterForConfiguration($fields);
+
 			$this->fields = $fields;
 		}
 
@@ -220,10 +218,39 @@ class GridService implements TcaServiceInterface {
 	}
 
 	/**
-	 * @return ModulePreferences
+	 * Remove fields according to BE User permission.
+	 *
+	 * @param $fields
+	 * @return array
+	 * @throws \Exception
 	 */
-	protected function getModulePreferences() {
-		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModulePreferences');
+	protected function filterForBackendUser($fields) {
+		if (!$this->getBackendUser()->isAdmin()) {
+			foreach ($fields as $fieldName => $field) {
+				if (Tca::table($this->tableName)->hasField($fieldName) && !Tca::table($this->tableName)->field($fieldName)->hasAccess()) {
+					unset($fields[$fieldName]);
+				}
+			}
+		}
+		return $fields;
+	}
+
+	/**
+	 * Remove fields according to Grid configuration.
+	 *
+	 * @param $fields
+	 * @return array
+	 */
+	protected function filterForConfiguration($fields) {
+
+		// Unset excluded fields.
+		foreach ($this->getExcludedFields() as $excludedField) {
+			if (isset($fields[$excludedField])) {
+				unset($fields[$excludedField]);
+			}
+		}
+
+		return $fields;
 	}
 
 	/**
@@ -520,22 +547,41 @@ class GridService implements TcaServiceInterface {
 	}
 
 	/**
+	 * Return excluded fields from configuration + preferences.
+	 *
 	 * @return array
 	 */
 	public function getExcludedFields() {
+		$configurationFields = $this->getExcludedFieldsFromConfiguration();
+		$preferencesFields = $this->getExcludedFieldsFromPreferences();
+
+		return array_merge($configurationFields, $preferencesFields);
+	}
+
+	/**
+	 * Fetch excluded fields from configuration.
+	 *
+	 * @return array
+	 */
+	protected function getExcludedFieldsFromConfiguration() {
 		$excludedFields = array();
 		if (!empty($this->tca['excluded_fields'])) {
 			$excludedFields = GeneralUtility::trimExplode(',', $this->tca['excluded_fields'], TRUE);
 		} elseif (!empty($this->tca['export']['excluded_fields'])) { // only for export for legacy reason.
 			$excludedFields = GeneralUtility::trimExplode(',', $this->tca['export']['excluded_fields'], TRUE);
 		}
-
-		// Add excluded fields from the preferences.
-		$additionalExcludedFields = $this->getModulePreferences()->get(ConfigurablePart::EXCLUDED_FIELDS, $this->tableName);
-		if (is_array($additionalExcludedFields)) {
-			$excludedFields = array_merge($excludedFields, $additionalExcludedFields);
-		}
 		return $excludedFields;
+
+	}
+
+	/**
+	 * Fetch excluded fields from preferences.
+	 *
+	 * @return array
+	 */
+	protected function getExcludedFieldsFromPreferences() {
+		$excludedFields = $this->getModulePreferences()->get(ConfigurablePart::EXCLUDED_FIELDS, $this->tableName);
+		return is_array($excludedFields) ? $excludedFields : array();
 	}
 
 	/**
@@ -585,6 +631,13 @@ class GridService implements TcaServiceInterface {
 	 */
 	protected function getFieldPathResolver() {
 		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
+	}
+
+	/**
+	 * @return ModulePreferences
+	 */
+	protected function getModulePreferences() {
+		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModulePreferences');
 	}
 
 }

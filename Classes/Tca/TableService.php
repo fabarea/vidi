@@ -22,7 +22,7 @@ use Fab\Vidi\Exception\InvalidKeyInArrayException;
 /**
  * A class to handle TCA ctrl.
  */
-class TableService implements TcaServiceInterface {
+class TableService extends AbstractTca {
 
 	/**
 	 * @var array
@@ -379,6 +379,19 @@ class TableService implements TcaServiceInterface {
 	 */
 	public function getTca() {
 		return $this->tca;
+	}
+
+	/**
+	 * Tell whether the current BE User has access to this field.
+	 *
+	 * @return bool
+	 */
+	public function hasAccess() {
+		$hasAccess = TRUE;
+		if ($this->isBackendMode()) {
+			$hasAccess = $this->getBackendUser()->check('tables_modify', $this->tableName);
+		}
+		return $hasAccess;
 	}
 
 	/**

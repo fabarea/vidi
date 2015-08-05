@@ -45,5 +45,4 @@ class FieldType extends Enumeration {
 
 	const TREE = 'tree';
 
-
 }

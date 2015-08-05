@@ -30,13 +30,10 @@ class ExportXmlMenuItem extends AbstractComponentView {
 	 * @return string
 	 */
 	public function render() {
-		$result = '';
-		if ($this->getBackendUser()->isAdmin()) {
-			$result = sprintf('<li><a href="#" class="export-xml" data-format="xml">%s %s</a></li>',
-				IconUtility::getSpriteIcon('mimetypes-text-html'),
-				LocalizationUtility::translate('export-xml', 'vidi')
-			);
-		}
+		$result = sprintf('<li><a href="#" class="export-xml" data-format="xml">%s %s</a></li>',
+			IconUtility::getSpriteIcon('mimetypes-text-html'),
+			LocalizationUtility::translate('export-xml', 'vidi')
+		);
 		return $result;
 	}
 

@@ -30,13 +30,10 @@ class ExportCsvMenuItem extends AbstractComponentView {
 	 * @return string
 	 */
 	public function render() {
-		$result = '';
-		if ($this->getBackendUser()->isAdmin()) {
-			$result = sprintf('<li><a href="#" class="export-csv" data-format="csv">%s %s</a></li>',
-				IconUtility::getSpriteIcon('mimetypes-text-csv'),
-				LocalizationUtility::translate('export-csv', 'vidi')
-			);
-		}
+		$result = sprintf('<li><a href="#" class="export-csv" data-format="csv">%s %s</a></li>',
+			IconUtility::getSpriteIcon('mimetypes-text-csv'),
+			LocalizationUtility::translate('export-csv', 'vidi')
+		);
 		return $result;
 	}
 }
