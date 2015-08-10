@@ -484,6 +484,16 @@ class FieldService implements TcaServiceInterface {
 	}
 
 	/**
+	 * Returns whether the field is displayed as a tree.
+	 *
+	 * @return bool
+	 */
+	public function isTree() {
+		$configuration = $this->getConfiguration();
+		return isset($configuration['renderMode']) && $configuration['renderMode'] == FieldType::TREE;
+	}
+
+	/**
 	 * Returns whether the field is of type select.
 	 *
 	 * @return bool

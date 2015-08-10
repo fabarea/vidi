@@ -263,10 +263,47 @@ class ContentController extends ActionController {
 			// Fetch related contents
 			$relatedContents = ContentRepositoryFactory::getInstance($relatedDataType)->findBy($matcher, $defaultOrder);
 
+			if (Tca::table($dataType)->field($fieldName)->isTree()) {
+
+				$fieldConfiguration = Tca::table($dataType)->field($fieldName)->getConfiguration();
+				$parentField = $fieldConfiguration['treeConfig']['parentField'];
+
+				$flatTree = array();
+				foreach ($relatedContents as $node) {
+					$flatTree[$node->getUid()] = array(
+						'item' => $node,
+						'parent' => $node[$parentField] ? $node[$parentField]['uid'] : NULL,
+					);
+				}
+
+				$tree = array();
+
+				// If leaves are selected without its parents selected, those are shown as parent
+				foreach ($flatTree as $id => &$flatNode) {
+					if (!isset($flatTree[$flatNode['parent']])) {
+						$flatNode['parent'] = NULL;
+					}
+				}
+
+				foreach ($flatTree as $id => &$node) {
+					if ($node['parent'] === NULL) {
+						$tree[$id] = &$node;
+					} else {
+						$flatTree[$node['parent']]['children'][$id] = &$node;
+					}
+				}
+
+				$relatedContents = $tree;
+			}
+
 			$this->view->assign('content', $content);
 			$this->view->assign('relatedContents', $relatedContents);
 			$this->view->assign('relatedDataType', $relatedDataType);
 			$this->view->assign('relatedContentTitle', Tca::table($relatedDataType)->getTitle());
+			$this->view->assign(
+				'renderMode',
+				Tca::table($dataType)->field($fieldName)->isTree() ? FieldType::TREE : NULL
+			);
 		}
 	}
 
