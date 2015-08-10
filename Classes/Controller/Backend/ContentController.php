@@ -258,7 +258,7 @@ class ContentController extends ActionController {
 			// Fetch related contents
 			$relatedContents = ContentRepositoryFactory::getInstance($relatedDataType)->findBy($matcher, $defaultOrder);
 
-			if(isset($fieldConfig['renderMode'])
+			if (isset($fieldConfig['renderMode'])
 				&& $fieldConfig['renderMode'] == FieldType::TREE
 			) {
 				$treeConfig = $fieldConfig['treeConfig'];
@@ -277,7 +277,7 @@ class ContentController extends ActionController {
 				$tree = array();
 
 				// If leaves are selected without its parents selected, those are shown as parent
-				foreach($flatTree as $id => &$flatNode) {
+				foreach ($flatTree as $id => &$flatNode) {
 					if (!isset($flatTree[$flatNode['parent']])) {
 						$flatNode['parent'] = NULL;
 					}
