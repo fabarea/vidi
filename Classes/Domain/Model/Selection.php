@@ -21,10 +21,14 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 class Selection extends AbstractEntity {
 
+	const VISIBILITY_EVERYONE = 0;
+	const VISIBILITY_PRIVATE = 1;
+	const VISIBILITY_ADMIN_ONLY = 2;
+
 	/**
 	 * @var int
 	 */
-	protected $type;
+	protected $visibility;
 
 	/**
 	 * @var string
@@ -39,7 +43,12 @@ class Selection extends AbstractEntity {
 	/**
 	 * @var string
 	 */
-	protected $matches;
+	protected $query;
+
+	/**
+	 * @var int
+	 */
+	protected $owner;
 
 	/**
 	 * @param string $dataType
@@ -58,19 +67,19 @@ class Selection extends AbstractEntity {
 	}
 
 	/**
-	 * @param string $matches
+	 * @param string $query
 	 * @return $this
 	 */
-	public function setMatches($matches) {
-		$this->matches = $matches;
+	public function setQuery($query) {
+		$this->query = $query;
 		return $this;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getMatches() {
-		return $this->matches;
+	public function getQuery() {
+		return $this->query;
 	}
 
 	/**
@@ -90,19 +99,35 @@ class Selection extends AbstractEntity {
 	}
 
 	/**
-	 * @param int $type
+	 * @param int $visibility
 	 * @return $this
 	 */
-	public function setType($type) {
-		$this->type = $type;
+	public function setVisibility($visibility) {
+		$this->visibility = $visibility;
 		return $this;
 	}
 
 	/**
 	 * @return int
 	 */
-	public function getType() {
-		return $this->type;
+	public function getVisibility() {
+		return $this->visibility;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getOwner() {
+		return $this->owner;
+	}
+
+	/**
+	 * @param int $owner
+	 * @return $this
+	 */
+	public function setOwner($owner) {
+		$this->owner = $owner;
+		return $this;
 	}
 
 }

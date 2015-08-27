@@ -53,7 +53,7 @@ if (TYPO3_MODE == 'BE') {
 
 	// Possible Static TS loading
 	if (TRUE === isset($configuration['autoload_typoscript']['value']) && FALSE === (bool)$configuration['autoload_typoscript']['value']) {
-		\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Vidi: versatile and interactive display');
+		\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('vidi', 'Configuration/TypoScript', 'Vidi: versatile and interactive display');
 	}
 
 	// Register List2 only if beta feature is enabled.
@@ -71,7 +71,8 @@ if (TYPO3_MODE == 'BE') {
 			array(
 				'Content' => 'index, list, delete, update, edit, copy, move, localize',
 				'Tool' => 'welcome, work',
-				'FacetValue' => 'list',
+				'Facet' => 'autoSuggest',
+				'Selection' => 'edit, update, create, delete, list, show',
 			), array(
 				'access' => 'user,group',
 				'icon' => 'EXT:vidi/Resources/Public/Images/list.png',
@@ -122,7 +123,8 @@ if (TYPO3_MODE == 'BE') {
 // Add new sprite icon.
 \TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons(
 	array(
-		'go' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Images/bullet_go.png',
+		'go' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('vidi') . 'Resources/Public/Images/bullet_go.png',
+		'query' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('vidi') . 'Resources/Public/Images/query.png',
 	),
-	$_EXTKEY
+	'vidi'
 );

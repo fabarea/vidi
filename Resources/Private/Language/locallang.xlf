@@ -44,13 +44,13 @@
 				<source>New</source>
 			</trans-unit>
 			<trans-unit id="edit">
-				<source>Edit</source>
+				<source>Edit record</source>
 			</trans-unit>
 			<trans-unit id="duplicate">
-				<source>Duplicate</source>
+				<source>Duplicate record</source>
 			</trans-unit>
 			<trans-unit id="delete">
-				<source>Delete</source>
+				<source>Delete record</source>
 			</trans-unit>
 			<trans-unit id="deleting">
 				<source>Deleting...</source>
@@ -78,6 +78,12 @@
 			</trans-unit>
 			<trans-unit id="crdate">
 				<source>Creation date</source>
+			</trans-unit>
+			<trans-unit id="name">
+				<source>Name</source>
+			</trans-unit>
+			<trans-unit id="visibility">
+				<source>Visibility</source>
 			</trans-unit>
 			<trans-unit id="visibility_abbreviation">
 				<source>Vis.</source>
@@ -139,6 +145,12 @@
 			<trans-unit id="create_translation">
 				<source>Create new translation</source>
 			</trans-unit>
+			<trans-unit id="manage_selections">
+				<source>Manage Selections</source>
+			</trans-unit>
+			<trans-unit id="enter_name_for_selection">
+				<source>Enter the name for the current selection...</source>
+			</trans-unit>
 			<trans-unit id="menu_visible_items">
 				<source>Entries displayed in the menu "number of visible items"</source>
 			</trans-unit>
@@ -171,6 +183,21 @@
 			</trans-unit>
 			<trans-unit id="open_tools">
 				<source>Open tools</source>
+			</trans-unit>
+			<trans-unit id="visibility.everyone">
+				<source>Everyone</source>
+			</trans-unit>
+			<trans-unit id="visibility.private">
+				<source>Private</source>
+			</trans-unit>
+			<trans-unit id="visibility.admin_only">
+				<source>Admin only</source>
+			</trans-unit>
+			<trans-unit id="query.update">
+				<source>Update the current selection</source>
+			</trans-unit>
+			<trans-unit id="selection.update">
+				<source>Update name or visibility</source>
 			</trans-unit>
 		</body>
 	</file>

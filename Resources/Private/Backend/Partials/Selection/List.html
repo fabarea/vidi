@@ -1,0 +1,32 @@
+<div xmlns="http://www.w3.org/1999/xhtml" lang="en"
+     xmlns:f="http://typo3.org/ns/fluid/ViewHelpers"
+     xmlns:v="http://typo3.org/ns/Fab/vidi/ViewHelpers">
+
+	<f:section name="List">
+		<div id="selection-list" class="btn-group pull-right btn-selection-list" style="left: 3px; float: left">
+			<a class="btn dropdown-toggle" data-toggle="dropdown" href="#" style="padding-right: 2px; padding-left: 2px;">
+				<span class="caret"></span>
+			</a>
+			<ul class="dropdown-menu">
+
+				<f:for each="{selections}" as="selection" iteration="iterator">
+					<li>
+						<a href="#" class="btn-change-filter" title="{selection.query}">
+							<span class="icon-filter"></span>
+							{selection.name}
+						</a>
+						<span style="display: none">{selection.query}</span>
+					</li>
+				</f:for>
+
+				<li class="divider"></li>
+				<li>
+					<a href="#" class="btn-selection-edit">
+						<span class="icon-cog"></span>
+						<f:translate key="manage_selections"/>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</f:section>
+</div>

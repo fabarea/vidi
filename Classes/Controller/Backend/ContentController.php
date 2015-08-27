@@ -41,6 +41,12 @@ class ContentController extends ActionController {
 	protected $pageRenderer;
 
 	/**
+	 * @var \Fab\Vidi\Domain\Repository\SelectionRepository
+	 * @inject
+	 */
+	protected $selectionRepository;
+
+	/**
 	 * Initialize every action.
 	 */
 	public function initializeAction() {
@@ -53,6 +59,9 @@ class ContentController extends ActionController {
 	 * @return void
 	 */
 	public function indexAction() {
+		$dataType = $this->getModuleLoader()->getDataType();
+		$selections = $this->selectionRepository->findByDataTypeForCurrentBackendUser($dataType);
+		$this->view->assign('selections', $selections);
 		$this->view->assign('columns', Tca::grid()->getFields());
 	}
 
@@ -540,6 +549,15 @@ class ContentController extends ActionController {
 	 */
 	protected function getLanguageService() {
 		return GeneralUtility::makeInstance('Fab\Vidi\Language\LanguageService');
+	}
+
+	/**
+	 * Get the Vidi Module Loader.
+	 *
+	 * @return \Fab\Vidi\Module\ModuleLoader
+	 */
+	protected function getModuleLoader() {
+		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
 	}
 
 }

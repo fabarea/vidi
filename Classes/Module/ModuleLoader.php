@@ -203,6 +203,7 @@ class ModuleLoader {
 					'Content' => 'index, list, delete, update, edit, copy, move, localize',
 					'Tool' => 'welcome, work',
 					'Facet' => 'autoSuggest, autoSuggests',
+					'Selection' => 'edit, update, create, delete, list, show',
 				),
 				$moduleConfiguration
 

@@ -11,10 +11,10 @@ CREATE TABLE tx_vidi_selection (
 	deleted tinyint(4) unsigned DEFAULT '0' NOT NULL,
 	hidden tinyint(4) unsigned DEFAULT '0' NOT NULL,
 
-	type int(11) DEFAULT '0' NOT NULL,
+	visibility int(11) DEFAULT '0' NOT NULL,
 	name varchar(255) DEFAULT '' NOT NULL,
 	data_type varchar(255) DEFAULT '' NOT NULL,
-	matches text,
+	query text,
 
 	PRIMARY KEY (uid),
 	KEY parent (pid),

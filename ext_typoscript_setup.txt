@@ -1,0 +1,16 @@
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:lima/Configuration/TypoScript/setup.txt">
+
+config.tx_extbase {
+	persistence{
+		classes {
+			Fab\Vidi\Domain\Model\Selection {
+                mapping {
+                    tableName = tx_vidi_selection
+	                columns {
+		                cruser_id.mapOnProperty = owner
+	                }
+                }
+            }
+		}
+	}
+}
