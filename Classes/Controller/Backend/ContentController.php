@@ -253,6 +253,7 @@ class ContentController extends ActionController {
 			$relatedDataType = Tca::table($dataType)->field($fieldName)->getForeignTable();
 
 			// Initialize the matcher object.
+			/** @var \Fab\Vidi\Persistence\Matcher $matcher */
 			$matcher = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Matcher', array(), $relatedDataType);
 
 			// Default ordering for related data type.
