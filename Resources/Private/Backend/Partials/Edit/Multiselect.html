@@ -35,17 +35,41 @@
 
 		<div class="controls">
 			<f:form.checkbox name="content[{fieldName}][]" value="" style="display: none"/>
-			<ul class="relation-list">
-				<f:for each="{relatedContents}" as="relatedContent">
-					<li>
-						<label>
-							<f:form.checkbox name="content[{fieldName}][]" value="{relatedContent.uid}" checked="{v:isRelatedTo(relatedContent: '{relatedContent}')}"/>
-							<v:tca.title content="{relatedContent}"/>
-						</label>
-					</li>
-				</f:for>
-			</ul>
+			<f:if condition="{renderMode}">
+				<f:then>
+					<f:render section="{renderMode}" arguments="{relatedContents: relatedContents, fieldName:fieldName, content:content, numberOfObjects:numberOfObjects}" />
+				</f:then>
+				<f:else>
+					<ul class="relation-list">
+						<f:for each="{relatedContents}" as="relatedContent">
+							<li>
+								<label>
+									<f:form.checkbox name="content[{fieldName}][]" value="{relatedContent.uid}" checked="{v:isRelatedTo(relatedContent: '{relatedContent}')}"/>
+									<v:tca.title content="{relatedContent}"/>
+								</label>
+							</li>
+						</f:for>
+					</ul>
+				</f:else>
+			</f:if>
 		</div>
 
+	</f:section>
+
+	<f:section name="tree">
+		<ul class="relation-list tree-list">
+			<f:for each="{relatedContents}" as="relatedContent">
+				<li>
+					<label>
+						<f:form.checkbox name="content[{fieldName}][]" value="{relatedContent.item.uid}" checked="{v:isRelatedTo(relatedContent: '{relatedContent.item}')}"/>
+						<v:tca.title content="{relatedContent.item}"/>
+					</label>
+
+					<f:if condition="{relatedContent.children}">
+						<f:render section="tree" arguments="{relatedContents: relatedContent.children, fieldName:fieldName, content:content, numberOfObjects:numberOfObjects}" />
+					</f:if>
+				</li>
+			</f:for>
+		</ul>
 	</f:section>
 </div>

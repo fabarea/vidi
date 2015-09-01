@@ -70,6 +70,10 @@ label, input, button, select, textarea {
 	padding: 0;
 }
 
+.relation-list .relation-list {
+	margin-left: 1em;
+}
+
 .relation-list li {
 	line-height: 16px;
 }

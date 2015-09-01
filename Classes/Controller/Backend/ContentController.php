@@ -236,6 +236,8 @@ class ContentController extends ActionController {
 		$this->view->assign('hasRecursiveSelection', $hasRecursiveSelection);
 		$this->view->assign('editWholeSelection', empty($matches['uid'])); // necessary??
 
+		$fieldConfig = Tca::table($dataType)->field($fieldName)->getConfiguration();
+
 		// Fetch content and its relations.
 		if ($fieldType === FieldType::MULTISELECT) {
 
@@ -244,6 +246,8 @@ class ContentController extends ActionController {
 			$dataType = $this->getContentObjectResolver()->getDataType($object, $fieldNameAndPath);
 
 			$content = ContentRepositoryFactory::getInstance($dataType)->findByUid($identifier);
+
+			$renderMode = null;
 
 			if (!$content) {
 				$message = sprintf('I could not retrieved content object of type "%s" with identifier %s.', $dataType, $identifier);
@@ -263,10 +267,47 @@ class ContentController extends ActionController {
 			// Fetch related contents
 			$relatedContents = ContentRepositoryFactory::getInstance($relatedDataType)->findBy($matcher, $defaultOrder);
 
+			if (isset($fieldConfig['renderMode'])
+				&& $fieldConfig['renderMode'] == FieldType::TREE
+			) {
+				$treeConfig = $fieldConfig['treeConfig'];
+				$parentField = $treeConfig['parentField'];
+				$parentMethod = 'get' . ucfirst($parentField);
+				$renderMode = FieldType::TREE;
+
+				$flatTree = array();
+				foreach ($relatedContents as $node) {
+					$flatTree[$node->getUid()] = array(
+						'item' =>  $node,
+						'parent' => ($node->$parentMethod()) ? $node->$parentMethod()->getUid() : NULL
+					);
+				}
+
+				$tree = array();
+
+				// If leaves are selected without its parents selected, those are shown as parent
+				foreach ($flatTree as $id => &$flatNode) {
+					if (!isset($flatTree[$flatNode['parent']])) {
+						$flatNode['parent'] = NULL;
+					}
+				}
+
+				foreach ($flatTree as $id => &$node) {
+					if ($node['parent'] === NULL) {
+						$tree[$id] = &$node;
+					} else {
+						$flatTree[$node['parent']]['children'][$id] = &$node;
+					}
+				}
+
+				$relatedContents = $tree;
+			}
+
 			$this->view->assign('content', $content);
 			$this->view->assign('relatedContents', $relatedContents);
 			$this->view->assign('relatedDataType', $relatedDataType);
 			$this->view->assign('relatedContentTitle', Tca::table($relatedDataType)->getTitle());
+			$this->view->assign('renderMode', $renderMode);
 		}
 	}
 
