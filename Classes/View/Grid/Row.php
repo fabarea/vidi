@@ -463,19 +463,20 @@ class Row extends AbstractComponentView {
 			$value = sprintf('[%s]', $this->getLabelService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.no_title', 1));
 		}
 
-		// Resolve the identifier in case of "select" or "radio button".
-		$fieldType = Tca::table($object->getDataType())->field($fieldNameAndPath)->getType();
-		if ($fieldType !== FieldType::TEXTAREA) {
-			$value = htmlspecialchars($value);
-		} elseif ($fieldType === FieldType::TEXTAREA && !$this->isClean($value)) {
-			$value = htmlspecialchars($value); // Avoid bad surprise, converts characters to HTML.
-		} elseif ($fieldType === FieldType::TEXTAREA && !$this->hasHtml($value)) {
-			$value = nl2br($value);
+		// Sanitize the value in case of "select" or "radio button".
+		if (is_scalar($value)) {
+			$fieldType = Tca::table($object->getDataType())->field($fieldNameAndPath)->getType();
+			if ($fieldType !== FieldType::TEXTAREA) {
+				$value = htmlspecialchars($value);
+			} elseif ($fieldType === FieldType::TEXTAREA && !$this->isClean($value)) {
+				$value = htmlspecialchars($value); // Avoid bad surprise, converts characters to HTML.
+			} elseif ($fieldType === FieldType::TEXTAREA && !$this->hasHtml($value)) {
+				$value = nl2br($value);
+			}
 		}
 
 		return $value;
 	}
-
 
 	/**
 	 * Possible value formatting.
