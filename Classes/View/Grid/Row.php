@@ -43,7 +43,7 @@ class Row extends AbstractComponentView {
 	/**
 	 * @param array $columns
 	 */
-	public function __construct($columns = array()){
+	public function __construct($columns = array()) {
 		$this->columns = $columns;
 	}
 
@@ -59,7 +59,7 @@ class Row extends AbstractComponentView {
 		// Initialize returned array
 		$output = array();
 
-		foreach(Tca::grid()->getFields() as $fieldNameAndPath => $configuration) {
+		foreach (Tca::grid()->getFields() as $fieldNameAndPath => $configuration) {
 
 			$value = ''; // default is empty at first.
 
@@ -114,7 +114,6 @@ class Row extends AbstractComponentView {
 
 					$value = $this->flattenStructure($localizedStructure);
 				}
-
 
 				// Final wrap given by configuration. @see TCA['grid']
 				$value = $this->wrapValue($value, $configuration);
@@ -172,7 +171,7 @@ class Row extends AbstractComponentView {
 	protected function initializeLocalizedStructure($value) {
 
 		$localizedStructure[] = array(
-			'value' => empty($value) && $this->isEditable() ?  $this->getEmptyValuePlaceholder() : $value,
+			'value' => empty($value) && $this->isEditable() ? $this->getEmptyValuePlaceholder() : $value,
 			'status' => empty($value) ? LocalizationStatus::EMPTY_VALUE : LocalizationStatus::LOCALIZED,
 			'language' => 0,
 			'languageFlag' => $defaultLanguage = $this->getLanguageService()->getDefaultFlag(),
@@ -281,7 +280,7 @@ class Row extends AbstractComponentView {
 		foreach ($localizedStructure as $index => $structure) {
 			if ($structure['status'] !== LocalizationStatus::NOT_YET_LOCALIZED) {
 				$localizedStructure[$index]['value'] = sprintf('<span class="%s" data-language="%s">%s</span>',
-					Tca::table($dataType)->field($fieldName)->isTextArea()  ? 'editable-textarea' : 'editable-textfield',
+					Tca::table($dataType)->field($fieldName)->isTextArea() ? 'editable-textarea' : 'editable-textfield',
 					$structure['language'],
 					$structure['value']
 				);
@@ -573,10 +572,11 @@ class Row extends AbstractComponentView {
 	protected function getFieldPathResolver() {
 		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
 	}
+
 	/**
 	 * @return \Fab\Vidi\Resolver\ContentObjectResolver
 	 */
-	protected function getContentObjectResolver () {
+	protected function getContentObjectResolver() {
 		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\ContentObjectResolver');
 	}
 
