@@ -44,9 +44,9 @@ Vidi.Selection = {
 			Vidi.VisualSearch.instance.searchBox.setQuery(query);
 
 			// Trigger the event
-			var e = jQuery.Event("keydown");
-			e.which = 13; // # Some key code value
-			Vidi.VisualSearch.instance.searchBox.searchEvent(e);
+			var event = jQuery.Event("keydown");
+			event.which = 13; // # Some key code value
+			Vidi.VisualSearch.instance.searchBox.searchEvent(event);
 		});
 
 		/**
