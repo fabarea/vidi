@@ -29,7 +29,7 @@ Vidi.VisualSearch = {
 					var jsonQuery = JSON.stringify(searchCollection.facets());
 
 					// Store in session the visual search query
-					Vidi.Session.set('visualSearch.query', query);
+					Vidi.Session.set('visualSearchQuery', query);
 
 					// Inject value in data table search and trigger a refresh
 					$('input[aria-controls=content-list]').val(jsonQuery).keyup();

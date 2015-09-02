@@ -40,16 +40,13 @@ Vidi.Grid = {
 
 				var state = JSON.parse(Vidi.Session.get('dataTables'));
 
-				// Load session data from User Settings
-				// @todo
-
-				// Mark or un-mark checkbox corresponding to column visibility.
+ 				// Mark or un-mark checkbox corresponding to column visibility.
 				if (state) {
 					$('.check-visible-toggle').each(function(index) {
 						if (state.abVisCols[index + 1]) {
 							$(this).attr('checked', 'checked');
 						} else {
-							$(this).removeAttr('checked')
+							$(this).removeAttr('checked');
 						}
 					});
 				}
@@ -65,7 +62,7 @@ Vidi.Grid = {
 
 					// Also stores value to be used in visual search.
 					if (uri.getQueryParamValue('query')) {
-						Vidi.Session.set('visualSearch.query', uri.getQueryParamValue('query'));
+						Vidi.Session.set('visualSearchQuery', uri.getQueryParamValue('query'));
 					}
 				}
 				return state;
@@ -173,7 +170,7 @@ Vidi.Grid = {
 				Vidi.VisualSearch.initialize();
 				Vidi.Selection.initialize();
 
-				var query = Vidi.Session.get('visualSearch.query');
+				var query = Vidi.Session.get('visualSearchQuery');
 				Vidi.VisualSearch.instance.searchBox.setQuery(query);
 			},
 
@@ -393,7 +390,7 @@ Vidi.Grid = {
 
 			// Also stores value to be used in visual search.
 			if (uri.getQueryParamValue('query')) {
-				Vidi.Session.set('visualSearch.query', uri.getQueryParamValue('query'));
+				Vidi.Session.set('visualSearchQuery', uri.getQueryParamValue('query'));
 			}
 		}
 		return config;

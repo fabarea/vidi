@@ -204,9 +204,9 @@ class ModuleLoader {
 					'Tool' => 'welcome, work',
 					'Facet' => 'autoSuggest, autoSuggests',
 					'Selection' => 'edit, update, create, delete, list, show',
+					'UserPreferences' => 'save',
 				),
 				$moduleConfiguration
-
 			);
 		}
 	}

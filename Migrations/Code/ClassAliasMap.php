@@ -4,6 +4,7 @@ return array(
 	'Tx_Vidi_Controller_FacetController' => 'Fab\\Vidi\\Controller\\Backend\\FacetController',
 	'Tx_Vidi_Controller_ToolController' => 'Fab\\Vidi\\Controller\\Backend\\ToolController',
 	'Tx_Vidi_Controller_SelectionController' => 'Fab\\Vidi\\Controller\\Backend\\SelectionController',
+	'Tx_Vidi_Controller_UserPreferencesController' => 'Fab\\Vidi\\Controller\\Backend\\UserPreferencesController',
 
 	// Namespace migration TYPO3\CMS\Vidi -> Fab\Vidi
 	'TYPO3\CMS\Vidi\Backend\ExtensionManager' => 'Fab\Vidi\Backend\ExtensionManager',

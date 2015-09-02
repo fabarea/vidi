@@ -65,7 +65,8 @@ if (TYPO3_MODE == 'BE') {
 		}
 
 		\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-			$_EXTKEY, 'web', // Make module a submodule of 'web'
+			'vidi',
+			'web', // Make module a submodule of 'web'
 			'm1', // Submodule key
 			'after:list', // Position
 			array(
@@ -73,6 +74,7 @@ if (TYPO3_MODE == 'BE') {
 				'Tool' => 'welcome, work',
 				'Facet' => 'autoSuggest',
 				'Selection' => 'edit, update, create, delete, list, show',
+				'UserPreferences' => 'save',
 			), array(
 				'access' => 'user,group',
 				'icon' => 'EXT:vidi/Resources/Public/Images/list.png',

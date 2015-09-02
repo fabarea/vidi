@@ -101,7 +101,7 @@ Vidi.Selection = {
 		$(document).on('click', '.btn-selection-query', function(e) {
 			e.preventDefault();
 			var $form = $(this).closest('form');
-			$('.selection-query', $form).val(Vidi.Session.get('visualSearch.query'));
+			$('.selection-query', $form).val(Vidi.Session.get('visualSearchQuery'));
 			$('.btn-selection-update', $form).click();
 		});
 
@@ -144,7 +144,7 @@ Vidi.Selection = {
 			// Save selection
 			Vidi.Selection.updateGuiSubmittingState(true);
 
-			$('.selection-query', this).val(Vidi.Session.get('visualSearch.query'));
+			$('.selection-query', this).val(Vidi.Session.get('visualSearchQuery'));
 
 			// Register
 			$(this).ajaxSubmit({

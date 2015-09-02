@@ -40,7 +40,11 @@
 		{v:grid.column.configuration()}
 
 		// Just initialize variable with empty value.
-		Vidi.icons = {}
+		Vidi.icons = {};
+		Vidi.userPreferences = {};
+		Vidi.userPreferences.dataTables = '{v:userPreferences(key: "dataTables")}';
+		Vidi.userPreferences.visualSearchQuery = '{v:userPreferences(key: "visualSearchQuery")}';
+		Vidi.userPreferences.preferenceSignature = '{v:userPreferences(key: "signature")}';
 	</script>
 
 	<f:render section="main"/>
