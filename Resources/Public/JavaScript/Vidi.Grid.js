@@ -421,18 +421,6 @@ Vidi.Grid = {
 	 * @return void
 	 * @private
 	 */
-	clearPreferences: function() {
-		// Reset session data
-		Vidi.Session.reset('dataTables');
-		window.location = window.location;
-	},
-
-	/**
-	 * Apply effect telling the User a row was edited.
-	 *
-	 * @return void
-	 * @private
-	 */
 	animateRow: function() {
 
 		// Only if User has previously edited a record.

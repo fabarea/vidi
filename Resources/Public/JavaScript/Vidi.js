@@ -15,14 +15,6 @@
 		});
 
 		/**
-		 * Add handler when clicking the reload button
-		 */
-		$('.btn-clear-cache').click(function(e) {
-			e.preventDefault();
-			Vidi.Grid.clearPreferences();
-		});
-
-		/**
 		 * Pencil icon on the top of the Grid.
 		 */
 		$('#content-list').find('th').hover(function() {

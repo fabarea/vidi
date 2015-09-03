@@ -172,9 +172,6 @@
 			<trans-unit id="analyse_relations">
 				<source>Analyse relations in TCA</source>
 			</trans-unit>
-			<trans-unit id="reset_module_state">
-				<source>Reset module state</source>
-			</trans-unit>
 			<trans-unit id="reload_data">
 				<source>Reload data</source>
 			</trans-unit>
