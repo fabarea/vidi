@@ -102,7 +102,7 @@ Vidi.VisualSearch = {
 
 		_.each(values, function(value) {
 
-			if (typeof(value) === 'object') {
+			if (typeof(value) === 'object' && value) {
 
 				// retrieve keys.
 				var keys = Object.keys(value);
