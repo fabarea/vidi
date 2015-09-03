@@ -609,7 +609,7 @@ class FieldService implements TcaServiceInterface {
 	 */
 	public function hasOne() {
 		$configuration = $this->getConfiguration();
-		return $this->hasRelation() && $configuration['maxitems'] == 1;
+		return !isset($configuration['MM']) && $this->hasRelation() && ($configuration['maxitems'] == 1 || !isset($configuration['maxitems']));
 	}
 
 	/**
