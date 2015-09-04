@@ -14,15 +14,16 @@ namespace Fab\Vidi\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
- * View helper which allows you to include a JS File.
+ * View helper which allows you to include a JS File in a BE module.
  */
 class JsViewHelper extends AbstractViewHelper {
 
 	/**
-	 * Compute a JS tag and render it
+	 * Compute a JS tag and render it.
 	 *
 	 * @param string $name the file to include
 	 * @param string $extKey the extension, where the file is located
@@ -35,14 +36,18 @@ class JsViewHelper extends AbstractViewHelper {
 			$extKey = $this->controllerContext->getRequest()->getControllerExtensionKey();
 		}
 
-		if (TYPO3_MODE === 'FE') {
-			$extPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($extKey);
-			$extRelPath = substr($extPath, strlen(PATH_site));
-		} else {
-			$extRelPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($extKey);
-		}
+		$extRelPath = ExtensionManagementUtility::extRelPath($extKey);
+		$extensionVersion = ExtensionManagementUtility::getExtensionVersion('vidi');
 
-		return sprintf('<script src="%s%s%s"></script>', $extRelPath, $pathInsideExt, $name);
+		$js = sprintf(
+			'<script src="%s%s%s?%s"></script>',
+			$extRelPath,
+			$pathInsideExt,
+			$name,
+			$extensionVersion
+		);
+
+		return $js;
 	}
 
 }
