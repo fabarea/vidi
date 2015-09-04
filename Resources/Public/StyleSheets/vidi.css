@@ -407,8 +407,6 @@ td form {
 .modal-selection-column-1 {
 	width: 130px;
 	float: left;
-	min-height: 1px;
-	margin-left: 20px;
 }
 
 .modal-selection-column-1 select {
@@ -416,7 +414,7 @@ td form {
 }
 
 .modal-selection-column-2 {
-	margin-left: 10px;
+	margin-left: 5px;
 	width: 435px;
 	min-height: 1px;
 	float: left;
@@ -432,4 +430,15 @@ td form {
 	position: absolute;
 	top: 50%;
 	left: 50%;
+}
+
+.heading {
+	font-weight: bold;
+	font-size: 110%;
+}
+
+.separator {
+	clear: both;
+	margin-top: 20px;
+	font-weight: bold;
 }

@@ -1,43 +1,54 @@
+<div class="heading">
+	<f:translate key="selections"/>
+</div>
 <div class="modal-selection-wrapper">
-	<div class="row">
-		<div class="modal-selection-column-1">
-			<strong>
-				<f:translate key="visibility"/>
-			</strong>
-		</div>
-		<div class="modal-selection-column-2">
-			<strong>
-				<f:translate key="name"/>
-			</strong>
-		</div>
+
+	<div class="modal-selection-column-1">
+		<strong>
+			<f:translate key="visibility"/>
+		</strong>
+	</div>
+	<div class="modal-selection-column-2">
+		<strong>
+			<f:translate key="name"/>
+		</strong>
 	</div>
 
 	<f:for each="{selections}" as="selection">
-		<div class="row">
-			<f:render section="EditForm" partial="Selection/EditForm" arguments="{_all}"/>
-		</div>
+		<f:render section="EditForm" partial="Selection/EditForm" arguments="{_all}"/>
 	</f:for>
 
-	<br/>
+	<br style="clear:both"/>
 
-	<div class="row">
-		<f:form action="create" controller="Selection" id="form-selection-create" name="selection"  method="post" class="form-horizontal">
-			<f:form.hidden property="query" class="selection-query"/>
-			<div class="modal-selection-column-1">
-				<f:form.select options="{v:selection.visibilityOptions()}" property="visibility"/>
-			</div>
-			<div class="modal-selection-column-2">
-				<f:form.textfield value="{selection.name}"
-				                  property="name"
-				                  placeholder="{f:translate(key: 'enter_name_for_selection')}"/>
-				<a href="#" onclick="$(this).closest('form').submit()">
-					<v:sprite name="actions-document-new"/></a>
-			</div>
-		</f:form>
+	<div class="separator">
+		<f:translate key="selection.add"/>
 	</div>
+
+	<f:form action="create"
+	        controller="Selection"
+	        id="form-selection-create"
+	        name="selection"
+	        method="post"
+	        class="form-horizontal">
+		<f:form.hidden property="query" class="selection-query"/>
+		<div class="modal-selection-column-1">
+			<f:form.select options="{v:selection.visibilityOptions()}" property="visibility"/>
+		</div>
+		<div class="modal-selection-column-2">
+			<f:form.textfield value="{selection.name}"
+			                  property="name"
+			                  placeholder="{f:translate(key: 'enter_name_for_selection')}"/>
+			<a href="#"
+			   onclick="$(this).closest('form').submit()"
+			   title="{f:translate(key: 'selection.add')}"
+			   style="padding-left: 22px">
+				<v:sprite name="actions-document-new"/>
+			</a>
+		</div>
+	</f:form>
 </div>
 
 <div class="modal-selection-waiting" style="display: none">
-	<img src="{v:publicPath()}Resources/Public/Images/loading.gif" width="40" height="" alt="" />
+	<img src="{v:publicPath()}Resources/Public/Images/loading.gif" width="40" height="" alt=""/>
 </div>
 {namespace v=Fab\Vidi\ViewHelpers}

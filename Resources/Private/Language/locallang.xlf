@@ -196,6 +196,12 @@
 			<trans-unit id="selection.update">
 				<source>Update name or visibility</source>
 			</trans-unit>
+			<trans-unit id="selections">
+				<source>Selections</source>
+			</trans-unit>
+			<trans-unit id="selection.add">
+				<source>Add selection</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
