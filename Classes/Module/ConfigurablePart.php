@@ -14,13 +14,10 @@ namespace Fab\Vidi\Module;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Core\Type\Enumeration;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /**
  * Enumeration object for preference name.
  */
-class ConfigurablePart extends Enumeration {
+class ConfigurablePart {
 
 	const __default = '';
 	const EXCLUDED_FIELDS = 'excluded_fields';
@@ -28,23 +25,18 @@ class ConfigurablePart extends Enumeration {
 	const MENU_VISIBLE_ITEMS_DEFAULT = 'menuVisibleItemsDefault';
 
 	/**
-	 * @var \Fab\Vidi\Module\ConfigurablePart
-	 */
-	static protected $instance;
-
-	/**
 	 * Get the valid values for this enum.
 	 *
 	 * @param boolean $include_default
 	 * @return array
 	 */
-	static public function getConstants($include_default = FALSE) {
+	static public function getParts($include_default = FALSE) {
 
-		// Must be instantiated once to load the values.
-		if (is_null(self::$instance)) {
-			self::$instance = GeneralUtility::makeInstance('Fab\Vidi\Module\ConfigurablePart');
-		}
-		return parent::getConstants($include_default);
+		return array(
+			'EXCLUDED_FIELDS' => self::EXCLUDED_FIELDS,
+			'MENU_VISIBLE_ITEMS' => self::MENU_VISIBLE_ITEMS,
+			'MENU_VISIBLE_ITEMS_DEFAULT' => self::MENU_VISIBLE_ITEMS_DEFAULT,
+		);
 	}
 
 }

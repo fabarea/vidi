@@ -109,7 +109,7 @@ class ModulePreferences implements SingletonInterface {
 	 * @return void
 	 */
 	public function save($preferences) {
-		$allowedPreferences = ConfigurablePart::getConstants();
+		$configurableParts = ConfigurablePart::getParts();
 
 		$dataType = $this->getModuleLoader()->getDataType();
 		$clause = sprintf('data_type = "%s"', $dataType);
@@ -117,7 +117,7 @@ class ModulePreferences implements SingletonInterface {
 
 		$sanitizedPreferences = array();
 		foreach ($preferences as $key => $value) {
-			if (in_array($key, $allowedPreferences)) {
+			if (in_array($key, $configurableParts)) {
 				$sanitizedPreferences[$key] = $value;
 			}
 		}
@@ -154,10 +154,10 @@ class ModulePreferences implements SingletonInterface {
 	protected function fetchGlobalPreferencesFromTypoScript() {
 		$settings = $this->getSettings();
 
-		$allowedPreferences = ConfigurablePart::getConstants();
+		$configurableParts = ConfigurablePart::getParts();
 		$preferences = array();
 		foreach ($settings as $key => $value) {
-			if (in_array($key, $allowedPreferences)) {
+			if (in_array($key, $configurableParts)) {
 				$preferences[$key] = $value;
 			}
 		}
@@ -178,9 +178,9 @@ class ModulePreferences implements SingletonInterface {
 		if (isset($generalSettings[$dataType . '.'])) {
 			$settings = $generalSettings[$dataType . '.'];
 
-			$allowedPreferences = ConfigurablePart::getConstants();
+			$configurableParts = ConfigurablePart::getParts();
 			foreach ($settings as $key => $value) {
-				if (in_array($key, $allowedPreferences)) {
+				if (in_array($key, $configurableParts)) {
 					$preferences[$key] = $value;
 				}
 			}
