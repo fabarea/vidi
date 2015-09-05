@@ -264,7 +264,7 @@ class ContentController extends ActionController {
 			// Fetch related contents
 			$relatedContents = ContentRepositoryFactory::getInstance($relatedDataType)->findBy($matcher, $defaultOrder);
 
-			if (Tca::table($dataType)->field($fieldName)->isTree()) {
+			if (Tca::table($dataType)->field($fieldName)->isRenderModeTree()) {
 
 				$fieldConfiguration = Tca::table($dataType)->field($fieldName)->getConfiguration();
 				$parentField = $fieldConfiguration['treeConfig']['parentField'];
@@ -303,7 +303,7 @@ class ContentController extends ActionController {
 			$this->view->assign('relatedContentTitle', Tca::table($relatedDataType)->getTitle());
 			$this->view->assign(
 				'renderMode',
-				Tca::table($dataType)->field($fieldName)->isTree() ? FieldType::TREE : NULL
+				Tca::table($dataType)->field($fieldName)->isRenderModeTree() ? FieldType::TREE : NULL
 			);
 		}
 	}

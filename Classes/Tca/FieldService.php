@@ -488,7 +488,7 @@ class FieldService implements TcaServiceInterface {
 	 *
 	 * @return bool
 	 */
-	public function isTree() {
+	public function isRenderModeTree() {
 		$configuration = $this->getConfiguration();
 		return isset($configuration['renderMode']) && $configuration['renderMode'] == FieldType::TREE;
 	}
