@@ -180,37 +180,50 @@ class Row extends AbstractComponentView {
 		if ($this->isLocalized()) {
 
 			foreach ($this->getLanguageService()->getLanguages() as $language) {
-				$resolvedObject = $this->getResolvedObject();
-				$fieldName = $this->getFieldName();
 
-				if ($this->getLanguageService()->hasLocalization($resolvedObject, $language['uid'])) {
-					$localizedValue = $this->getLanguageService()->getLocalizedFieldName($resolvedObject, $language['uid'], $fieldName);
-					$status = LocalizationStatus::LOCALIZED;
+				// Make sure the language is allowed for the current Backend User.
+				if ($this->isLanguageAllowedForBackendUser($language)) {
 
-					// Replace blank value by something more meaningful for the End User.
-					if (empty($localizedValue)) {
-						$status = LocalizationStatus::EMPTY_VALUE;
-						$localizedValue = $this->isEditable() ? $this->getEmptyValuePlaceholder() : '';
+					$resolvedObject = $this->getResolvedObject();
+					$fieldName = $this->getFieldName();
+
+					if ($this->getLanguageService()->hasLocalization($resolvedObject, $language['uid'])) {
+						$localizedValue = $this->getLanguageService()->getLocalizedFieldName($resolvedObject, $language['uid'], $fieldName);
+						$status = LocalizationStatus::LOCALIZED;
+
+						// Replace blank value by something more meaningful for the End User.
+						if (empty($localizedValue)) {
+							$status = LocalizationStatus::EMPTY_VALUE;
+							$localizedValue = $this->isEditable() ? $this->getEmptyValuePlaceholder() : '';
+						}
+					} else {
+						$localizedValue = sprintf('<a href="%s" style="color: black">%s</a>',
+							$this->getLocalizedUri($language['uid']),
+							$this->getLabelService()->sL('LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:create_translation')
+						);
+						$status = LocalizationStatus::NOT_YET_LOCALIZED;
 					}
-				} else {
-					$localizedValue = sprintf('<a href="%s" style="color: black">%s</a>',
-						$this->getLocalizedUri($language['uid']),
-						$this->getLabelService()->sL('LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:create_translation')
-					);
-					$status = LocalizationStatus::NOT_YET_LOCALIZED;
-				}
 
-				// Feed structure.
-				$localizedStructure[] = array(
-					'value' => $localizedValue,
-					'status' => $status,
-					'language' => (int)$language['uid'],
-					'languageFlag' => $language['flag'],
-				);
+					// Feed structure.
+					$localizedStructure[] = array(
+						'value' => $localizedValue,
+						'status' => $status,
+						'language' => (int)$language['uid'],
+						'languageFlag' => $language['flag'],
+					);
+				}
 			}
 		}
 
 		return $localizedStructure;
+	}
+
+	/**
+	 * @param array $language
+	 * @return bool
+	 */
+	protected function isLanguageAllowedForBackendUser(array $language) {
+		return $this->getBackendUser()->checkLanguageAccess($language['uid']);
 	}
 
 	/**
@@ -366,11 +379,16 @@ class Row extends AbstractComponentView {
 	 */
 	protected function getLocalizedUri($language) {
 
+		// Transmit recursive selection parameter.
+		$parameterPrefix = $this->getModuleLoader()->getParameterPrefix();
+		$parameters = GeneralUtility::_GP($parameterPrefix);
+
 		$additionalParameters = array(
 			$this->getModuleLoader()->getParameterPrefix() => array(
 				'controller' => 'Content',
 				'action' => 'localize',
 				'format' => 'json',
+				'hasRecursiveSelection' => isset($parameters['hasRecursiveSelection']) ? (int)$parameters['hasRecursiveSelection'] : 0,
 				'fieldNameAndPath' => $this->getFieldNameAndPath(),
 				'language' => $language,
 				'matches' => array(
@@ -378,6 +396,7 @@ class Row extends AbstractComponentView {
 				),
 			),
 		);
+
 		return $this->getModuleLoader()->getModuleUrl($additionalParameters);
 	}
 

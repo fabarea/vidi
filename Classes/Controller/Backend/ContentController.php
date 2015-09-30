@@ -428,7 +428,6 @@ class ContentController extends ActionController {
 	 * @param int $language
 	 * @return string
 	 * @throws \Exception
-	 * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
 	 */
 	public function localizeAction($fieldNameAndPath, array $matches = array(), $language = 0) {
 
@@ -436,9 +435,6 @@ class ContentController extends ActionController {
 
 		// Fetch objects via the Content Service.
 		$contentService = $this->getContentService()->findBy($matcher);
-
-		// Compute the label field name of the table.
-		$tableTitleField = Tca::table()->getLabelField();
 
 		// Get result object for storing data along the processing.
 		$result = $this->getJsonResult();
