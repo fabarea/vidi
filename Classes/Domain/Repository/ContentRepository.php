@@ -214,27 +214,6 @@ class ContentRepository implements RepositoryInterface {
 	}
 
 	/**
-	 * Tell whether the order has a foreign table in its expression, e.g. "metadata.title".
-	 *
-	 * @param string $ordering
-	 * @return bool
-	 */
-	protected function hasForeignRelationIn($ordering) {
-		return strpos($ordering, '.') !== FALSE;
-	}
-
-	/**
-	 * Extract the foreign relation of the ordering "metadata.title" -> "metadata"
-	 *
-	 * @param string $ordering
-	 * @return string
-	 */
-	protected function getForeignRelationFrom($ordering) {
-		$parts = explode('.', $ordering);
-		return $parts[0];
-	}
-
-	/**
 	 * Find one Content object given specified matches.
 	 *
 	 * @param Matcher $matcher
@@ -257,6 +236,300 @@ class ContentRepository implements RepositoryInterface {
 			$resultSet = current($resultSet);
 		}
 		return $resultSet;
+	}
+
+	/**
+	 * Count all Contents given specified matches.
+	 *
+	 * @param Matcher $matcher
+	 * @return int
+	 */
+	public function countBy(Matcher $matcher) {
+
+		$query = $this->createQuery();
+
+		$constraints = $this->computeConstraints($query, $matcher);
+
+		if ($constraints) {
+			$query->matching($constraints);
+		}
+
+		return $query->count();
+	}
+
+	/**
+	 * Update a content with new information.
+	 *
+	 * @param Content $content
+	 * @param $language
+	 * @return bool
+	 */
+	public function localize($content, $language) {
+
+		// Security check
+		$this->getContentValidator()->validate($content);
+		$this->getLanguageValidator()->validate($language);
+
+		$dataType = $content->getDataType();
+		$handler = $this->getDataHandlerFactory()->action(ProcessAction::LOCALIZE)->forType($dataType)->getDataHandler();
+
+		$handlerResult = $handler->processLocalize($content, $language);
+		$this->errorMessages = $handler->getErrorMessages();
+		return $handlerResult;
+	}
+
+	/**
+	 * Update a content with new information.
+	 *
+	 * @param Content $content
+	 * @return bool
+	 */
+	public function update($content) {
+
+		// Security check.
+		$this->getContentValidator()->validate($content);
+
+		$dataType = $content->getDataType();
+		$handler = $this->getDataHandlerFactory()->action(ProcessAction::UPDATE)->forType($dataType)->getDataHandler();
+
+		$handlerResult = $handler->processUpdate($content);
+		$this->errorMessages = $handler->getErrorMessages();
+		return $handlerResult;
+	}
+
+	/**
+	 * Removes an object from this repository.
+	 *
+	 * @param Content $content
+	 * @return boolean
+	 */
+	public function remove($content) {
+		$dataType = $content->getDataType();
+		$handler = $this->getDataHandlerFactory()->action(ProcessAction::REMOVE)->forType($dataType)->getDataHandler();
+
+		$handlerResult = $handler->processRemove($content);
+		$this->errorMessages = $handler->getErrorMessages();
+		return $handlerResult;
+	}
+
+	/**
+	 * Move a content within this repository.
+	 *
+	 * @param Content $content
+	 * @param string $target
+	 * @return bool
+	 */
+	public function move($content, $target) {
+
+		// Security check.
+		$this->getContentValidator()->validate($content);
+
+		$dataType = $content->getDataType();
+		$handler = $this->getDataHandlerFactory()->action(ProcessAction::MOVE)->forType($dataType)->getDataHandler();
+
+		$handlerResult = $handler->processMove($content, $target);
+		$this->errorMessages = $handler->getErrorMessages();
+		return $handlerResult;
+	}
+
+	/**
+	 * Copy a content within this repository.
+	 *
+	 * @param Content $content
+	 * @return bool
+	 */
+	public function copy($content, $target) {
+
+		// Security check.
+		$this->getContentValidator()->validate($content);
+
+		$dataType = $content->getDataType();
+		$handler = $this->getDataHandlerFactory()->action(ProcessAction::COPY)->forType($dataType)->getDataHandler();
+
+		$handlerResult = $handler->processCopy($content, $target);
+		$this->errorMessages = $handler->getErrorMessages();
+		return $handlerResult;
+	}
+
+	/**
+	 * Adds an object to this repository.
+	 *
+	 * @param object $object The object to add
+	 * @throws \BadMethodCallException
+	 * @return void
+	 * @api
+	 */
+	public function add($object) {
+		throw new \BadMethodCallException('Repository does not support the add() method.', 1375805599);
+	}
+
+	/**
+	 * Returns the total number objects of this repository.
+	 *
+	 * @return integer The object count
+	 * @api
+	 */
+	public function countAll() {
+		$query = $this->createQuery();
+		return $query->count();
+	}
+
+	/**
+	 * Removes all objects of this repository as if remove() was called for
+	 * all of them.
+	 *
+	 * @return void
+	 * @api
+	 */
+	public function removeAll() {
+		// TODO: Implement removeAll() method.
+	}
+
+	/**
+	 * Finds an object matching the given identifier.
+	 *
+	 * @param mixed $identifier The identifier of the object to find
+	 * @return Content|NULL
+	 * @api
+	 */
+	public function findByIdentifier($identifier) {
+		$query = $this->createQuery();
+
+		$result = $query->matching($query->equals('uid', $identifier))
+			->execute();
+
+		if (is_array($result)) {
+			$result = current($result);
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Dispatches magic methods (findBy[Property]())
+	 *
+	 * @param string $methodName The name of the magic method
+	 * @param string $arguments The arguments of the magic method
+	 * @throws UnsupportedMethodException
+	 * @return mixed
+	 * @api
+	 */
+	public function __call($methodName, $arguments) {
+		if (substr($methodName, 0, 6) === 'findBy' && strlen($methodName) > 7) {
+			$propertyName = strtolower(substr(substr($methodName, 6), 0, 1)) . substr(substr($methodName, 6), 1);
+			$result = $this->processMagicCall($propertyName, $arguments[0]);
+		} elseif (substr($methodName, 0, 9) === 'findOneBy' && strlen($methodName) > 10) {
+			$propertyName = strtolower(substr(substr($methodName, 9), 0, 1)) . substr(substr($methodName, 9), 1);
+			$result = $this->processMagicCall($propertyName, $arguments[0], 'one');
+		} elseif (substr($methodName, 0, 7) === 'countBy' && strlen($methodName) > 8) {
+			$propertyName = strtolower(substr(substr($methodName, 7), 0, 1)) . substr(substr($methodName, 7), 1);
+			$result = $this->processMagicCall($propertyName, $arguments[0], 'count');
+		} else {
+			throw new UnsupportedMethodException('The method "' . $methodName . '" is not supported by the repository.', 1360838010);
+		}
+		return $result;
+	}
+
+	/**
+	 * Returns a query for objects of this repository
+	 *
+	 * @return Query
+	 * @api
+	 */
+	public function createQuery() {
+		/** @var Query $query */
+		$query = $this->getObjectManager()->get('Fab\Vidi\Persistence\Query', $this->dataType);
+		$query->setSourceFieldName($this->sourceFieldName);
+
+		if ($this->defaultQuerySettings) {
+			$query->setQuerySettings($this->defaultQuerySettings);
+		} else {
+
+			// Initialize and pass the query settings at this level.
+			/** @var \Fab\Vidi\Persistence\QuerySettings $querySettings */
+			$querySettings = $this->getObjectManager()->get('Fab\Vidi\Persistence\QuerySettings');
+
+			// Default choice for the BE.
+			if ($this->isBackendMode()) {
+				$querySettings->setIgnoreEnableFields(TRUE);
+			}
+
+			$query->setQuerySettings($querySettings);
+		}
+
+		return $query;
+	}
+
+	/**
+	 * Sets the property names to order the result by per default.
+	 * Expected like this:
+	 * array(
+	 * 'foo' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING,
+	 * 'bar' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING
+	 * )
+	 *
+	 * @param array $defaultOrderings The property names to order by
+	 * @throws \BadMethodCallException
+	 * @return void
+	 * @api
+	 */
+	public function setDefaultOrderings(array $defaultOrderings) {
+		throw new \BadMethodCallException('Repository does not support the setDefaultOrderings() method.', 1375805598);
+	}
+
+	/**
+	 * Sets the default query settings to be used in this repository
+	 *
+	 * @param QuerySettingsInterface $defaultQuerySettings The query settings to be used by default
+	 * @throws \BadMethodCallException
+	 * @return void
+	 * @api
+	 */
+	public function setDefaultQuerySettings(QuerySettingsInterface $defaultQuerySettings) {
+		$this->defaultQuerySettings = $defaultQuerySettings;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getErrorMessages() {
+		return $this->errorMessages;
+	}
+
+	/**
+	 * @param string $sourceFieldName
+	 * @return $this
+	 */
+	public function setSourceFieldName($sourceFieldName) {
+		$this->sourceFieldName = $sourceFieldName;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDataType() {
+		return $this->dataType;
+	}
+	/**
+	 * Tell whether the order has a foreign table in its expression, e.g. "metadata.title".
+	 *
+	 * @param string $ordering
+	 * @return bool
+	 */
+	protected function hasForeignRelationIn($ordering) {
+		return strpos($ordering, '.') !== FALSE;
+	}
+
+	/**
+	 * Extract the foreign relation of the ordering "metadata.title" -> "metadata"
+	 *
+	 * @param string $ordering
+	 * @return string
+	 */
+	protected function getForeignRelationFrom($ordering) {
+		$parts = explode('.', $ordering);
+		return $parts[0];
 	}
 
 	/**
@@ -422,46 +695,6 @@ class ContentRepository implements RepositoryInterface {
 	}
 
 	/**
-	 * Count all Contents given specified matches.
-	 *
-	 * @param Matcher $matcher
-	 * @return int
-	 */
-	public function countBy(Matcher $matcher) {
-
-		$query = $this->createQuery();
-
-		$constraints = $this->computeConstraints($query, $matcher);
-
-		if ($constraints) {
-			$query->matching($constraints);
-		}
-
-		return $query->count();
-	}
-
-	/**
-	 * Update a content with new information.
-	 *
-	 * @param Content $content
-	 * @param $language
-	 * @return bool
-	 */
-	public function localize($content, $language) {
-
-		// Security check
-		$this->getContentValidator()->validate($content);
-		$this->getLanguageValidator()->validate($language);
-
-		$dataType = $content->getDataType();
-		$handler = $this->getDataHandlerFactory()->action(ProcessAction::LOCALIZE)->forType($dataType)->getDataHandler();
-
-		$handlerResult = $handler->processLocalize($content, $language);
-		$this->errorMessages = $handler->getErrorMessages();
-		return $handlerResult;
-	}
-
-	/**
 	 * @return \TYPO3\CMS\Core\DataHandling\DataHandler
 	 */
 	protected function getDataHandler() {
@@ -469,157 +702,6 @@ class ContentRepository implements RepositoryInterface {
 			$this->dataHandler = GeneralUtility::makeInstance('TYPO3\CMS\Core\DataHandling\DataHandler');
 		}
 		return $this->dataHandler;
-	}
-
-	/**
-	 * Update a content with new information.
-	 *
-	 * @param Content $content
-	 * @return bool
-	 */
-	public function update($content) {
-
-		// Security check.
-		$this->getContentValidator()->validate($content);
-
-		$dataType = $content->getDataType();
-		$handler = $this->getDataHandlerFactory()->action(ProcessAction::UPDATE)->forType($dataType)->getDataHandler();
-
-		$handlerResult = $handler->processUpdate($content);
-		$this->errorMessages = $handler->getErrorMessages();
-		return $handlerResult;
-	}
-
-	/**
-	 * Removes an object from this repository.
-	 *
-	 * @param Content $content
-	 * @return boolean
-	 */
-	public function remove($content) {
-		$dataType = $content->getDataType();
-		$handler = $this->getDataHandlerFactory()->action(ProcessAction::REMOVE)->forType($dataType)->getDataHandler();
-
-		$handlerResult = $handler->processRemove($content);
-		$this->errorMessages = $handler->getErrorMessages();
-		return $handlerResult;
-	}
-
-	/**
-	 * Move a content within this repository.
-	 *
-	 * @param Content $content
-	 * @param string $target
-	 * @return bool
-	 */
-	public function move($content, $target) {
-
-		// Security check.
-		$this->getContentValidator()->validate($content);
-
-		$dataType = $content->getDataType();
-		$handler = $this->getDataHandlerFactory()->action(ProcessAction::MOVE)->forType($dataType)->getDataHandler();
-
-		$handlerResult = $handler->processMove($content, $target);
-		$this->errorMessages = $handler->getErrorMessages();
-		return $handlerResult;
-	}
-
-	/**
-	 * Copy a content within this repository.
-	 *
-	 * @param Content $content
-	 * @return bool
-	 */
-	public function copy($content, $target) {
-
-		// Security check.
-		$this->getContentValidator()->validate($content);
-
-		$dataType = $content->getDataType();
-		$handler = $this->getDataHandlerFactory()->action(ProcessAction::COPY)->forType($dataType)->getDataHandler();
-
-		$handlerResult = $handler->processCopy($content, $target);
-		$this->errorMessages = $handler->getErrorMessages();
-		return $handlerResult;
-	}
-
-	/**
-	 * Dispatches magic methods (findBy[Property]())
-	 *
-	 * @param string $methodName The name of the magic method
-	 * @param string $arguments The arguments of the magic method
-	 * @throws UnsupportedMethodException
-	 * @return mixed
-	 * @api
-	 */
-	public function __call($methodName, $arguments) {
-		if (substr($methodName, 0, 6) === 'findBy' && strlen($methodName) > 7) {
-			$propertyName = strtolower(substr(substr($methodName, 6), 0, 1)) . substr(substr($methodName, 6), 1);
-			$result = $this->processMagicCall($propertyName, $arguments[0]);
-		} elseif (substr($methodName, 0, 9) === 'findOneBy' && strlen($methodName) > 10) {
-			$propertyName = strtolower(substr(substr($methodName, 9), 0, 1)) . substr(substr($methodName, 9), 1);
-			$result = $this->processMagicCall($propertyName, $arguments[0], 'one');
-		} elseif (substr($methodName, 0, 7) === 'countBy' && strlen($methodName) > 8) {
-			$propertyName = strtolower(substr(substr($methodName, 7), 0, 1)) . substr(substr($methodName, 7), 1);
-			$result = $this->processMagicCall($propertyName, $arguments[0], 'count');
-		} else {
-			throw new UnsupportedMethodException('The method "' . $methodName . '" is not supported by the repository.', 1360838010);
-		}
-		return $result;
-	}
-
-	/**
-	 * Returns a query for objects of this repository
-	 *
-	 * @return Query
-	 * @api
-	 */
-	public function createQuery() {
-		/** @var Query $query */
-		$query = $this->getObjectManager()->get('Fab\Vidi\Persistence\Query', $this->dataType);
-		$query->setSourceFieldName($this->sourceFieldName);
-
-		if ($this->defaultQuerySettings) {
-			$query->setQuerySettings($this->defaultQuerySettings);
-		} else {
-
-			// Initialize and pass the query settings at this level.
-			/** @var \Fab\Vidi\Persistence\QuerySettings $querySettings */
-			$querySettings = $this->getObjectManager()->get('Fab\Vidi\Persistence\QuerySettings');
-
-			// Default choice for the BE.
-			if ($this->isBackendMode()) {
-				$querySettings->setIgnoreEnableFields(TRUE);
-			}
-
-			$query->setQuerySettings($querySettings);
-		}
-
-		return $query;
-	}
-
-	/**
-	 * @return boolean
-	 */
-	public function getRawResult() {
-		return $this->rawResult;
-	}
-
-	/**
-	 * @param boolean $rawResult
-	 * @return \Fab\Vidi\Domain\Repository\ContentRepository
-	 */
-	public function setRawResult($rawResult) {
-		$this->rawResult = $rawResult;
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getDataType() {
-		return $this->dataType;
 	}
 
 	/**
@@ -653,105 +735,6 @@ class ContentRepository implements RepositoryInterface {
 			$result = $this->findBy($matcher);
 		}
 		return $flag == 'one' && !empty($result) ? reset($result) : $result;
-	}
-
-	/**
-	 * Adds an object to this repository.
-	 *
-	 * @param object $object The object to add
-	 * @throws \BadMethodCallException
-	 * @return void
-	 * @api
-	 */
-	public function add($object) {
-		throw new \BadMethodCallException('Repository does not support the add() method.', 1375805599);
-	}
-
-	/**
-	 * Returns the total number objects of this repository.
-	 *
-	 * @return integer The object count
-	 * @api
-	 */
-	public function countAll() {
-		$query = $this->createQuery();
-		return $query->count();
-	}
-
-	/**
-	 * Removes all objects of this repository as if remove() was called for
-	 * all of them.
-	 *
-	 * @return void
-	 * @api
-	 */
-	public function removeAll() {
-		// TODO: Implement removeAll() method.
-	}
-
-	/**
-	 * Finds an object matching the given identifier.
-	 *
-	 * @param mixed $identifier The identifier of the object to find
-	 * @return Content|NULL
-	 * @api
-	 */
-	public function findByIdentifier($identifier) {
-		$query = $this->createQuery();
-
-		$result = $query->matching($query->equals('uid', $identifier))
-			->execute();
-
-		if (is_array($result)) {
-			$result = current($result);
-		}
-
-		return $result;
-	}
-
-	/**
-	 * Sets the property names to order the result by per default.
-	 * Expected like this:
-	 * array(
-	 * 'foo' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING,
-	 * 'bar' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING
-	 * )
-	 *
-	 * @param array $defaultOrderings The property names to order by
-	 * @throws \BadMethodCallException
-	 * @return void
-	 * @api
-	 */
-	public function setDefaultOrderings(array $defaultOrderings) {
-		throw new \BadMethodCallException('Repository does not support the setDefaultOrderings() method.', 1375805598);
-	}
-
-	/**
-	 * Sets the default query settings to be used in this repository
-	 *
-	 * @param QuerySettingsInterface $defaultQuerySettings The query settings to be used by default
-	 * @throws \BadMethodCallException
-	 * @return void
-	 * @api
-	 */
-	public function setDefaultQuerySettings(QuerySettingsInterface $defaultQuerySettings) {
-		$this->defaultQuerySettings = $defaultQuerySettings;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getErrorMessages() {
-		return $this->errorMessages;
-	}
-
-	/**
-	 * @param string $sourceFieldName
-	 * @return $this
-	 */
-	public function setSourceFieldName($sourceFieldName) {
-		$this->sourceFieldName = $sourceFieldName;
-		return $this;
 	}
 
 	/**
