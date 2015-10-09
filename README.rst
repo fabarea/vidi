@@ -301,7 +301,9 @@ Datatype
 	boolean
 
 Description
-	Whether the column is sortable or not.
+	Whether the column is sortable or not. This value is not respected if the table has a "sortby" value as:
+
+	['ctrl']['sorby'] => 'sorting'
 
 Default
 	TRUE

@@ -99,13 +99,27 @@ class CoreDataHandler extends AbstractDataHandler {
 
 	/**
 	 * Process Content with action "move".
+	 * The $target corresponds to the pid to move the records to.
+	 * It can also be a negative value in case of sorting. The negative value would be the uid of its predecessor.
 	 *
 	 * @param Content $content
-	 * @param string $target
+	 * @param int $target corresponds
 	 * @return bool
 	 */
 	public function processMove(Content $content, $target) {
-		// TODO: Implement processMove() method.
+
+		// Build command
+		$cmd[$content->getDataType()][$content->getUid()]['move'] = $target;
+
+		/** @var $dataHandler \TYPO3\CMS\Core\DataHandling\DataHandler */
+		$dataHandler = $this->getDataHandler();
+		$dataHandler->start(array(), $cmd);
+		$dataHandler->process_datamap();
+		$dataHandler->process_cmdmap();
+		$this->errorMessages = $dataHandler->errorLog;
+
+		// Returns TRUE is log does not contain errors.
+		return empty($dataHandler->errorLog);
 	}
 
 	/**

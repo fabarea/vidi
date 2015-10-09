@@ -114,6 +114,14 @@
 		 */
 		Vidi.grid = $('#content-list').dataTable(Vidi.Grid.getOptions());
 
+		if (Vidi.module.hasSortingByDragAndDrop) {
+			Vidi.grid.rowReordering({
+					sURL: Vidi.module.moduleUrl + '&' + Vidi.module.parameterPrefix + '[format]=json' + '&' + Vidi.module.parameterPrefix + '[controller]=Content' + '&' + Vidi.module.parameterPrefix + '[action]=sort',
+					sRequestType: 'GET'
+				}
+			);
+		}
+
 		// Add place holder for the search
 		$('.dataTables_filter input').attr('placeholder', Vidi.translate('search'));
 
@@ -167,12 +175,12 @@ Vidi.merge = function(set1, set2) {
  * Configure "custom-textfield" type for jEditable.
  */
 $.editable.addInputType('custom-textfield', {
-	element : function(settings, original) {
+	element: function(settings, original) {
 		var input = $('<input type="text" style="width: 75%; font-size: 12px; height: 16px"/>');
 		$(this).append(input);
-		return(input);
+		return (input);
 	},
-	content : function(string, settings, original) {
+	content: function(string, settings, original) {
 		if (string === '<i>' + TYPO3.l10n.localize('start_editing') + '</i>') {
 			string = '';
 		}
@@ -184,12 +192,12 @@ $.editable.addInputType('custom-textfield', {
  * Configure "custom-textarea" type for jEditable.
  */
 $.editable.addInputType('custom-textarea', {
-	element : function(settings, original) {
+	element: function(settings, original) {
 		var input = $('<textarea style="width: 80%; height: 40%"></textarea>');
 		$(this).append(input);
-		return(input);
+		return (input);
 	},
-	content : function(string, settings, original) {
+	content: function(string, settings, original) {
 		if (string === '<i>' + TYPO3.l10n.localize('start_editing') + '</i>') {
 			string = '';
 		}

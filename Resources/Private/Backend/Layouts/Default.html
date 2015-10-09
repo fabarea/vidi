@@ -33,6 +33,7 @@
 		Vidi.module.moduleUrl = '{v:moduleLoader(key: "moduleUrl") -> f:format.raw()}';
 		Vidi.module.signature = '{v:moduleLoader(key: "signature")}';
 		Vidi.module.search = {};
+		Vidi.module.hasSortingByDragAndDrop = Boolean('{v:tca.table(key: "sortby")}');
 		Vidi.module.search.facets = {v:grid.facets()};
 		Vidi.module.search.labels = {};
 		Vidi.module.search.values = {};
@@ -59,6 +60,7 @@
 	<v:js name="JQuery/jquery.dataTables.min.js"/>
 	<v:js name="JQuery/jquery.form.js"/>
 	<v:js name="JQuery/jquery.dataTables.bootstrap.js"/>
+	<v:js name="jquery.dataTables.rowReordering.js"/>
 
 	<v:js name="Bootstrap/bootstrap.min.js"/>
 	<v:js name="Bootstrap/bootbox.min.js"/>

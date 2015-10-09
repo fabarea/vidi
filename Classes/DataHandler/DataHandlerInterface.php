@@ -49,7 +49,7 @@ interface DataHandlerInterface {
 	 * Process Content with action "move".
 	 *
 	 * @param Content $content
-	 * @param string $target
+	 * @param mixed $target
 	 * @return bool
 	 */
 	public function processMove(Content $content, $target);

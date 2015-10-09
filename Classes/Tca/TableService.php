@@ -222,7 +222,9 @@ class TableService extends AbstractTca {
 	 * @return string|NULL
 	 */
 	public function getDefaultOrderSql() {
-		return $this->get('default_sortby');
+		// "sortby" typically has "sorting" as value.
+		$order = $this->get('sortby') ? $this->get('sortby') . ' ASC' : $this->get('default_sortby');
+		return $order;
 	}
 
 	/**
@@ -290,6 +292,15 @@ class TableService extends AbstractTca {
 	 */
 	public function getFieldsAndConfiguration() {
 		return $this->columnTca;
+	}
+
+	/**
+	 * Tell whether we have a field "sorting".
+	 *
+	 * @return array
+	 */
+	public function hasSortableField() {
+		return $this->has('sortby');
 	}
 
 	/**

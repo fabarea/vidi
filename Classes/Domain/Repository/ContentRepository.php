@@ -314,6 +314,8 @@ class ContentRepository implements RepositoryInterface {
 
 	/**
 	 * Move a content within this repository.
+	 * The $target corresponds to the pid to move the records to.
+	 * It can also be a negative value in case of sorting. The negative value would be the uid of its predecessor.
 	 *
 	 * @param Content $content
 	 * @param string $target

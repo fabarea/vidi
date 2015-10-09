@@ -204,6 +204,56 @@ class ContentController extends ActionController {
 	}
 
 	/**
+	 * Set the sorting of a record giving the previous object.
+	 *
+	 * @param array $matches
+	 * @param int $previousIdentifier
+	 * @return string
+	 */
+	public function sortAction(array $matches = array(), $previousIdentifier = NULL) {
+
+		$matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
+
+		// Fetch objects via the Content Service.
+		$contentService = $this->getContentService()->findBy($matcher);
+
+		// Compute the label field name of the table.
+		$tableTitleField = Tca::table()->getLabelField();
+
+		// Get result object for storing data along the processing.
+		$result = $this->getJsonResult();
+		$result->setNumberOfObjects($contentService->getNumberOfObjects());
+
+		foreach ($contentService->getObjects() as $object) {
+
+			// Store the first object, so that the "action" message can be more explicit when deleting only one record.
+			if ($contentService->getNumberOfObjects() === 1) {
+				$tableTitleValue = $object[$tableTitleField];
+				$processedObjectData = array(
+					'uid' => $object->getUid(),
+					'name' => $tableTitleValue,
+				);
+				$result->setProcessedObject($processedObjectData);
+			}
+
+			// The $target corresponds to the pid to move the records to.
+	        // It can also be a negative value in case of sorting. The negative value would be the uid of its predecessor.
+			$target = is_null($previousIdentifier) ? $object->getPid() : (-(int)$previousIdentifier);
+
+			// Work out the object.
+			ContentRepositoryFactory::getInstance()->move($object, $target);
+
+			// Get the possible error messages and store them.
+			$errorMessages = ContentRepositoryFactory::getInstance()->getErrorMessages();
+			$result->addErrorMessages($errorMessages);
+		}
+
+		// Set the result and render the JSON view.
+		$this->getJsonView()->setResult($result);
+		return $this->getJsonView()->render();
+	}
+
+	/**
 	 * Returns an editing form for a given field name of a Content object.
 	 * Argument $fieldNameAndPath corresponds to the field name to be edited.
 	 * Important to notice it can contains a path, e.g. metadata.title and therefore must be analysed.
@@ -245,6 +295,7 @@ class ContentController extends ActionController {
 
 			$content = ContentRepositoryFactory::getInstance($dataType)->findByUid($identifier);
 
+			// Makes sure the object was retrieved. Security!
 			if (!$content) {
 				$message = sprintf('I could not retrieved content object of type "%s" with identifier %s.', $dataType, $identifier);
 				throw new \Exception($message, 1402350182);
@@ -449,7 +500,7 @@ class ContentController extends ActionController {
 			/** @var Content $content */
 			$content = ContentRepositoryFactory::getInstance($dataType)->findByIdentifier($identifier);
 
-			// Makes sure the object could have been retrieved. Security!
+			// Makes sure the object was retrieved. Security!
 			if (!$content) {
 				$message = sprintf('Something went wrong when retrieving content "%s" with identifier "%s".', $dataType, $identifier);
 				throw new \Exception($message, 1412343097);

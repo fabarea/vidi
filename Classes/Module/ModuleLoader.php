@@ -200,7 +200,7 @@ class ModuleLoader {
 				$this->dataType . '_' . $this->moduleKey,
 				$this->position,
 				array(
-					'Content' => 'index, list, delete, update, edit, copy, move, localize',
+					'Content' => 'index, list, delete, update, edit, copy, move, localize, sort',
 					'Tool' => 'welcome, work',
 					'Facet' => 'autoSuggest, autoSuggests',
 					'Selection' => 'edit, update, create, delete, list, show',

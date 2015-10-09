@@ -45,7 +45,7 @@ class ContentRepositoryFactory implements SingletonInterface {
 			$dataType = $moduleLoader->getDataType();
 		}
 
-		// This should not happen
+		// This should not happen.
 		if (!$dataType) {
 			throw new \RuntimeException('No data type given nor could be fetched by the module loader.', 1376118278);
 		}
