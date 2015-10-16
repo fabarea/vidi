@@ -216,8 +216,8 @@ Vidi.Grid = {
 					{
 						type: 'custom-textarea',
 						placeholder: '',
-						cancel: 'Cancel',
-						submit: 'OK',
+						cancel: TYPO3.l10n.localize('cancel'),
+						submit: TYPO3.l10n.localize('ok'),
 						indicator: Vidi.EditInline.indicator,
 						data: Vidi.EditInline.getParameters,
 						submitdata: Vidi.EditInline.submitData,

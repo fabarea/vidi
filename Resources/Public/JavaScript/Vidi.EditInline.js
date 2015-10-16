@@ -12,7 +12,7 @@ Vidi.EditInline = {
 	/**
 	 * Loading indicator
 	 */
-	indicator: '<img src="' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" width="16" height="" alt="" />',
+	indicator: '<img src="' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" width="16" alt="" />',
 
 	/**
 	 * Get needed values to be added to the Ajax request.
@@ -21,7 +21,7 @@ Vidi.EditInline = {
 	 * @param {object} settings
 	 * @returns {object}
 	 */
-	submitData: function (value, settings) {
+	submitData: function(value, settings) {
 		var data = {}; // initialize empty
 
 		var columnPosition = Vidi.Grid.getColumnPosition(this);
@@ -31,11 +31,11 @@ Vidi.EditInline = {
 		data[parameterName] = Vidi.Grid.getRowIdentifier(this);
 
 		// Compute "fieldNameAndPath" parameter...
-		parameterName= '{0}[fieldNameAndPath]'.format(Vidi.module.parameterPrefix);
+		parameterName = '{0}[fieldNameAndPath]'.format(Vidi.module.parameterPrefix);
 		data[parameterName] = Vidi._columns[columnPosition]['columnName'];
 
 		if ($(this).data('language')) {
-			parameterName= '{0}[language]'.format(Vidi.module.parameterPrefix);
+			parameterName = '{0}[language]'.format(Vidi.module.parameterPrefix);
 			data[parameterName] = $(this).data('language');
 		}
 
@@ -49,7 +49,7 @@ Vidi.EditInline = {
 	 * @param {object} settings
 	 * @returns {string}
 	 */
-	getParameters: function (value, settings) {
+	getParameters: function(value, settings) {
 		var contentParameter, fieldName;
 
 		var columnPosition = Vidi.Grid.getColumnPosition(this);

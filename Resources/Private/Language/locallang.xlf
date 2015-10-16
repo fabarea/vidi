@@ -64,6 +64,9 @@
 			<trans-unit id="cancel">
 				<source>Cancel</source>
 			</trans-unit>
+			<trans-unit id="ok">
+				<source>Ok</source>
+			</trans-unit>
 			<trans-unit id="are-you-sure">
 				<source>Are you sure?</source>
 			</trans-unit>
@@ -134,7 +137,7 @@
 				<source>Update the current record</source>
 			</trans-unit>
 			<trans-unit id="editing_many_rows_takes_time">
-				<source>Editing more than 300 records is resource consuming and will take some time.</source>
+				<source>Editing more than 300 records is time consuming and can last up to a few minutes.</source>
 			</trans-unit>
 			<trans-unit id="attention">
 				<source>Attention!</source>
@@ -201,6 +204,39 @@
 			</trans-unit>
 			<trans-unit id="selection.add">
 				<source>Add selection</source>
+			</trans-unit>
+			<trans-unit id="clipboard.save">
+				<source>Copy to clipboard</source>
+			</trans-unit>
+			<trans-unit id="clipboard.copy_or_move">
+				<source>Copy or move items from the clipboard</source>
+			</trans-unit>
+			<trans-unit id="clipboard.are_you_sure">
+				<source>You are going to move %s items here. Are you sure?</source>
+			</trans-unit>
+			<trans-unit id="clipboard.items_saved">
+				<source>%s items have been saved in the clipboard.</source>
+			</trans-unit>
+			<trans-unit id="clipboard.items_not_saved">
+				<source>Something went wrong. Items were not saved in the clipboard.</source>
+			</trans-unit>
+			<trans-unit id="clipboard.copy_items">
+				<source>Copy items</source>
+			</trans-unit>
+			<trans-unit id="clipboard.move_items">
+				<source>Move items</source>
+			</trans-unit>
+			<trans-unit id="relation.replace">
+				<source>Replace relations</source>
+			</trans-unit>
+			<trans-unit id="relation.append">
+				<source>Append relations</source>
+			</trans-unit>
+			<trans-unit id="relation.remove">
+				<source>Remove relations</source>
+			</trans-unit>
+			<trans-unit id="clipboard.empty_clipboard">
+				<source>Empty clipboard afterwards?</source>
 			</trans-unit>
 		</body>
 	</file>

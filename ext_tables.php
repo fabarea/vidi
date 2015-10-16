@@ -70,11 +70,12 @@ if (TYPO3_MODE == 'BE') {
 			'm1', // Submodule key
 			'after:list', // Position
 			array(
-				'Content' => 'index, list, delete, update, edit, copy, move, localize, sort',
+				'Content' => 'index, list, delete, update, edit, copy, move, localize, sort, copyClipboard, moveClipboard',
 				'Tool' => 'welcome, work',
-				'Facet' => 'autoSuggest',
+				'Facet' => 'autoSuggest, autoSuggests',
 				'Selection' => 'edit, update, create, delete, list, show',
 				'UserPreferences' => 'save',
+				'Clipboard' => 'save, flush, show',
 			), array(
 				'access' => 'user,group',
 				'icon' => 'EXT:vidi/Resources/Public/Images/list.png',
@@ -125,6 +126,7 @@ if (TYPO3_MODE == 'BE') {
 // Add new sprite icon.
 \TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons(
 	array(
+		'clipboard' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('vidi') . 'Resources/Public/Images/table_go.png',
 		'go' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('vidi') . 'Resources/Public/Images/bullet_go.png',
 		'query' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('vidi') . 'Resources/Public/Images/query.png',
 	),

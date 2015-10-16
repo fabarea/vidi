@@ -1,0 +1,27 @@
+<f:form controller="Content" id="form-clipboard-copy-or-move" method="post" style="margin: 0">
+
+	<div class="heading">
+		<f:translate key="clipboard.are_you_sure" arguments="{numberOfObjects: '{numberOfObjects}'}"/>
+	</div>
+
+	<!-- additional parameters -->
+	<f:form.hidden name="target" value="{target}"/>
+
+	<f:if condition="{objects}">
+		<ul style="max-height: 320px; overflow: scroll; margin-top: 10px">
+			<f:for each="{objects}" as="object">
+				<li title="uid: {object.uid}">
+					- <v:tca.title content="{object}"/>
+				</li>
+			</f:for>
+		</ul>
+	</f:if>
+
+	<label class="checkbox" style="width: 200px; padding-top: 10px;">
+		<input type="checkbox" name="flushClipboard" class="btn-clipboard-flush" checked>
+		<f:translate key="clipboard.empty_clipboard" />
+	</label>
+
+</f:form>
+
+{namespace v=Fab\Vidi\ViewHelpers}

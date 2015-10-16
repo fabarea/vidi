@@ -4,10 +4,11 @@
 		"use strict";
 
 		// Initialize some objects...
-		Vidi.Edit.initialize();
+		Vidi.Edit.attachHandler();
+		Vidi.Clipboard.attachHandler();
 
 		/**
-		 * Add handler when clicking the reload button
+		 * Add handler when clicking the reload button.
 		 */
 		$('.btn-reload').click(function(e) {
 			e.preventDefault();
@@ -122,7 +123,7 @@
 			);
 		}
 
-		// Add place holder for the search
+		// Add place holder for the search.
 		$('.dataTables_filter input').attr('placeholder', Vidi.translate('search'));
 
 	});

@@ -30,7 +30,7 @@ class FacetController extends ActionController {
 	 * @param string $facet
 	 * @param string $searchTerm
 	 * @validate $facet Fab\Vidi\Domain\Validator\FacetValidator
-	 * @return void
+	 * @return string
 	 */
 	public function autoSuggestAction($facet, $searchTerm) {
 
@@ -46,7 +46,7 @@ class FacetController extends ActionController {
 	 * Suggest values for all configured facets in the Grid.
 	 * Output a json list of key / values.
 	 *
-	 * @return void
+	 * @return string
 	 */
 	public function autoSuggestsAction() {
 

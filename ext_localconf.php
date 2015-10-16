@@ -6,10 +6,16 @@ if (!defined('TYPO3_MODE')) {
 $configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['vidi']);
 
 if (FALSE === isset($configuration['autoload_typoscript']) || TRUE === (bool)$configuration['autoload_typoscript']) {
-	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript($_EXTKEY, 'constants',
+
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript(
+		'vidi',
+		'constants',
 		'<INCLUDE_TYPOSCRIPT: source="FILE:EXT:vidi/Configuration/TypoScript/constants.txt">'
 	);
-	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript($_EXTKEY, 'setup',
+
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript(
+		'vidi',
+		'setup',
 		'<INCLUDE_TYPOSCRIPT: source="FILE:EXT:vidi/Configuration/TypoScript/setup.txt">'
 	);
 }

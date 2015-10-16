@@ -36,7 +36,7 @@ Vidi.Edit = {
 	 *
 	 * @return void
 	 */
-	initialize: function () {
+	attachHandler: function () {
 
 		/**
 		 * Load the generic "edit relation" form for mm relations.
@@ -197,7 +197,6 @@ Vidi.Edit = {
 		return uri.toString().replace('.php/?', '.php?');
 	},
 
-
 	/**
 	 * Set possible additional parameters for Ajax.
 	 *
@@ -309,7 +308,8 @@ Vidi.Edit = {
 
 		var modalWindowConfiguration = [
 			{
-				'label': 'Cancel'
+				class: 'btn-primary',
+				label: TYPO3.l10n.localize('cancel')
 			}
 		];
 
@@ -318,9 +318,9 @@ Vidi.Edit = {
 
 			// Push configuration for "relation" editing: "remove" relation case.
 			modalWindowConfiguration.push({
-				'label': 'Remove Relation',
-				'class': 'btn-save-relation',
-				'callback': function() {
+				label: TYPO3.l10n.localize('relation.remove'),
+				class: 'btn-save-relation',
+				callback: function() {
 
 					// Set "hidden" controller by JavaScript.
 					$('#savingBehaviorRemove').click();
@@ -337,9 +337,9 @@ Vidi.Edit = {
 
 			// Push configuration for "relation" editing: "append" relation case.
 			modalWindowConfiguration.push({
-				'label': 'Append Relation',
-				'class': 'btn-save-relation',
-				'callback': function() {
+				label: TYPO3.l10n.localize('relation.append'),
+				class: 'btn-save-relation',
+				callback: function() {
 
 					// Set "hidden" controller by JavaScript.
 					$('#savingBehaviorAppend').click();
@@ -356,9 +356,9 @@ Vidi.Edit = {
 
 			// Push configuration for "relation" editing: "replace" relation case.
 			modalWindowConfiguration.push({
-				'label': 'Replace Relation',
-				'class': 'btn-primary btn-save-relation',
-				'callback': function() {
+				label: TYPO3.l10n.localize('relation.replace'),
+				class: 'btn-save-relation',
+				callback: function() {
 
 					// Set "hidden" controller by JavaScript.
 					$('#savingBehaviorReplace').click();
@@ -378,9 +378,9 @@ Vidi.Edit = {
 
 			// Push configuration for "scalar" editing.
 			modalWindowConfiguration.push({
-				'label': Vidi.Edit.label.save,
-				'class': 'btn-primary btn-save-relation',
-				'callback': function() {
+				label: Vidi.Edit.label.save,
+				class: 'btn-save-relation',
+				callback: function() {
 
 					// Show to the User the grid is being refreshed.
 					Vidi.Edit.editedCells.html('<img src="' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" width="16" alt="" />');

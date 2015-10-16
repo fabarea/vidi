@@ -41,7 +41,7 @@ Vidi.Response = {
 		// GUI: un-check the top checkbox.
 		$('.checkbox-row-top').removeAttr('checked');
 
-		// Reload data table
+		// Reload the grid.
 		Vidi.grid.fnDraw(false); // false = for keeping the pagination.
 
 		// Display flash message

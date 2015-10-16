@@ -194,7 +194,6 @@ class ContentController extends ActionController {
 					'updatedValue' => $updatedResult,
 				);
 				$result->setProcessedObject($processedObjectData);
-
 			}
 		}
 
@@ -422,6 +421,58 @@ class ContentController extends ActionController {
 	}
 
 	/**
+	 * Retrieve Content objects from the Clipboard then "copy" them according to the target.
+	 *
+	 * @param string $target
+	 * @throws \Exception
+	 * @return string
+	 */
+	public function copyClipboardAction($target) {
+
+		// Retrieve matcher object from clipboard.
+		$matcher = $this->getClipboardService()->getMatcher();
+
+		// Fetch objects via the Content Service.
+		$contentService = $this->getContentService()->findBy($matcher);
+
+		// Compute the label field name of the table.
+		$tableTitleField = Tca::table()->getLabelField();
+
+		// Get result object for storing data along the processing.
+		$result = $this->getJsonResult();
+		$result->setNumberOfObjects($contentService->getNumberOfObjects());
+
+		foreach ($contentService->getObjects() as $object) {
+
+			// Store the first object, so that the "action" message can be more explicit when deleting only one record.
+			if ($contentService->getNumberOfObjects() === 1) {
+				$tableTitleValue = $object[$tableTitleField];
+				$processedObjectData = array(
+					'uid' => $object->getUid(),
+					'name' => $tableTitleValue,
+				);
+				$result->setProcessedObject($processedObjectData);
+			}
+
+			// Work out the object.
+			ContentRepositoryFactory::getInstance()->copy($object, $target);
+
+			// Get the possible error messages and store them.
+			$errorMessages = ContentRepositoryFactory::getInstance()->getErrorMessages();
+			$result->addErrorMessages($errorMessages);
+		}
+
+		// Flush Clipboard if told so.
+		if(GeneralUtility::_GP('flushClipboard')) {
+			$this->getClipboardService()->flush();
+		}
+
+		// Set the result and render the JSON view.
+		$this->getJsonView()->setResult($result);
+		return $this->getJsonView()->render();
+	}
+
+	/**
 	 * Retrieve Content objects first according to matching criteria and then "move" them.
 	 *
 	 * Possible values for $matches, refer to method "updateAction".
@@ -462,6 +513,57 @@ class ContentController extends ActionController {
 			// Get the possible error messages and store them.
 			$errorMessages = ContentRepositoryFactory::getInstance()->getErrorMessages();
 			$result->addErrorMessages($errorMessages);
+		}
+
+		// Set the result and render the JSON view.
+		$this->getJsonView()->setResult($result);
+		return $this->getJsonView()->render();
+	}
+
+	/**
+	 * Retrieve Content objects from the Clipboard then "move" them according to the target.
+	 *
+	 * @param string $target
+	 * @return string
+	 */
+	public function moveClipboardAction($target) {
+
+		// Retrieve matcher object from clipboard.
+		$matcher = $this->getClipboardService()->getMatcher();
+
+		// Fetch objects via the Content Service.
+		$contentService = $this->getContentService()->findBy($matcher);
+
+		// Compute the label field name of the table.
+		$tableTitleField = Tca::table()->getLabelField();
+
+		// Get result object for storing data along the processing.
+		$result = $this->getJsonResult();
+		$result->setNumberOfObjects($contentService->getNumberOfObjects());
+
+		foreach ($contentService->getObjects() as $object) {
+
+			// Store the first object, so that the "action" message can be more explicit when deleting only one record.
+			if ($contentService->getNumberOfObjects() === 1) {
+				$tableTitleValue = $object[$tableTitleField];
+				$processedObjectData = array(
+					'uid' => $object->getUid(),
+					'name' => $tableTitleValue,
+				);
+				$result->setProcessedObject($processedObjectData);
+			}
+
+			// Work out the object.
+			ContentRepositoryFactory::getInstance()->move($object, $target);
+
+			// Get the possible error messages and store them.
+			$errorMessages = ContentRepositoryFactory::getInstance()->getErrorMessages();
+			$result->addErrorMessages($errorMessages);
+		}
+
+		// Flush Clipboard if told so.
+		if(GeneralUtility::_GP('flushClipboard')) {
+			$this->getClipboardService()->flush();
 		}
 
 		// Set the result and render the JSON view.
@@ -627,6 +729,15 @@ class ContentController extends ActionController {
 	 */
 	protected function getSignalSlotDispatcher() {
 		return $this->objectManager->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+	}
+
+	/**
+	 * Get the Clipboard service.
+	 *
+	 * @return \Fab\Vidi\Service\ClipboardService
+	 */
+	protected function getClipboardService() {
+		return GeneralUtility::makeInstance('Fab\Vidi\Service\ClipboardService');
 	}
 
 	/**

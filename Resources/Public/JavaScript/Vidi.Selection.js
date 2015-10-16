@@ -227,7 +227,6 @@ Vidi.Selection = {
 
 		// Make the bootbox window a little bit bigger.
 		$(box).css('width', '600px');
-
 	},
 
 	/**
