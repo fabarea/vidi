@@ -311,7 +311,7 @@ class FieldService extends AbstractTca {
 					$fieldType = FieldType::DATE;
 				} elseif (in_array('email', $parts)) {
 					$fieldType = FieldType::EMAIL;
-				} elseif (in_array('int', $parts)) {
+				} elseif (in_array('int', $parts) || in_array('double2', $parts)) {
 					$fieldType = FieldType::NUMBER;
 				}
 			}
