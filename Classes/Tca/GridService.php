@@ -200,16 +200,17 @@ class GridService extends AbstractTca {
 	 * @return array
 	 */
 	public function getFields() {
-
 		// Cache this operation since it can take some time.
 		if (is_null($this->fields)) {
 
 			// Fetch all available fields first.
 			$fields = $this->getAllFields();
 
-			// Then remove the not allowed.
-			$fields = $this->filterForBackendUser($fields);
-			$fields = $this->filterForConfiguration($fields);
+			if ($this->isBackendMode()) {
+				// Then remove the not allowed.
+				$fields = $this->filterForBackendUser($fields);
+				$fields = $this->filterForConfiguration($fields);
+			}
 
 			$this->fields = $fields;
 		}

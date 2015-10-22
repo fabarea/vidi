@@ -53,7 +53,10 @@ class MatcherObjectFactory implements SingletonInterface {
 
 		$matcher = $this->applyCriteriaFromDataTables($matcher, $dataType);
 		$matcher = $this->applyCriteriaFromMatchesArgument($matcher, $matches);
-		$matcher = $this->applyCriteriaFromUrl($matcher);
+
+		if ($this->isBackendMode()) {
+			$matcher = $this->applyCriteriaFromUrl($matcher);
+		}
 
 		// Trigger signal for post processing Matcher Object.
 		$this->emitPostProcessMatcherObjectSignal($matcher);
@@ -213,4 +216,12 @@ class MatcherObjectFactory implements SingletonInterface {
 		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
 	}
 
+	/**
+	 * Returns whether the current mode is Backend
+	 *
+	 * @return bool
+	 */
+	protected function isBackendMode() {
+		return TYPO3_MODE == 'BE';
+	}
 }
