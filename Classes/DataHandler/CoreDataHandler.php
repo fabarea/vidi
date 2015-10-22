@@ -41,7 +41,7 @@ class CoreDataHandler extends AbstractDataHandler {
 
 		// Check the field to be updated exists
 		foreach ($content->toArray() as $fieldName => $value) {
-			if (Tca::table($content->getDataType())->hasNotField($fieldName)) {
+			if (!Tca::table($content->getDataType())->hasField($fieldName)) {
 				$message = sprintf('It looks field "%s" does not exist for data type "%s"', $fieldName, $content->getDataType());
 				throw new \Exception($message, 1390668497);
 			}

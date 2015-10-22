@@ -314,16 +314,6 @@ class GridService extends AbstractTca {
 	}
 
 	/**
-	 * Tell whether the field does not exist.
-	 *
-	 * @param string $fieldName
-	 * @return bool
-	 */
-	public function hasNotField($fieldName) {
-		return !$this->hasField($fieldName);
-	}
-
-	/**
 	 * Tell whether the facet exists in the grid or not.
 	 *
 	 * @param string $facetName

@@ -338,16 +338,6 @@ class TableService extends AbstractTca {
 	}
 
 	/**
-	 * Tell whether the field does not exist.
-	 *
-	 * @param string $fieldName
-	 * @return array
-	 */
-	public function hasNotField($fieldName) {
-		return !$this->hasField($fieldName);
-	}
-
-	/**
 	 * Tells whether the $key exists.
 	 *
 	 * @param string $key

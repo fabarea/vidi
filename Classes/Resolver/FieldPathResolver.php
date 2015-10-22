@@ -112,7 +112,7 @@ class FieldPathResolver implements SingletonInterface {
 	 * @return boolean
 	 */
 	public function containsPath($fieldNameAndPath, $dataType) {
-		$doesContainPath = strpos($fieldNameAndPath, '.') > 0 && Tca::table($dataType)->hasNotField($fieldNameAndPath); // -> will make sure it is not a composite field name.
+		$doesContainPath = strpos($fieldNameAndPath, '.') > 0 && !Tca::table($dataType)->hasField($fieldNameAndPath); // -> will make sure it is not a composite field name.
 		return $doesContainPath;
 	}
 

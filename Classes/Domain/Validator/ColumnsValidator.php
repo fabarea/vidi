@@ -31,7 +31,7 @@ class ColumnsValidator extends AbstractValidator {
 	public function isValid($columns) {
 
 		foreach ($columns as $columnName) {
-			if (Tca::grid()->hasNotField($columnName)) {
+			if (!Tca::grid()->hasField($columnName)) {
 				$message = sprintf('Column "%s" is not allowed. Actually, it was not configured to be displayed in the grid.', $columnName);
 				$this->addError($message , 1380019720);
 			}
