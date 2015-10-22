@@ -182,16 +182,6 @@ class Matcher {
 	}
 
 	/**
-	 * @param $fieldNameAndPath
-	 * @param $operand
-	 * @return $this
-	 * @deprecated Use method "like" instead which is inline with the Query Interface. Will be removed in 0.7 + 2 versions.
-	 */
-	public function likes($fieldNameAndPath, $operand) {
-		return $this->like($fieldNameAndPath, $operand, TRUE);
-	}
-
-	/**
 	 * @return array
 	 */
 	public function getDefaultLogicalSeparator() {

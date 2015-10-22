@@ -134,7 +134,7 @@ class MatcherObjectFactory implements SingletonInterface {
 						if ($this->isOperatorEquals($fieldNameAndPath, $dataType, $value)) {
 							$matcher->equals($fieldNameAndPath, $value);
 						} else {
-							$matcher->likes($fieldNameAndPath, $value);
+							$matcher->like($fieldNameAndPath, $value);
 						}
 					} elseif ($fieldNameAndPath === 'text') {
 						// Special case if field is "text" which is a pseudo field in this case.
