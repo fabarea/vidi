@@ -46,6 +46,11 @@ class Selection extends AbstractEntity {
 	protected $query;
 
 	/**
+	 * @var string
+	 */
+	protected $speakingQuery;
+
+	/**
 	 * @var int
 	 */
 	protected $owner;
@@ -80,6 +85,22 @@ class Selection extends AbstractEntity {
 	 */
 	public function getQuery() {
 		return $this->query;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSpeakingQuery() {
+		return $this->speakingQuery;
+	}
+
+	/**
+	 * @param string $speakingQuery
+	 * @return $this
+	 */
+	public function setSpeakingQuery($speakingQuery) {
+		$this->speakingQuery = $speakingQuery;
+		return $this;
 	}
 
 	/**

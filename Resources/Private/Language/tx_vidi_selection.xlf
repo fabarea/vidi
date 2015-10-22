@@ -24,8 +24,11 @@
 			<trans-unit id="data_type">
 				<source>Data type</source>
 			</trans-unit>
-			<trans-unit id="matches">
-				<source>Matches (JSON serialized)</source>
+			<trans-unit id="query">
+				<source>Query</source>
+			</trans-unit>
+			<trans-unit id="speaking_query">
+				<source>Speaking query</source>
 			</trans-unit>
 		</body>
 	</file>

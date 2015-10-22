@@ -114,16 +114,16 @@ class MatcherObjectFactory implements SingletonInterface {
 
 		// Special case for Grid in the BE using jQuery DataTables plugin.
 		// Retrieve a possible search term from GP.
-		$searchTerm = GeneralUtility::_GP('sSearch');
+		$query = GeneralUtility::_GP('sSearch');
 
-		if (strlen($searchTerm) > 0) {
+		if (strlen($query) > 0) {
 
 			// Parse the json query coming from the Visual Search.
-			$searchTerm = rawurldecode($searchTerm);
-			$terms = json_decode($searchTerm, TRUE);
+			$query = rawurldecode($query);
+			$queryParts = json_decode($query, TRUE);
 
-			if (is_array($terms)) {
-				foreach ($terms as $term) {
+			if (is_array($queryParts)) {
+				foreach ($queryParts as $term) {
 					$fieldNameAndPath = key($term);
 
 					$resolvedDataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $dataType);
@@ -147,7 +147,7 @@ class MatcherObjectFactory implements SingletonInterface {
 					}
 				}
 			} else {
-				$matcher->setSearchTerm($searchTerm);
+				$matcher->setSearchTerm($query);
 			}
 		}
 		return $matcher;

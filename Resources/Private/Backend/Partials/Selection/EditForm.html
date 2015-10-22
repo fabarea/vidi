@@ -12,11 +12,12 @@
 		        arguments="{dataType: '{v:moduleLoader(key: \'dataType\')}'}">
 
 			<f:form.hidden property="query" class="selection-query"/>
+			<f:form.hidden property="speakingQuery" class="selection-speakingQuery"/>
 			<div class="modal-selection-column-1">
 				<f:form.select class="form-control-selection" property="visibility" options="{v:selection.visibilityOptions()}"/>
 			</div>
 			<div class="modal-selection-column-2">
-				<f:form.textfield class="form-control-selection" property="name" title="{selection.query}"/>
+				<f:form.textfield class="form-control-selection" property="name" title="{selection.speakingQuery}"/>
 
 				<f:link.action
 						title="{f:translate(key: 'selection.update')}"
@@ -37,7 +38,7 @@
 
 				<f:link.action
 						title="{f:translate(key: 'query.update')}"
-						class="btn-selection-query"
+						class="btn-selection-speakingQuery"
 						controller="Selection"
 						action="update"
 						arguments="{selection: '{selection.uid}'}">

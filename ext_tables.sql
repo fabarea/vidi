@@ -15,6 +15,7 @@ CREATE TABLE tx_vidi_selection (
 	name varchar(255) DEFAULT '' NOT NULL,
 	data_type varchar(255) DEFAULT '' NOT NULL,
 	query text,
+	speaking_query text,
 
 	PRIMARY KEY (uid),
 	KEY parent (pid),

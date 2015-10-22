@@ -96,12 +96,13 @@ Vidi.Selection = {
 		});
 
 		/**
-		 * Update the selection with the current query
+		 * Update the selection with the current query.
 		 */
-		$(document).on('click', '.btn-selection-query', function(e) {
+		$(document).on('click', '.btn-selection-speakingQuery', function(e) {
 			e.preventDefault();
 			var $form = $(this).closest('form');
-			$('.selection-query', $form).val(Vidi.Session.get('visualSearchQuery'));
+			$('.selection-query', $form).val(Vidi.Session.get('query'));
+			$('.selection-speakingQuery', $form).val(Vidi.Session.get('visualSearchQuery'));
 			$('.btn-selection-update', $form).click();
 		});
 
@@ -144,7 +145,8 @@ Vidi.Selection = {
 			// Save selection
 			Vidi.Selection.updateGuiSubmittingState(true);
 
-			$('.selection-query', this).val(Vidi.Session.get('visualSearchQuery'));
+			$('.selection-query', this).val(Vidi.Session.get('query'));
+			$('.selection-speakingQuery', this).val(Vidi.Session.get('visualSearchQuery'));
 
 			// Register
 			$(this).ajaxSubmit({

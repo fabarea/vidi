@@ -74,5 +74,14 @@ return array(
 				'cols' => 5,
 			),
 		),
+		'speaking_query' => array(
+			'exclude' => 0,
+			'label' => 'LLL:EXT:vidi/Resources/Private/Language/tx_vidi_selection.xlf:speaking_query',
+			'config' => array(
+				'type' => 'text',
+				'rows' => 5,
+				'cols' => 5,
+			),
+		),
 	),
 );
