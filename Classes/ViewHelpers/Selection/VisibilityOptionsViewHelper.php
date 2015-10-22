@@ -14,6 +14,7 @@ namespace Fab\Vidi\ViewHelpers\Selection;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Domain\Model\Selection;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -28,13 +29,11 @@ class VisibilityOptionsViewHelper extends AbstractViewHelper {
 	 * @return array
 	 */
 	public function render() {
-		$options = array(
-			LocalizationUtility::translate('LLL:EXT:vidi/Resources/Private/Language/tx_vidi_selection.xlf:visibility.private', 'vidi'),
-			LocalizationUtility::translate('LLL:EXT:vidi/Resources/Private/Language/tx_vidi_selection.xlf:visibility.everyone', 'vidi'),
-		);
+		$options[Selection::VISIBILITY_PRIVATE] = LocalizationUtility::translate('LLL:EXT:vidi/Resources/Private/Language/tx_vidi_selection.xlf:visibility.private', 'vidi');
+		$options[Selection::VISIBILITY_EVERYONE] = LocalizationUtility::translate('LLL:EXT:vidi/Resources/Private/Language/tx_vidi_selection.xlf:visibility.everyone', 'vidi');
 
 		if ($this->getBackendUser()->isAdmin()) {
-			$options[] = LocalizationUtility::translate('LLL:EXT:vidi/Resources/Private/Language/tx_vidi_selection.xlf:visibility.admin_only', 'vidi');
+			$options[Selection::VISIBILITY_ADMIN_ONLY] = LocalizationUtility::translate('LLL:EXT:vidi/Resources/Private/Language/tx_vidi_selection.xlf:visibility.admin_only', 'vidi');
 		}
 		return $options;
 	}
