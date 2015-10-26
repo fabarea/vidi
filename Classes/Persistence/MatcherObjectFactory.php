@@ -132,8 +132,10 @@ class MatcherObjectFactory implements SingletonInterface {
 					// Retrieve the value.
 					$value = current($term);
 
-					// Check whether the field exists and set it as "equal" or "like".
-					if (Tca::table($resolvedDataType)->hasField($fieldName)) {
+					if (Tca::grid($resolvedDataType)->hasFacet($fieldName) && Tca::grid($resolvedDataType)->facet($fieldName)->canModifyMatcher()) {
+						$matcher = Tca::grid($resolvedDataType)->facet($fieldName)->modifyMatcher($matcher, $value);
+					} elseif (Tca::table($resolvedDataType)->hasField($fieldName)) {
+						// Check whether the field exists and set it as "equal" or "like".
 						if ($this->isOperatorEquals($fieldNameAndPath, $dataType, $value)) {
 							$matcher->equals($fieldNameAndPath, $value);
 						} else {

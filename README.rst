@@ -150,6 +150,11 @@ Content Repository. Here is an example for retrieving a set of files::
 
 **Notice**: The example would work in the Frontend as well. However, not everything is in place such as localization. Having that on my todo list.
 
+Facets
+======
+
+Facets are visible in the Visual Search and enable the search by criteria. Facets are generally mapped to a field but it is not mandatory ; it can be arbitrary values. To provide a custom Facet, the interface `\Fab\Vidi\Facet\FacetInterface` must be implemented. Best is to take inspiration of the `\Fab\Vidi\Facet\StandardFacet`.
+
 Add tools in a Vidi module
 ==========================
 

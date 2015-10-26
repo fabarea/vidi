@@ -596,31 +596,59 @@ class GridService extends AbstractTca {
 	/**
 	 * Returns a "facet" service instance.
 	 *
-	 * @param string|FacetInterface $facet
-	 * @return \Fab\Vidi\Tca\FacetService
+	 * @param string|FacetInterface $facetName
+	 * @return FacetInterface
 	 */
-	public function facet($facet = '') {
+	protected function createFacetObject($facetName) {
 
-		if (!$facet instanceof StandardFacet) {
-			$label = Tca::grid($this->tableName)->getLabel($facet);
+		// Find appropriate facet or create an instance.
+		$facet = $facetName;
+		if (is_string($facetName)) {
 
-			/** @var StandardFacet $facet */
-			$facet = GeneralUtility::makeInstance('Fab\Vidi\Facet\StandardFacet', $facet, $label);
+			// Retrieve the
+			foreach ($this->getFacets() as $facetNameOrObject) {
+
+				if ($facetNameOrObject instanceof FacetInterface) {
+					if ($facetNameOrObject->getName() === $facetName) {
+						$facet = $facetNameOrObject;
+					}
+				} elseif ($facetNameOrObject === $facetName) {
+
+					$label = $this->getLabel($facetName);
+
+					/** @var StandardFacet $facetName */
+					$facet = GeneralUtility::makeInstance('Fab\Vidi\Facet\StandardFacet', $facetName, $label);
+				}
+			}
 		}
 
-		if (empty($this->instances[$facet->getName()])) {
+		if (!$facet instanceof FacetInterface) {
+			throw new \RuntimeException('I could not retrieve a facet for facet name "' . (string)$facet . '""', 1445856345);
+		}
+		return $facet;
+	}
 
-			/** @var \Fab\Vidi\Tca\FacetService $instance */
-			$instance = GeneralUtility::makeInstance(
-				'Fab\Vidi\Tca\FacetService',
-				$facet,
-				$this->tableName
-			);
+	/**
+	 * Returns a "facet" service instance.
+	 *
+	 * @param string|FacetInterface $facetName
+	 * @return FacetInterface
+	 */
+	public function facet($facetName = '') {
 
-			$this->instances[$facet->getName()] = $instance;
+		if ($facetName instanceof FacetInterface) {
+			$facetName = $facetName->getName();
 		}
 
-		return $this->instances[$facet->getName()];
+		if (empty($this->instances[$facetName])) {
+
+			$facet = $this->createFacetObject($facetName);
+			$facet->setDataType($this->tableName);
+
+			$this->instances[$facet->getName()] = $facet;
+		}
+
+		return $this->instances[$facetName];
 	}
 
 	/**

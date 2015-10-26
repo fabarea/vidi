@@ -44,7 +44,8 @@ class RelationRenderer extends ColumnRendererAbstract {
 
 			if ($foreignObject) {
 				$template = '<a href="%s" data-uid="%s" class="btn-edit invisible">%s</a><span>%s</span>';
-				$result = sprintf($template,
+				$result = sprintf(
+					$template,
 					$this->getEditUri($foreignObject),
 					$this->object->getUid(),
 					IconUtility::getSpriteIcon('actions-document-open'),

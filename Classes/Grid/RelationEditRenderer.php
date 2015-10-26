@@ -40,7 +40,8 @@ class RelationEditRenderer extends ColumnRendererAbstract {
 			),
 		);
 
-		$result = sprintf($template,
+		$result = sprintf(
+			$template,
 			$this->getModuleLoader()->getModuleUrl($urlParameters),
 			IconUtility::getSpriteIcon('actions-edit-add')
 		);

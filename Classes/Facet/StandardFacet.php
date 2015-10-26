@@ -13,6 +13,9 @@ namespace Fab\Vidi\Facet;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use Fab\Vidi\Persistence\Matcher;
+use Fab\Vidi\Tca\Tca;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -33,7 +36,22 @@ class StandardFacet implements FacetInterface {
 	/**
 	 * @var array
 	 */
-	protected $suggestions;
+	protected $suggestions = array();
+
+	/**
+	 * @var string
+	 */
+	protected $fieldNameAndPath;
+
+	/**
+	 * @var string
+	 */
+	protected $dataType;
+
+	/**
+	 * @var string
+	 */
+	protected $canModifyMatcher = FALSE;
 
 	/**
 	 * Constructor of a Generic Facet in Vidi.
@@ -41,14 +59,20 @@ class StandardFacet implements FacetInterface {
 	 * @param string $name
 	 * @param string $label
 	 * @param array $suggestions
+	 * @param string $fieldNameAndPath
 	 */
-	public function __construct($name, $label = '', array $suggestions = array()) {
+	public function __construct($name, $label = '', array $suggestions = array(), $fieldNameAndPath = '') {
 		$this->name = $name;
 		if (empty($label)) {
 			$label = $this->name;
 		}
 		$this->label = $label;
 		$this->suggestions = $suggestions;
+
+		if (empty($fieldNameAndPath)) {
+			$fieldNameAndPath = $this->name;
+		}
+		$this->fieldNameAndPath = $fieldNameAndPath;
 	}
 
 	/**
@@ -62,14 +86,72 @@ class StandardFacet implements FacetInterface {
 	 * @return string
 	 */
 	public function getLabel() {
-		return $this->label;
+		if ($this->label === $this->name) {
+			$label = Tca::table($this->dataType)->field($this->getName())->getLabel();
+		} else {
+			$label = LocalizationUtility::translate($this->label, '');
+			if (empty($label)) {
+				$label = $this->label;
+			}
+		}
+
+		return $label;
 	}
 
 	/**
 	 * @return array
 	 */
 	public function getSuggestions() {
-		return $this->suggestions;
+
+		$values = array();
+		foreach ($this->suggestions as $key => $label) {
+			$localizedLabel = LocalizationUtility::translate($label, '');
+			if (!empty($localizedLabel)) {
+				$label = $localizedLabel;
+			}
+			$values[$key] = $label;
+		}
+
+		return $values;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasSuggestions() {
+		return !empty($this->suggestions);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getFieldNameAndPath() {
+		return $this->fieldNameAndPath;
+	}
+
+	/**
+	 * @param string $dataType
+	 * @return $this
+	 */
+	public function setDataType($dataType) {
+		$this->dataType = $dataType;
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function canModifyMatcher() {
+		return $this->canModifyMatcher;
+	}
+
+	/**
+	 * @param Matcher $matcher
+	 * @param $value
+	 * @return Matcher
+	 */
+	public function modifyMatcher(Matcher $matcher, $value) {
+		return $matcher;
 	}
 
 	/**
@@ -79,6 +161,7 @@ class StandardFacet implements FacetInterface {
 	 * @return StandardFacet
 	 */
 	static public function __set_state($states) {
-		return new StandardFacet($states['name'], $states['label'], $states['suggestions']);
+		return new StandardFacet($states['name'], $states['label'], $states['suggestions'], $states['fieldNameAndPath']);
 	}
+
 }

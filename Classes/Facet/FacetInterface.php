@@ -13,6 +13,7 @@ namespace Fab\Vidi\Facet;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use Fab\Vidi\Persistence\Matcher;
 
 /**
  * Interface dealing with Facet for the Visual Search bar.
@@ -39,5 +40,39 @@ interface FacetInterface {
 	 * @return array
 	 */
 	public function getSuggestions();
+
+	/**
+	 * Tell whether the Facet has suggestion or not.
+	 *
+	 * @return bool
+	 */
+	public function hasSuggestions();
+
+	/**
+	 * Return the field name and path.
+	 *
+	 * @return string
+	 */
+	public function getFieldNameAndPath();
+
+	/**
+	 * Set the data type.
+	 *
+	 * @param string $dataType
+	 * @return $this
+	 */
+	public function setDataType($dataType);
+
+	/**
+	 * @return bool
+	 */
+	public function canModifyMatcher();
+
+	/**
+	 * @param Matcher $matcher
+	 * @param $value
+	 * @return Matcher
+	 */
+	public function modifyMatcher(Matcher $matcher, $value);
 
 }

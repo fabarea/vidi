@@ -92,7 +92,6 @@ return array(
 	'TYPO3\CMS\Vidi\Service\SpreadSheetService' => 'Fab\Vidi\Service\SpreadSheetService',
 	'TYPO3\CMS\Vidi\Signal\AfterFindContentObjectsSignalArguments' => 'Fab\Vidi\Signal\AfterFindContentObjectsSignalArguments',
 	'TYPO3\CMS\Vidi\Signal\ProcessContentDataSignalArguments' => 'Fab\Vidi\Signal\ProcessContentDataSignalArguments',
-	'TYPO3\CMS\Vidi\Tca\FacetService' => 'Fab\Vidi\Tca\FacetService',
 	'TYPO3\CMS\Vidi\Tca\FieldService' => 'Fab\Vidi\Tca\FieldService',
 	'TYPO3\CMS\Vidi\Tca\FormService' => 'Fab\Vidi\Tca\FormService',
 	'TYPO3\CMS\Vidi\Tca\GridService' => 'Fab\Vidi\Tca\GridService',
