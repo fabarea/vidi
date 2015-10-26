@@ -59,7 +59,7 @@
 	<f:section name="tree">
 		<ul class="relation-list tree-list">
 			<f:for each="{relatedContents}" as="relatedContent">
-				<li>
+				<li title="uid: {relatedContent.item.uid}">
 					<label>
 						<f:form.checkbox name="content[{fieldName}][]" value="{relatedContent.item.uid}" checked="{v:isRelatedTo(relatedContent: '{relatedContent.item}')}"/>
 						<v:tca.title content="{relatedContent.item}"/>
