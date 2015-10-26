@@ -30,6 +30,7 @@ class Order  {
 	 * Constructs a new Order
 	 *
 	 * @para array $orders
+	 * @param array $orders
 	 */
 	public function __construct($orders = array()) {
 		foreach ($orders as $order => $direction) {
