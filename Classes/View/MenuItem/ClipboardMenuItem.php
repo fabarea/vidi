@@ -35,7 +35,7 @@ class ClipboardMenuItem extends AbstractComponentView {
 		if ($this->getMediaModule()->hasFolderTree()) {
 			$output = sprintf('<li><a href="%s" class="clipboard-save" >%s %s</a>',
 				$this->getSaveInClipboardUri(),
-				IconUtility::getSpriteIcon('extensions-vidi-clipboard'),
+				IconUtility::getSpriteIcon('actions-document-paste-after'),
 				LocalizationUtility::translate('clipboard.save', 'vidi')
 			);
 		}

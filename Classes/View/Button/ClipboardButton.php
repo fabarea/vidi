@@ -34,7 +34,7 @@ class ClipboardButton extends AbstractComponentView {
 			$this->getClipboardService()->hasItems() ? '' : 'display: none;',
 			$this->getShowClipboardUri(),
 			LocalizationUtility::translate('clipboard.copy_or_move', 'vidi'),
-			IconUtility::getSpriteIcon('extensions-vidi-clipboard')
+			IconUtility::getSpriteIcon('actions-document-paste-after')
 		);
 		return $output;
 	}

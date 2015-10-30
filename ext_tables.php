@@ -126,9 +126,8 @@ if (TYPO3_MODE == 'BE') {
 // Add new sprite icon.
 \TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons(
 	array(
-		'clipboard' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('vidi') . 'Resources/Public/Images/table_go.png',
 		'go' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('vidi') . 'Resources/Public/Images/bullet_go.png',
-		'query' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('vidi') . 'Resources/Public/Images/query.png',
+		'query' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('vidi') . 'Resources/Public/Images/drive_disk.png',
 	),
 	'vidi'
 );
