@@ -28,7 +28,7 @@ Vidi.Response = {
 
 		// Display number of records processed.
 		if (response.numberOfProcessedObjects > 0) {
-			if (response.numberOfProcessedObjects === 1) {
+			if (response.numberOfProcessedObjects === 1 && 'processedObject' in response) {
 				label = 'success-' + action;
 				message = Vidi.format(label, response.processedObject['name']);
 			} else if (response.numberOfProcessedObjects > 0) {

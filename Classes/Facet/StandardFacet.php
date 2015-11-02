@@ -14,6 +14,7 @@ namespace Fab\Vidi\Facet;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Persistence\Matcher;
 use Fab\Vidi\Tca\Tca;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -41,17 +42,18 @@ class StandardFacet implements FacetInterface {
 	/**
 	 * @var string
 	 */
-	protected $fieldNameAndPath;
-
-	/**
-	 * @var string
-	 */
 	protected $dataType;
 
 	/**
-	 * @var string
+	 * @var bool
 	 */
 	protected $canModifyMatcher = FALSE;
+
+	/**
+	 * @var bool
+	 */
+	protected $canModifyResult = FALSE;
+
 
 	/**
 	 * Constructor of a Generic Facet in Vidi.
@@ -59,20 +61,14 @@ class StandardFacet implements FacetInterface {
 	 * @param string $name
 	 * @param string $label
 	 * @param array $suggestions
-	 * @param string $fieldNameAndPath
 	 */
-	public function __construct($name, $label = '', array $suggestions = array(), $fieldNameAndPath = '') {
+	public function __construct($name, $label = '', array $suggestions = array()) {
 		$this->name = $name;
 		if (empty($label)) {
 			$label = $this->name;
 		}
 		$this->label = $label;
 		$this->suggestions = $suggestions;
-
-		if (empty($fieldNameAndPath)) {
-			$fieldNameAndPath = $this->name;
-		}
-		$this->fieldNameAndPath = $fieldNameAndPath;
 	}
 
 	/**
@@ -123,13 +119,6 @@ class StandardFacet implements FacetInterface {
 	}
 
 	/**
-	 * @return string
-	 */
-	public function getFieldNameAndPath() {
-		return $this->fieldNameAndPath;
-	}
-
-	/**
 	 * @param string $dataType
 	 * @return $this
 	 */
@@ -143,6 +132,13 @@ class StandardFacet implements FacetInterface {
 	 */
 	public function canModifyMatcher() {
 		return $this->canModifyMatcher;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function canModifyResult() {
+		return $this->canModifyResult;
 	}
 
 	/**
@@ -161,7 +157,16 @@ class StandardFacet implements FacetInterface {
 	 * @return StandardFacet
 	 */
 	static public function __set_state($states) {
-		return new StandardFacet($states['name'], $states['label'], $states['suggestions'], $states['fieldNameAndPath']);
+		return new StandardFacet($states['name'], $states['label'], $states['suggestions']);
+	}
+
+	/**
+	 * @param Content[] $objects
+	 * @param array $queryParts
+	 * @return Content[]
+	 */
+	public function modifyResult(array $objects, array $queryParts) {
+		return $objects;
 	}
 
 }

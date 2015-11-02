@@ -14,6 +14,7 @@ namespace Fab\Vidi\Controller\Backend;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Facet\FacetInterface;
 use Fab\Vidi\Tca\Tca;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -52,7 +53,8 @@ class FacetController extends ActionController {
 
 		$suggestions = array();
 		foreach (Tca::grid()->getFacets() as $facet) {
-			$name = Tca::grid()->facet($facet)->getName();
+			/** @var FacetInterface $facet */
+			$name = $facet->getName();
 			$suggestions[$name] = $this->getFacetSuggestionService()->getSuggestions($name);
 		}
 

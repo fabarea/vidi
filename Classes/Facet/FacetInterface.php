@@ -13,6 +13,8 @@ namespace Fab\Vidi\Facet;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Persistence\Matcher;
 
 /**
@@ -49,13 +51,6 @@ interface FacetInterface {
 	public function hasSuggestions();
 
 	/**
-	 * Return the field name and path.
-	 *
-	 * @return string
-	 */
-	public function getFieldNameAndPath();
-
-	/**
 	 * Set the data type.
 	 *
 	 * @param string $dataType
@@ -74,5 +69,17 @@ interface FacetInterface {
 	 * @return Matcher
 	 */
 	public function modifyMatcher(Matcher $matcher, $value);
+
+	/**
+	 * @return bool
+	 */
+	public function canModifyResult();
+
+	/**
+	 * @param Content[] $objects
+	 * @param array $queryParts
+	 * @return Content[]
+	 */
+	public function modifyResult(array $objects, array $queryParts);
 
 }

@@ -33,4 +33,5 @@ interface ColumnInterface {
 	 * @return string
 	 */
 	public function toArray();
+
 }

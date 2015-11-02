@@ -14,6 +14,7 @@ namespace Fab\Vidi\ViewHelpers\Grid;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Facet\FacetInterface;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Tca\Tca;
 
@@ -30,9 +31,10 @@ class FacetsViewHelper extends AbstractViewHelper {
 	public function render() {
 
 		$facets = array();
-		foreach (Tca::grid()->getFacets() as $facetName) {
-			$name = Tca::grid()->facet($facetName)->getName();
-			$facets[$name] = Tca::grid()->facet($facetName)->getLabel();
+		foreach (Tca::grid()->getFacets() as $facet) {
+			/** @var FacetInterface $facet */
+			$name = $facet->getName();
+			$facets[$name] = $facet->getLabel();
 		}
 
 		return json_encode($facets);

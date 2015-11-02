@@ -59,6 +59,11 @@ class GridService extends AbstractTca {
 	protected $instances;
 
 	/**
+	 * @var array
+	 */
+	protected $facets;
+
+	/**
 	 * __construct
 	 *
 	 * @throws InvalidKeyInArrayException
@@ -320,29 +325,26 @@ class GridService extends AbstractTca {
 	 * @return bool
 	 */
 	public function hasFacet($facetName) {
-
-		$hasFacet = FALSE;
-		foreach ($this->getFacets() as $facet) {
-			if ($facet instanceof FacetInterface) {
-				$facet = $facet->getName();
-			}
-
-			if ($facet === $facetName) {
-				$hasFacet = TRUE;
-				break;
-			}
-		}
-
-		return $hasFacet;
+		$facets = $this->getFacets();
+		return isset($facets[$facetName]);
 	}
 
 	/**
 	 * Returns an array containing facets fields.
 	 *
-	 * @return array
+	 * @return FacetInterface[]
 	 */
 	public function getFacets() {
-		return is_array($this->tca['facets']) ? $this->tca['facets'] : array();
+		if (is_null($this->facets) && is_array($this->tca['facets'])) {
+			foreach ($this->tca['facets'] as $facetNameOrObject) {
+				if ($facetNameOrObject instanceof FacetInterface) {
+					$this->facets[$facetNameOrObject->getName()] = $facetNameOrObject;
+				} else {
+					$this->facets[$facetNameOrObject] = $this->instantiateStandardFacet($facetNameOrObject);
+				}
+			}
+		}
+		return $this->facets;
 	}
 
 	/**
@@ -597,33 +599,35 @@ class GridService extends AbstractTca {
 	 * Returns a "facet" service instance.
 	 *
 	 * @param string|FacetInterface $facetName
-	 * @return FacetInterface
+	 * @return StandardFacet
 	 */
-	protected function createFacetObject($facetName) {
+	protected function instantiateStandardFacet($facetName) {
 
 		// Find appropriate facet or create an instance.
-		$facet = $facetName;
-		if (is_string($facetName)) {
+//		$facet = $facetName;
+//		if (is_string($facetName)) {
+//
+//			// Retrieve the
+//			foreach ($this->getFacets() as $facetNameOrObject) {
+//
+//				if ($facetNameOrObject instanceof FacetInterface) {
+//					if ($facetNameOrObject->getName() === $facetName) {
+//						$facet = $facetNameOrObject;
+//					}
+//				} elseif ($facetNameOrObject === $facetName) {
+//
+//				}
+//			}
+//		}
 
-			// Retrieve the
-			foreach ($this->getFacets() as $facetNameOrObject) {
 
-				if ($facetNameOrObject instanceof FacetInterface) {
-					if ($facetNameOrObject->getName() === $facetName) {
-						$facet = $facetNameOrObject;
-					}
-				} elseif ($facetNameOrObject === $facetName) {
+		$label = $this->getLabel($facetName);
 
-					$label = $this->getLabel($facetName);
+		/** @var StandardFacet $facetName */
+		$facet = GeneralUtility::makeInstance('Fab\Vidi\Facet\StandardFacet', $facetName, $label);
 
-					/** @var StandardFacet $facetName */
-					$facet = GeneralUtility::makeInstance('Fab\Vidi\Facet\StandardFacet', $facetName, $label);
-				}
-			}
-		}
-
-		if (!$facet instanceof FacetInterface) {
-			throw new \RuntimeException('I could not retrieve a facet for facet name "' . (string)$facet . '""', 1445856345);
+		if (!$facet instanceof StandardFacet) {
+			throw new \RuntimeException('I could not instantiate a facet for facet name "' . (string)$facet . '""', 1445856345);
 		}
 		return $facet;
 	}
@@ -635,20 +639,22 @@ class GridService extends AbstractTca {
 	 * @return FacetInterface
 	 */
 	public function facet($facetName = '') {
-
-		if ($facetName instanceof FacetInterface) {
-			$facetName = $facetName->getName();
-		}
-
-		if (empty($this->instances[$facetName])) {
-
-			$facet = $this->createFacetObject($facetName);
-			$facet->setDataType($this->tableName);
-
-			$this->instances[$facet->getName()] = $facet;
-		}
-
-		return $this->instances[$facetName];
+		$facets = $this->getFacets();
+		return $facets[$facetName];
+//
+//		if ($facetName instanceof FacetInterface) {
+//			$facetName = $facetName->getName();
+//		}
+//
+//		if (empty($this->instances[$facetName])) {
+//
+//			$facet = $this->instantiateFacet($facetName);
+//			$facet->setDataType($this->tableName);
+//
+//			$this->instances[$facet->getName()] = $facet;
+//		}
+//
+//		return $this->instances[$facetName];
 	}
 
 	/**

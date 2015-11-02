@@ -14,6 +14,7 @@ namespace Fab\Vidi\Service;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Tca\Tca;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
 use Fab\Vidi\Persistence\Matcher;
@@ -49,13 +50,12 @@ class ContentService {
 	 */
 	public function __construct($dataType = '') {
 		if (empty($dataType)) {
-			$dataType= $this->getModuleLoader()->getDataType();
+			$dataType = $this->getModuleLoader()->getDataType();
 		}
 		$this->dataType = $dataType;
 	}
 
-
-		/**
+	/**
 	 * Fetch the files given an object assuming
 	 *
 	 * @param Matcher $matcher
@@ -80,7 +80,36 @@ class ContentService {
 			$this->numberOfObjects = ContentRepositoryFactory::getInstance($this->dataType)->countBy($matcher);
 		}
 
+		// Also handle filter facets.
+		$this->filterWithCustomFacets();
+
 		return $this;
+	}
+
+	/**
+	 * @return void
+	 */
+	protected function filterWithCustomFacets() {
+
+		// Transmit recursive selection parameter.
+		$parameterPrefix = $this->getModuleLoader()->getParameterPrefix();
+		$parameters = GeneralUtility::_GP($parameterPrefix);
+
+		if (empty($parameters['searchTerm'])) {
+			$queryParts = array();
+		} else {
+			$query = rawurldecode($parameters['searchTerm']);
+			$queryParts = json_decode($query, TRUE);
+		}
+
+		// Check whether facet should post-process result set.
+		foreach (Tca::grid($this->dataType)->getFacets() as $facet) {
+
+			if ($facet->canModifyResult()) {
+				$this->objects = $facet->modifyResult($this->objects, $queryParts);
+				$this->numberOfObjects = count($this->objects);
+			}
+		}
 	}
 
 	/**
