@@ -14,7 +14,6 @@ namespace Fab\Vidi\Service;
  * The TYPO3 project - inspiring people to share!
  */
 
-use Fab\Vidi\Tca\Tca;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
 use Fab\Vidi\Persistence\Matcher;
@@ -68,7 +67,7 @@ class ContentService {
 
 		// Query the repository.
 		$objects = ContentRepositoryFactory::getInstance($this->dataType)->findBy($matcher, $order, $limit, $offset);
-		$signalResult = $this->emitAfterFindContentObjectsSignal($objects, $matcher, $limit, $offset);
+		$signalResult = $this->emitAfterFindContentObjectsSignal($objects, $matcher, $order, $limit, $offset);
 
 		// Reset objects variable after possible signal / slot processing.
 		$this->objects = $signalResult->getContentObjects();
@@ -80,36 +79,7 @@ class ContentService {
 			$this->numberOfObjects = ContentRepositoryFactory::getInstance($this->dataType)->countBy($matcher);
 		}
 
-		// Also handle filter facets.
-		$this->filterWithCustomFacets();
-
 		return $this;
-	}
-
-	/**
-	 * @return void
-	 */
-	protected function filterWithCustomFacets() {
-
-		// Transmit recursive selection parameter.
-		$parameterPrefix = $this->getModuleLoader()->getParameterPrefix();
-		$parameters = GeneralUtility::_GP($parameterPrefix);
-
-		if (empty($parameters['searchTerm'])) {
-			$queryParts = array();
-		} else {
-			$query = rawurldecode($parameters['searchTerm']);
-			$queryParts = json_decode($query, TRUE);
-		}
-
-		// Check whether facet should post-process result set.
-		foreach (Tca::grid($this->dataType)->getFacets() as $facet) {
-
-			if ($facet->canModifyResult()) {
-				$this->objects = $facet->modifyResult($this->objects, $queryParts);
-				$this->numberOfObjects = count($this->objects);
-			}
-		}
 	}
 
 	/**
@@ -117,18 +87,22 @@ class ContentService {
 	 *
 	 * @param array $contentObjects
 	 * @param \Fab\Vidi\Persistence\Matcher $matcher
+	 * @param Order $order
 	 * @param int $limit
 	 * @param int $offset
 	 * @return AfterFindContentObjectsSignalArguments
+	 * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
+	 * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
 	 * @signal
 	 */
-	protected function emitAfterFindContentObjectsSignal($contentObjects, Matcher $matcher, $limit = 0, $offset = 0) {
+	protected function emitAfterFindContentObjectsSignal($contentObjects, Matcher $matcher, Order $order, $limit = 0, $offset = 0) {
 
 		/** @var \Fab\Vidi\Signal\AfterFindContentObjectsSignalArguments $signalArguments */
 		$signalArguments = GeneralUtility::makeInstance('Fab\Vidi\Signal\AfterFindContentObjectsSignalArguments');
 		$signalArguments->setDataType($this->dataType)
 			->setContentObjects($contentObjects)
 			->setMatcher($matcher)
+			->setOrder($order)
 			->setLimit($limit)
 			->setOffset($offset)
 			->setHasBeenProcessed(FALSE);

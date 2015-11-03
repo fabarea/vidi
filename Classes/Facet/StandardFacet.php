@@ -14,7 +14,6 @@ namespace Fab\Vidi\Facet;
  * The TYPO3 project - inspiring people to share!
  */
 
-use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Persistence\Matcher;
 use Fab\Vidi\Tca\Tca;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -48,12 +47,6 @@ class StandardFacet implements FacetInterface {
 	 * @var bool
 	 */
 	protected $canModifyMatcher = FALSE;
-
-	/**
-	 * @var bool
-	 */
-	protected $canModifyResult = FALSE;
-
 
 	/**
 	 * Constructor of a Generic Facet in Vidi.
@@ -135,13 +128,6 @@ class StandardFacet implements FacetInterface {
 	}
 
 	/**
-	 * @return bool
-	 */
-	public function canModifyResult() {
-		return $this->canModifyResult;
-	}
-
-	/**
 	 * @param Matcher $matcher
 	 * @param $value
 	 * @return Matcher
@@ -158,15 +144,6 @@ class StandardFacet implements FacetInterface {
 	 */
 	static public function __set_state($states) {
 		return new StandardFacet($states['name'], $states['label'], $states['suggestions']);
-	}
-
-	/**
-	 * @param Content[] $objects
-	 * @param array $queryParts
-	 * @return Content[]
-	 */
-	public function modifyResult(array $objects, array $queryParts) {
-		return $objects;
 	}
 
 }

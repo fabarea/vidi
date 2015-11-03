@@ -70,16 +70,4 @@ interface FacetInterface {
 	 */
 	public function modifyMatcher(Matcher $matcher, $value);
 
-	/**
-	 * @return bool
-	 */
-	public function canModifyResult();
-
-	/**
-	 * @param Content[] $objects
-	 * @param array $queryParts
-	 * @return Content[]
-	 */
-	public function modifyResult(array $objects, array $queryParts);
-
 }

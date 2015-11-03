@@ -15,6 +15,7 @@ namespace Fab\Vidi\Signal;
  */
 
 use Fab\Vidi\Persistence\Matcher;
+use Fab\Vidi\Persistence\Order;
 
 /**
  * Class for storing arguments of a "after find content objects" signal.
@@ -35,6 +36,11 @@ class AfterFindContentObjectsSignalArguments {
 	 * @var Matcher
 	 */
 	protected $matcher;
+
+	/**
+	 * @var Order
+	 */
+	protected $order;
 
 	/**
 	 * @var int
@@ -134,6 +140,22 @@ class AfterFindContentObjectsSignalArguments {
 	 */
 	public function getMatcher() {
 		return $this->matcher;
+	}
+
+	/**
+	 * @return Order
+	 */
+	public function getOrder() {
+		return $this->order;
+	}
+
+	/**
+	 * @param Order $order
+	 * @return $this
+	 */
+	public function setOrder($order) {
+		$this->order = $order;
+		return $this;
 	}
 
 	/**
