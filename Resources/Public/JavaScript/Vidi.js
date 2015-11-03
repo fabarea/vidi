@@ -111,6 +111,50 @@
 		});
 
 		/**
+		 * Handler for visibility toggle.
+		 */
+		$(document).on('click', '.btn-visibility-toggle', function (e) {
+			e.preventDefault();
+
+			// true means the object is hidden and must be unhidden
+			var url = $(this).attr('href');
+			if ($(this).html().indexOf('t3-icon-edit-unhide') > -1) {
+				url = url.replace('PLACEHOLDER', '0');
+			} else {
+				url = url.replace('PLACEHOLDER', '1');
+			}
+
+			// Store values.
+			var $content = $(this).html();
+			var $container = $(this).parent();
+
+			// GUI: set loading gif.
+			var loading = '<img src="' + Vidi.module.publicPath + 'Resources/Public/Images/loading-small.gif" alt="" />';
+			$($container).html(loading);
+
+			$.ajax(
+				{
+					url: url
+				})
+				.done(function (data) {
+					// Replace visibility icon
+					if (data.processedObject.updatedValue === '1') {
+						$content = $content.replace('t3-icon-edit-hide', 't3-icon-edit-unhide');
+						$($container).html($content);
+					} else if (data.processedObject.updatedValue === '0') {
+						$content = $content.replace('t3-icon-edit-unhide', 't3-icon-edit-hide');
+						$($container).html($content);
+					}
+				})
+				.fail(function (data) {
+					alert('Something went wrong! Check out console log for more detail');
+					console.log(data);
+				});
+
+		});
+
+
+		/**
 		 * Initialize Grid
 		 */
 		Vidi.grid = $('#content-list').dataTable(Vidi.Grid.getOptions());

@@ -238,6 +238,9 @@
 			<trans-unit id="clipboard.empty_clipboard">
 				<source>Empty clipboard afterwards?</source>
 			</trans-unit>
+			<trans-unit id="visibility_renderer.toggle">
+				<source>Toggle visibility</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

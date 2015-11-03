@@ -95,7 +95,7 @@ class ContentService {
 	 * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
 	 * @signal
 	 */
-	protected function emitAfterFindContentObjectsSignal($contentObjects, Matcher $matcher, Order $order, $limit = 0, $offset = 0) {
+	protected function emitAfterFindContentObjectsSignal($contentObjects, Matcher $matcher, Order $order = NULL, $limit = 0, $offset = 0) {
 
 		/** @var \Fab\Vidi\Signal\AfterFindContentObjectsSignalArguments $signalArguments */
 		$signalArguments = GeneralUtility::makeInstance('Fab\Vidi\Signal\AfterFindContentObjectsSignalArguments');
