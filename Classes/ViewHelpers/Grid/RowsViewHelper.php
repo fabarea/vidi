@@ -14,14 +14,21 @@ namespace Fab\Vidi\ViewHelpers\Grid;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\View\ViewComponentInterface;
+use Fab\Vidi\Domain\Model\Content;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use Fab\Vidi\View\Grid\Row;
+
 
 /**
  * View helper for rendering multiple rows.
  */
 class RowsViewHelper extends AbstractViewHelper {
+
+	/**
+	 * @var ViewComponentInterface
+	 */
+	protected $view;
 
 	/**
 	 * Returns rows of content as array.
@@ -33,12 +40,30 @@ class RowsViewHelper extends AbstractViewHelper {
 	public function render(array $objects = array(), array $columns = array()) {
 		$rows = array();
 
-		/** @var Row $row */
-		$row = GeneralUtility::makeInstance('Fab\Vidi\View\Grid\Row', $columns);
 		foreach ($objects as $index => $object) {
-			$rows[] = $row->render($object, $index);
+			$rows[] = $this->getRowView($object, $columns)->render($object, $index);
 		}
 
 		return $rows;
+	}
+
+	/**
+	 * @param Content $object
+	 * @param array $columns
+	 * @return ViewComponentInterface
+	 */
+	public function getRowView(Content $object, $columns) {
+		if (is_null($this->view)) {
+			// Default class name.
+			$viewClassName = '\\Fab\\Vidi\\View\\Grid\\Row';
+
+			if (!empty($GLOBALS['TCA'][$object->getDataType()]['vidi']['classes'][$viewClassName])) {
+				$viewClassName = $GLOBALS['TCA'][$object->getDataType()]['vidi']['classes'][$viewClassName];
+			}
+
+			$this->view = GeneralUtility::makeInstance($viewClassName, $columns);
+		}
+
+		return $this->view;
 	}
 }
