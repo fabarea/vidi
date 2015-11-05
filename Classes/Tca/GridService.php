@@ -602,25 +602,6 @@ class GridService extends AbstractTca {
 	 * @return StandardFacet
 	 */
 	protected function instantiateStandardFacet($facetName) {
-
-		// Find appropriate facet or create an instance.
-//		$facet = $facetName;
-//		if (is_string($facetName)) {
-//
-//			// Retrieve the
-//			foreach ($this->getFacets() as $facetNameOrObject) {
-//
-//				if ($facetNameOrObject instanceof FacetInterface) {
-//					if ($facetNameOrObject->getName() === $facetName) {
-//						$facet = $facetNameOrObject;
-//					}
-//				} elseif ($facetNameOrObject === $facetName) {
-//
-//				}
-//			}
-//		}
-
-
 		$label = $this->getLabel($facetName);
 
 		/** @var StandardFacet $facetName */
@@ -641,20 +622,6 @@ class GridService extends AbstractTca {
 	public function facet($facetName = '') {
 		$facets = $this->getFacets();
 		return $facets[$facetName];
-//
-//		if ($facetName instanceof FacetInterface) {
-//			$facetName = $facetName->getName();
-//		}
-//
-//		if (empty($this->instances[$facetName])) {
-//
-//			$facet = $this->instantiateFacet($facetName);
-//			$facet->setDataType($this->tableName);
-//
-//			$this->instances[$facet->getName()] = $facet;
-//		}
-//
-//		return $this->instances[$facetName];
 	}
 
 	/**
