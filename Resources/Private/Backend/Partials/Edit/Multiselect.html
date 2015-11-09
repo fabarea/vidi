@@ -1,6 +1,6 @@
 <div xmlns="http://www.w3.org/1999/xhtml" lang="en"
      xmlns:f="http://typo3.org/ns/fluid/ViewHelpers"
-     xmlns:v="http://typo3.org/ns/Fab/vidi/ViewHelpers">
+     xmlns:v="http://typo3.org/ns/Fab/Vidi/ViewHelpers">
 
 	<f:section name="Multiselect">
 
@@ -40,7 +40,7 @@
 					<f:render section="{renderMode}" arguments="{relatedContents: relatedContents, fieldName:fieldName, content:content, numberOfObjects:numberOfObjects}" />
 				</f:then>
 				<f:else>
-					<ul class="relation-list">
+					<ul class="list-unstyled relation-list">
 						<f:for each="{relatedContents}" as="relatedContent">
 							<li>
 								<label>

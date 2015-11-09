@@ -20,16 +20,18 @@ use Fab\Vidi\Tca\Tca;
 /**
  * View helper for rendering a column title in the grid.
  */
-class TitleViewHelper extends AbstractViewHelper {
+class TitleViewHelper extends AbstractViewHelper
+{
 
-	/**
-	 * Returns a column title.
-	 *
-	 * @return string
-	 */
-	public function render() {
-		$columnName = $this->templateVariableContainer->get('columnName');
-		return Tca::grid()->getLabel($columnName);
-	}
+    /**
+     * Returns a column title.
+     *
+     * @return string
+     */
+    public function render()
+    {
+        $columnName = $this->templateVariableContainer->get('columnName');
+        return Tca::grid()->getLabel($columnName);
+    }
 
 }

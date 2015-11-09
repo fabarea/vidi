@@ -25,116 +25,124 @@ use Fab\Vidi\Tca\Tca;
  * Class for retrieving value from an object.
  * Non trivial case as the field name could contain a field path, e.g. metadata.title
  */
-class ContentObjectProcessor implements SingletonInterface {
+class ContentObjectProcessor implements SingletonInterface
+{
 
-	/**
-	 * @param ProcessContentDataSignalArguments $signalArguments
-	 * @return array
-	 */
-	public function processRelations(ProcessContentDataSignalArguments $signalArguments) {
+    /**
+     * @param ProcessContentDataSignalArguments $signalArguments
+     * @return array
+     */
+    public function processRelations(ProcessContentDataSignalArguments $signalArguments)
+    {
 
-		$contentObject = $signalArguments->getContentObject();
-		$fieldNameAndPath = $signalArguments->getFieldNameAndPath();
-		$contentData = $signalArguments->getContentData();
-		$savingBehavior = $signalArguments->getSavingBehavior();
+        $contentObject = $signalArguments->getContentObject();
+        $fieldNameAndPath = $signalArguments->getFieldNameAndPath();
+        $contentData = $signalArguments->getContentData();
+        $savingBehavior = $signalArguments->getSavingBehavior();
 
-		if ($savingBehavior !== SavingBehavior::REPLACE) {
-			$contentData = $this->appendOrRemoveRelations($contentObject, $fieldNameAndPath, $contentData, $savingBehavior);
-			$signalArguments->setContentData($contentData);
-		}
+        if ($savingBehavior !== SavingBehavior::REPLACE) {
+            $contentData = $this->appendOrRemoveRelations($contentObject, $fieldNameAndPath, $contentData, $savingBehavior);
+            $signalArguments->setContentData($contentData);
+        }
 
-		return array($signalArguments);
-	}
+        return array($signalArguments);
+    }
 
-	/**
-	 * @param \Fab\Vidi\Domain\Model\Content $object
-	 * @param $fieldNameAndPath
-	 * @param array $contentData
-	 * @param string $savingBehavior
-	 * @return array
-	 */
-	protected function appendOrRemoveRelations(Content $object, $fieldNameAndPath, array $contentData, $savingBehavior) {
+    /**
+     * @param \Fab\Vidi\Domain\Model\Content $object
+     * @param $fieldNameAndPath
+     * @param array $contentData
+     * @param string $savingBehavior
+     * @return array
+     */
+    protected function appendOrRemoveRelations(Content $object, $fieldNameAndPath, array $contentData, $savingBehavior)
+    {
 
-		foreach ($contentData as $fieldName => $values) {
+        foreach ($contentData as $fieldName => $values) {
 
-			$resolvedObject = $this->getContentObjectResolver()->getObject($object, $fieldNameAndPath);
+            $resolvedObject = $this->getContentObjectResolver()->getObject($object, $fieldNameAndPath);
 
-			if (Tca::table($resolvedObject)->field($fieldName)->hasMany()) {
+            if (Tca::table($resolvedObject)->field($fieldName)->hasMany()) {
 
-				// TRUE means CSV values must be converted to array.
-				if (!is_array($values)) {
-					$values = GeneralUtility::trimExplode(',', $values);
-				}
-				$relatedValues = $this->getRelatedValues($object, $fieldNameAndPath, $fieldName);
+                // TRUE means CSV values must be converted to array.
+                if (!is_array($values)) {
+                    $values = GeneralUtility::trimExplode(',', $values);
+                }
+                $relatedValues = $this->getRelatedValues($object, $fieldNameAndPath, $fieldName);
 
-				foreach ($values as $value) {
-					$appendOrRemove = $savingBehavior . 'Relations';
-					$relatedValues = $this->$appendOrRemove($value, $relatedValues);
-				}
+                foreach ($values as $value) {
+                    $appendOrRemove = $savingBehavior . 'Relations';
+                    $relatedValues = $this->$appendOrRemove($value, $relatedValues);
+                }
 
-				$contentData[$fieldName] = $relatedValues;
-			}
-		}
-		return $contentData;
-	}
+                $contentData[$fieldName] = $relatedValues;
+            }
+        }
+        return $contentData;
+    }
 
-	/**
-	 * @param $value
-	 * @param array $relatedValues
-	 * @return array
-	 */
-	protected function appendRelations($value, array $relatedValues) {
-		if (!in_array($value, $relatedValues)) {
-			$relatedValues[] = $value;
-		}
-		return $relatedValues;
-	}
+    /**
+     * @param $value
+     * @param array $relatedValues
+     * @return array
+     */
+    protected function appendRelations($value, array $relatedValues)
+    {
+        if (!in_array($value, $relatedValues)) {
+            $relatedValues[] = $value;
+        }
+        return $relatedValues;
+    }
 
-	/**
-	 * @param $value
-	 * @param array $relatedValues
-	 * @return array
-	 */
-	protected function removeRelations($value, array $relatedValues) {
-		if (in_array($value, $relatedValues)) {
-			$key = array_search($value, $relatedValues);
-			unset($relatedValues[$key]);
-		}
-		return $relatedValues;
-	}
+    /**
+     * @param $value
+     * @param array $relatedValues
+     * @return array
+     */
+    protected function removeRelations($value, array $relatedValues)
+    {
+        if (in_array($value, $relatedValues)) {
+            $key = array_search($value, $relatedValues);
+            unset($relatedValues[$key]);
+        }
+        return $relatedValues;
+    }
 
-	/**
-	 * @param \Fab\Vidi\Domain\Model\Content $object
-	 * @param string $fieldNameAndPath
-	 * @param string $fieldName
-	 * @return array
-	 */
-	protected function getRelatedValues(Content $object, $fieldNameAndPath, $fieldName) {
+    /**
+     * @param \Fab\Vidi\Domain\Model\Content $object
+     * @param string $fieldNameAndPath
+     * @param string $fieldName
+     * @return array
+     */
+    protected function getRelatedValues(Content $object, $fieldNameAndPath, $fieldName)
+    {
 
-		$values = array();
-		$relatedContentObjects = $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, $fieldName);
+        $values = array();
+        $relatedContentObjects = $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, $fieldName);
 
-		if (is_array($relatedContentObjects)) {
-			/** @var Content $relatedContentObject */
-			foreach ($relatedContentObjects as $relatedContentObject) {
-				$values[] = $relatedContentObject->getUid();
-			}
-		}
+        if (is_array($relatedContentObjects)) {
+            /** @var Content $relatedContentObject */
+            foreach ($relatedContentObjects as $relatedContentObject) {
+                $values[] = $relatedContentObject->getUid();
+            }
+        }
 
-		return $values;
-	}
+        return $values;
+    }
 
-	/**
-	 * @return \Fab\Vidi\Resolver\ContentObjectResolver
-	 */
-	protected function getContentObjectResolver() {
-		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\ContentObjectResolver');
-	}
+    /**
+     * @return \Fab\Vidi\Resolver\ContentObjectResolver
+     */
+    protected function getContentObjectResolver()
+    {
+        return GeneralUtility::makeInstance('Fab\Vidi\Resolver\ContentObjectResolver');
+    }
 
-	/**
-	 * @return \Fab\Vidi\Resolver\FieldPathResolver
-	 */
-	protected function getFieldPathResolver() {
-		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
-	}
+    /**
+     * @return \Fab\Vidi\Resolver\FieldPathResolver
+     */
+    protected function getFieldPathResolver()
+    {
+        return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
+    }
 }

@@ -14,38 +14,47 @@ namespace Fab\Vidi\Grid;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Backend\Utility\IconUtility;
+use Fab\Vidi\Tca\Tca;
+use TYPO3\CMS\Core\Imaging\Icon;
 
 /**
  * Class for editing mm relation between objects.
  */
-class RelationEditRenderer extends ColumnRendererAbstract {
+class RelationEditRenderer extends ColumnRendererAbstract
+{
 
-	/**
-	 * Render a representation of the relation on the GUI.
-	 *
-	 * @return string
-	 */
-	public function render() {
+    /**
+     * Render a representation of the relation on the GUI.
+     *
+     * @return string
+     */
+    public function render()
+    {
 
-		$template = '<div style="text-align: right" class="pull-right invisible"><a href="%s" class="btn-edit-relation">%s</a></div>';
+        $template = '<div style="text-align: right" class="pull-right invisible"><a href="%s" class="btn-edit-relation" data-field-label="%s">%s</a></div>';
 
-		// Initialize url parameters array.
-		$urlParameters = array(
-			$this->getModuleLoader()->getParameterPrefix() => array(
-				'controller' => 'Content',
-				'action' => 'edit',
-				'matches' => array('uid' => $this->object->getUid()),
-				'fieldNameAndPath' => $this->getFieldName(),
-			),
-		);
+        // Initialize url parameters array.
+        $urlParameters = array(
+            $this->getModuleLoader()->getParameterPrefix() => array(
+                'controller' => 'Content',
+                'action' => 'edit',
+                'matches' => array('uid' => $this->object->getUid()),
+                'fieldNameAndPath' => $this->getFieldName(),
+            ),
+        );
 
-		$result = sprintf(
-			$template,
-			$this->getModuleLoader()->getModuleUrl($urlParameters),
-			IconUtility::getSpriteIcon('actions-edit-add')
-		);
+        $fieldLabel = Tca::table()->field($this->getFieldName())->getLabel();
+        if ($fieldLabel) {
+            $fieldLabel = str_replace(':', '', $fieldLabel); // sanitize label
+        }
 
-		return $result;
-	}
+        $result = sprintf(
+            $template,
+            $this->getModuleLoader()->getModuleUrl($urlParameters),
+            $fieldLabel,
+            $this->getIconFactory()->getIcon('actions-edit-add', Icon::SIZE_SMALL)
+        );
+
+        return $result;
+    }
 }

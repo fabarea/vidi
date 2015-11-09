@@ -17,6 +17,7 @@ namespace Fab\Vidi\Exception;
 /**
  * Handle Exception for missing uid
  */
-class MissingIdentifierException extends \Exception {
+class MissingIdentifierException extends \Exception
+{
 
 }

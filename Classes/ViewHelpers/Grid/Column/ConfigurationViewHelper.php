@@ -22,66 +22,70 @@ use Fab\Vidi\Tca\Tca;
 /**
  * View helper for rendering configuration that will be consumed by Javascript
  */
-class ConfigurationViewHelper extends AbstractViewHelper {
+class ConfigurationViewHelper extends AbstractViewHelper
+{
 
-	/**
-	 * Render the columns of the grid.
-	 *
-	 * @throws NotExistingFieldException
-	 * @return string
-	 */
-	public function render() {
-		$output = '';
+    /**
+     * Render the columns of the grid.
+     *
+     * @throws NotExistingFieldException
+     * @return string
+     */
+    public function render()
+    {
+        $output = '';
 
-		foreach(Tca::grid()->getFields() as $fieldNameAndPath => $configuration) {
+        foreach (Tca::grid()->getFields() as $fieldNameAndPath => $configuration) {
 
-			// Early failure if field does not exist.
-			if (!$this->isAllowed($fieldNameAndPath)) {
-				$message = sprintf('Property "%s" does not exist!', $fieldNameAndPath);
-				throw new NotExistingFieldException($message, 1375369594);
-			}
+            // Early failure if field does not exist.
+            if (!$this->isAllowed($fieldNameAndPath)) {
+                $message = sprintf('Property "%s" does not exist!', $fieldNameAndPath);
+                throw new NotExistingFieldException($message, 1375369594);
+            }
 
-			// mData vs columnName
-			// -------------------
-			// mData: internal name of DataTable plugin and can not contains a path, e.g. metadata.title
-			// columnName: whole field name with path
-			$output .= sprintf('Vidi._columns.push({ "mData": "%s", "bSortable": %s, "bVisible": %s, "sWidth": "%s", "sClass": "%s", "columnName": "%s" });' . PHP_EOL,
-				$this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath), // Suitable field name for the DataTable plugin.
-				Tca::grid()->isSortable($fieldNameAndPath) ? 'true' : 'false',
-				Tca::grid()->isVisible($fieldNameAndPath) ? 'true' : 'false',
-				Tca::grid()->getWidth($fieldNameAndPath),
-				Tca::grid()->getClass($fieldNameAndPath),
-				$fieldNameAndPath
-			);
-		}
+            // mData vs columnName
+            // -------------------
+            // mData: internal name of DataTable plugin and can not contains a path, e.g. metadata.title
+            // columnName: whole field name with path
+            $output .= sprintf('Vidi._columns.push({ "data": "%s", "sortable": %s, "visible": %s, "width": "%s", "class": "%s", "columnName": "%s" });' . PHP_EOL,
+                $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath), // Suitable field name for the DataTable plugin.
+                Tca::grid()->isSortable($fieldNameAndPath) ? 'true' : 'false',
+                Tca::grid()->isVisible($fieldNameAndPath) ? 'true' : 'false',
+                Tca::grid()->getWidth($fieldNameAndPath),
+                Tca::grid()->getClass($fieldNameAndPath),
+                $fieldNameAndPath
+            );
+        }
 
-		return $output;
-	}
+        return $output;
+    }
 
-	/**
-	 * Tell whether the field looks ok to be displayed within the Grid.
-	 *
-	 * @param string $fieldNameAndPath
-	 * @return boolean
-	 */
-	protected function isAllowed($fieldNameAndPath){
-		$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
-		$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
+    /**
+     * Tell whether the field looks ok to be displayed within the Grid.
+     *
+     * @param string $fieldNameAndPath
+     * @return boolean
+     */
+    protected function isAllowed($fieldNameAndPath)
+    {
+        $dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
+        $fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
 
-		$isAllowed = FALSE;
-		if (Tca::grid()->hasRenderers($fieldNameAndPath)) {
-			$isAllowed = TRUE;
-		} elseif (Tca::table()->field($fieldNameAndPath)->isSystem() || Tca::table($dataType)->hasField($fieldName)) {
-			$isAllowed = TRUE;
-		}
+        $isAllowed = FALSE;
+        if (Tca::grid()->hasRenderers($fieldNameAndPath)) {
+            $isAllowed = TRUE;
+        } elseif (Tca::table()->field($fieldNameAndPath)->isSystem() || Tca::table($dataType)->hasField($fieldName)) {
+            $isAllowed = TRUE;
+        }
 
-		return $isAllowed;
-	}
+        return $isAllowed;
+    }
 
-	/**
-	 * @return \Fab\Vidi\Resolver\FieldPathResolver
-	 */
-	protected function getFieldPathResolver() {
-		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
-	}
+    /**
+     * @return \Fab\Vidi\Resolver\FieldPathResolver
+     */
+    protected function getFieldPathResolver()
+    {
+        return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
+    }
 }

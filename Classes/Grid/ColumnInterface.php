@@ -17,21 +17,22 @@ namespace Fab\Vidi\Grid;
 /**
  *  Interface for configuring a column in the Grid.
  */
-interface ColumnInterface {
+interface ColumnInterface
+{
 
-	/**
-	 * @return string
-	 */
-	public function getClassName();
+    /**
+     * @return string
+     */
+    public function getClassName();
 
-	/**
-	 * @return array
-	 */
-	public function getConfiguration();
+    /**
+     * @return array
+     */
+    public function getConfiguration();
 
-	/**
-	 * @return string
-	 */
-	public function toArray();
+    /**
+     * @return string
+     */
+    public function toArray();
 
 }

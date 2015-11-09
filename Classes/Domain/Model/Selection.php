@@ -19,136 +19,149 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 /**
  * Representation of a Selection
  */
-class Selection extends AbstractEntity {
+class Selection extends AbstractEntity
+{
 
-	const VISIBILITY_EVERYONE = 0;
-	const VISIBILITY_PRIVATE = 1;
-	const VISIBILITY_ADMIN_ONLY = 2;
+    const VISIBILITY_EVERYONE = 0;
+    const VISIBILITY_PRIVATE = 1;
+    const VISIBILITY_ADMIN_ONLY = 2;
 
-	/**
-	 * @var int
-	 */
-	protected $visibility;
+    /**
+     * @var int
+     */
+    protected $visibility;
 
-	/**
-	 * @var string
-	 */
-	protected $name;
+    /**
+     * @var string
+     */
+    protected $name;
 
-	/**
-	 * @var string
-	 */
-	protected $dataType;
+    /**
+     * @var string
+     */
+    protected $dataType;
 
-	/**
-	 * @var string
-	 */
-	protected $query;
+    /**
+     * @var string
+     */
+    protected $query;
 
-	/**
-	 * @var string
-	 */
-	protected $speakingQuery;
+    /**
+     * @var string
+     */
+    protected $speakingQuery;
 
-	/**
-	 * @var int
-	 */
-	protected $owner;
+    /**
+     * @var int
+     */
+    protected $owner;
 
-	/**
-	 * @param string $dataType
-	 * @return $this
-	 */
-	public function setDataType($dataType) {
-		$this->dataType = $dataType;
-		return $this;
-	}
+    /**
+     * @param string $dataType
+     * @return $this
+     */
+    public function setDataType($dataType)
+    {
+        $this->dataType = $dataType;
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getDataType() {
-		return $this->dataType;
-	}
+    /**
+     * @return string
+     */
+    public function getDataType()
+    {
+        return $this->dataType;
+    }
 
-	/**
-	 * @param string $query
-	 * @return $this
-	 */
-	public function setQuery($query) {
-		$this->query = $query;
-		return $this;
-	}
+    /**
+     * @param string $query
+     * @return $this
+     */
+    public function setQuery($query)
+    {
+        $this->query = $query;
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getQuery() {
-		return $this->query;
-	}
+    /**
+     * @return string
+     */
+    public function getQuery()
+    {
+        return $this->query;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getSpeakingQuery() {
-		return $this->speakingQuery;
-	}
+    /**
+     * @return string
+     */
+    public function getSpeakingQuery()
+    {
+        return $this->speakingQuery;
+    }
 
-	/**
-	 * @param string $speakingQuery
-	 * @return $this
-	 */
-	public function setSpeakingQuery($speakingQuery) {
-		$this->speakingQuery = $speakingQuery;
-		return $this;
-	}
+    /**
+     * @param string $speakingQuery
+     * @return $this
+     */
+    public function setSpeakingQuery($speakingQuery)
+    {
+        $this->speakingQuery = $speakingQuery;
+        return $this;
+    }
 
-	/**
-	 * @param string $name
-	 * @return $this
-	 */
-	public function setName($name) {
-		$this->name = $name;
-		return $this;
-	}
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getName() {
-		return $this->name;
-	}
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
-	/**
-	 * @param int $visibility
-	 * @return $this
-	 */
-	public function setVisibility($visibility) {
-		$this->visibility = $visibility;
-		return $this;
-	}
+    /**
+     * @param int $visibility
+     * @return $this
+     */
+    public function setVisibility($visibility)
+    {
+        $this->visibility = $visibility;
+        return $this;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getVisibility() {
-		return $this->visibility;
-	}
+    /**
+     * @return int
+     */
+    public function getVisibility()
+    {
+        return $this->visibility;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getOwner() {
-		return $this->owner;
-	}
+    /**
+     * @return int
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
 
-	/**
-	 * @param int $owner
-	 * @return $this
-	 */
-	public function setOwner($owner) {
-		$this->owner = $owner;
-		return $this;
-	}
+    /**
+     * @param int $owner
+     * @return $this
+     */
+    public function setOwner($owner)
+    {
+        $this->owner = $owner;
+        return $this;
+    }
 
 }

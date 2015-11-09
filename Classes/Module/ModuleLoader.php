@@ -23,826 +23,900 @@ use Fab\Vidi\Service\BackendUserPreferenceService;
 /**
  * Service class used in other extensions to register a vidi based backend module.
  */
-class ModuleLoader {
-
-	/**
-	 * Define the default main module
-	 */
-	const DEFAULT_MAIN_MODULE = 'content';
-
-	/**
-	 * Define the default pid
-	 */
-	const DEFAULT_PID = 0;
-
-	/**
-	 * The type of data being listed (which corresponds to a table name in TCA)
-	 *
-	 * @var string
-	 */
-	protected $dataType;
-
-	/**
-	 * @var string
-	 */
-	protected $defaultPid;
-
-	/**
-	 * @var bool
-	 */
-	protected $showPageTree;
-
-	/**
-	 * @var bool
-	 */
-	protected $isShown = TRUE;
-
-	/**
-	 * @var string
-	 */
-	protected $access = Access::USER;
-
-	/**
-	 * @var string
-	 */
-	protected $mainModule;
-
-	/**
-	 * @var string
-	 */
-	protected $position = '';
-
-	/**
-	 * @var string
-	 */
-	protected $icon = 'EXT:vidi/ext_icon.gif';
-
-	/**
-	 * @var string
-	 */
-	protected $moduleLanguageFile = 'LLL:EXT:vidi/Resources/Private/Language/locallang_module.xlf';
-
-	/**
-	 * The module key such as m1, m2.
-	 *
-	 * @var string
-	 */
-	protected $moduleKey = 'm1';
-
-	/**
-	 * @var string[]
-	 */
-	protected $additionalJavaScriptFiles = array();
-
-	/**
-	 * @var string[]
-	 */
-	protected $additionalStyleSheetFiles = array();
-
-	/**
-	 * @var array
-	 */
-	protected $components = array(
-		ModulePosition::DOC_HEADER => array(
-			ModulePosition::TOP => array(
-				ModulePosition::LEFT => array(),
-				ModulePosition::RIGHT => array(
-					'Fab\Vidi\View\Button\ToolButton',
-				),
-			),
-			ModulePosition::BOTTOM => array(
-				ModulePosition::LEFT => array(
-					'Fab\Vidi\View\Button\NewButton',
-					'Fab\Vidi\ViewHelpers\Link\BackViewHelper',
-				),
-				ModulePosition::RIGHT => array(),
-			),
-		),
-		ModulePosition::GRID => array(
-			ModulePosition::TOP => array(
-				'Fab\Vidi\View\Check\PidCheck',
-				'Fab\Vidi\View\Check\RelationsCheck',
-				'Fab\Vidi\View\Tab\DataTypeTab',
-			),
-			ModulePosition::BUTTONS => array(
-				'Fab\Vidi\View\Button\EditButton',
-				'Fab\Vidi\View\Button\DeleteButton',
-			),
-			ModulePosition::BOTTOM => array(),
-		),
-		ModulePosition::MENU_MASS_ACTION => array(
-			'Fab\Vidi\View\MenuItem\ExportXlsMenuItem',
-			'Fab\Vidi\View\MenuItem\ExportXmlMenuItem',
-			'Fab\Vidi\View\MenuItem\ExportCsvMenuItem',
-			'Fab\Vidi\View\MenuItem\DividerMenuItem',
-			'Fab\Vidi\View\MenuItem\MassDeleteMenuItem',
-			#'Fab\Vidi\View\MenuItem\MassEditMenuItem',
-		),
-	);
-
-	/**
-	 * @param string $dataType
-	 */
-	public function __construct($dataType = NULL) {
-		$this->dataType = $dataType;
-	}
-
-	/**
-	 * Tell whether a module is already registered.
-	 *
-	 * @param string $dataType
-	 * @return bool
-	 */
-	public function isRegistered($dataType) {
-		$internalModuleSignature = $this->getInternalModuleSignature($dataType);
-		return !empty($GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]);
-	}
-
-	/**
-	 * Register the module
-	 *
-	 * @return void
-	 */
-	public function register() {
-
-		$this->initializeDefaultValues();
-		$internalModuleSignature = $this->getInternalModuleSignature();
-
-		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature] = array();
-		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['dataType'] = $this->dataType;
-		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['mainModule'] = $this->mainModule;
-		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['defaultPid'] = $this->defaultPid;
-		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['additionalJavaScriptFiles'] = $this->additionalJavaScriptFiles;
-		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['additionalStyleSheetFiles'] = $this->additionalStyleSheetFiles;
-		$GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['components'] = $this->components;
-
-		// Register and displays module in the BE only if told, default is TRUE.
-		if ($this->isShown) {
-
-			$moduleConfiguration = array(
-				'access' => $this->access,
-				'icon' => $this->icon,
-				'labels' => $this->moduleLanguageFile,
-				'inheritNavigationComponentFromMainModule' => TRUE
-			);
-
-			if (!is_null($this->showPageTree)) {
-				if ($this->showPageTree) {
-					$moduleConfiguration['navigationComponentId'] = 'typo3-pagetree';
-				} else {
-					$moduleConfiguration['inheritNavigationComponentFromMainModule'] = FALSE;
-				}
-			}
-
-			ExtensionUtility::registerModule(
-				'vidi',
-				$this->mainModule,
-				$this->dataType . '_' . $this->moduleKey,
-				$this->position,
-				array(
-					'Content' => 'index, list, delete, update, edit, copy, move, localize, sort, copyClipboard, moveClipboard',
-					'Tool' => 'welcome, work',
-					'Facet' => 'autoSuggest, autoSuggests',
-					'Selection' => 'edit, update, create, delete, list, show',
-					'UserPreferences' => 'save',
-					'Clipboard' => 'save, flush, show',
-				),
-				$moduleConfiguration
-			);
-		}
-	}
-
-	/**
-	 * Return the module code for a BE module.
-	 *
-	 * @return string
-	 */
-	public function getSignature() {
-		return GeneralUtility::_GP(Parameter::MODULE);
-	}
-
-	/**
-	 * Tell whether the current module is the list one.
-	 *
-	 * @return bool
-	 */
-	public function copeWithPageTree() {
-		return GeneralUtility::_GP(Parameter::MODULE) === 'web_VidiM1';
-	}
-
-	/**
-	 * Returns the current pid.
-	 *
-	 * @return bool
-	 */
-	public function getCurrentPid() {
-		return GeneralUtility::_GET(Parameter::PID) > 0 ? (int)GeneralUtility::_GET(Parameter::PID) : 0;
-	}
-
-	/**
-	 * Return the Vidi module code which is stored in TBE_MODULES_EXT
-	 *
-	 * @return string
-	 */
-	public function getVidiModuleCode() {
-
-		if ($this->copeWithPageTree()) {
-			$userPreferenceKey = sprintf('Vidi_pid_%s', $this->getCurrentPid());
-
-			if (GeneralUtility::_GP(Parameter::SUBMODULE)) {
-				$subModuleCode = GeneralUtility::_GP(Parameter::SUBMODULE);
-				BackendUserPreferenceService::getInstance()->set($userPreferenceKey, $subModuleCode);
-			} else {
-
-				$defaultModuleCode = BackendUserPreferenceService::getInstance()->get($userPreferenceKey);
-				if (empty($defaultModuleCode)) {
-					$defaultModuleCode = 'VidiTtContentM1'; // hard-coded submodule
-					BackendUserPreferenceService::getInstance()->set($userPreferenceKey, $defaultModuleCode);
-				}
-
-				$vidiModules = ModuleService::getInstance()->getModulesForCurrentPid();
-
-				if (empty($vidiModules)) {
-					$subModuleCode = $defaultModuleCode;
-				} elseif (isset($vidiModules[$defaultModuleCode])) {
-					$subModuleCode = $defaultModuleCode;
-				} else {
-					$subModuleCode = ModuleService::getInstance()->getFirstModuleForPid($this->getCurrentPid());
-				}
-			}
-		} else {
-			$moduleCode = $this->getSignature();
-
-			// Remove first part which is separated "_"
-			$delimiter = strpos($moduleCode, '_') + 1;
-			$subModuleCode = substr($moduleCode, $delimiter);
-		}
-
-		return $subModuleCode;
-	}
-
-	/**
-	 * Return the module URL.
-	 *
-	 * @param array $additionalParameters
-	 * @return string
-	 */
-	public function getModuleUrl(array $additionalParameters = array()) {
-		$moduleCode = $this->getSignature();
-
-		// Add possible submodule if current module has page tree.
-		if ($this->copeWithPageTree() && !isset($additionalParameters[Parameter::SUBMODULE])) {
-			$additionalParameters[Parameter::SUBMODULE] = $this->getVidiModuleCode();
-		}
-
-		// And don't forget the pid!
-		if (GeneralUtility::_GET(Parameter::PID)) {
-			$additionalParameters[Parameter::PID] = GeneralUtility::_GET(Parameter::PID);
-		}
-
-		$moduleUrl = BackendUtility::getModuleUrl($moduleCode, $additionalParameters);
-		return $moduleUrl;
-	}
-
-	/**
-	 * Return the parameter prefix for a BE module.
-	 *
-	 * @return string
-	 */
-	public function getParameterPrefix() {
-		return 'tx_vidi_' . strtolower($this->getSignature());
-	}
-
-	/**
-	 * Return a configuration key or the entire module configuration array if not key is given.
-	 *
-	 * @param string $key
-	 * @throws InvalidKeyInArrayException
-	 * @return mixed
-	 */
-	public function getModuleConfiguration($key = '') {
-
-		$vidiModuleCode = $this->getVidiModuleCode();
-
-		// Module code must exist
-		if (empty($GLOBALS['TBE_MODULES_EXT']['vidi'][$vidiModuleCode])) {
-			$message = sprintf('Invalid or not existing module code "%s"', $vidiModuleCode);
-			throw new InvalidKeyInArrayException($message, 1375092053);
-		}
-
-		$result = $GLOBALS['TBE_MODULES_EXT']['vidi'][$vidiModuleCode];
-
-		if (!empty($key)) {
-			if (isset($result[$key])) {
-				$result = $result[$key];
-			} else {
-				// key must exist
-				$message = sprintf('Invalid key configuration "%s"', $key);
-				throw new InvalidKeyInArrayException($message, 1375092054);
-			}
-		}
-		return $result;
-	}
-
-	/**
-	 * @param string $icon
-	 * @return $this
-	 */
-	public function setIcon($icon) {
-		$this->icon = $icon;
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getIcon() {
-		return $this->icon;
-	}
-
-	/**
-	 * @param string $mainModule
-	 * @return $this
-	 */
-	public function setMainModule($mainModule) {
-		$this->mainModule = $mainModule;
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getMainModule() {
-		if (is_null($this->mainModule)) {
-			$this->mainModule = $this->getModuleConfiguration('mainModule');
-		}
-		return $this->mainModule;
-	}
-
-	/**
-	 * @param string $moduleLanguageFile
-	 * @return $this
-	 */
-	public function setModuleLanguageFile($moduleLanguageFile) {
-		$this->moduleLanguageFile = $moduleLanguageFile;
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getModuleLanguageFile() {
-		return $this->moduleLanguageFile;
-	}
-
-	/**
-	 * @param string $position
-	 * @return $this
-	 */
-	public function setPosition($position) {
-		$this->position = $position;
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getPosition() {
-		return $this->position;
-	}
-
-	/**
-	 * @param array $files
-	 * @return $this
-	 */
-	public function addJavaScriptFiles(array $files) {
-		foreach ($files as $file) {
-			$this->additionalJavaScriptFiles[] = $file;
-		}
-		return $this;
-	}
-
-	/**
-	 * @param string $fileNameAndPath
-	 * @return $this
-	 */
-	public function addJavaScriptFile($fileNameAndPath) {
-		$this->additionalJavaScriptFiles[] = $fileNameAndPath;
-		return $this;
-	}
-
-	/**
-	 * @param array $files
-	 * @return $this
-	 */
-	public function addStyleSheetFiles(array $files) {
-		foreach ($files as $file) {
-			$this->additionalStyleSheetFiles[] = $file;
-		}
-		return $this;
-	}
-
-	/**
-	 * @param string $fileNameAndPath
-	 * @return $this
-	 */
-	public function addStyleSheetFile($fileNameAndPath) {
-		$this->additionalStyleSheetFiles[] = $fileNameAndPath;
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getDataType() {
-		if (is_null($this->dataType)) {
-			$this->dataType = $this->getModuleConfiguration('dataType');
-		}
-		return $this->dataType;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getDataTypes() {
-		$dataTypes = array();
-		foreach ($GLOBALS['TBE_MODULES_EXT']['vidi'] as $module) {
-			$dataTypes[] = $module['dataType'];
-		}
-		return $dataTypes;
-	}
-
-	/**
-	 * @param string $dataType
-	 * @return $this
-	 */
-	public function setDataType($dataType) {
-		$this->dataType = $dataType;
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getDefaultPid() {
-		if (empty($this->defaultPid)) {
-			$this->defaultPid = $this->getModuleConfiguration('defaultPid');
-		}
-		return $this->defaultPid;
-	}
-
-	/**
-	 * @param string $defaultPid
-	 * @return $this
-	 */
-	public function setDefaultPid($defaultPid) {
-		$this->defaultPid = $defaultPid;
-		return $this;
-	}
-
-	/**
-	 * @param bool $isPageTreeShown
-	 * @return $this
-	 */
-	public function showPageTree($isPageTreeShown) {
-		$this->showPageTree = $isPageTreeShown;
-		return $this;
-	}
-
-	/**
-	 * @param string $isShown
-	 * @return $this
-	 */
-	public function isShown($isShown) {
-		$this->isShown = $isShown;
-		return $this;
-	}
-
-	/**
-	 * @return $array
-	 */
-	public function getDocHeaderTopLeftComponents() {
-		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::LEFT];
-	}
-
-	/**
-	 * @param array $components
-	 * @return $this
-	 */
-	public function setDocHeaderTopLeftComponents(array $components) {
-		$this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::LEFT] = $components;
-		return $this;
-	}
-
-	/**
-	 * @param string|array $components
-	 * @return $this
-	 */
-	public function addDocHeaderTopLeftComponents($components) {
-		if (is_string($components)) {
-			$components = array($components);
-		}
-		$currentComponents = $this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::LEFT];
-		$this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::LEFT] = array_merge($currentComponents, $components);
-		return $this;
-	}
-
-	/**
-	 * @return $array
-	 */
-	public function getDocHeaderTopRightComponents() {
-		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::RIGHT];
-	}
-
-	/**
-	 * @param array $components
-	 * @return $this
-	 */
-	public function setDocHeaderTopRightComponents(array $components) {
-		$this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::RIGHT] = $components;
-		return $this;
-	}
-
-	/**
-	 * @param string|array $components
-	 * @return $this
-	 */
-	public function addDocHeaderTopRightComponents($components) {
-		if (is_string($components)) {
-			$components = array($components);
-		}
-		$currentComponents = $this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::RIGHT];
-		$this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::RIGHT] = array_merge($currentComponents, $components);
-		return $this;
-	}
-
-	/**
-	 * @return $array
-	 */
-	public function getDocHeaderBottomLeftComponents() {
-		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::LEFT];
-	}
-
-	/**
-	 * @param array $components
-	 * @return $this
-	 */
-	public function setDocHeaderBottomLeftComponents(array $components) {
-		$this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::LEFT] = $components;
-		return $this;
-	}
-
-	/**
-	 * @param string|array $components
-	 * @return $this
-	 */
-	public function addDocHeaderBottomLeftComponents($components) {
-		if (is_string($components)) {
-			$components = array($components);
-		}
-		$currentComponents = $this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::LEFT];
-		$this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::LEFT] = array_merge($currentComponents, $components);
-		return $this;
-	}
-
-	/**
-	 * @return $array
-	 */
-	public function getDocHeaderBottomRightComponents() {
-		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::RIGHT];
-	}
-
-	/**
-	 * @param array $components
-	 * @return $this
-	 */
-	public function setDocHeaderBottomRightComponents(array $components) {
-		$this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::RIGHT] = $components;
-		return $this;
-	}
-
-	/**
-	 * @param string|array $components
-	 * @return $this
-	 */
-	public function addDocHeaderBottomRightComponents($components) {
-		if (is_string($components)) {
-			$components = array($components);
-		}
-		$currentComponents = $this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::RIGHT];
-		$this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::RIGHT] = array_merge($currentComponents, $components);
-		return $this;
-	}
-
-	/**
-	 * @return $array
-	 */
-	public function getGridTopComponents() {
-		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][ModulePosition::GRID][ModulePosition::TOP];
-	}
-
-	/**
-	 * @param array $components
-	 * @return $this
-	 */
-	public function setGridTopComponents(array $components) {
-		$this->components[ModulePosition::GRID][ModulePosition::TOP] = $components;
-		return $this;
-	}
-
-	/**
-	 * @param string|array $components
-	 * @return $this
-	 */
-	public function addGridTopComponents($components) {
-		if (is_string($components)) {
-			$components = array($components);
-		}
-		$currentComponents = $this->components[ModulePosition::GRID][ModulePosition::TOP];
-		$this->components[ModulePosition::GRID][ModulePosition::TOP] = array_merge($currentComponents, $components);
-		return $this;
-	}
-
-	/**
-	 * @return $array
-	 */
-	public function getGridBottomComponents() {
-		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][ModulePosition::GRID][ModulePosition::BOTTOM];
-	}
-
-	/**
-	 * @param array $components
-	 * @return $this
-	 */
-	public function setGridBottomComponents(array $components) {
-		$this->components[ModulePosition::GRID][ModulePosition::BOTTOM] = $components;
-		return $this;
-	}
-
-	/**
-	 * @param string|array $components
-	 * @return $this
-	 */
-	public function addGridBottomComponents($components) {
-		if (is_string($components)) {
-			$components = array($components);
-		}
-		$currentComponents = $this->components[ModulePosition::GRID][ModulePosition::BOTTOM];
-		$this->components[ModulePosition::GRID][ModulePosition::BOTTOM] = array_merge($currentComponents, $components);
-		return $this;
-	}
-
-	/**
-	 * @return $array
-	 */
-	public function getGridButtonsComponents() {
-		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][ModulePosition::GRID][ModulePosition::BUTTONS];
-	}
-
-	/**
-	 * @param array $components
-	 * @return $this
-	 */
-	public function setGridButtonsComponents(array $components) {
-		$this->components[ModulePosition::GRID][ModulePosition::BUTTONS] = $components;
-		return $this;
-	}
-
-	/**
-	 * @param string|array $components
-	 * @return $this
-	 */
-	public function addGridButtonsComponents($components) {
-		if (is_string($components)) {
-			$components = array($components);
-		}
-		$currentComponents = $this->components[ModulePosition::GRID][ModulePosition::BUTTONS];
-		$this->components[ModulePosition::GRID][ModulePosition::BUTTONS] = array_merge($currentComponents, $components);
-		return $this;
-	}
-
-	/**
-	 * @return $array
-	 */
-	public function getMenuMassActionComponents() {
-		$configuration = $this->getModuleConfiguration();
-		return $configuration['components'][ModulePosition::MENU_MASS_ACTION];
-	}
-
-	/**
-	 * @param array $components
-	 * @return $this
-	 */
-	public function setMenuMassActionComponents(array $components) {
-		$this->components[ModulePosition::MENU_MASS_ACTION] = $components;
-		return $this;
-	}
-
-	/**
-	 * @param string|array $components
-	 * @return $this
-	 */
-	public function addMenuMassActionComponents($components) {
-		if (is_string($components)) {
-			$components = array($components);
-		}
-		$currentComponents = $this->components[ModulePosition::MENU_MASS_ACTION];
-		$this->components[ModulePosition::MENU_MASS_ACTION] = array_merge($currentComponents, $components);
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getAccess() {
-		return $this->access;
-	}
-
-	/**
-	 * @param string $access
-	 * @return $this
-	 */
-	public function setAccess($access) {
-		$this->access = $access;
-		return $this;
-	}
-
-	/**
-	 * @return \string[]
-	 */
-	public function getAdditionalJavaScriptFiles() {
-		if (empty($this->additionalJavaScriptFiles)) {
-			$this->additionalJavaScriptFiles = $this->getModuleConfiguration('additionalJavaScriptFiles');
-		}
-		return $this->additionalJavaScriptFiles;
-	}
-
-	/**
-	 * @return \string[]
-	 */
-	public function getAdditionalStyleSheetFiles() {
-		if (empty($this->additionalStyleSheetFiles)) {
-			$this->additionalStyleSheetFiles = $this->getModuleConfiguration('additionalStyleSheetFiles');
-		}
-		return $this->additionalStyleSheetFiles;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getComponents() {
-		return $this->components;
-	}
-
-	/**
-	 * @param string $pluginName
-	 * @return bool
-	 */
-	public function hasPlugin($pluginName = '') {
-		$parameterPrefix = $this->getParameterPrefix();
-		$parameters = GeneralUtility::_GET($parameterPrefix);
-
-		$hasPlugin = !empty($parameters['plugins']) && is_array($parameters['plugins']);
-		if ($hasPlugin && $pluginName) {
-			$hasPlugin = in_array($pluginName, $parameters['plugins']);
-		}
-		return $hasPlugin;
-	}
-
-	/**
-	 * Compute the internal module code
-	 *
-	 * @param NULL|string $dataType
-	 * @return string
-	 */
-	protected function getInternalModuleSignature($dataType = NULL) {
-		if (is_null($dataType)) {
-			$dataType = $this->dataType;
-		}
-		$subModuleName = $dataType . '_' . $this->moduleKey;
-		return 'Vidi' . GeneralUtility::underscoredToUpperCamelCase($subModuleName);
-	}
-
-	/**
-	 * Make sure default values are correctly initialized for the module.
-	 *
-	 * @return void
-	 */
-	protected function initializeDefaultValues() {
-		if (is_null($this->mainModule)) {
-			$this->mainModule = self::DEFAULT_MAIN_MODULE;
-		}
-
-		if (is_null($this->defaultPid)) {
-			$this->defaultPid = self::DEFAULT_PID;
-		}
-	}
+class ModuleLoader
+{
+
+    /**
+     * Define the default main module
+     */
+    const DEFAULT_MAIN_MODULE = 'content';
+
+    /**
+     * Define the default pid
+     */
+    const DEFAULT_PID = 0;
+
+    /**
+     * The type of data being listed (which corresponds to a table name in TCA)
+     *
+     * @var string
+     */
+    protected $dataType;
+
+    /**
+     * @var string
+     */
+    protected $defaultPid;
+
+    /**
+     * @var bool
+     */
+    protected $showPageTree;
+
+    /**
+     * @var bool
+     */
+    protected $isShown = TRUE;
+
+    /**
+     * @var string
+     */
+    protected $access = Access::USER;
+
+    /**
+     * @var string
+     */
+    protected $mainModule;
+
+    /**
+     * @var string
+     */
+    protected $position = '';
+
+    /**
+     * @var string
+     */
+    protected $icon = 'EXT:vidi/ext_icon.gif';
+
+    /**
+     * @var string
+     */
+    protected $moduleLanguageFile = 'LLL:EXT:vidi/Resources/Private/Language/locallang_module.xlf';
+
+    /**
+     * The module key such as m1, m2.
+     *
+     * @var string
+     */
+    protected $moduleKey = 'm1';
+
+    /**
+     * @var string[]
+     */
+    protected $additionalJavaScriptFiles = array();
+
+    /**
+     * @var string[]
+     */
+    protected $additionalStyleSheetFiles = array();
+
+    /**
+     * @var array
+     */
+    protected $components = array(
+        ModulePosition::DOC_HEADER => array(
+            ModulePosition::TOP => array(
+                ModulePosition::LEFT => array(),
+                ModulePosition::RIGHT => array(
+                    'Fab\Vidi\View\Button\ToolButton',
+                ),
+            ),
+            ModulePosition::BOTTOM => array(
+                ModulePosition::LEFT => array(
+                    'Fab\Vidi\View\Button\NewButton',
+                    'Fab\Vidi\ViewHelpers\Link\BackViewHelper',
+                ),
+                ModulePosition::RIGHT => array(),
+            ),
+        ),
+        ModulePosition::GRID => array(
+            ModulePosition::TOP => array(
+                'Fab\Vidi\View\Check\PidCheck',
+                'Fab\Vidi\View\Check\RelationsCheck',
+                'Fab\Vidi\View\Tab\DataTypeTab',
+            ),
+            ModulePosition::BUTTONS => array(
+                'Fab\Vidi\View\Button\EditButton',
+                'Fab\Vidi\View\Button\DeleteButton',
+            ),
+            ModulePosition::BOTTOM => array(),
+        ),
+        ModulePosition::MENU_MASS_ACTION => array(
+            'Fab\Vidi\View\MenuItem\ExportXlsMenuItem',
+            'Fab\Vidi\View\MenuItem\ExportXmlMenuItem',
+            'Fab\Vidi\View\MenuItem\ExportCsvMenuItem',
+            'Fab\Vidi\View\MenuItem\DividerMenuItem',
+            'Fab\Vidi\View\MenuItem\MassDeleteMenuItem',
+            #'Fab\Vidi\View\MenuItem\MassEditMenuItem',
+        ),
+    );
+
+    /**
+     * @param string $dataType
+     */
+    public function __construct($dataType = NULL)
+    {
+        $this->dataType = $dataType;
+    }
+
+    /**
+     * Tell whether a module is already registered.
+     *
+     * @param string $dataType
+     * @return bool
+     */
+    public function isRegistered($dataType)
+    {
+        $internalModuleSignature = $this->getInternalModuleSignature($dataType);
+        return !empty($GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]);
+    }
+
+    /**
+     * Register the module
+     *
+     * @return void
+     */
+    public function register()
+    {
+
+        $this->initializeDefaultValues();
+        $internalModuleSignature = $this->getInternalModuleSignature();
+
+        $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature] = array();
+        $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['dataType'] = $this->dataType;
+        $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['mainModule'] = $this->mainModule;
+        $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['defaultPid'] = $this->defaultPid;
+        $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['additionalJavaScriptFiles'] = $this->additionalJavaScriptFiles;
+        $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['additionalStyleSheetFiles'] = $this->additionalStyleSheetFiles;
+        $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['components'] = $this->components;
+
+        // Register and displays module in the BE only if told, default is TRUE.
+        if ($this->isShown) {
+
+            $moduleConfiguration = array(
+                'access' => $this->access,
+                'icon' => $this->icon,
+                'labels' => $this->moduleLanguageFile,
+                'inheritNavigationComponentFromMainModule' => TRUE
+            );
+
+            if (!is_null($this->showPageTree)) {
+                if ($this->showPageTree) {
+                    $moduleConfiguration['navigationComponentId'] = 'typo3-pagetree';
+                } else {
+                    $moduleConfiguration['inheritNavigationComponentFromMainModule'] = FALSE;
+                }
+            }
+
+            ExtensionUtility::registerModule(
+                'vidi',
+                $this->mainModule,
+                $this->dataType . '_' . $this->moduleKey,
+                $this->position,
+                array(
+                    'Content' => 'index, list, delete, update, edit, copy, move, localize, sort, copyClipboard, moveClipboard',
+                    'Tool' => 'welcome, work',
+                    'Facet' => 'autoSuggest, autoSuggests',
+                    'Selection' => 'edit, update, create, delete, list, show',
+                    'UserPreferences' => 'save',
+                    'Clipboard' => 'save, flush, show',
+                ),
+                $moduleConfiguration
+            );
+        }
+    }
+
+    /**
+     * Return the module code for a BE module.
+     *
+     * @return string
+     */
+    public function getSignature()
+    {
+        return GeneralUtility::_GP(Parameter::MODULE);
+    }
+
+    /**
+     * Tell whether the current module is the list one.
+     *
+     * @return bool
+     */
+    public function copeWithPageTree()
+    {
+        return GeneralUtility::_GP(Parameter::MODULE) === 'web_VidiM1';
+    }
+
+    /**
+     * Returns the current pid.
+     *
+     * @return bool
+     */
+    public function getCurrentPid()
+    {
+        return GeneralUtility::_GET(Parameter::PID) > 0 ? (int)GeneralUtility::_GET(Parameter::PID) : 0;
+    }
+
+    /**
+     * Return the Vidi module code which is stored in TBE_MODULES_EXT
+     *
+     * @return string
+     */
+    public function getVidiModuleCode()
+    {
+
+        if ($this->copeWithPageTree()) {
+            $userPreferenceKey = sprintf('Vidi_pid_%s', $this->getCurrentPid());
+
+            if (GeneralUtility::_GP(Parameter::SUBMODULE)) {
+                $subModuleCode = GeneralUtility::_GP(Parameter::SUBMODULE);
+                BackendUserPreferenceService::getInstance()->set($userPreferenceKey, $subModuleCode);
+            } else {
+
+                $defaultModuleCode = BackendUserPreferenceService::getInstance()->get($userPreferenceKey);
+                if (empty($defaultModuleCode)) {
+                    $defaultModuleCode = 'VidiTtContentM1'; // hard-coded submodule
+                    BackendUserPreferenceService::getInstance()->set($userPreferenceKey, $defaultModuleCode);
+                }
+
+                $vidiModules = ModuleService::getInstance()->getModulesForCurrentPid();
+
+                if (empty($vidiModules)) {
+                    $subModuleCode = $defaultModuleCode;
+                } elseif (isset($vidiModules[$defaultModuleCode])) {
+                    $subModuleCode = $defaultModuleCode;
+                } else {
+                    $subModuleCode = ModuleService::getInstance()->getFirstModuleForPid($this->getCurrentPid());
+                }
+            }
+        } else {
+            $moduleCode = $this->getSignature();
+
+            // Remove first part which is separated "_"
+            $delimiter = strpos($moduleCode, '_') + 1;
+            $subModuleCode = substr($moduleCode, $delimiter);
+        }
+
+        return $subModuleCode;
+    }
+
+    /**
+     * Return the module URL.
+     *
+     * @param array $additionalParameters
+     * @param bool $absoluteUrl
+     * @return string
+     */
+    public function getModuleUrl(array $additionalParameters = array(), $absoluteUrl = false)
+    {
+        $moduleCode = $this->getSignature();
+
+        // Add possible submodule if current module has page tree.
+        if ($this->copeWithPageTree() && !isset($additionalParameters[Parameter::SUBMODULE])) {
+            $additionalParameters[Parameter::SUBMODULE] = $this->getVidiModuleCode();
+        }
+
+        // And don't forget the pid!
+        if (GeneralUtility::_GET(Parameter::PID)) {
+            $additionalParameters[Parameter::PID] = GeneralUtility::_GET(Parameter::PID);
+        }
+
+        $moduleUrl = BackendUtility::getModuleUrl($moduleCode, $additionalParameters, false, $absoluteUrl);
+        return $moduleUrl;
+    }
+
+    /**
+     * Return the module absolute URL.
+     *
+     * @param array $additionalParameters
+     * @return string
+     */
+    public function getModuleAbsoluteUrl(array $additionalParameters = array())
+    {
+        return $this->getModuleUrl($additionalParameters, true);
+    }
+
+    /**
+     * Return the parameter prefix for a BE module.
+     *
+     * @return string
+     */
+    public function getParameterPrefix()
+    {
+        return 'tx_vidi_' . strtolower($this->getSignature());
+    }
+
+    /**
+     * Return a configuration key or the entire module configuration array if not key is given.
+     *
+     * @param string $key
+     * @throws InvalidKeyInArrayException
+     * @return mixed
+     */
+    public function getModuleConfiguration($key = '')
+    {
+
+        $vidiModuleCode = $this->getVidiModuleCode();
+
+        // Module code must exist
+        if (empty($GLOBALS['TBE_MODULES_EXT']['vidi'][$vidiModuleCode])) {
+            $message = sprintf('Invalid or not existing module code "%s"', $vidiModuleCode);
+            throw new InvalidKeyInArrayException($message, 1375092053);
+        }
+
+        $result = $GLOBALS['TBE_MODULES_EXT']['vidi'][$vidiModuleCode];
+
+        if (!empty($key)) {
+            if (isset($result[$key])) {
+                $result = $result[$key];
+            } else {
+                // key must exist
+                $message = sprintf('Invalid key configuration "%s"', $key);
+                throw new InvalidKeyInArrayException($message, 1375092054);
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @param string $icon
+     * @return $this
+     */
+    public function setIcon($icon)
+    {
+        $this->icon = $icon;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIcon()
+    {
+        return $this->icon;
+    }
+
+    /**
+     * @param string $mainModule
+     * @return $this
+     */
+    public function setMainModule($mainModule)
+    {
+        $this->mainModule = $mainModule;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMainModule()
+    {
+        if (is_null($this->mainModule)) {
+            $this->mainModule = $this->getModuleConfiguration('mainModule');
+        }
+        return $this->mainModule;
+    }
+
+    /**
+     * @param string $moduleLanguageFile
+     * @return $this
+     */
+    public function setModuleLanguageFile($moduleLanguageFile)
+    {
+        $this->moduleLanguageFile = $moduleLanguageFile;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModuleLanguageFile()
+    {
+        return $this->moduleLanguageFile;
+    }
+
+    /**
+     * @param string $position
+     * @return $this
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    /**
+     * @param array $files
+     * @return $this
+     */
+    public function addJavaScriptFiles(array $files)
+    {
+        foreach ($files as $file) {
+            $this->additionalJavaScriptFiles[] = $file;
+        }
+        return $this;
+    }
+
+    /**
+     * @param string $fileNameAndPath
+     * @return $this
+     */
+    public function addJavaScriptFile($fileNameAndPath)
+    {
+        $this->additionalJavaScriptFiles[] = $fileNameAndPath;
+        return $this;
+    }
+
+    /**
+     * @param array $files
+     * @return $this
+     */
+    public function addStyleSheetFiles(array $files)
+    {
+        foreach ($files as $file) {
+            $this->additionalStyleSheetFiles[] = $file;
+        }
+        return $this;
+    }
+
+    /**
+     * @param string $fileNameAndPath
+     * @return $this
+     */
+    public function addStyleSheetFile($fileNameAndPath)
+    {
+        $this->additionalStyleSheetFiles[] = $fileNameAndPath;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDataType()
+    {
+        if (is_null($this->dataType)) {
+            $this->dataType = $this->getModuleConfiguration('dataType');
+        }
+        return $this->dataType;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDataTypes()
+    {
+        $dataTypes = array();
+        foreach ($GLOBALS['TBE_MODULES_EXT']['vidi'] as $module) {
+            $dataTypes[] = $module['dataType'];
+        }
+        return $dataTypes;
+    }
+
+    /**
+     * @param string $dataType
+     * @return $this
+     */
+    public function setDataType($dataType)
+    {
+        $this->dataType = $dataType;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultPid()
+    {
+        if (empty($this->defaultPid)) {
+            $this->defaultPid = $this->getModuleConfiguration('defaultPid');
+        }
+        return $this->defaultPid;
+    }
+
+    /**
+     * @param string $defaultPid
+     * @return $this
+     */
+    public function setDefaultPid($defaultPid)
+    {
+        $this->defaultPid = $defaultPid;
+        return $this;
+    }
+
+    /**
+     * @param bool $isPageTreeShown
+     * @return $this
+     */
+    public function showPageTree($isPageTreeShown)
+    {
+        $this->showPageTree = $isPageTreeShown;
+        return $this;
+    }
+
+    /**
+     * @param string $isShown
+     * @return $this
+     */
+    public function isShown($isShown)
+    {
+        $this->isShown = $isShown;
+        return $this;
+    }
+
+    /**
+     * @return $array
+     */
+    public function getDocHeaderTopLeftComponents()
+    {
+        $configuration = $this->getModuleConfiguration();
+        return $configuration['components'][ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::LEFT];
+    }
+
+    /**
+     * @param array $components
+     * @return $this
+     */
+    public function setDocHeaderTopLeftComponents(array $components)
+    {
+        $this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::LEFT] = $components;
+        return $this;
+    }
+
+    /**
+     * @param string|array $components
+     * @return $this
+     */
+    public function addDocHeaderTopLeftComponents($components)
+    {
+        if (is_string($components)) {
+            $components = array($components);
+        }
+        $currentComponents = $this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::LEFT];
+        $this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::LEFT] = array_merge($currentComponents, $components);
+        return $this;
+    }
+
+    /**
+     * @return $array
+     */
+    public function getDocHeaderTopRightComponents()
+    {
+        $configuration = $this->getModuleConfiguration();
+        return $configuration['components'][ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::RIGHT];
+    }
+
+    /**
+     * @param array $components
+     * @return $this
+     */
+    public function setDocHeaderTopRightComponents(array $components)
+    {
+        $this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::RIGHT] = $components;
+        return $this;
+    }
+
+    /**
+     * @param string|array $components
+     * @return $this
+     */
+    public function addDocHeaderTopRightComponents($components)
+    {
+        if (is_string($components)) {
+            $components = array($components);
+        }
+        $currentComponents = $this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::RIGHT];
+        $this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::RIGHT] = array_merge($currentComponents, $components);
+        return $this;
+    }
+
+    /**
+     * @return $array
+     */
+    public function getDocHeaderBottomLeftComponents()
+    {
+        $configuration = $this->getModuleConfiguration();
+        return $configuration['components'][ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::LEFT];
+    }
+
+    /**
+     * @param array $components
+     * @return $this
+     */
+    public function setDocHeaderBottomLeftComponents(array $components)
+    {
+        $this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::LEFT] = $components;
+        return $this;
+    }
+
+    /**
+     * @param string|array $components
+     * @return $this
+     */
+    public function addDocHeaderBottomLeftComponents($components)
+    {
+        if (is_string($components)) {
+            $components = array($components);
+        }
+        $currentComponents = $this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::LEFT];
+        $this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::LEFT] = array_merge($currentComponents, $components);
+        return $this;
+    }
+
+    /**
+     * @return $array
+     */
+    public function getDocHeaderBottomRightComponents()
+    {
+        $configuration = $this->getModuleConfiguration();
+        return $configuration['components'][ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::RIGHT];
+    }
+
+    /**
+     * @param array $components
+     * @return $this
+     */
+    public function setDocHeaderBottomRightComponents(array $components)
+    {
+        $this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::RIGHT] = $components;
+        return $this;
+    }
+
+    /**
+     * @param string|array $components
+     * @return $this
+     */
+    public function addDocHeaderBottomRightComponents($components)
+    {
+        if (is_string($components)) {
+            $components = array($components);
+        }
+        $currentComponents = $this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::RIGHT];
+        $this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::RIGHT] = array_merge($currentComponents, $components);
+        return $this;
+    }
+
+    /**
+     * @return $array
+     */
+    public function getGridTopComponents()
+    {
+        $configuration = $this->getModuleConfiguration();
+        return $configuration['components'][ModulePosition::GRID][ModulePosition::TOP];
+    }
+
+    /**
+     * @param array $components
+     * @return $this
+     */
+    public function setGridTopComponents(array $components)
+    {
+        $this->components[ModulePosition::GRID][ModulePosition::TOP] = $components;
+        return $this;
+    }
+
+    /**
+     * @param string|array $components
+     * @return $this
+     */
+    public function addGridTopComponents($components)
+    {
+        if (is_string($components)) {
+            $components = array($components);
+        }
+        $currentComponents = $this->components[ModulePosition::GRID][ModulePosition::TOP];
+        $this->components[ModulePosition::GRID][ModulePosition::TOP] = array_merge($currentComponents, $components);
+        return $this;
+    }
+
+    /**
+     * @return $array
+     */
+    public function getGridBottomComponents()
+    {
+        $configuration = $this->getModuleConfiguration();
+        return $configuration['components'][ModulePosition::GRID][ModulePosition::BOTTOM];
+    }
+
+    /**
+     * @param array $components
+     * @return $this
+     */
+    public function setGridBottomComponents(array $components)
+    {
+        $this->components[ModulePosition::GRID][ModulePosition::BOTTOM] = $components;
+        return $this;
+    }
+
+    /**
+     * @param string|array $components
+     * @return $this
+     */
+    public function addGridBottomComponents($components)
+    {
+        if (is_string($components)) {
+            $components = array($components);
+        }
+        $currentComponents = $this->components[ModulePosition::GRID][ModulePosition::BOTTOM];
+        $this->components[ModulePosition::GRID][ModulePosition::BOTTOM] = array_merge($currentComponents, $components);
+        return $this;
+    }
+
+    /**
+     * @return $array
+     */
+    public function getGridButtonsComponents()
+    {
+        $configuration = $this->getModuleConfiguration();
+        return $configuration['components'][ModulePosition::GRID][ModulePosition::BUTTONS];
+    }
+
+    /**
+     * @param array $components
+     * @return $this
+     */
+    public function setGridButtonsComponents(array $components)
+    {
+        $this->components[ModulePosition::GRID][ModulePosition::BUTTONS] = $components;
+        return $this;
+    }
+
+    /**
+     * @param string|array $components
+     * @return $this
+     */
+    public function addGridButtonsComponents($components)
+    {
+        if (is_string($components)) {
+            $components = array($components);
+        }
+        $currentComponents = $this->components[ModulePosition::GRID][ModulePosition::BUTTONS];
+        $this->components[ModulePosition::GRID][ModulePosition::BUTTONS] = array_merge($currentComponents, $components);
+        return $this;
+    }
+
+    /**
+     * @return $array
+     */
+    public function getMenuMassActionComponents()
+    {
+        $configuration = $this->getModuleConfiguration();
+        return $configuration['components'][ModulePosition::MENU_MASS_ACTION];
+    }
+
+    /**
+     * @param array $components
+     * @return $this
+     */
+    public function setMenuMassActionComponents(array $components)
+    {
+        $this->components[ModulePosition::MENU_MASS_ACTION] = $components;
+        return $this;
+    }
+
+    /**
+     * @param string|array $components
+     * @return $this
+     */
+    public function addMenuMassActionComponents($components)
+    {
+        if (is_string($components)) {
+            $components = array($components);
+        }
+        $currentComponents = $this->components[ModulePosition::MENU_MASS_ACTION];
+        $this->components[ModulePosition::MENU_MASS_ACTION] = array_merge($currentComponents, $components);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccess()
+    {
+        return $this->access;
+    }
+
+    /**
+     * @param string $access
+     * @return $this
+     */
+    public function setAccess($access)
+    {
+        $this->access = $access;
+        return $this;
+    }
+
+    /**
+     * @return \string[]
+     */
+    public function getAdditionalJavaScriptFiles()
+    {
+        if (empty($this->additionalJavaScriptFiles)) {
+            $this->additionalJavaScriptFiles = $this->getModuleConfiguration('additionalJavaScriptFiles');
+        }
+        return $this->additionalJavaScriptFiles;
+    }
+
+    /**
+     * @return \string[]
+     */
+    public function getAdditionalStyleSheetFiles()
+    {
+        if (empty($this->additionalStyleSheetFiles)) {
+            $this->additionalStyleSheetFiles = $this->getModuleConfiguration('additionalStyleSheetFiles');
+        }
+        return $this->additionalStyleSheetFiles;
+    }
+
+    /**
+     * @return array
+     */
+    public function getComponents()
+    {
+        return $this->components;
+    }
+
+    /**
+     * @param string $pluginName
+     * @return bool
+     */
+    public function hasPlugin($pluginName = '')
+    {
+        $parameterPrefix = $this->getParameterPrefix();
+        $parameters = GeneralUtility::_GET($parameterPrefix);
+
+        $hasPlugin = !empty($parameters['plugins']) && is_array($parameters['plugins']);
+        if ($hasPlugin && $pluginName) {
+            $hasPlugin = in_array($pluginName, $parameters['plugins']);
+        }
+        return $hasPlugin;
+    }
+
+    /**
+     * Compute the internal module code
+     *
+     * @param NULL|string $dataType
+     * @return string
+     */
+    protected function getInternalModuleSignature($dataType = NULL)
+    {
+        if (is_null($dataType)) {
+            $dataType = $this->dataType;
+        }
+        $subModuleName = $dataType . '_' . $this->moduleKey;
+        return 'Vidi' . GeneralUtility::underscoredToUpperCamelCase($subModuleName);
+    }
+
+    /**
+     * Make sure default values are correctly initialized for the module.
+     *
+     * @return void
+     */
+    protected function initializeDefaultValues()
+    {
+        if (is_null($this->mainModule)) {
+            $this->mainModule = self::DEFAULT_MAIN_MODULE;
+        }
+
+        if (is_null($this->defaultPid)) {
+            $this->defaultPid = self::DEFAULT_PID;
+        }
+    }
 
 }

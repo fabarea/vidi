@@ -20,45 +20,47 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Factory class to server instances of Content repositories.
  */
-class ContentRepositoryFactory implements SingletonInterface {
+class ContentRepositoryFactory implements SingletonInterface
+{
 
-	/**
-	 * @var array
-	 */
-	static protected $instances = array();
+    /**
+     * @var array
+     */
+    static protected $instances = array();
 
-	/**
-	 * Returns a class instance of a repository.
-	 * If not data type is given, get the value from the module loader.
-	 *
-	 * @param string $dataType
-	 * @param string $sourceFieldName
-	 * @return \Fab\Vidi\Domain\Repository\ContentRepository
-	 */
-	static public function getInstance($dataType = NULL, $sourceFieldName = '') {
+    /**
+     * Returns a class instance of a repository.
+     * If not data type is given, get the value from the module loader.
+     *
+     * @param string $dataType
+     * @param string $sourceFieldName
+     * @return \Fab\Vidi\Domain\Repository\ContentRepository
+     */
+    static public function getInstance($dataType = NULL, $sourceFieldName = '')
+    {
 
-		/** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
-		if (is_null($dataType)) {
+        /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
+        if (is_null($dataType)) {
 
-			// Try to get the data type from the module loader.
-			$moduleLoader = GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
-			$dataType = $moduleLoader->getDataType();
-		}
+            // Try to get the data type from the module loader.
+            $moduleLoader = GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+            $dataType = $moduleLoader->getDataType();
+        }
 
-		// This should not happen.
-		if (!$dataType) {
-			throw new \RuntimeException('No data type given nor could be fetched by the module loader.', 1376118278);
-		}
+        // This should not happen.
+        if (!$dataType) {
+            throw new \RuntimeException('No data type given nor could be fetched by the module loader.', 1376118278);
+        }
 
-		if (empty(self::$instances[$dataType])) {
-			$className = 'Fab\Vidi\Domain\Repository\ContentRepository';
-			self::$instances[$dataType] = GeneralUtility::makeInstance($className, $dataType, $sourceFieldName);
-		}
+        if (empty(self::$instances[$dataType])) {
+            $className = 'Fab\Vidi\Domain\Repository\ContentRepository';
+            self::$instances[$dataType] = GeneralUtility::makeInstance($className, $dataType, $sourceFieldName);
+        }
 
-		/** @var ContentRepository $contentRepository */
-		$contentRepository = self::$instances[$dataType];
-		$contentRepository->setSourceFieldName($sourceFieldName);
-		return $contentRepository;
-	}
+        /** @var ContentRepository $contentRepository */
+        $contentRepository = self::$instances[$dataType];
+        $contentRepository->setSourceFieldName($sourceFieldName);
+        return $contentRepository;
+    }
 
 }

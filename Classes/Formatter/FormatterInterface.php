@@ -17,14 +17,15 @@ namespace Fab\Vidi\Formatter;
 /**
  * Format a value to be displayed in a Grid
  */
-interface FormatterInterface {
+interface FormatterInterface
+{
 
-	/**
-	 * Format a date
-	 *
-	 * @param string $value
-	 * @return string
-	 */
-	public function format($value);
+    /**
+     * Format a date
+     *
+     * @param string $value
+     * @return string
+     */
+    public function format($value);
 
 }

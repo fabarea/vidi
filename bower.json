@@ -1,0 +1,11 @@
+{
+  "name": "speciality",
+  "version": "1.0.0",
+  "ignore": [],
+  "dependencies": {
+    "datatables": "~1.10.9",
+    "visualsearch": "~0.5.1",
+    "jquery-form": "~3.46.0",
+    "jeditable": "~1.7.3"
+  }
+}

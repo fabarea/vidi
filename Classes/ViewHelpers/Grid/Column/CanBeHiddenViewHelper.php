@@ -20,16 +20,18 @@ use Fab\Vidi\Tca\Tca;
 /**
  * Tells whether the column can be hidden or not.
  */
-class CanBeHiddenViewHelper extends AbstractViewHelper {
+class CanBeHiddenViewHelper extends AbstractViewHelper
+{
 
-	/**
-	 * Returns whether the column can be hidden or not.
-	 *
-	 * @param string $name the column Name
-	 * @return boolean
-	 */
-	public function render($name) {
-		return Tca::grid()->canBeHidden($name);
-	}
+    /**
+     * Returns whether the column can be hidden or not.
+     *
+     * @param string $name the column Name
+     * @return boolean
+     */
+    public function render($name)
+    {
+        return Tca::grid()->canBeHidden($name);
+    }
 
 }

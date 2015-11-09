@@ -14,37 +14,46 @@ namespace Fab\Vidi\View\Button;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Backend\Utility\IconUtility;
+use Fab\Vidi\View\Uri\EditUri;
+use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Fab\Vidi\View\AbstractComponentView;
 use Fab\Vidi\Domain\Model\Content;
 
 /**
  * View which renders a "edit" button to be placed in the grid.
  */
-class EditButton extends AbstractComponentView {
+class EditButton extends AbstractComponentView
+{
 
-	/**
-	 * Renders a "edit" button to be placed in the grid.
-	 *
-	 * @param Content $object
-	 * @return string
-	 */
-	public function render(Content $object = NULL) {
-		return sprintf('<a href="%s" data-uid="%s" class="btn-edit" title="%s">%s</a>',
-			$this->getUriRenderer()->render($object),
-			$object->getUid(),
-			LocalizationUtility::translate('edit', 'vidi'),
-			IconUtility::getSpriteIcon('actions-document-open')
-		);
-	}
+    /**
+     * Renders a "edit" button to be placed in the grid.
+     *
+     * @param Content $object
+     * @return string
+     */
+    public function render(Content $object = NULL)
+    {
+        $editUri = $this->getUriRenderer()->render($object);
 
-	/**
-	 * @return \Fab\Vidi\View\Uri\EditUri
-	 */
-	protected function getUriRenderer() {
-		return GeneralUtility::makeInstance('Fab\Vidi\View\Uri\EditUri');
-	}
+        return $this->makeLinkButton()
+            ->setHref($editUri)
+            ->setDataAttributes([
+                'uid' => $object->getUid(),
+                'toggle' => 'tooltip',
+            ])
+            ->setClasses('btn-edit')
+            ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:edit'))
+            ->setIcon($this->getIconFactory()->getIcon('actions-document-open', Icon::SIZE_SMALL))
+            ->render();
+    }
+
+    /**
+     * @return \Fab\Vidi\View\Uri\EditUri
+     */
+    protected function getUriRenderer()
+    {
+        return GeneralUtility::makeInstance(EditUri::class);
+    }
 
 }

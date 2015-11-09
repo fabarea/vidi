@@ -14,7 +14,8 @@ namespace Fab\Vidi\View\Button;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Module\Parameter;
 use Fab\Vidi\Tca\Tca;
@@ -23,102 +24,129 @@ use Fab\Vidi\View\AbstractComponentView;
 /**
  * View which renders a "new" button to be placed in the doc header.
  */
-class NewButton extends AbstractComponentView {
+class NewButton extends AbstractComponentView
+{
 
-	/**
-	 * Renders a "new" button to be placed in the doc header.
-	 *
-	 * @return string
-	 */
-	public function render() {
+    /**
+     * Renders a "new" button to be placed in the doc header.
+     *
+     * @return string
+     */
+    public function render()
+    {
 
-		// General New button
-		if ($this->getModuleLoader()->copeWithPageTree()) {
+        // General New button
+        if ($this->getModuleLoader()->copeWithPageTree()) {
 
-			// Wizard "new", typo3/db_new.php
-			$output = sprintf('<a href="%s" title="%s" class="btn-new-top">%s</a>',
-				$this->getUriWizardNew(),
-				$this->getLanguageService()->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:newRecordGeneral'),
-				IconUtility::getSpriteIcon('actions-document-new')
-			);
+            // Wizard "new"
+            $buttons[] = $this->makeLinkButton()
+                ->setHref($this->getNewUri())
+                ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:newRecordGeneral'))
+                ->setIcon($this->getIconFactory()->getIcon('actions-document-new', Icon::SIZE_SMALL))
+                ->render();
 
-			// Add an icon right to the wizard "new".
-			$currentDataType = $this->getModuleLoader()->getDataType();
-			$spriteForCurrentDataType = IconUtility::mapRecordTypeToSpriteIconName($currentDataType, array());
+            $buttons[] = $this->makeLinkButton()
+                ->setHref($this->getNewUri())
+                ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:newRecordGeneral'))
+                ->setIcon(
+                    $this->getIconFactory()->getIconForRecord(
+                        $this->getModuleLoader()->getDataType(),
+                        array(),
+                        Icon::SIZE_SMALL
+                    )
+                )
+                ->render();
 
-			$output .= sprintf(' <a href="%s" title="%s" class="btn-new-top">%s</a>',
-				$this->getNewUri(),
-				$this->getLanguageService()->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:newRecordGeneral'),
-				IconUtility::getSpriteIcon($spriteForCurrentDataType) // temporary code. Find a better solution GUI-wise. Perhaps a dropdown menu with multiple "add" variants.
-			);
+            $output = '<div class="btn-toolbar" role="toolbar" aria-label="">' . implode("\n", $buttons) . '</div>';
 
-		} else {
+        } else {
 
-			// New button only for the current data type.
-			$output = sprintf('<a href="%s" title="%s" class="btn-new-top">%s</a>',
-				$this->getNewUri(),
-				$this->getLanguageService()->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:newRecordGeneral'),
-				IconUtility::getSpriteIcon('actions-document-new')
-			);
-		}
+            // New button only for the current data type.
+            $output = $this->makeLinkButton()->setHref($this->getNewUri())
+                ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:newRecordGeneral'))
+                ->setIcon($this->getIconFactory()->getIcon('actions-document-new', Icon::SIZE_SMALL))
+                ->render();
+        }
 
 
-		return $output;
-	}
+        return $output;
+    }
 
+    /**
+     * Render a create URI given a data type.
+     *
+     * @return string
+     */
+    protected function getUriWizardNew()
+    {
+        // Return URL in any case.
+        $arguments['returnUrl'] = $this->getModuleLoader()->getModuleUrl();
 
-	/**
-	 * Render a create URI given a data type.
-	 *
-	 * @return string
-	 */
-	protected function getUriWizardNew() {
-		$idParameter = '';
-		if (GeneralUtility::_GP(Parameter::PID)) {
-			$idParameter = sprintf('id=%s&', GeneralUtility::_GP(Parameter::PID));
-		}
-		$uri = sprintf('db_new.php?%sreturnUrl=%s',
-			$idParameter,
-			rawurlencode($this->getModuleLoader()->getModuleUrl())
-		);
-		return $uri;
-	}
+        // Add possible id parameter
+        if (GeneralUtility::_GP(Parameter::PID)) {
+            $arguments['id'] = GeneralUtility::_GP(Parameter::PID);
+        }
 
-	/**
-	 * Render a create URI given a data type.
-	 *
-	 * @return string
-	 */
-	protected function getNewUri() {
-		return sprintf('alt_doc.php?returnUrl=%s&edit[%s][%s]=new',
-			rawurlencode($this->getModuleLoader()->getModuleUrl()),
-			rawurlencode($this->getModuleLoader()->getDataType()),
-			$this->getStoragePid()
-		);
-	}
+        $uri = BackendUtility::getModuleUrl(
+            'db_new',
+            $arguments
+        );
 
-	/**
-	 * Return the default configured pid.
-	 *
-	 * @return int
-	 */
-	protected function getStoragePid() {
-		if (GeneralUtility::_GP(Parameter::PID)) {
-			$pid = GeneralUtility::_GP(Parameter::PID);
-		} elseif (Tca::table()->get('rootLevel')) {
-			$pid = 0;
-		} else {
-			// Get configuration from User TSconfig if any
-			$tsConfigPath = sprintf('tx_vidi.dataType.%s.storagePid', $this->getModuleLoader()->getDataType());
-			$result = $this->getBackendUser()->getTSConfig($tsConfigPath);
-			$pid = $result['value'];
+        return $uri;
+    }
 
-			// Get pid from Module Loader
-			if (NULL === $pid) {
-				$pid = $this->getModuleLoader()->getDefaultPid();
-			}
-		}
-		return $pid;
-	}
+    /**
+     * Render a create URI given a data type.
+     *
+     * @return string
+     */
+    protected function getNewUri()
+    {
+        $uri = BackendUtility::getModuleUrl(
+            'record_edit',
+            array(
+                $this->getNewParameterName() => 'new',
+                'returnUrl' => $this->getModuleLoader()->getModuleUrl()
+            )
+        );
+        return $uri;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getNewParameterName()
+    {
+        return sprintf(
+            'edit[%s][%s]',
+            $this->getModuleLoader()->getDataType(),
+            $this->getStoragePid()
+        );
+    }
+
+    /**
+     * Return the default configured pid.
+     *
+     * @return int
+     */
+    protected function getStoragePid()
+    {
+        if (GeneralUtility::_GP(Parameter::PID)) {
+            $pid = GeneralUtility::_GP(Parameter::PID);
+        } elseif (Tca::table()->get('rootLevel')) {
+            $pid = 0;
+        } else {
+            // Get configuration from User TSconfig if any
+            $tsConfigPath = sprintf('tx_vidi.dataType.%s.storagePid', $this->getModuleLoader()->getDataType());
+            $result = $this->getBackendUser()->getTSConfig($tsConfigPath);
+            $pid = $result['value'];
+
+            // Get pid from Module Loader
+            if (NULL === $pid) {
+                $pid = $this->getModuleLoader()->getDefaultPid();
+            }
+        }
+        return $pid;
+    }
 
 }

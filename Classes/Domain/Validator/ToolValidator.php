@@ -21,36 +21,39 @@ use Fab\Vidi\Tool\ToolRegistry;
 /**
  * Validate the Tool class name before being instantiated.
  */
-class ToolValidator extends AbstractValidator {
+class ToolValidator extends AbstractValidator
+{
 
-	/**
-	 * Check whether $tool is valid.
-	 *
-	 * @param string $tool
-	 * @return void
-	 */
-	public function isValid($tool) {
+    /**
+     * Check whether $tool is valid.
+     *
+     * @param string $tool
+     * @return void
+     */
+    public function isValid($tool)
+    {
 
-		$dataType = $this->getModuleLoader()->getDataType();
-		$isValid = ToolRegistry::getInstance()->isAllowed($dataType, $tool);
+        $dataType = $this->getModuleLoader()->getDataType();
+        $isValid = ToolRegistry::getInstance()->isAllowed($dataType, $tool);
 
-		if (!$isValid) {
-			$message = sprintf('This Tool "%s" is not allowed for the current data type.', $tool);
-			$this->addError($message, 1409041510);
-		}
+        if (!$isValid) {
+            $message = sprintf('This Tool "%s" is not allowed for the current data type.', $tool);
+            $this->addError($message, 1409041510);
+        }
 
-		if (!class_exists($tool)) {
-			$message = sprintf('I could not find class "%s"', $tool);
-			$this->addError($message, 1409041511);
-		}
-	}
+        if (!class_exists($tool)) {
+            $message = sprintf('I could not find class "%s"', $tool);
+            $this->addError($message, 1409041511);
+        }
+    }
 
-	/**
-	 * Get the Vidi Module Loader.
-	 *
-	 * @return \Fab\Vidi\Module\ModuleLoader
-	 */
-	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
-	}
+    /**
+     * Get the Vidi Module Loader.
+     *
+     * @return \Fab\Vidi\Module\ModuleLoader
+     */
+    protected function getModuleLoader()
+    {
+        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+    }
 }

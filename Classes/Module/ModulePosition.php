@@ -19,22 +19,23 @@ use TYPO3\CMS\Core\Type\Enumeration;
 /**
  * Enumeration object for positioning components in a Vidi module.
  */
-class ModulePosition extends Enumeration {
+class ModulePosition extends Enumeration
+{
 
-	const DOC_HEADER = 'doc-header';
+    const DOC_HEADER = 'doc-header';
 
-	const TOP = 'top';
+    const TOP = 'top';
 
-	const BOTTOM = 'bottom';
+    const BOTTOM = 'bottom';
 
-	const LEFT = 'left';
+    const LEFT = 'left';
 
-	const RIGHT = 'right';
+    const RIGHT = 'right';
 
-	const GRID = 'grid';
+    const GRID = 'grid';
 
-	const BUTTONS = 'buttons';
+    const BUTTONS = 'buttons';
 
-	const MENU_MASS_ACTION = 'menu-mass-action';
+    const MENU_MASS_ACTION = 'menu-mass-action';
 
 }

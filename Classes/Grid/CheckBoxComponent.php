@@ -17,19 +17,21 @@ namespace Fab\Vidi\Grid;
 /**
  * Class for configuring the "Check Box" Grid Renderer.
  */
-class CheckBoxComponent extends GenericColumn {
+class CheckBoxComponent extends GenericColumn
+{
 
-	/**
-	 * Configure the "Check Box" Grid Renderer.
-	 */
-	public function __construct() {
-		$configuration = array(
-			'width' => '5px',
-			'sortable' => FALSE,
-			'canBeHidden' => FALSE,
-			'html' => '<input type="checkbox" class="checkbox-row-top"/>',
-		);
-		$className = 'Fab\Vidi\Grid\CheckBoxRenderer';
-		parent::__construct($className, $configuration);
-	}
+    /**
+     * Configure the "Check Box" Grid Renderer.
+     */
+    public function __construct()
+    {
+        $configuration = array(
+            'width' => '5px',
+            'sortable' => FALSE,
+            'canBeHidden' => FALSE,
+            'html' => '<input type="checkbox" class="checkbox-row-top"/>',
+        );
+        $className = 'Fab\Vidi\Grid\CheckBoxRenderer';
+        parent::__construct($className, $configuration);
+    }
 }

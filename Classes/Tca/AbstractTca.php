@@ -14,37 +14,40 @@ namespace Fab\Vidi\Tca;
  * The TYPO3 project - inspiring people to share!
  */
 
-
 /**
  * An abstract class to handle TCA.
  */
-abstract class AbstractTca implements TcaServiceInterface {
+abstract class AbstractTca implements TcaServiceInterface
+{
 
-	/**
-	 * Returns an instance of the current Backend User.
-	 *
-	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 */
-	protected function getBackendUser() {
-		return $GLOBALS['BE_USER'];
-	}
+    /**
+     * Returns an instance of the current Backend User.
+     *
+     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     */
+    protected function getBackendUser()
+    {
+        return $GLOBALS['BE_USER'];
+    }
 
-	/**
-	 * Returns whether the current mode is Backend.
-	 *
-	 * @return bool
-	 */
-	protected function isBackendMode() {
-		return TYPO3_MODE == 'BE';
-	}
+    /**
+     * Returns whether the current mode is Backend.
+     *
+     * @return bool
+     */
+    protected function isBackendMode()
+    {
+        return TYPO3_MODE == 'BE';
+    }
 
-	/**
-	 * Returns whether the current mode is Frontend.
-	 *
-	 * @return bool
-	 */
-	protected function isFrontendMode() {
-		return TYPO3_MODE == 'FE';
-	}
+    /**
+     * Returns whether the current mode is Frontend.
+     *
+     * @return bool
+     */
+    protected function isFrontendMode()
+    {
+        return TYPO3_MODE == 'FE';
+    }
 
 }

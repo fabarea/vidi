@@ -20,28 +20,31 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 /**
  * View helper which returns an array of available languages.
  */
-class LanguagesViewHelper extends AbstractViewHelper {
+class LanguagesViewHelper extends AbstractViewHelper
+{
 
-	/**
-	 * Returns an array of available languages.
-	 *
-	 * @return array
-	 */
-	public function render() {
-		$languages[0] = $this->getLanguageService()->getDefaultFlag();
+    /**
+     * Returns an array of available languages.
+     *
+     * @return array
+     */
+    public function render()
+    {
+        $languages[0] = $this->getLanguageService()->getDefaultFlag();
 
-		foreach ($this->getLanguageService()->getLanguages() as $language) {
+        foreach ($this->getLanguageService()->getLanguages() as $language) {
 
-			$languages[$language['uid']] = $language['flag'];
-		}
+            $languages[$language['uid']] = $language['flag'];
+        }
 
-		return $languages;
-	}
+        return $languages;
+    }
 
-	/**
-	 * @return \Fab\Vidi\Language\LanguageService
-	 */
-	protected function getLanguageService() {
-		return GeneralUtility::makeInstance('Fab\Vidi\Language\LanguageService');
-	}
+    /**
+     * @return \Fab\Vidi\Language\LanguageService
+     */
+    protected function getLanguageService()
+    {
+        return GeneralUtility::makeInstance('Fab\Vidi\Language\LanguageService');
+    }
 }

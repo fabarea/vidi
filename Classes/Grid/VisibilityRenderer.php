@@ -15,63 +15,95 @@ namespace Fab\Vidi\Grid;
  */
 
 use Fab\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Backend\Template\Components\Buttons\LinkButton;
 use Fab\Vidi\Tca\Tca;
+use TYPO3\CMS\Core\Imaging\Icon;
+use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class rendering visibility for the Grid.
  */
-class VisibilityRenderer extends ColumnRendererAbstract {
+class VisibilityRenderer extends ColumnRendererAbstract
+{
 
-	/**
-	 * Render visibility for the Grid.
-	 *
-	 * @return string
-	 */
-	public function render() {
+    /**
+     * Render visibility for the Grid.
+     *
+     * @return string
+     */
+    public function render()
+    {
 
-		$output = '';
-		$hiddenField = Tca::table()->getHiddenField();
+        $output = '';
+        $hiddenField = Tca::table()->getHiddenField();
 
-		if ($hiddenField) {
+        if ($hiddenField) {
 
-			$spriteName = $this->object[$hiddenField] ? 'actions-edit-unhide' : 'actions-edit-hide';
-			$output = sprintf(
-				'<a href="%s" class="btn-visibility-toggle" title="%s">%s</a>',
-				$this->getEditUri($this->object),
-				$this->getLabelService()->sL('LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:visibility_renderer.toggle'),
-				IconUtility::getSpriteIcon($spriteName)
-			);
-		}
-		return $output;
-	}
+            $spriteName = $this->object[$hiddenField] ? 'actions-edit-unhide' : 'actions-edit-hide';
 
-	/**
-	 * @param Content $object
-	 * @return string
-	 */
-	protected function getEditUri(Content $object) {
-		$additionalParameters = array(
-			$this->getModuleLoader()->getParameterPrefix() => array(
-				'controller' => 'Content',
-				'action' => 'update',
-				'format' => 'json',
-				'fieldNameAndPath' => Tca::table()->getHiddenField(),
-				'matches' => array(
-					'uid' => $object->getUid(),
-				),
-				'content' => array(Tca::table()->getHiddenField() => 'PLACEHOLDER')
-			),
-		);
+            $label = $this->object[$hiddenField] ? 'unHide' : 'hide';
 
-		return $this->getModuleLoader()->getModuleUrl($additionalParameters);
-	}
+            $output = $this->makeLinkButton()
+                ->setHref($this->getEditUri($this->object))
+                ->setClasses('btn-visibility-toggle')
+                ->setDataAttributes([
+                    'toggle' => 'tooltip',
+                ])
+                ->setTitle($this->getLabelService()->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:' . $label))
+                ->setIcon($this->getIconFactory()->getIcon($spriteName, Icon::SIZE_SMALL))
+                ->render();
+        }
+        return $output;
+    }
 
-	/**
-	 * @return \TYPO3\CMS\Lang\LanguageService
-	 */
-	protected function getLabelService() {
-		return $GLOBALS['LANG'];
-	}
+    /**
+     * @param Content $object
+     * @return string
+     */
+    protected function getEditUri(Content $object)
+    {
+        $hiddenField = Tca::table()->getHiddenField();
+
+        $additionalParameters = array(
+            $this->getModuleLoader()->getParameterPrefix() => [
+                'controller' => 'Content',
+                'action' => 'update',
+                'format' => 'json',
+                'fieldNameAndPath' => Tca::table()->getHiddenField(),
+                'matches' => [
+                    'uid' => $object->getUid(),
+                ],
+                'content' => [$hiddenField => (int)!$this->object[$hiddenField]],
+            ],
+        );
+
+        return $this->getModuleLoader()->getModuleUrl($additionalParameters);
+    }
+
+    /**
+     * @return LinkButton
+     */
+    protected function makeLinkButton()
+    {
+        return GeneralUtility::makeInstance(LinkButton::class);
+    }
+
+
+    /**
+     * @return IconFactory
+     */
+    protected function getIconFactory()
+    {
+        return GeneralUtility::makeInstance(IconFactory::class);
+    }
+
+    /**
+     * @return \TYPO3\CMS\Lang\LanguageService
+     */
+    protected function getLabelService()
+    {
+        return $GLOBALS['LANG'];
+    }
 
 }

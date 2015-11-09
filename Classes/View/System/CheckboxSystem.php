@@ -21,16 +21,18 @@ use Fab\Vidi\View\AbstractComponentView;
  * View for rendering a checkbox.
  * @todo remove me in version 0.6 + 2 versions
  */
-class CheckboxSystem extends AbstractComponentView {
+class CheckboxSystem extends AbstractComponentView
+{
 
-	/**
-	 * Returns a checkbox for the grids.
-	 *
-	 * @param Content $object
-	 * @param  int $offset
-	 * @return string
-	 */
-	public function render(Content $object = NULL, $offset = 0) {
-		return '';
-	}
+    /**
+     * Returns a checkbox for the grids.
+     *
+     * @param Content $object
+     * @param  int $offset
+     * @return string
+     */
+    public function render(Content $object = NULL, $offset = 0)
+    {
+        return '';
+    }
 }

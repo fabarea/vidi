@@ -17,270 +17,293 @@ namespace Fab\Vidi\Persistence;
 /**
  * Matcher class for conditions that will apply to a query.
  */
-class Matcher {
+class Matcher
+{
 
-	/**
-	 * The logical OR
-	 */
-	const LOGICAL_OR = 'logicalOr';
+    /**
+     * The logical OR
+     */
+    const LOGICAL_OR = 'logicalOr';
 
-	/**
-	 * The logical AND
-	 */
-	const LOGICAL_AND = 'logicalAnd';
+    /**
+     * The logical AND
+     */
+    const LOGICAL_AND = 'logicalAnd';
 
-	/**
-	 * @var string
-	 */
-	protected $dataType = '';
+    /**
+     * @var string
+     */
+    protected $dataType = '';
 
-	/**
-	 * @var string
-	 */
-	protected $searchTerm = '';
+    /**
+     * @var string
+     */
+    protected $searchTerm = '';
 
-	/**
-	 * @var array
-	 */
-	protected $supportedOperators = array('equals', 'in', 'like');
+    /**
+     * @var array
+     */
+    protected $supportedOperators = array('equals', 'in', 'like');
 
-	/**
-	 * Associative values used for "equals" operator ($fieldName => $value)
-	 *
-	 * @var array
-	 */
-	protected $equalsCriteria = array();
+    /**
+     * Associative values used for "equals" operator ($fieldName => $value)
+     *
+     * @var array
+     */
+    protected $equalsCriteria = array();
 
-	/**
-	 * Associative values used for "in" operator ($fieldName => $value)
-	 *
-	 * @var array
-	 */
-	protected $inCriteria = array();
+    /**
+     * Associative values used for "in" operator ($fieldName => $value)
+     *
+     * @var array
+     */
+    protected $inCriteria = array();
 
-	/**
-	 * Associative values used for "like" operator ($fieldName => $value)
-	 *
-	 * @var array
-	 */
-	protected $likeCriteria = array();
+    /**
+     * Associative values used for "like" operator ($fieldName => $value)
+     *
+     * @var array
+     */
+    protected $likeCriteria = array();
 
-	/**
-	 * Default logical operator for like.
-	 *
-	 * @var string
-	 */
-	protected $defaultLogicalSeparator = self::LOGICAL_AND;
+    /**
+     * Default logical operator for like.
+     *
+     * @var string
+     */
+    protected $defaultLogicalSeparator = self::LOGICAL_AND;
 
-	/**
-	 * Default logical operator for equals.
-	 *
-	 * @var string
-	 */
-	protected $logicalSeparatorForEquals = self::LOGICAL_AND;
+    /**
+     * Default logical operator for equals.
+     *
+     * @var string
+     */
+    protected $logicalSeparatorForEquals = self::LOGICAL_AND;
 
-	/**
-	 * Default logical operator for equals.
-	 *
-	 * @var string
-	 */
-	protected $logicalSeparatorForIn = self::LOGICAL_AND;
+    /**
+     * Default logical operator for equals.
+     *
+     * @var string
+     */
+    protected $logicalSeparatorForIn = self::LOGICAL_AND;
 
-	/**
-	 * Default logical operator for like.
-	 *
-	 * @var string
-	 */
-	protected $logicalSeparatorForLike = self::LOGICAL_AND;
+    /**
+     * Default logical operator for like.
+     *
+     * @var string
+     */
+    protected $logicalSeparatorForLike = self::LOGICAL_AND;
 
-	/**
-	 * Default logical operator for the search term.
-	 *
-	 * @var string
-	 */
-	protected $logicalSeparatorForSearchTerm = self::LOGICAL_OR;
+    /**
+     * Default logical operator for the search term.
+     *
+     * @var string
+     */
+    protected $logicalSeparatorForSearchTerm = self::LOGICAL_OR;
 
-	/**
-	 * Constructs a new Matcher
-	 *
-	 * @param array $matches associative array($field => $value)
-	 * @param string $dataType which corresponds to an entry of the TCA (table name).
-	 * @return \Fab\Vidi\Persistence\Matcher
-	 */
-	public function __construct($matches = array(), $dataType = '') {
-		$this->dataType = $dataType;
-		$this->matches = $matches;
-	}
+    /**
+     * Constructs a new Matcher
+     *
+     * @param array $matches associative array($field => $value)
+     * @param string $dataType which corresponds to an entry of the TCA (table name).
+     * @return \Fab\Vidi\Persistence\Matcher
+     */
+    public function __construct($matches = array(), $dataType = '')
+    {
+        $this->dataType = $dataType;
+        $this->matches = $matches;
+    }
 
-	/**
-	 * @param string $searchTerm
-	 * @return \Fab\Vidi\Persistence\Matcher
-	 */
-	public function setSearchTerm($searchTerm) {
-		$this->searchTerm = $searchTerm;
-		return $this;
-	}
+    /**
+     * @param string $searchTerm
+     * @return \Fab\Vidi\Persistence\Matcher
+     */
+    public function setSearchTerm($searchTerm)
+    {
+        $this->searchTerm = $searchTerm;
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getSearchTerm() {
-		return $this->searchTerm;
-	}
+    /**
+     * @return string
+     */
+    public function getSearchTerm()
+    {
+        return $this->searchTerm;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getEqualsCriteria() {
-		return $this->equalsCriteria;
-	}
+    /**
+     * @return array
+     */
+    public function getEqualsCriteria()
+    {
+        return $this->equalsCriteria;
+    }
 
-	/**
-	 * @param $fieldNameAndPath
-	 * @param $operand
-	 * @return $this
-	 */
-	public function equals($fieldNameAndPath, $operand) {
-		$this->equalsCriteria[] = array('fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand);
-		return $this;
-	}
+    /**
+     * @param $fieldNameAndPath
+     * @param $operand
+     * @return $this
+     */
+    public function equals($fieldNameAndPath, $operand)
+    {
+        $this->equalsCriteria[] = array('fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand);
+        return $this;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getLikeCriteria() {
-		return $this->likeCriteria;
-	}
+    /**
+     * @return array
+     */
+    public function getLikeCriteria()
+    {
+        return $this->likeCriteria;
+    }
 
-	/**
-	 * @param $fieldNameAndPath
-	 * @param $operand
-	 * @return $this
-	 */
-	public function in($fieldNameAndPath, $operand) {
-		$this->inCriteria[] = array('fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand);
-		return $this;
-	}
+    /**
+     * @param $fieldNameAndPath
+     * @param $operand
+     * @return $this
+     */
+    public function in($fieldNameAndPath, $operand)
+    {
+        $this->inCriteria[] = array('fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand);
+        return $this;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getInCriteria() {
-		return $this->inCriteria;
-	}
+    /**
+     * @return array
+     */
+    public function getInCriteria()
+    {
+        return $this->inCriteria;
+    }
 
-	/**
-	 * @param $fieldNameAndPath
-	 * @param $operand
-	 * @param bool $addWildCard
-	 * @return $this
-	 */
-	public function like($fieldNameAndPath, $operand, $addWildCard = TRUE) {
-		$wildCardSymbol = $addWildCard ? '%' : '';
-		$this->likeCriteria[] = array('fieldNameAndPath' => $fieldNameAndPath, 'operand' => $wildCardSymbol . $operand . $wildCardSymbol);
-		return $this;
-	}
+    /**
+     * @param $fieldNameAndPath
+     * @param $operand
+     * @param bool $addWildCard
+     * @return $this
+     */
+    public function like($fieldNameAndPath, $operand, $addWildCard = TRUE)
+    {
+        $wildCardSymbol = $addWildCard ? '%' : '';
+        $this->likeCriteria[] = array('fieldNameAndPath' => $fieldNameAndPath, 'operand' => $wildCardSymbol . $operand . $wildCardSymbol);
+        return $this;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getDefaultLogicalSeparator() {
-		return $this->defaultLogicalSeparator;
-	}
+    /**
+     * @return array
+     */
+    public function getDefaultLogicalSeparator()
+    {
+        return $this->defaultLogicalSeparator;
+    }
 
-	/**
-	 * @param string $defaultLogicalSeparator
-	 * @return $this
-	 */
-	public function setDefaultLogicalSeparator($defaultLogicalSeparator) {
-		$this->defaultLogicalSeparator = $defaultLogicalSeparator;
-		return $this;
-	}
+    /**
+     * @param string $defaultLogicalSeparator
+     * @return $this
+     */
+    public function setDefaultLogicalSeparator($defaultLogicalSeparator)
+    {
+        $this->defaultLogicalSeparator = $defaultLogicalSeparator;
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getLogicalSeparatorForEquals() {
-		return $this->logicalSeparatorForEquals;
-	}
+    /**
+     * @return string
+     */
+    public function getLogicalSeparatorForEquals()
+    {
+        return $this->logicalSeparatorForEquals;
+    }
 
-	/**
-	 * @param string $logicalSeparatorForEquals
-	 * @return $this
-	 */
-	public function setLogicalSeparatorForEquals($logicalSeparatorForEquals) {
-		$this->logicalSeparatorForEquals = $logicalSeparatorForEquals;
-		return $this;
-	}
+    /**
+     * @param string $logicalSeparatorForEquals
+     * @return $this
+     */
+    public function setLogicalSeparatorForEquals($logicalSeparatorForEquals)
+    {
+        $this->logicalSeparatorForEquals = $logicalSeparatorForEquals;
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getLogicalSeparatorForIn() {
-		return $this->logicalSeparatorForIn;
-	}
+    /**
+     * @return string
+     */
+    public function getLogicalSeparatorForIn()
+    {
+        return $this->logicalSeparatorForIn;
+    }
 
-	/**
-	 * @param string $logicalSeparatorForIn
-	 * @return $this
-	 */
-	public function setLogicalSeparatorForIn($logicalSeparatorForIn) {
-		$this->logicalSeparatorForIn = $logicalSeparatorForIn;
-		return $this;
-	}
+    /**
+     * @param string $logicalSeparatorForIn
+     * @return $this
+     */
+    public function setLogicalSeparatorForIn($logicalSeparatorForIn)
+    {
+        $this->logicalSeparatorForIn = $logicalSeparatorForIn;
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getLogicalSeparatorForLike() {
-		return $this->logicalSeparatorForLike;
-	}
+    /**
+     * @return string
+     */
+    public function getLogicalSeparatorForLike()
+    {
+        return $this->logicalSeparatorForLike;
+    }
 
-	/**
-	 * @param string $logicalSeparatorForLike
-	 * @return $this
-	 */
-	public function setLogicalSeparatorForLike($logicalSeparatorForLike) {
-		$this->logicalSeparatorForLike = $logicalSeparatorForLike;
-		return $this;
-	}
+    /**
+     * @param string $logicalSeparatorForLike
+     * @return $this
+     */
+    public function setLogicalSeparatorForLike($logicalSeparatorForLike)
+    {
+        $this->logicalSeparatorForLike = $logicalSeparatorForLike;
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getLogicalSeparatorForSearchTerm() {
-		return $this->logicalSeparatorForSearchTerm;
-	}
+    /**
+     * @return string
+     */
+    public function getLogicalSeparatorForSearchTerm()
+    {
+        return $this->logicalSeparatorForSearchTerm;
+    }
 
-	/**
-	 * @param string $logicalSeparatorForSearchTerm
-	 * @return $this
-	 */
-	public function setLogicalSeparatorForSearchTerm($logicalSeparatorForSearchTerm) {
-		$this->logicalSeparatorForSearchTerm = $logicalSeparatorForSearchTerm;
-		return $this;
-	}
+    /**
+     * @param string $logicalSeparatorForSearchTerm
+     * @return $this
+     */
+    public function setLogicalSeparatorForSearchTerm($logicalSeparatorForSearchTerm)
+    {
+        $this->logicalSeparatorForSearchTerm = $logicalSeparatorForSearchTerm;
+        return $this;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getSupportedOperators() {
-		return $this->supportedOperators;
-	}
+    /**
+     * @return array
+     */
+    public function getSupportedOperators()
+    {
+        return $this->supportedOperators;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getDataType() {
-		return $this->dataType;
-	}
+    /**
+     * @return string
+     */
+    public function getDataType()
+    {
+        return $this->dataType;
+    }
 
-	/**
-	 * @param string $dataType
-	 * @return $this
-	 */
-	public function setDataType($dataType) {
-		$this->dataType = $dataType;
-		return $this;
-	}
+    /**
+     * @param string $dataType
+     * @return $this
+     */
+    public function setDataType($dataType)
+    {
+        $this->dataType = $dataType;
+        return $this;
+    }
 }

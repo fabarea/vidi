@@ -18,20 +18,22 @@ use TYPO3\CMS\Core\SingletonInterface;
 /**
  * Abstract class for Data Handler in the context of Vidi.
  */
-abstract class AbstractDataHandler implements DataHandlerInterface, SingletonInterface {
+abstract class AbstractDataHandler implements DataHandlerInterface, SingletonInterface
+{
 
-	/**
-	 * @var array
-	 */
-	protected $errorMessages;
+    /**
+     * @var array
+     */
+    protected $errorMessages;
 
-	/**
-	 * Return error that have occurred while processing the data.
-	 *
-	 * @return array
-	 */
-	public function getErrorMessages() {
-		return $this->errorMessages;
-	}
+    /**
+     * Return error that have occurred while processing the data.
+     *
+     * @return array
+     */
+    public function getErrorMessages()
+    {
+        return $this->errorMessages;
+    }
 
 }

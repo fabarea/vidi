@@ -17,18 +17,20 @@ namespace Fab\Vidi\Grid;
 /**
  * Class for rendering the "Check Box" in the Grid.
  */
-class CheckBoxRenderer extends ColumnRendererAbstract {
+class CheckBoxRenderer extends ColumnRendererAbstract
+{
 
-	/**
-	 * Render the "Check Box" in the Grid.
-	 *
-	 * @return string
-	 */
-	public function render() {
+    /**
+     * Render the "Check Box" in the Grid.
+     *
+     * @return string
+     */
+    public function render()
+    {
 
-		return sprintf('<input type="checkbox" class="checkbox-row" data-index="%s" data-uid="%s"/>',
-			$this->getRowIndex(),
-			$this->getObject()->getUid()
-		);
-	}
+        return sprintf('<input type="checkbox" class="checkbox-row" data-index="%s" data-uid="%s"/>',
+            $this->getRowIndex(),
+            $this->getObject()->getUid()
+        );
+    }
 }

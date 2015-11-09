@@ -17,15 +17,16 @@ namespace Fab\Vidi\Tca;
 /**
  * An interface to handle TCA service
  */
-interface TcaServiceInterface {
+interface TcaServiceInterface
+{
 
-	const TYPE_TABLE = 'table';
+    const TYPE_TABLE = 'table';
 
-	const TYPE_FIELD = 'field';
+    const TYPE_FIELD = 'field';
 
-	const TYPE_GRID = 'grid';
+    const TYPE_GRID = 'grid';
 
-	const TYPE_FORM = 'form';
+    const TYPE_FORM = 'form';
 
-	const TYPE_FACET = 'facet';
+    const TYPE_FACET = 'facet';
 }

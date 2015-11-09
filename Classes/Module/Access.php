@@ -19,9 +19,10 @@ use TYPO3\CMS\Core\Type\Enumeration;
 /**
  * Enumeration object for access module.
  */
-class Access extends Enumeration {
+class Access extends Enumeration
+{
 
-	const USER = 'user,group';
+    const USER = 'user,group';
 
-	const ADMIN = 'admin';
+    const ADMIN = 'admin';
 }

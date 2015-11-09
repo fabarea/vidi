@@ -17,18 +17,20 @@ namespace Fab\Vidi\Grid;
 /**
  * Class for configuring a "Button Group" Grid Renderer.
  */
-class ButtonGroupComponent extends GenericColumn {
+class ButtonGroupComponent extends GenericColumn
+{
 
-	/**
-	 * Configure the "Button Group" Grid Renderer.
-	 */
-	public function __construct() {
-		$configuration = array(
-			'sortable' => FALSE,
-			'canBeHidden' => FALSE,
-			'width' => '70px',
-		);
-		$className = 'Fab\Vidi\Grid\ButtonGroupRenderer';
-		parent::__construct($className, $configuration);
-	}
+    /**
+     * Configure the "Button Group" Grid Renderer.
+     */
+    public function __construct()
+    {
+        $configuration = array(
+            'sortable' => FALSE,
+            'canBeHidden' => FALSE,
+//            'width' => '70px',
+        );
+        $className = 'Fab\Vidi\Grid\ButtonGroupRenderer';
+        parent::__construct($className, $configuration);
+    }
 }

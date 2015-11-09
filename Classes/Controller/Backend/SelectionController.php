@@ -21,83 +21,92 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 /**
  * Controller which handles actions related to Selection in Vidi Backend.
  */
-class SelectionController extends ActionController {
+class SelectionController extends ActionController
+{
 
-	/**
-	 * @var \Fab\Vidi\Domain\Repository\SelectionRepository
-	 * @inject
-	 */
-	protected $selectionRepository;
+    /**
+     * @var \Fab\Vidi\Domain\Repository\SelectionRepository
+     * @inject
+     */
+    protected $selectionRepository;
 
-	/**
-	 * @param Selection $selection
-	 */
-	public function createAction(Selection $selection = NULL) {
-		$selection->setDataType($this->getModuleLoader()->getDataType());
+    /**
+     * @param Selection $selection
+     */
+    public function createAction(Selection $selection = NULL)
+    {
+        $selection->setDataType($this->getModuleLoader()->getDataType());
 
-		$selection->setOwner($this->getBackendUser()->user['uid']);
-		$this->selectionRepository->add($selection);
-		$this->redirect('edit', 'Selection', 'vidi', array('dataType' => $selection->getDataType()));
-	}
+        $selection->setOwner($this->getBackendUser()->user['uid']);
+        $this->selectionRepository->add($selection);
+        $this->redirect('edit', 'Selection', 'vidi', array('dataType' => $selection->getDataType()));
+    }
 
-	/**
-	 * @param Selection $selection
-	 * @return string
-	 */
-	public function deleteAction(Selection $selection) {
-		$this->selectionRepository->remove($selection);
-		return 'ok';
-	}
+    /**
+     * @param Selection $selection
+     * @return string
+     */
+    public function deleteAction(Selection $selection)
+    {
+        $this->selectionRepository->remove($selection);
+        return 'ok';
+    }
 
-	/**
-	 * @param Selection $selection
-	 */
-	public function updateAction(Selection $selection) {
-		$this->selectionRepository->update($selection);
-		$this->redirect('show', 'Selection', 'vidi', array('selection' => $selection->getUid()));
-	}
+    /**
+     * @param Selection $selection
+     */
+    public function updateAction(Selection $selection)
+    {
+        $this->selectionRepository->update($selection);
+        $this->redirect('show', 'Selection', 'vidi', array('selection' => $selection->getUid()));
+    }
 
-	/**
-	 * @param Selection $selection
-	 */
-	public function showAction(Selection $selection) {
-		$this->view->assign('selection', $selection);
-	}
+    /**
+     * @param Selection $selection
+     */
+    public function showAction(Selection $selection)
+    {
+        $this->view->assign('selection', $selection);
+    }
 
-	/**
-	 * Returns an editing form for a given data type.
-	 *
-	 * @param string $dataType
-	 */
-	public function editAction($dataType) {
-		$selections = $this->selectionRepository->findByDataTypeForCurrentBackendUser($dataType);
-		$this->view->assign('selections', $selections);
-	}
+    /**
+     * Returns an editing form for a given data type.
+     *
+     * @param string $dataType
+     */
+    public function editAction($dataType)
+    {
+        $selections = $this->selectionRepository->findByDataTypeForCurrentBackendUser($dataType);
+        $this->view->assign('selections', $selections);
+    }
 
-	/**
-	 * @param string $dataType
-	 */
-	public function listAction($dataType) {
-		$selections = $this->selectionRepository->findByDataTypeForCurrentBackendUser($dataType);
-		$this->view->assign('selections', $selections);
-	}
+    /**
+     * @param string $dataType
+     */
+    public function listAction($dataType)
+    {
+        $selections = $this->selectionRepository->findByDataTypeForCurrentBackendUser($dataType);
+        $this->view->assign('selections', $selections);
+    }
 
-	/**
-	 * Get the Vidi Module Loader.
-	 *
-	 * @return \Fab\Vidi\Module\ModuleLoader
-	 */
-	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
-	}
+    /**
+     * Get the Vidi Module Loader.
+     *
+     * @return \Fab\Vidi\Module\ModuleLoader
+     */
+    protected function getModuleLoader()
+    {
+        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+    }
 
-	/**
-	 * Returns an instance of the current Backend User.
-	 *
-	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 */
-	protected function getBackendUser() {
-		return $GLOBALS['BE_USER'];
-	}
+    /**
+     * Returns an instance of the current Backend User.
+     *
+     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     */
+    protected function getBackendUser()
+    {
+        return $GLOBALS['BE_USER'];
+    }
 
 }

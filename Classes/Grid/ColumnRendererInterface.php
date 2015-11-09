@@ -17,43 +17,44 @@ namespace Fab\Vidi\Grid;
 /**
  * Interface for rendering a column in the Grid.
  */
-interface ColumnRendererInterface {
+interface ColumnRendererInterface
+{
 
-	/**
-	 * Render a column in the Grid.
-	 *
-	 * @return string
-	 */
-	public function render();
+    /**
+     * Render a column in the Grid.
+     *
+     * @return string
+     */
+    public function render();
 
-	/**
-	 * @param \Fab\Vidi\Domain\Model\Content $object
-	 * @return $this
-	 */
-	public function setObject($object);
+    /**
+     * @param \Fab\Vidi\Domain\Model\Content $object
+     * @return $this
+     */
+    public function setObject($object);
 
-	/**
-	 * @param string $fieldName
-	 * @return $this
-	 */
-	public function setFieldName($fieldName);
+    /**
+     * @param string $fieldName
+     * @return $this
+     */
+    public function setFieldName($fieldName);
 
-	/**
-	 * @param int $index
-	 * @return $this
-	 */
-	public function setRowIndex($index);
+    /**
+     * @param int $index
+     * @return $this
+     */
+    public function setRowIndex($index);
 
-	/**
-	 * @param array $configuration
-	 * @return $this
-	 */
-	public function setFieldConfiguration($configuration);
+    /**
+     * @param array $configuration
+     * @return $this
+     */
+    public function setFieldConfiguration($configuration);
 
-	/**
-	 * @param array $configuration
-	 * @return $this
-	 */
-	public function setGridRendererConfiguration($configuration);
+    /**
+     * @param array $configuration
+     * @return $this
+     */
+    public function setGridRendererConfiguration($configuration);
 
 }

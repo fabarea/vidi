@@ -17,6 +17,7 @@ namespace Fab\Vidi\Exception;
 /**
  * Handle Exception for missing key in array
  */
-class InvalidKeyInArrayException extends \Exception {
+class InvalidKeyInArrayException extends \Exception
+{
 
 }

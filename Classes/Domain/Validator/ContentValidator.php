@@ -20,21 +20,23 @@ use Fab\Vidi\Exception\MissingIdentifierException;
 /**
  * Validate "content"
  */
-class ContentValidator {
+class ContentValidator
+{
 
-	/**
-	 * Check whether $Content object is valid.
-	 *
-	 * @param Content $content
-	 * @throws \Exception
-	 * @return void
-	 */
-	public function validate(Content $content) {
+    /**
+     * Check whether $Content object is valid.
+     *
+     * @param Content $content
+     * @throws \Exception
+     * @return void
+     */
+    public function validate(Content $content)
+    {
 
-		// Security check.
-		if ($content->getUid() <= 0) {
-			throw new MissingIdentifierException('Missing identifier for Content Object', 1351605542);
-		}
-	}
+        // Security check.
+        if ($content->getUid() <= 0) {
+            throw new MissingIdentifierException('Missing identifier for Content Object', 1351605542);
+        }
+    }
 
 }

@@ -19,11 +19,12 @@ use TYPO3\CMS\Core\Type\Enumeration;
 /**
  * Enumeration object for parameter module.
  */
-class Parameter extends Enumeration {
+class Parameter extends Enumeration
+{
 
-	const PID = 'id';
+    const PID = 'id';
 
-	const SUBMODULE = 'vidiModuleCode';
+    const SUBMODULE = 'vidiModuleCode';
 
-	const MODULE = 'M';
+    const MODULE = 'M';
 }

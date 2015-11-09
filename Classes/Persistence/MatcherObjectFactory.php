@@ -24,206 +24,226 @@ use Fab\Vidi\Tca\Tca;
 /**
  * Factory class related to Matcher object.
  */
-class MatcherObjectFactory implements SingletonInterface {
+class MatcherObjectFactory implements SingletonInterface
+{
 
-	/**
-	 * Gets a singleton instance of this class.
-	 *
-	 * @return \Fab\Vidi\Persistence\MatcherObjectFactory
-	 */
-	static public function getInstance() {
-		return GeneralUtility::makeInstance('Fab\Vidi\Persistence\MatcherObjectFactory');
-	}
+    /**
+     * Gets a singleton instance of this class.
+     *
+     * @return \Fab\Vidi\Persistence\MatcherObjectFactory
+     */
+    static public function getInstance()
+    {
+        return GeneralUtility::makeInstance('Fab\Vidi\Persistence\MatcherObjectFactory');
+    }
 
-	/**
-	 * Returns a matcher object.
-	 *
-	 * @param array $matches
-	 * @param string $dataType
-	 * @return Matcher
-	 */
-	public function getMatcher(array $matches = array(), $dataType = '') {
+    /**
+     * Returns a matcher object.
+     *
+     * @param array $matches
+     * @param string $dataType
+     * @return Matcher
+     */
+    public function getMatcher(array $matches = array(), $dataType = '')
+    {
 
-		if (empty($dataType)) {
-			$dataType = $this->getModuleLoader()->getDataType();
-		}
+        if (empty($dataType)) {
+            $dataType = $this->getModuleLoader()->getDataType();
+        }
 
-		/** @var $matcher Matcher */
-		$matcher = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Matcher', array(), $dataType);
+        /** @var $matcher Matcher */
+        $matcher = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Matcher', array(), $dataType);
 
-		$matcher = $this->applyCriteriaFromDataTables($matcher, $dataType);
-		$matcher = $this->applyCriteriaFromMatchesArgument($matcher, $matches);
+        $matcher = $this->applyCriteriaFromDataTables($matcher, $dataType);
+        $matcher = $this->applyCriteriaFromMatchesArgument($matcher, $matches);
 
-		if ($this->isBackendMode()) {
-			$matcher = $this->applyCriteriaFromUrl($matcher);
-		}
+        if ($this->isBackendMode()) {
+            $matcher = $this->applyCriteriaFromUrl($matcher);
+        }
 
-		// Trigger signal for post processing Matcher Object.
-		$this->emitPostProcessMatcherObjectSignal($matcher);
+        // Trigger signal for post processing Matcher Object.
+        $this->emitPostProcessMatcherObjectSignal($matcher);
 
-		return $matcher;
-	}
+        return $matcher;
+    }
 
-	/**
-	 * Get a possible id from the URL and apply as filter criteria.
-	 * Except if the main module belongs to the File. The id would be a combined identifier
-	 * including the storage and a mount point.
-	 *
-	 * @param Matcher $matcher
-	 * @return Matcher $matcher
-	 */
-	protected function applyCriteriaFromUrl(Matcher $matcher) {
+    /**
+     * Get a possible id from the URL and apply as filter criteria.
+     * Except if the main module belongs to the File. The id would be a combined identifier
+     * including the storage and a mount point.
+     *
+     * @param Matcher $matcher
+     * @return Matcher $matcher
+     */
+    protected function applyCriteriaFromUrl(Matcher $matcher)
+    {
 
-		if (GeneralUtility::_GP('id') && $this->getModuleLoader()->getMainModule() !== ModuleName::FILE) {
-			$matcher->equals('pid', GeneralUtility::_GP('id'));
-		}
+        if (GeneralUtility::_GP('id') && $this->getModuleLoader()->getMainModule() !== ModuleName::FILE) {
+            $matcher->equals('pid', GeneralUtility::_GP('id'));
+        }
 
-		return $matcher;
-	}
+        return $matcher;
+    }
 
-	/**
-	 * Apply criteria specific to jQuery plugin Datatable.
-	 *
-	 * @param Matcher $matcher
-	 * @param array $matches
-	 * @return Matcher $matcher
-	 */
-	protected function applyCriteriaFromMatchesArgument(Matcher $matcher, $matches) {
+    /**
+     * Apply criteria specific to jQuery plugin Datatable.
+     *
+     * @param Matcher $matcher
+     * @param array $matches
+     * @return Matcher $matcher
+     */
+    protected function applyCriteriaFromMatchesArgument(Matcher $matcher, $matches)
+    {
 
-		foreach ($matches as $fieldNameAndPath => $value) {
-			// CSV values should be considered as "in" operator in Query, otherwise "equals".
-			$explodedValues = GeneralUtility::trimExplode(',', $value, TRUE);
-			if (count($explodedValues) > 1) {
-				$matcher->in($fieldNameAndPath, $explodedValues);
-			} else {
-				$matcher->equals($fieldNameAndPath, $explodedValues[0]);
-			}
-		}
+        foreach ($matches as $fieldNameAndPath => $value) {
+            // CSV values should be considered as "in" operator in Query, otherwise "equals".
+            $explodedValues = GeneralUtility::trimExplode(',', $value, TRUE);
+            if (count($explodedValues) > 1) {
+                $matcher->in($fieldNameAndPath, $explodedValues);
+            } else {
+                $matcher->equals($fieldNameAndPath, $explodedValues[0]);
+            }
+        }
 
-		return $matcher;
-	}
+        return $matcher;
+    }
 
-	/**
-	 * Apply criteria specific to jQuery plugin DataTable.
-	 *
-	 * @param Matcher $matcher
-	 * @param string $dataType
-	 * @return Matcher $matcher
-	 */
-	protected function applyCriteriaFromDataTables(Matcher $matcher, $dataType) {
+    /**
+     * Apply criteria specific to jQuery plugin DataTable.
+     *
+     * @param Matcher $matcher
+     * @param string $dataType
+     * @return Matcher $matcher
+     */
+    protected function applyCriteriaFromDataTables(Matcher $matcher, $dataType)
+    {
 
-		// Special case for Grid in the BE using jQuery DataTables plugin.
-		// Retrieve a possible search term from GP.
-		$query = GeneralUtility::_GP('sSearch');
+        // Special case for Grid in the BE using jQuery DataTables plugin.
+        // Retrieve a possible search term from GP.
+        $query = GeneralUtility::_GP('search');
+        if (is_array($query)) {
+            if (!empty($query['value'])) {
+                $query = $query['value'];
+            } else {
+                $query = '';
+            }
+        }
 
-		if (strlen($query) > 0) {
+        if (strlen($query) > 0) {
 
-			// Parse the json query coming from the Visual Search.
-			$query = rawurldecode($query);
-			$queryParts = json_decode($query, TRUE);
+            // Parse the json query coming from the Visual Search.
+            $query = rawurldecode($query);
+            $queryParts = json_decode($query, TRUE);
 
-			if (is_array($queryParts)) {
-				foreach ($queryParts as $term) {
-					$fieldNameAndPath = key($term);
+            if (is_array($queryParts)) {
+                foreach ($queryParts as $term) {
+                    $fieldNameAndPath = key($term);
 
-					$resolvedDataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $dataType);
-					$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $dataType);
+                    $resolvedDataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $dataType);
+                    $fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $dataType);
 
-					// Retrieve the value.
-					$value = current($term);
+                    // Retrieve the value.
+                    $value = current($term);
 
-					if (Tca::grid($resolvedDataType)->hasFacet($fieldName) && Tca::grid($resolvedDataType)->facet($fieldName)->canModifyMatcher()) {
-						$matcher = Tca::grid($resolvedDataType)->facet($fieldName)->modifyMatcher($matcher, $value);
-					} elseif (Tca::table($resolvedDataType)->hasField($fieldName)) {
-						// Check whether the field exists and set it as "equal" or "like".
-						if ($this->isOperatorEquals($fieldNameAndPath, $dataType, $value)) {
-							$matcher->equals($fieldNameAndPath, $value);
-						} else {
-							$matcher->like($fieldNameAndPath, $value);
-						}
-					} elseif ($fieldNameAndPath === 'text') {
-						// Special case if field is "text" which is a pseudo field in this case.
-						// Set the search term which means Vidi will
-						// search in various fields with operator "like". The fields come from key "searchFields" in the TCA.
-						$matcher->setSearchTerm($value);
-					}
-				}
-			} else {
-				$matcher->setSearchTerm($query);
-			}
-		}
-		return $matcher;
-	}
+                    if (Tca::grid($resolvedDataType)->hasFacet($fieldName) && Tca::grid($resolvedDataType)->facet($fieldName)->canModifyMatcher()) {
+                        $matcher = Tca::grid($resolvedDataType)->facet($fieldName)->modifyMatcher($matcher, $value);
+                    } elseif (Tca::table($resolvedDataType)->hasField($fieldName)) {
+                        // Check whether the field exists and set it as "equal" or "like".
+                        if ($this->isOperatorEquals($fieldNameAndPath, $dataType, $value)) {
+                            $matcher->equals($fieldNameAndPath, $value);
+                        } else {
+                            $matcher->like($fieldNameAndPath, $value);
+                        }
+                    } elseif ($fieldNameAndPath === 'text') {
+                        // Special case if field is "text" which is a pseudo field in this case.
+                        // Set the search term which means Vidi will
+                        // search in various fields with operator "like". The fields come from key "searchFields" in the TCA.
+                        $matcher->setSearchTerm($value);
+                    }
+                }
+            } else {
+                $matcher->setSearchTerm($query);
+            }
+        }
+        return $matcher;
+    }
 
-	/**
-	 * Tell whether the operator should be equals instead of like for a search, e.g. if the value is numerical.
-	 *
-	 * @param string $fieldName
-	 * @param string $dataType
-	 * @param string $value
-	 * @return bool
-	 */
-	protected function isOperatorEquals($fieldName, $dataType, $value) {
-		return (Tca::table($dataType)->field($fieldName)->hasRelation() && MathUtility::canBeInterpretedAsInteger($value))
-			|| Tca::table($dataType)->field($fieldName)->isNumerical();
-	}
+    /**
+     * Tell whether the operator should be equals instead of like for a search, e.g. if the value is numerical.
+     *
+     * @param string $fieldName
+     * @param string $dataType
+     * @param string $value
+     * @return bool
+     */
+    protected function isOperatorEquals($fieldName, $dataType, $value)
+    {
+        return (Tca::table($dataType)->field($fieldName)->hasRelation() && MathUtility::canBeInterpretedAsInteger($value))
+        || Tca::table($dataType)->field($fieldName)->isNumerical();
+    }
 
-	/**
-	 * Signal that is called for post-processing a matcher object.
-	 *
-	 * @param Matcher $matcher
-	 * @signal
-	 */
-	protected function emitPostProcessMatcherObjectSignal(Matcher $matcher) {
+    /**
+     * Signal that is called for post-processing a matcher object.
+     *
+     * @param Matcher $matcher
+     * @signal
+     */
+    protected function emitPostProcessMatcherObjectSignal(Matcher $matcher)
+    {
 
-		if (strlen($matcher->getDataType()) <= 0) {
+        if (strlen($matcher->getDataType()) <= 0) {
 
-			/** @var ModuleLoader $moduleLoader */
-			$moduleLoader = $this->getObjectManager()->get('Fab\Vidi\Module\ModuleLoader');
-			$matcher->setDataType($moduleLoader->getDataType());
-		}
+            /** @var ModuleLoader $moduleLoader */
+            $moduleLoader = $this->getObjectManager()->get('Fab\Vidi\Module\ModuleLoader');
+            $matcher->setDataType($moduleLoader->getDataType());
+        }
 
-		$this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\Controller\Backend\ContentController', 'postProcessMatcherObject', array($matcher, $matcher->getDataType()));
-	}
+        $this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\Controller\Backend\ContentController', 'postProcessMatcherObject', array($matcher, $matcher->getDataType()));
+    }
 
-	/**
-	 * Get the SignalSlot dispatcher
-	 *
-	 * @return \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
-	 */
-	protected function getSignalSlotDispatcher() {
-		return $this->getObjectManager()->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
-	}
+    /**
+     * Get the SignalSlot dispatcher
+     *
+     * @return \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+     */
+    protected function getSignalSlotDispatcher()
+    {
+        return $this->getObjectManager()->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+    }
 
-	/**
-	 * @return \TYPO3\CMS\Extbase\Object\ObjectManager
-	 */
-	protected function getObjectManager() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
-	}
+    /**
+     * @return \TYPO3\CMS\Extbase\Object\ObjectManager
+     */
+    protected function getObjectManager()
+    {
+        return GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+    }
 
-	/**
-	 * Get the Vidi Module Loader.
-	 *
-	 * @return \Fab\Vidi\Module\ModuleLoader
-	 */
-	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
-	}
+    /**
+     * Get the Vidi Module Loader.
+     *
+     * @return \Fab\Vidi\Module\ModuleLoader
+     */
+    protected function getModuleLoader()
+    {
+        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+    }
 
-	/**
-	 * @return \Fab\Vidi\Resolver\FieldPathResolver
-	 */
-	protected function getFieldPathResolver() {
-		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
-	}
+    /**
+     * @return \Fab\Vidi\Resolver\FieldPathResolver
+     */
+    protected function getFieldPathResolver()
+    {
+        return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
+    }
 
-	/**
-	 * Returns whether the current mode is Backend
-	 *
-	 * @return bool
-	 */
-	protected function isBackendMode() {
-		return TYPO3_MODE == 'BE';
-	}
+    /**
+     * Returns whether the current mode is Backend
+     *
+     * @return bool
+     */
+    protected function isBackendMode()
+    {
+        return TYPO3_MODE == 'BE';
+    }
 }

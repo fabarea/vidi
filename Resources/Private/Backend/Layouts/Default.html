@@ -1,28 +1,24 @@
-<f:be.container pageTitle="Vidi" enableClickMenu="false" loadPrototype="false"
-                 loadScriptaculous="false" loadExtJs="false" loadExtJsTheme="true"
-                 includeCssFiles="{
-		0:'{f:uri.resource(path:\'StyleSheets/bootstrap.css\')}',
-		1:'{f:uri.resource(path:\'StyleSheets/bootstrap-responsive.css\')}',
-		2:'{f:uri.resource(path:\'StyleSheets/bootstrap-datatables.css\')}',
-		3:'{f:uri.resource(path:\'StyleSheets/JQueryUi/jquery-ui-1.10.1.custom.min.css\')}',
-		4:'{f:uri.resource(path:\'StyleSheets/VisualSearch/visualsearch.css\')}',
-		5:'{f:uri.resource(path:\'StyleSheets/vidi.css\')}'
+<f:be.container pageTitle="Vidi" enableClickMenu="false"
+                includeCssFiles="{
+		0:'{f:uri.resource(path:\'StyleSheets/VisualSearch/visualsearch.css\')}',
+		1:'{f:uri.resource(path:\'StyleSheets/DataTables/datatables.css\')}',
+		2:'{f:uri.resource(path:\'StyleSheets/vidi.css\')}'
 	}"
                  includeJsFiles="{
-		0:'{f:uri.resource(path:\'JavaScript/JQuery/jquery-1.11.2.min.js\')}',
-		1:'{f:uri.resource(path:\'JavaScript/JQuery/jquery-ui-1.10.1.custom.min.js\')}',
+		0:'{f:uri.resource(path:\'JavaScript/Uri/Uri.min.js\')}',
+		1:'{f:uri.resource(path:\'JavaScript/Typo3Lang.js\')}',
+		2:'{f:uri.resource(path:\'JavaScript/Compatibility.js\')}',
+		3:'{f:uri.resource(path:\'JavaScript/jQuery/jquery.jeditable.js\')}',
+		4:'{f:uri.resource(path:\'JavaScript/VisualSearch/dependencies.js\')}',
+		5:'{f:uri.resource(path:\'JavaScript/VisualSearch/visualsearch.js\')}'
 
-		2:'{f:uri.resource(path:\'JavaScript/VisualSearch/underscore-1.4.3.js\')}',
-		3:'{f:uri.resource(path:\'JavaScript/VisualSearch/backbone-0.9.10.js\')}',
-		4:'{f:uri.resource(path:\'JavaScript/VisualSearch/visualsearch.js\')}'
 		}">
 
-	<v:be.assets />
-
-	<script type="text/javascript">
+	<v:be.additionalAssets />
+	<v:be.requireJs>
 
 		// Declare namespace
-		window.Vidi = {};
+		window.Vidi = window.Vidi || {};
 
 		// "Live" variables in a Fluid syntax friendliness.
 		Vidi.module = {};
@@ -30,7 +26,7 @@
 		Vidi.module.dataType = '{v:moduleLoader(key: "dataType")}';
 		Vidi.module.preferenceSignature = '{v:modulePreferences(key: "signature")}';
 		Vidi.module.parameterPrefix = '{v:moduleLoader(key: "parameterPrefix")}';
-		Vidi.module.moduleUrl = '{v:moduleLoader(key: "moduleUrl") -> f:format.raw()}';
+		Vidi.module.moduleUrl = '{v:moduleLoader(key: "moduleAbsoluteUrl") -> f:format.raw()}';
 		Vidi.module.signature = '{v:moduleLoader(key: "signature")}';
 		Vidi.module.search = {};
 		Vidi.module.hasSortingByDragAndDrop = Boolean('{v:tca.table(key: "sortby")}');
@@ -51,40 +47,10 @@
 		Vidi.userPreferences.dataTables = '{v:userPreferences(key: "dataTables")}';
 		Vidi.userPreferences.visualSearchQuery = '{v:userPreferences(key: "visualSearchQuery")}';
 		Vidi.userPreferences.preferenceSignature = '{v:userPreferences(key: "signature")}';
-	</script>
+
+	</v:be.requireJs>
 
 	<f:render section="main"/>
 
-	<!-- @todo load me in the Page Renderer. Will be done when adapting for CMS 7 -->
-	<v:js name="JQuery/jquery.jeditable.js"/>
-	<v:js name="JQuery/jquery.dataTables.min.js"/>
-	<v:js name="JQuery/jquery.form.js"/>
-	<v:js name="JQuery/jquery.dataTables.bootstrap.js"/>
-	<v:js name="JQuery/jquery.dataTables.rowReordering.js"/>
-
-	<v:js name="Bootstrap/bootstrap.min.js"/>
-	<v:js name="Bootstrap/bootbox.min.js"/>
-	<v:js name="Bootstrap/bootstrapx-clickover.js"/>
-
-	<v:js name="Uri/Uri.min.js"/>
-	<v:js name="String.js"/>
-	<v:js name="Encoder.js"/>
-
-	<v:js name="Vidi.js"/>
-	<v:js name="Vidi.Edit.js"/>
-	<v:js name="Vidi.EditInline.js"/>
-	<v:js name="Vidi.Export.js"/>
-	<v:js name="Vidi.FlashMessage.js"/>
-	<v:js name="Vidi.Grid.js"/>
-	<v:js name="Vidi.Clipboard.js"/>
-	<v:js name="Vidi.Label.js"/>
-	<v:js name="Vidi.Panel.js"/>
-	<v:js name="Vidi.Remove.js"/>
-	<v:js name="Vidi.Response.js"/>
-	<v:js name="Vidi.Selection.js"/>
-	<v:js name="Vidi.Session.js"/>
-	<v:js name="Vidi.VisualSearch.js"/>
-
 </f:be.container>
 {namespace v=Fab\Vidi\ViewHelpers}
-

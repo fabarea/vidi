@@ -1,13 +1,13 @@
 <div xmlns="http://www.w3.org/1999/xhtml" lang="en"
-     xmlns:f="http://typo3.org/ns/fluid/ViewHelpers"
-     xmlns:v="http://typo3.org/ns/Fab/vidi/ViewHelpers">
+     xmlns:f="http://typo3.org/ns/fluid/ViewHelpers">
 
 	<f:section name="List">
-		<div id="selection-list" class="btn-group pull-right btn-selection-list" style="left: 3px; float: left">
-			<a class="btn dropdown-toggle" data-toggle="dropdown" href="#" style="padding-right: 2px; padding-left: 2px;">
+
+		<div id="selection-list" class="btn-group btn-selection-list">
+			<a id="btn-selection-expand-list" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#">
 				<span class="caret"></span>
 			</a>
-			<ul class="dropdown-menu">
+			<ul id="menu-selection-list" class="dropdown-menu">
 
 				<f:for each="{selections}" as="selection" iteration="iterator">
 					<li>
@@ -19,7 +19,7 @@
 					</li>
 				</f:for>
 
-				<li class="divider"></li>
+				<li role="separator" class="divider"></li>
 				<li>
 					<a href="#" class="btn-selection-edit">
 						<span class="icon-cog"></span>

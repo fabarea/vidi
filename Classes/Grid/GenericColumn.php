@@ -17,60 +17,66 @@ namespace Fab\Vidi\Grid;
 /**
  * Class for configuring a column in the Grid.
  */
-class GenericColumn implements ColumnInterface {
+class GenericColumn implements ColumnInterface
+{
 
-	/**
-	 * @var string
-	 */
-	protected $className;
+    /**
+     * @var string
+     */
+    protected $className;
 
-	/**
-	 * @var array
-	 */
-	protected $configuration = array();
+    /**
+     * @var array
+     */
+    protected $configuration = array();
 
-	/**
-	 * Constructor of a Generic component in Vidi.
-	 *
-	 * @param string $className
-	 * @param array $configuration
-	 */
-	public function __construct($className, $configuration = array()) {
-		$this->className = $className;
-		$this->configuration = $configuration;
-	}
+    /**
+     * Constructor of a Generic component in Vidi.
+     *
+     * @param string $className
+     * @param array $configuration
+     */
+    public function __construct($className, $configuration = array())
+    {
+        $this->className = $className;
+        $this->configuration = $configuration;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getClassName() {
-		return $this->className;
-	}
+    /**
+     * @return string
+     */
+    public function getClassName()
+    {
+        return $this->className;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getConfiguration() {
-		return $this->configuration;
-	}
+    /**
+     * @return array
+     */
+    public function getConfiguration()
+    {
+        return $this->configuration;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function toArray() {
-		return array(
-			'partial' => $this->getClassName(),
-			'configuration' => $this->getConfiguration(),
-		);
-	}
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return array(
+            'partial' => $this->getClassName(),
+            'configuration' => $this->getConfiguration(),
+        );
+    }
 
-	/**
-	 * Magic method implementation for retrieving state.
-	 *
-	 * @param array $states
-	 * @return GenericColumn
-	 */
-	static public function __set_state($states) {
-		return new GenericColumn($states['className'], $states['configuration']);
-	}
+    /**
+     * Magic method implementation for retrieving state.
+     *
+     * @param array $states
+     * @return GenericColumn
+     */
+    static public function __set_state($states)
+    {
+        return new GenericColumn($states['className'], $states['configuration']);
+    }
 }

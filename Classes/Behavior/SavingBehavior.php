@@ -19,12 +19,13 @@ use TYPO3\CMS\Core\Type\Enumeration;
 /**
  * Enumeration object for saving behavior.
  */
-class SavingBehavior extends Enumeration {
+class SavingBehavior extends Enumeration
+{
 
-	const REMOVE = 'remove';
+    const REMOVE = 'remove';
 
-	const APPEND = 'append';
+    const APPEND = 'append';
 
-	const REPLACE = 'replace';
+    const REPLACE = 'replace';
 
 }

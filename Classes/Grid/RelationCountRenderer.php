@@ -15,7 +15,7 @@ namespace Fab\Vidi\Grid;
  */
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Fab\Vidi\Tca\Tca;
@@ -23,57 +23,60 @@ use Fab\Vidi\Tca\Tca;
 /**
  * Class rendering relation
  */
-class RelationCountRenderer extends ColumnRendererAbstract {
+class RelationCountRenderer extends ColumnRendererAbstract
+{
 
-	/**
-	 * @var \TYPO3\CMS\Fluid\ViewHelpers\TranslateViewHelper
-	 */
-	protected $translateViewHelper;
+    /**
+     * @var \TYPO3\CMS\Fluid\ViewHelpers\TranslateViewHelper
+     */
+    protected $translateViewHelper;
 
-	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		$this->translateViewHelper = GeneralUtility::makeInstance('TYPO3\CMS\Fluid\ViewHelpers\TranslateViewHelper');
-	}
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->translateViewHelper = GeneralUtility::makeInstance('TYPO3\CMS\Fluid\ViewHelpers\TranslateViewHelper');
+    }
 
-	/**
-	 * Render a representation of the relation on the GUI.
-	 *
-	 * @return string
-	 */
-	public function render() {
+    /**
+     * Render a representation of the relation on the GUI.
+     *
+     * @return string
+     */
+    public function render()
+    {
 
-		$numberOfObjects = count($this->object[$this->fieldName]);
+        $numberOfObjects = count($this->object[$this->fieldName]);
 
-		if ($numberOfObjects > 1) {
-			$label = 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:items';
-			if (isset($this->gridRendererConfiguration['labelPlural'])) {
-				$label = $this->gridRendererConfiguration['labelPlural'];
-			}
-		} else {
-			$label = 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:item';
-			if (isset($this->gridRendererConfiguration['labelSingular'])) {
-				$label = $this->gridRendererConfiguration['labelSingular'];
-			}
-		}
+        if ($numberOfObjects > 1) {
+            $label = 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:items';
+            if (isset($this->gridRendererConfiguration['labelPlural'])) {
+                $label = $this->gridRendererConfiguration['labelPlural'];
+            }
+        } else {
+            $label = 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:item';
+            if (isset($this->gridRendererConfiguration['labelSingular'])) {
+                $label = $this->gridRendererConfiguration['labelSingular'];
+            }
+        }
 
-		$template = '<a href="%s&returnUrl=%s&search=%s&query=%s:%s">%s %s<span class="invisible" style="padding-left: 5px">%s</span></a>';
+        $template = '<a href="%s&returnUrl=%s&search=%s&query=%s:%s">%s %s<span class="invisible" style="padding-left: 5px">%s</span></a>';
 
-		$foreignField = Tca::table($this->object)->field($this->fieldName)->getForeignField();
-		$search = json_encode(array(array($foreignField => $this->object->getUid())));
+        $foreignField = Tca::table($this->object)->field($this->fieldName)->getForeignField();
+        $search = json_encode(array(array($foreignField => $this->object->getUid())));
 
-		$moduleTarget = empty($this->gridRendererConfiguration['targetModule']) ? '' : $this->gridRendererConfiguration['targetModule'];
-		return sprintf($template,
-			BackendUtility::getModuleUrl($moduleTarget),
-			rawurlencode(BackendUtility::getModuleUrl($this->gridRendererConfiguration['sourceModule'])),
-			rawurlencode($search),
-			rawurlencode($foreignField),
-			rawurlencode($this->object->getUid()),
-			htmlspecialchars($numberOfObjects),
-			htmlspecialchars(LocalizationUtility::translate($label, '')),
-			IconUtility::getSpriteIcon('extensions-vidi-go')
-		);
-	}
+        $moduleTarget = empty($this->gridRendererConfiguration['targetModule']) ? '' : $this->gridRendererConfiguration['targetModule'];
+        return sprintf($template,
+            BackendUtility::getModuleUrl($moduleTarget),
+            rawurlencode(BackendUtility::getModuleUrl($this->gridRendererConfiguration['sourceModule'])),
+            rawurlencode($search),
+            rawurlencode($foreignField),
+            rawurlencode($this->object->getUid()),
+            htmlspecialchars($numberOfObjects),
+            htmlspecialchars(LocalizationUtility::translate($label, '')),
+            $this->getIconFactory()->getIcon('extensions-vidi-go', Icon::SIZE_SMALL)
+        );
+    }
 
 }

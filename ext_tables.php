@@ -45,7 +45,6 @@ if (TYPO3_MODE == 'BE') {
 			/** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
 			$moduleLoader->setIcon(sprintf('EXT:vidi/Resources/Public/Images/%s.png', $dataType))
 				->setModuleLanguageFile(sprintf('LLL:EXT:vidi/Resources/Private/Language/%s.xlf', $dataType))
-				->addJavaScriptFiles(array(sprintf('EXT:vidi/Resources/Public/JavaScript/%s.js', $dataType)))
 				->setDefaultPid($configuration['default_pid']['value'])
 				->register();
 		}

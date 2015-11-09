@@ -14,27 +14,29 @@ namespace Fab\Vidi\View\MenuItem;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Fab\Vidi\View\AbstractComponentView;
 
 /**
  * View which renders a "xls export" item to be placed in the menu.
  */
-class ExportXlsMenuItem extends AbstractComponentView {
+class ExportXlsMenuItem extends AbstractComponentView
+{
 
-	/**
-	 * Renders a "xls export" item to be placed in the menu.
-	 * Only the admin is allowed to export for now as security is not handled.
-	 *
-	 * @return string
-	 */
-	public function render() {
-		$result = sprintf('<li><a href="#" class="export-xls" data-format="xls">%s %s</a></li>',
-			IconUtility::getSpriteIcon('mimetypes-excel'),
-			LocalizationUtility::translate('export-xls', 'vidi')
-		);
-		return $result;
-	}
+    /**
+     * Renders a "xls export" item to be placed in the menu.
+     * Only the admin is allowed to export for now as security is not handled.
+     *
+     * @return string
+     */
+    public function render()
+    {
+        $result = sprintf('<li><a href="#" class="export-xls" data-format="xls">%s %s</a></li>',
+            $this->getIconFactory()->getIcon('mimetypes-excel', Icon::SIZE_SMALL),
+            LocalizationUtility::translate('export-xls', 'vidi')
+        );
+        return $result;
+    }
 
 }

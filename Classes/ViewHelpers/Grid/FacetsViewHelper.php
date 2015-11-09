@@ -21,23 +21,25 @@ use Fab\Vidi\Tca\Tca;
 /**
  * View helper which returns the json serialization of the search fields.
  */
-class FacetsViewHelper extends AbstractViewHelper {
+class FacetsViewHelper extends AbstractViewHelper
+{
 
-	/**
-	 * Returns the json serialization of the search fields.
-	 *
-	 * @return boolean
-	 */
-	public function render() {
+    /**
+     * Returns the json serialization of the search fields.
+     *
+     * @return boolean
+     */
+    public function render()
+    {
 
-		$facets = array();
-		foreach (Tca::grid()->getFacets() as $facet) {
-			/** @var FacetInterface $facet */
-			$name = $facet->getName();
-			$facets[$name] = $facet->getLabel();
-		}
+        $facets = array();
+        foreach (Tca::grid()->getFacets() as $facet) {
+            /** @var FacetInterface $facet */
+            $name = $facet->getName();
+            $facets[$name] = $facet->getLabel();
+        }
 
-		return json_encode($facets);
-	}
+        return json_encode($facets);
+    }
 
 }

@@ -1,54 +1,92 @@
 <div xmlns="http://www.w3.org/1999/xhtml" lang="en"
      xmlns:f="http://typo3.org/ns/fluid/ViewHelpers"
-     xmlns:v="http://typo3.org/ns/TYPO3/CMS/vidi/ViewHelpers">
+     xmlns:v="http://typo3.org/ns/Fab/Vidi/ViewHelpers">
 
 	<f:section name="Text">
 
-		<label>{v:tca.label(dataType: '{dataType}', fieldName: '{fieldName}')}</label>
-		<f:form.textfield name="content[{fieldName}]" style="width: 100%"/>
+		<style>
 
-		<div class="accordion" id="accordion2">
-			<div class="accordion-group">
-				<div class="accordion-heading">
-					<a class="accordion-toggle" href="#collapseOne" onclick="$('#collapseOne').toggle(); return false;">
-						<span class="icon-chevron-down"></span>Available expressions
+			/*
+			 * Modal for scalar expression - mass edit
+			 */
+			.expression-block {
+				margin-top: 10px;
+			}
+		</style>
+
+		<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+			<div class="panel panel-default">
+				<div class="panel-heading" role="tab" id="headingTwo" style="background-color: #eeeeee">
+					<a class="collapsed"
+					   role="button"
+					   data-toggle="collapse"
+					   data-parent="#accordion"
+					   href="#collapseTwo"
+					   aria-expanded="false"
+					   style="font-weight: normal"
+					   aria-controls="collapseTwo">
+						<f:translate key="expression.available"/>
 					</a>
 				</div>
-				<div id="collapseOne" class="accordion-body" style="display: none">
-					<div class="accordion-inner">
+				<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+					<div class="panel-body">
 
-						<![CDATA[
-						<p class="help-block" style="margin-top: 10px">
-							Expressions that can be used to replace content:
-						</p>
-						<ul class="help-block">
+						<div class="expression-block">
+							<f:translate key="expression.usable"/>
+						</div>
+						<ul>
 							<li>
-								<strong>{*}</strong> symbolise the current content
+								<![CDATA[<strong>{*}</strong>]]>
+								<f:translate key="expression.current_content"/>
 							</li>
 							<li>
-								<strong>{counter}</strong> counter when looping around the records
+								<![CDATA[<strong>{counter}</strong>]]>
+								<f:translate key="expression.counter"/>
 							</li>
 							<li>
-								<strong>{date}</strong> date of day
+								<![CDATA[<strong>{date}</strong>]]>
+								<f:translate key="expression.date"/>
 							</li>
 							<li>
-								<strong>{creation_date}</strong> creation date of the record - if available.
+								<![CDATA[<strong>{creation_date}</strong>]]>
+								<f:translate key="expression.create_date"/>
 							</li>
 							<li>
-								<strong>s/search me/replace me/</strong> expression to find and replace.
+								<strong>s/<f:translate key="expression.search"/>/<f:translate key="expression.replace"/>/</strong>
+								<f:translate key="expression.find_and_replace"/>
 							</li>
 						</ul>
 
-						<div class="help-block">
-							Expressions can be combined as example:<br>
-							{counter} - {*} followed by a sample word
+						<div class="expression-block">
+							<f:translate key="expression.combined"/>
 						</div>
-						]]>
+						<div class="expression-block">
+							<![CDATA[{counter} - {*}]]>
+							<f:translate key="expression.example"/>
+						</div>
 
 					</div>
 				</div>
 			</div>
 		</div>
 
+
+		<f:if condition="{v:tca.isLanguageApplicable()}">
+			<div style="float: right">
+				<f:form.select name="language"
+				               style="width: 50px"
+				               options="{v:languages()}"
+				               optionValueField="uid"
+				               optionLabelField="flag"/>
+			</div>
+		</f:if>
+		<div class="form-group">
+
+			<label for="field-text">{v:tca.label(dataType: '{dataType}', fieldName: '{fieldName}')}</label>
+			<f:form.textfield name="content[{fieldName}]"
+			                  style="width: 100%"
+			                  id="field-text"
+			                  class="form-control-expression"/>
+		</div>
 	</f:section>
 </div>

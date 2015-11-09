@@ -19,23 +19,25 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 /**
  * Computes the final field name in the context of the Grid.
  */
-class FieldNameViewHelper extends AbstractViewHelper {
+class FieldNameViewHelper extends AbstractViewHelper
+{
 
-	/**
-	 * Return the final field name in the context of the Grid.
-	 *
-	 * @return string
-	 */
-	public function render() {
+    /**
+     * Return the final field name in the context of the Grid.
+     *
+     * @return string
+     */
+    public function render()
+    {
 
-		$fieldName = $this->templateVariableContainer->get('columnName');
-		$configuration = $this->templateVariableContainer->get('configuration');
+        $fieldName = $this->templateVariableContainer->get('columnName');
+        $configuration = $this->templateVariableContainer->get('configuration');
 
-		if (isset($configuration['dataType'])) {
-			$fieldName = $configuration['dataType'] . '.' . $fieldName;
-		}
+        if (isset($configuration['dataType'])) {
+            $fieldName = $configuration['dataType'] . '.' . $fieldName;
+        }
 
-		return $fieldName;
-	}
+        return $fieldName;
+    }
 
 }

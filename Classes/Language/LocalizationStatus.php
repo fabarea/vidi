@@ -19,10 +19,11 @@ use TYPO3\CMS\Core\Type\Enumeration;
 /**
  * Enumeration object for localization status.
  */
-class LocalizationStatus extends Enumeration {
+class LocalizationStatus extends Enumeration
+{
 
-	const LOCALIZED = 'localized';
-	const NOT_YET_LOCALIZED = 'notYetLocalized';
-	const EMPTY_VALUE = 'emptyValue';
+    const LOCALIZED = 'localized';
+    const NOT_YET_LOCALIZED = 'notYetLocalized';
+    const EMPTY_VALUE = 'emptyValue';
 
 }
