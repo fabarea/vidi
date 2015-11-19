@@ -14,81 +14,86 @@ namespace Fab\Vidi\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Core\Cache\Cache;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper which connects with the BE user data.
  */
-class UserPreferencesViewHelper extends AbstractViewHelper {
+class UserPreferencesViewHelper extends AbstractViewHelper
+{
 
-	/**
-	 * @var \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend
-	 */
-	protected $cacheInstance;
+    /**
+     * @var \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend
+     */
+    protected $cacheInstance;
 
-	/**
-	 * Interface with the BE user data.
-	 *
-	 * @param string $key
-	 * @return string
-	 */
-	public function render($key) {
-		$this->initializeCache();
-		$key = $this->getModuleLoader()->getDataType() . '_' . $this->getBackendUserIdentifier(). '_' . $key;
+    /**
+     * Interface with the BE user data.
+     *
+     * @param string $key
+     * @return string
+     */
+    public function render($key)
+    {
+        $this->initializeCache();
+        $key = $this->getModuleLoader()->getDataType() . '_' . $this->getBackendUserIdentifier() . '_' . $key;
 
-		$value = $this->cacheInstance->get($key);
-		if ($value) {
-			$value = addslashes($value);
-		} else {
-			$value = '';
-		}
-		return $value;
-	}
+        $value = $this->cacheInstance->get($key);
+        if ($value) {
+            $value = addslashes($value);
+        } else {
+            $value = '';
+        }
+        return $value;
+    }
 
-	/**
-	 * @return int
-	 */
-	protected function getBackendUserIdentifier() {
-		return $this->getBackendUser()->user['uid'];
-	}
+    /**
+     * @return int
+     */
+    protected function getBackendUserIdentifier()
+    {
+        return $this->getBackendUser()->user['uid'];
+    }
 
-	/**
-	 * Returns an instance of the current Backend User.
-	 *
-	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 */
-	protected function getBackendUser() {
-		return $GLOBALS['BE_USER'];
-	}
+    /**
+     * Returns an instance of the current Backend User.
+     *
+     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     */
+    protected function getBackendUser()
+    {
+        return $GLOBALS['BE_USER'];
+    }
 
-	/**
-	 * Get the Vidi Module Loader.
-	 *
-	 * @return \Fab\Vidi\Module\ModuleLoader
-	 */
-	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
-	}
+    /**
+     * Get the Vidi Module Loader.
+     *
+     * @return \Fab\Vidi\Module\ModuleLoader
+     */
+    protected function getModuleLoader()
+    {
+        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+    }
 
-	/**
-	 * Initialize cache instance to be ready to use
-	 *
-	 * @return void
-	 */
-	protected function initializeCache() {
-		Cache::initializeCachingFramework();
-		$this->cacheInstance = $this->getCacheManager()->getCache('vidi');
-	}
+    /**
+     * Initialize cache instance to be ready to use
+     *
+     * @return void
+     */
+    protected function initializeCache()
+    {
+        $this->cacheInstance = $this->getCacheManager()->getCache('vidi');
+    }
 
-	/**
-	 * Return the Cache Manager
-	 *
-	 * @return \TYPO3\CMS\Core\Cache\CacheManager
-	 */
-	protected function getCacheManager() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Core\Cache\CacheManager');
-	}
+    /**
+     * Return the Cache Manager
+     *
+     * @return \TYPO3\CMS\Core\Cache\CacheManager
+     */
+    protected function getCacheManager()
+    {
+        return GeneralUtility::makeInstance('TYPO3\CMS\Core\Cache\CacheManager');
+    }
 
 }

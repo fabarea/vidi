@@ -17,35 +17,36 @@ namespace Fab\Vidi\Tool;
 /**
  * Interface for checking.
  */
-interface ToolInterface {
+interface ToolInterface
+{
 
-	/**
-	 * Display the title of the tool on the welcome screen.
-	 *
-	 * @return string
-	 */
-	public function getTitle();
+    /**
+     * Display the title of the tool on the welcome screen.
+     *
+     * @return string
+     */
+    public function getTitle();
 
-	/**
-	 * Display the description of the tool on the welcome screen.
-	 *
-	 * @return string
-	 */
-	public function getDescription();
+    /**
+     * Display the description of the tool on the welcome screen.
+     *
+     * @return string
+     */
+    public function getDescription();
 
-	/**
-	 * Do the job.
-	 *
-	 * @param array $arguments
-	 * @return string
-	 */
-	public function work(array $arguments = array());
+    /**
+     * Do the job.
+     *
+     * @param array $arguments
+     * @return string
+     */
+    public function work(array $arguments = array());
 
-	/**
-	 * Tell whether the tools should be displayed.
-	 *
-	 * @return bool
-	 */
-	public function isShown();
+    /**
+     * Tell whether the tools should be displayed.
+     *
+     * @return bool
+     */
+    public function isShown();
 
 }

@@ -13,37 +13,58 @@ namespace Fab\Vidi\View;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Backend\Template\Components\Buttons\LinkButton;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Fab\Vidi\Domain\Model\Content;
 
 /**
  * Abstract Component View.
  */
-abstract class AbstractComponentView implements ViewComponentInterface {
+abstract class AbstractComponentView implements ViewComponentInterface
+{
 
-	/**
-	 * Get the Vidi Module Loader.
-	 *
-	 * @return \Fab\Vidi\Module\ModuleLoader
-	 */
-	protected function getModuleLoader() {
-		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
-	}
+    /**
+     * Get the Vidi Module Loader.
+     *
+     * @return \Fab\Vidi\Module\ModuleLoader
+     */
+    protected function getModuleLoader()
+    {
+        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+    }
 
-	/**
-	 * Returns an instance of the current Backend User.
-	 *
-	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 */
-	protected function getBackendUser() {
-		return $GLOBALS['BE_USER'];
-	}
+    /**
+     * Returns an instance of the current Backend User.
+     *
+     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     */
+    protected function getBackendUser()
+    {
+        return $GLOBALS['BE_USER'];
+    }
 
-	/**
-	 * @return \TYPO3\CMS\Lang\LanguageService
-	 */
-	protected function getLanguageService() {
-		return GeneralUtility::makeInstance('TYPO3\CMS\Lang\LanguageService');
-	}
+    /**
+     * @return \TYPO3\CMS\Lang\LanguageService
+     */
+    protected function getLanguageService()
+    {
+        return GeneralUtility::makeInstance('TYPO3\CMS\Lang\LanguageService');
+    }
+
+    /**
+     * @return IconFactory
+     */
+    protected function getIconFactory()
+    {
+        return GeneralUtility::makeInstance(IconFactory::class);
+    }
+
+    /**
+     * @return LinkButton
+     */
+    protected function makeLinkButton()
+    {
+        return GeneralUtility::makeInstance(LinkButton::class);
+    }
 
 }

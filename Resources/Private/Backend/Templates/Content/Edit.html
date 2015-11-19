@@ -3,41 +3,12 @@
 
 	<!-- additional parameters -->
 	<f:form.hidden name="dataType" value="{dataType}"/>
-	<input type="hidden" name="iSortCol_0" value="{v:gp(argument: 'iSortCol_0')}"/>
-	<input type="hidden" name="sSortDir_0" value="{v:gp(argument: 'sSortDir_0')}"/>
-	<input type="hidden" name="sSearch" value="{v:gp(argument: 'sSearch')}"/>
+	<input type="hidden" name="order[0][column]" value="{v:gp(argument: 'order|0|column')}"/>
+	<input type="hidden" name="order[0][dir]" value="{v:gp(argument: 'order|0|dir')}"/>
+	<input type="hidden" name="search[value]" value="{v:gp(argument: 'search|value')}"/>
 
-	<!-- @todo display records in two flex columns if many records or display with indentation if tree widget is configured? -->
-
-	<f:if condition="{fieldType} == 'Text'">
-		<div style="float: right">
-			<f:form.select name="language" style="width: 50px" options="{v:languages()}" optionValueField="uid" optionLabelField="flag"/>
-		</div>
-	</f:if>
-
-	<h5 class="modal-title">
-		<f:if condition="{editWholeSelection}">
-			<f:then>
-				<f:translate key="update_all" arguments="{0: '{numberOfObjects}'}"/>
-			</f:then>
-			<f:else>
-				<f:if condition="{numberOfObjects} > 1">
-					<f:then>
-						<f:translate key="update_selected_rows" arguments="{0: '{numberOfObjects}'}"/>
-					</f:then>
-					<f:else>
-						<f:translate key="update_selected_row"/>
-					</f:else>
-				</f:if>
-			</f:else>
-		</f:if>
-	</h5>
-
-	<hr/>
-
-	<!-- @todo conditional warning, not displayed if used own Data Handler -->
 	<f:if condition="{numberOfObjects} > 300">
-		<div class="alert">
+		<div class="alert alert-warning">
 			<strong>
 				<f:translate key="attention"/>
 			</strong>
@@ -48,6 +19,10 @@
 	<f:render section="{fieldType}" partial="Edit/{fieldType}" arguments="{_all}"/>
 
 	<!-- HIDDEN SUBMIT BUTTON -->
-	<input type="submit" style="visibility: hidden; height: 1px">
+	<div style="visibility: hidden; height: 1px">
+		<input type="submit" >
+		<span id="numberOfObjects">{numberOfObjects}</span>
+	</div>
+
 </f:form>
 {namespace v=Fab\Vidi\ViewHelpers}

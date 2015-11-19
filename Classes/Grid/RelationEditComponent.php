@@ -17,14 +17,16 @@ namespace Fab\Vidi\Grid;
 /**
  * Class for configuring a "Edit Relation" Grid Renderer in the Grid TCA.
  */
-class RelationEditComponent extends GenericColumn {
+class RelationEditComponent extends GenericColumn
+{
 
-	/**
-	 * Constructor for a "Edit Relation" Grid Renderer Component.
-	 */
-	public function __construct() {
-		$className = 'Fab\Vidi\Grid\RelationEditRenderer';
-		parent::__construct($className, array());
-	}
+    /**
+     * Constructor for a "Edit Relation" Grid Renderer Component.
+     */
+    public function __construct()
+    {
+        $className = 'Fab\Vidi\Grid\RelationEditRenderer';
+        parent::__construct($className, array());
+    }
 
 }

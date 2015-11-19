@@ -20,16 +20,18 @@ use Fab\Vidi\Tca\Tca;
 /**
  * Return a possible column header.
  */
-class HeaderViewHelper extends AbstractViewHelper {
+class HeaderViewHelper extends AbstractViewHelper
+{
 
-	/**
-	 * Returns a possible column header.
-	 *
-	 * @param string $name the column Name
-	 * @return boolean
-	 */
-	public function render($name) {
-		return Tca::grid()->getHeader($name);
-	}
+    /**
+     * Returns a possible column header.
+     *
+     * @param string $name the column Name
+     * @return boolean
+     */
+    public function render($name)
+    {
+        return Tca::grid()->getHeader($name);
+    }
 
 }

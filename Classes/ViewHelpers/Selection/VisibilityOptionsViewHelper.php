@@ -21,31 +21,34 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 /**
  * View helper which returns the options for the visibility field of a Selection.
  */
-class VisibilityOptionsViewHelper extends AbstractViewHelper {
+class VisibilityOptionsViewHelper extends AbstractViewHelper
+{
 
-	/**
-	 * Returns the options for the visibility field of a Selection.
-	 *
-	 * @return array
-	 */
-	public function render() {
-		$options[Selection::VISIBILITY_PRIVATE] = LocalizationUtility::translate('LLL:EXT:vidi/Resources/Private/Language/tx_vidi_selection.xlf:visibility.private', 'vidi');
-		$options[Selection::VISIBILITY_EVERYONE] = LocalizationUtility::translate('LLL:EXT:vidi/Resources/Private/Language/tx_vidi_selection.xlf:visibility.everyone', 'vidi');
+    /**
+     * Returns the options for the visibility field of a Selection.
+     *
+     * @return array
+     */
+    public function render()
+    {
+        $options[Selection::VISIBILITY_PRIVATE] = LocalizationUtility::translate('LLL:EXT:vidi/Resources/Private/Language/tx_vidi_selection.xlf:visibility.private', 'vidi');
+        $options[Selection::VISIBILITY_EVERYONE] = LocalizationUtility::translate('LLL:EXT:vidi/Resources/Private/Language/tx_vidi_selection.xlf:visibility.everyone', 'vidi');
 
-		if ($this->getBackendUser()->isAdmin()) {
-			$options[Selection::VISIBILITY_ADMIN_ONLY] = LocalizationUtility::translate('LLL:EXT:vidi/Resources/Private/Language/tx_vidi_selection.xlf:visibility.admin_only', 'vidi');
-		}
-		return $options;
-	}
+        if ($this->getBackendUser()->isAdmin()) {
+            $options[Selection::VISIBILITY_ADMIN_ONLY] = LocalizationUtility::translate('LLL:EXT:vidi/Resources/Private/Language/tx_vidi_selection.xlf:visibility.admin_only', 'vidi');
+        }
+        return $options;
+    }
 
 
-	/**
-	 * Returns an instance of the current Backend User.
-	 *
-	 * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
-	 */
-	protected function getBackendUser() {
-		return $GLOBALS['BE_USER'];
-	}
+    /**
+     * Returns an instance of the current Backend User.
+     *
+     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     */
+    protected function getBackendUser()
+    {
+        return $GLOBALS['BE_USER'];
+    }
 
 }

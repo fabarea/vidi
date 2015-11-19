@@ -21,25 +21,28 @@ use Fab\Vidi\Tca\Tca;
 /**
  * Tells whether the current field name has a relation to the main content (given by the Module Loader implicitly).
  */
-class HasRelationViewHelper extends AbstractViewHelper {
+class HasRelationViewHelper extends AbstractViewHelper
+{
 
-	/**
-	 * Return whether the current field name has a relation to the main content.
-	 *
-	 * @return boolean
-	 */
-	public function render() {
-		$fieldNameAndPath = $this->templateVariableContainer->get('columnName');
-		$dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
-		$fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
-		$hasRelation = Tca::table($dataType)->field($fieldName)->hasRelation();
-		return $hasRelation;
-	}
+    /**
+     * Return whether the current field name has a relation to the main content.
+     *
+     * @return boolean
+     */
+    public function render()
+    {
+        $fieldNameAndPath = $this->templateVariableContainer->get('columnName');
+        $dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
+        $fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
+        $hasRelation = Tca::table($dataType)->field($fieldName)->hasRelation();
+        return $hasRelation;
+    }
 
-	/**
-	 * @return \Fab\Vidi\Resolver\FieldPathResolver
-	 */
-	protected function getFieldPathResolver() {
-		return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
-	}
+    /**
+     * @return \Fab\Vidi\Resolver\FieldPathResolver
+     */
+    protected function getFieldPathResolver()
+    {
+        return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
+    }
 }

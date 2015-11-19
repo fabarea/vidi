@@ -14,91 +14,113 @@ namespace Fab\Vidi\Grid;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Tca\Tca;
+use TYPO3\CMS\Core\Imaging\Icon;
 
 /**
  * Class rendering relation
  */
-class RelationRenderer extends ColumnRendererAbstract {
+class RelationRenderer extends ColumnRendererAbstract
+{
 
-	/**
-	 * Render a representation of the relation on the GUI.
-	 *
-	 * @return string
-	 */
-	public function render() {
+    /**
+     * Render a representation of the relation on the GUI.
+     *
+     * @return string
+     */
+    public function render()
+    {
 
-		$result = '';
+        $result = '';
 
-		// Get TCA table service.
-		$table = Tca::table($this->object);
+        // Get TCA table service.
+        $table = Tca::table($this->object);
 
-		// Get label of the foreign table.
-		$foreignLabelField = $this->getForeignTableLabelField($this->fieldName);
+        // Get label of the foreign table.
+        $foreignLabelField = $this->getForeignTableLabelField($this->fieldName);
 
-		if ($table->field($this->fieldName)->hasOne()) {
+        if ($table->field($this->fieldName)->hasOne()) {
 
-			$foreignObject = $this->object[$this->fieldName];
+            $foreignObject = $this->object[$this->fieldName];
 
-			if ($foreignObject) {
-				$template = '<a href="%s" data-uid="%s" class="btn-edit invisible">%s</a><span>%s</span>';
-				$result = sprintf(
-					$template,
-					$this->getEditUri($foreignObject),
-					$this->object->getUid(),
-					IconUtility::getSpriteIcon('actions-document-open'),
-					$foreignObject[$foreignLabelField]
-				);
-			}
-		} elseif ($table->field($this->fieldName)->hasMany()) {
+            if ($foreignObject) {
+                $template = '<a href="%s" data-uid="%s" class="btn-edit invisible">%s</a> <span>%s</span>';
+                $result = sprintf(
+                    $template,
+                    $this->getEditUri($foreignObject),
+                    $this->object->getUid(),
+                    $this->getIconFactory()->getIcon('actions-document-open', Icon::SIZE_SMALL),
+                    $foreignObject[$foreignLabelField]
+                );
+            }
+        } elseif ($table->field($this->fieldName)->hasMany()) {
 
-			if (!empty($this->object[$this->fieldName])) {
-				$template = '<li><a href="%s" data-uid="%s" class="btn-edit invisible">%s</a><span>%s</span></li>';
+            if (!empty($this->object[$this->fieldName])) {
+                $template = '<li><a href="%s" data-uid="%s" class="btn-edit invisible">%s</a> <span>%s</span></li>';
 
-				/** @var $foreignObject \Fab\Vidi\Domain\Model\Content */
-				foreach ($this->object[$this->fieldName] as $foreignObject) {
-					$result .= sprintf($template,
-						$this->getEditUri($foreignObject),
-						$this->object->getUid(),
-						IconUtility::getSpriteIcon('actions-document-open'),
-						$foreignObject[$foreignLabelField]);
-				}
-				$result = sprintf('<ul class="unstyled">%s</ul>', $result);
-			}
-		}
-		return $result;
-	}
+                /** @var $foreignObject \Fab\Vidi\Domain\Model\Content */
+                foreach ($this->object[$this->fieldName] as $foreignObject) {
+                    $result .= sprintf($template,
+                        $this->getEditUri($foreignObject),
+                        $this->object->getUid(),
+                        $this->getIconFactory()->getIcon('actions-document-open', Icon::SIZE_SMALL),
+                        $foreignObject[$foreignLabelField]);
+                }
+                $result = sprintf('<ul class="list-unstyled">%s</ul>', $result);
+            }
+        }
+        return $result;
+    }
 
-	/**
-	 * Render an edit URI given an object.
-	 *
-	 * @param Content $object
-	 * @return string
-	 */
-	protected function getEditUri(Content $object) {
-		return sprintf('alt_doc.php?returnUrl=%s&edit[%s][%s]=edit',
-			rawurlencode($this->getModuleLoader()->getModuleUrl()),
-			rawurlencode($object->getDataType()),
-			$object->getUid()
-		);
-	}
+    /**
+     * Render an edit URI given an object.
+     *
+     * @param Content $object
+     * @return string
+     */
+    protected function getEditUri(Content $object)
+    {
+        $uri = BackendUtility::getModuleUrl(
+            'record_edit',
+            array(
+                $this->getEditParameterName($object) => 'edit',
+                'returnUrl' => $this->getModuleLoader()->getModuleUrl()
+            )
+        );
+        return $uri;
+    }
 
-	/**
-	 * Return the label field of the foreign table.
-	 *
-	 * @param string $fieldName
-	 * @return string
-	 */
-	protected function getForeignTableLabelField($fieldName) {
+    /**
+     * @param Content $object
+     * @return string
+     */
+    protected function getEditParameterName(Content $object)
+    {
+        return sprintf(
+            'edit[%s][%s]',
+            $object->getDataType(),
+            $object->getUid()
+        );
+    }
 
-		// Get TCA table service.
-		$table = Tca::table($this->object);
 
-		// Compute the label of the foreign table.
-		$relationDataType = $table->field($fieldName)->relationDataType();
-		return Tca::table($relationDataType)->getLabelField();
-	}
+    /**
+     * Return the label field of the foreign table.
+     *
+     * @param string $fieldName
+     * @return string
+     */
+    protected function getForeignTableLabelField($fieldName)
+    {
+
+        // Get TCA table service.
+        $table = Tca::table($this->object);
+
+        // Compute the label of the foreign table.
+        $relationDataType = $table->field($fieldName)->relationDataType();
+        return Tca::table($relationDataType)->getLabelField();
+    }
 
 }

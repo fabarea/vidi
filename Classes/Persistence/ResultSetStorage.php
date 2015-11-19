@@ -19,32 +19,35 @@ use TYPO3\CMS\Core\SingletonInterface;
 /**
  * Class for storing result set to improve performance.
  */
-class ResultSetStorage implements SingletonInterface{
+class ResultSetStorage implements SingletonInterface
+{
 
-	/**
-	 * @var array
-	 */
-	protected $resultSets = array();
+    /**
+     * @var array
+     */
+    protected $resultSets = array();
 
-	/**
-	 * @param string $querySignature
-	 * @return array
-	 */
-	public function get($querySignature) {
-		$resultSet = NULL;
-		if (isset($this->resultSets[$querySignature])) {
-			$resultSet = $this->resultSets[$querySignature];
-		}
-		return $resultSet;
-	}
+    /**
+     * @param string $querySignature
+     * @return array
+     */
+    public function get($querySignature)
+    {
+        $resultSet = NULL;
+        if (isset($this->resultSets[$querySignature])) {
+            $resultSet = $this->resultSets[$querySignature];
+        }
+        return $resultSet;
+    }
 
-	/**
-	 * @param $querySignature
-	 * @param array $resultSet
-	 * @internal param array $resultSets
-	 */
-	public function set($querySignature, array $resultSet) {
-		$this->resultSets[$querySignature] = $resultSet;
-	}
+    /**
+     * @param $querySignature
+     * @param array $resultSet
+     * @internal param array $resultSets
+     */
+    public function set($querySignature, array $resultSet)
+    {
+        $this->resultSets[$querySignature] = $resultSet;
+    }
 
 }

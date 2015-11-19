@@ -23,30 +23,32 @@ use Fab\Vidi\Tca\Tca;
 /**
  * View helper which counts a result set.
  */
-class CountViewHelper extends AbstractContentViewHelper {
+class CountViewHelper extends AbstractContentViewHelper
+{
 
 
-	/**
-	 * Count a result set.
-	 *
-	 * @return int
-	 */
-	public function render() {
-		if (!empty($this->arguments['dataType'])) {
-			print 'Sorry to be so rude! There is something to change in the View Helper "v:find". Please replace attribute "dataType" by "type". This is a shorter syntax...';
-			exit();
-		}
-		$dataType = $this->arguments['type'];
-		$matches = $this->replacesAliases($this->arguments['matches']);
-		$ignoreEnableFields = $this->arguments['ignoreEnableFields'];
+    /**
+     * Count a result set.
+     *
+     * @return int
+     */
+    public function render()
+    {
+        if (!empty($this->arguments['dataType'])) {
+            print 'Sorry to be so rude! There is something to change in the View Helper "v:find". Please replace attribute "dataType" by "type". This is a shorter syntax...';
+            exit();
+        }
+        $dataType = $this->arguments['type'];
+        $matches = $this->replacesAliases($this->arguments['matches']);
+        $ignoreEnableFields = $this->arguments['ignoreEnableFields'];
 
-		$matcher = $this->getMatcher($dataType, $matches);
+        $matcher = $this->getMatcher($dataType, $matches);
 
-		$contentRepository = ContentRepositoryFactory::getInstance($dataType);
-		$contentRepository->setDefaultQuerySettings($this->getDefaultQuerySettings($ignoreEnableFields));
+        $contentRepository = ContentRepositoryFactory::getInstance($dataType);
+        $contentRepository->setDefaultQuerySettings($this->getDefaultQuerySettings($ignoreEnableFields));
 
-		$numberOfObjects = ContentRepositoryFactory::getInstance($dataType)->countBy($matcher);
-		return $numberOfObjects;
-	}
+        $numberOfObjects = ContentRepositoryFactory::getInstance($dataType)->countBy($matcher);
+        return $numberOfObjects;
+    }
 
 }

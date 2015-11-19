@@ -17,13 +17,14 @@ namespace Fab\Vidi\View;
 /**
  * Abstract Component View.
  */
-interface ViewComponentInterface {
+interface ViewComponentInterface
+{
 
-	/**
-	 * Renders something to be printed out to the browser.
-	 *
-	 * @return string
-	 */
-	public function render();
+    /**
+     * Renders something to be printed out to the browser.
+     *
+     * @return string
+     */
+    public function render();
 
 }

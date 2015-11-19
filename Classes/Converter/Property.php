@@ -20,106 +20,113 @@ use Fab\Vidi\Domain\Model\Content;
 /**
  * Convert a property name to field.
  */
-class Property {
+class Property
+{
 
-	/**
-	 * @var string
-	 */
-	static protected $currentProperty;
+    /**
+     * @var string
+     */
+    static protected $currentProperty;
 
-	/**
-	 * @var string
-	 */
-	static protected $currentTable;
+    /**
+     * @var string
+     */
+    static protected $currentTable;
 
-	/**
-	 * @var array
-	 */
-	protected $storage = array();
+    /**
+     * @var array
+     */
+    protected $storage = array();
 
-	/**
-	 * @param string $propertyName
-	 * @return \Fab\Vidi\Converter\Property
-	 */
-	static public function name($propertyName) {
-		self::$currentProperty = $propertyName;
-		self::$currentTable = ''; // reset the table name value.
-		return GeneralUtility::makeInstance('Fab\Vidi\Converter\Property');
-	}
+    /**
+     * @param string $propertyName
+     * @return \Fab\Vidi\Converter\Property
+     */
+    static public function name($propertyName)
+    {
+        self::$currentProperty = $propertyName;
+        self::$currentTable = ''; // reset the table name value.
+        return GeneralUtility::makeInstance('Fab\Vidi\Converter\Property');
+    }
 
-	/**
-	 * @param string|Content $tableNameOrContentObject
-	 * @return $this
-	 */
-	public function of($tableNameOrContentObject) {
-	    // Resolve the table name.
-		self::$currentTable = $tableNameOrContentObject instanceof Content ?
-			$tableNameOrContentObject->getDataType() :
-			$tableNameOrContentObject;
-		return $this;
-	}
+    /**
+     * @param string|Content $tableNameOrContentObject
+     * @return $this
+     */
+    public function of($tableNameOrContentObject)
+    {
+        // Resolve the table name.
+        self::$currentTable = $tableNameOrContentObject instanceof Content ?
+            $tableNameOrContentObject->getDataType() :
+            $tableNameOrContentObject;
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function toFieldName() {
+    /**
+     * @return string
+     */
+    public function toFieldName()
+    {
 
-		$propertyName = $this->getPropertyName();
-		$tableName = $this->getTableName();
+        $propertyName = $this->getPropertyName();
+        $tableName = $this->getTableName();
 
-		if (empty($this->storage[$tableName][$propertyName])) {
-			if ($this->storage[$tableName]) {
-				$this->storage[$tableName] = array();
-			}
+        if (empty($this->storage[$tableName][$propertyName])) {
+            if ($this->storage[$tableName]) {
+                $this->storage[$tableName] = array();
+            }
 
-			// Default case
-			$fieldName = GeneralUtility::camelCaseToLowerCaseUnderscored($propertyName);
+            // Default case
+            $fieldName = GeneralUtility::camelCaseToLowerCaseUnderscored($propertyName);
 
-			// Special case in case the field name does not follow the conventions "field_name" => "fieldName"
-			// There is the chance to make some mapping
-			if (!empty($GLOBALS['TCA'][$tableName]['vidi']['mappings'])) {
-				$key = array_search($propertyName, $GLOBALS['TCA'][$tableName]['vidi']['mappings']);
-				if ($key !== FALSE) {
-					$fieldName = $key;
-				}
-			}
+            // Special case in case the field name does not follow the conventions "field_name" => "fieldName"
+            // There is the chance to make some mapping
+            if (!empty($GLOBALS['TCA'][$tableName]['vidi']['mappings'])) {
+                $key = array_search($propertyName, $GLOBALS['TCA'][$tableName]['vidi']['mappings']);
+                if ($key !== FALSE) {
+                    $fieldName = $key;
+                }
+            }
 
-			$this->storage[$tableName][$propertyName] = $fieldName;
-		}
+            $this->storage[$tableName][$propertyName] = $fieldName;
+        }
 
-		return $this->storage[$tableName][$propertyName];
-	}
+        return $this->storage[$tableName][$propertyName];
+    }
 
-	/**
-	 * @return string
-	 * @deprecated use toFieldName. Will be removed in 0.3.0 + 2 version.
-	 */
-	public function toField() {
-		return $this->toFieldName();
-	}
+    /**
+     * @return string
+     * @deprecated use toFieldName. Will be removed in 0.3.0 + 2 version.
+     */
+    public function toField()
+    {
+        return $this->toFieldName();
+    }
 
-	/**
-	 * @return string
-	 * @throws \Exception
-	 */
-	protected function getPropertyName() {
-		$propertyName = self::$currentProperty;
-		if (empty($propertyName)) {
-			throw new \Exception('I could not find a field name value.', 1403203290);
-		}
-		return $propertyName;
-	}
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    protected function getPropertyName()
+    {
+        $propertyName = self::$currentProperty;
+        if (empty($propertyName)) {
+            throw new \Exception('I could not find a field name value.', 1403203290);
+        }
+        return $propertyName;
+    }
 
-	/**
-	 * @return string
-	 * @throws \Exception
-	 */
-	protected function getTableName() {
-		$tableName = self::$currentTable;
-		if (empty($tableName)) {
-			throw new \Exception('I could not find a table name value.', 1403203291);
-		}
-		return $tableName;
-	}
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    protected function getTableName()
+    {
+        $tableName = self::$currentTable;
+        if (empty($tableName)) {
+            throw new \Exception('I could not find a table name value.', 1403203291);
+        }
+        return $tableName;
+    }
 
 }

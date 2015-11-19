@@ -19,26 +19,32 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Class for rendering the "Button Group" in the Grid, e.g. edit, delete, etc..
  */
-class ButtonGroupRenderer extends ColumnRendererAbstract {
+class ButtonGroupRenderer extends ColumnRendererAbstract
+{
 
-	/**
-	 * Render the "Button Group" in the Grid, e.g. edit, delete, etc..
-	 *
-	 * @return string
-	 */
-	public function render() {
+    /**
+     * Render the "Button Group" in the Grid, e.g. edit, delete, etc..
+     *
+     * @return string
+     */
+    public function render()
+    {
+        $components = $this->getModuleLoader()->getGridButtonsComponents();
 
-		$components = $this->getModuleLoader()->getGridButtonsComponents();
+        $buttons = '';
+        foreach ($components as $component) {
 
-		$result = '';
-		foreach ($components as $component) {
+            /** @var  $view */
+            $view = GeneralUtility::makeInstance($component);
+            $buttons[] = $view->render($this->getObject());
+        }
 
-			/** @var  $view */
-			$view = GeneralUtility::makeInstance($component);
-			$result .= $view->render($this->getObject());
-		}
+        $output = sprintf(
+            '<div class="btn-toolbar pull-right" role="toolbar" aria-label=""><div class="btn-group" role="group" aria-label="">%s</div></div>',
+            implode("\n", $buttons)
+        );
 
-		return $result;
-	}
+        return $output;
+    }
 
 }

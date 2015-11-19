@@ -19,27 +19,30 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Validate "language"
  */
-class LanguageValidator {
+class LanguageValidator
+{
 
-	/**
-	 * Check whether the $language is valid.
-	 *
-	 * @param int $language
-	 * @throws \Exception
-	 * @return void
-	 */
-	public function validate($language) {
+    /**
+     * Check whether the $language is valid.
+     *
+     * @param int $language
+     * @throws \Exception
+     * @return void
+     */
+    public function validate($language)
+    {
 
-		if (!$this->getLanguageService()->languageExists((int)$language)) {
-			throw new \Exception('The language "' . $language . '" does not exist', 1351605542);
-		}
-	}
+        if (!$this->getLanguageService()->languageExists((int)$language)) {
+            throw new \Exception('The language "' . $language . '" does not exist', 1351605542);
+        }
+    }
 
-	/**
-	 * @return \Fab\Vidi\Language\LanguageService
-	 */
-	protected function getLanguageService() {
-		return GeneralUtility::makeInstance('Fab\Vidi\Language\LanguageService');
-	}
+    /**
+     * @return \Fab\Vidi\Language\LanguageService
+     */
+    protected function getLanguageService()
+    {
+        return GeneralUtility::makeInstance('Fab\Vidi\Language\LanguageService');
+    }
 
 }

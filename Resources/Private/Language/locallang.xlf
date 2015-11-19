@@ -11,25 +11,25 @@
 				<source>Publish Dates</source>
 			</trans-unit>
 			<trans-unit id="success-delete">
-				<source>Success! Record "{0}" has been deleted.</source>
+				<source>Record "%s" has been deleted.</source>
 			</trans-unit>
 			<trans-unit id="success-mass-delete">
-				<source>Success! {0}/{1} records have been deleted</source>
+				<source>%s/%s records have been deleted</source>
 			</trans-unit>
 			<trans-unit id="success-update">
-				<source>Success! Record "{0}" has been updated.</source>
+				<source>Record "%s" has been updated.</source>
 			</trans-unit>
 			<trans-unit id="success-mass-update">
-				<source>Success! {0}/{1} records have been updated</source>
+				<source>%s/%s records have been updated</source>
 			</trans-unit>
 			<trans-unit id="confirm-delete">
-				<source>Are you sure to delete "{0}"?</source>
+				<source>Are you sure to delete "%s"?</source>
 			</trans-unit>
 			<trans-unit id="confirm-mass-delete-singular">
-				<source>Are you sure you want to delete {0} record?</source>
+				<source>Are you sure you want to delete %s record?</source>
 			</trans-unit>
 			<trans-unit id="confirm-mass-delete-plural">
-				<source>Are you sure you want to delete {0} records?</source>
+				<source>Are you sure you want to delete %s records?</source>
 			</trans-unit>
 			<trans-unit id="message-error">
 				<source>Transaction did not succeed</source>
@@ -37,20 +37,29 @@
 			<trans-unit id="save">
 				<source>Save</source>
 			</trans-unit>
+			<trans-unit id="record">
+				<source>record</source>
+			</trans-unit>
+			<trans-unit id="records">
+				<source>records</source>
+			</trans-unit>
+			<trans-unit id="save.relations">
+				<source>Save relations</source>
+			</trans-unit>
 			<trans-unit id="close">
 				<source>Close</source>
 			</trans-unit>
 			<trans-unit id="new">
 				<source>New</source>
 			</trans-unit>
-			<trans-unit id="edit">
-				<source>Edit record</source>
+			<trans-unit id="action.edit">
+				<source>Edit</source>
 			</trans-unit>
 			<trans-unit id="duplicate">
-				<source>Duplicate record</source>
+				<source>Duplicate</source>
 			</trans-unit>
 			<trans-unit id="delete">
-				<source>Delete record</source>
+				<source>Delete</source>
 			</trans-unit>
 			<trans-unit id="deleting">
 				<source>Deleting...</source>
@@ -65,7 +74,7 @@
 				<source>Cancel</source>
 			</trans-unit>
 			<trans-unit id="ok">
-				<source>Ok</source>
+				<source>OK</source>
 			</trans-unit>
 			<trans-unit id="are-you-sure">
 				<source>Are you sure?</source>
@@ -104,10 +113,10 @@
 				<source>Selected rows...</source>
 			</trans-unit>
 			<trans-unit id="for_selected_rows">
-				<source>For selected rows ({0})</source>
+				<source>For selected rows (%s)</source>
 			</trans-unit>
 			<trans-unit id="for_all_rows">
-				<source>For all rows ({0})</source>
+				<source>For all rows (%s)</source>
 			</trans-unit>
 			<trans-unit id="export-csv">
 				<source>Export CSV</source>
@@ -126,15 +135,6 @@
 			</trans-unit>
 			<trans-unit id="replace_relation">
 				<source>Replace relation</source>
-			</trans-unit>
-			<trans-unit id="update_all">
-				<source>Update all records (%s)</source>
-			</trans-unit>
-			<trans-unit id="update_selected_rows">
-				<source>Update selected records (%s)</source>
-			</trans-unit>
-			<trans-unit id="update_selected_row">
-				<source>Update the current record</source>
 			</trans-unit>
 			<trans-unit id="editing_many_rows_takes_time">
 				<source>Editing more than 300 records is time consuming and can last up to a few minutes.</source>
@@ -159,6 +159,9 @@
 			</trans-unit>
 			<trans-unit id="menu_visible_items_default">
 				<source>Default entry in the menu "number of visible items"</source>
+			</trans-unit>
+			<trans-unit id="preferences_for">
+				<source>Preferences for</source>
 			</trans-unit>
 			<trans-unit id="preferences_for">
 				<source>Preferences for</source>
@@ -218,7 +221,10 @@
 				<source>%s items have been saved in the clipboard.</source>
 			</trans-unit>
 			<trans-unit id="clipboard.items_not_saved">
-				<source>Something went wrong. Items were not saved in the clipboard.</source>
+				<source>Items were not saved in the clipboard.</source>
+			</trans-unit>
+			<trans-unit id="general.error">
+				<source>Something went wrong</source>
 			</trans-unit>
 			<trans-unit id="clipboard.copy_items">
 				<source>Copy items</source>
@@ -238,8 +244,38 @@
 			<trans-unit id="clipboard.empty_clipboard">
 				<source>Empty clipboard afterwards?</source>
 			</trans-unit>
-			<trans-unit id="visibility_renderer.toggle">
-				<source>Toggle visibility</source>
+			<trans-unit id="expression.available">
+				<source>Available expressions</source>
+			</trans-unit>
+			<trans-unit id="expression.usable">
+				<source>Expressions that can be used to replace content:</source>
+			</trans-unit>
+			<trans-unit id="expression.current_content">
+				<source>symbolise the current content</source>
+			</trans-unit>
+			<trans-unit id="expression.counter">
+				<source>counter when looping around the records</source>
+			</trans-unit>
+			<trans-unit id="expression.date">
+				<source>date of day</source>
+			</trans-unit>
+			<trans-unit id="expression.create_data">
+				<source>creation date of the record - if available.</source>
+			</trans-unit>
+			<trans-unit id="expression.find_and_replace">
+				<source>expression to find and replace.</source>
+			</trans-unit>
+			<trans-unit id="expression.search">
+				<source>search</source>
+			</trans-unit>
+			<trans-unit id="expression.replace">
+				<source>replace</source>
+			</trans-unit>
+			<trans-unit id="expression.combined">
+				<source>Expressions can be combined as example:</source>
+			</trans-unit>
+			<trans-unit id="expression.example">
+				<source>text appended</source>
 			</trans-unit>
 		</body>
 	</file>

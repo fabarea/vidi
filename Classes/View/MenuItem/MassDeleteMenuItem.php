@@ -14,42 +14,43 @@ namespace Fab\Vidi\View\MenuItem;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Backend\Utility\IconUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Fab\Vidi\View\AbstractComponentView;
 
 /**
  * View which renders a "mass delete" menu item to be placed in the grid menu.
  */
-class MassDeleteMenuItem extends AbstractComponentView {
+class MassDeleteMenuItem extends AbstractComponentView
+{
 
-	/**
-	 * Renders a "mass delete" menu item to be placed in the grid menu.
-	 *
-	 * @return string
-	 */
-	public function render() {
-		return sprintf('<li><a href="%s" class="mass-delete" >%s %s</a>',
-			$this->getMassDeleteUri(),
-			IconUtility::getSpriteIcon('actions-edit-delete'),
-			LocalizationUtility::translate('delete', 'vidi')
-		);
-	}
+    /**
+     * Renders a "mass delete" menu item to be placed in the grid menu.
+     *
+     * @return string
+     */
+    public function render()
+    {
+        return sprintf('<li><a href="%s" class="mass-delete" >%s %s</a>',
+            $this->getMassDeleteUri(),
+            $this->getIconFactory()->getIcon('actions-edit-delete', Icon::SIZE_SMALL),
+            LocalizationUtility::translate('delete', 'vidi')
+        );
+    }
 
-	/**
-	 * @return string
-	 */
-	protected function getMassDeleteUri() {
-		$additionalParameters = array(
-			$this->getModuleLoader()->getParameterPrefix() => array(
-				'controller' => 'Content',
-				'action' => 'delete',
-				'format' => 'json',
-			),
-		);
-		return $this->getModuleLoader()->getModuleUrl($additionalParameters);
-	}
+    /**
+     * @return string
+     */
+    protected function getMassDeleteUri()
+    {
+        $additionalParameters = array(
+            $this->getModuleLoader()->getParameterPrefix() => array(
+                'controller' => 'Content',
+                'action' => 'delete',
+                'format' => 'json',
+            ),
+        );
+        return $this->getModuleLoader()->getModuleUrl($additionalParameters);
+    }
 
 }

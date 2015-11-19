@@ -21,45 +21,48 @@ use Fab\Vidi\Tca\Tca;
 /**
  * Command Controller which handles actions related to Vidi.
  */
-class VidiCommandController extends CommandController {
+class VidiCommandController extends CommandController
+{
 
-	/**
-	 * Check TCA configuration for relations used in grid.
-	 *
-	 * @param string $table the table name. If not defined check for every table.
-	 * @return void
-	 */
-	public function analyseRelationsCommand($table = '') {
+    /**
+     * Check TCA configuration for relations used in grid.
+     *
+     * @param string $table the table name. If not defined check for every table.
+     * @return void
+     */
+    public function analyseRelationsCommand($table = '')
+    {
 
-		foreach ($GLOBALS['TCA'] as $tableName => $TCA) {
+        foreach ($GLOBALS['TCA'] as $tableName => $TCA) {
 
-			if ($table != '' && $table !== $tableName) {
-				continue;
-			}
+            if ($table != '' && $table !== $tableName) {
+                continue;
+            }
 
-			$fields = Tca::grid($tableName)->getFields();
-			if (!empty($fields)) {
+            $fields = Tca::grid($tableName)->getFields();
+            if (!empty($fields)) {
 
-				$relations = $this->getGridAnalyserService()->checkRelationForTable($tableName);
-				if (!empty($relations)) {
+                $relations = $this->getGridAnalyserService()->checkRelationForTable($tableName);
+                if (!empty($relations)) {
 
-					$this->outputLine();
-					$this->outputLine('--------------------------------------------------------------------');
-					$this->outputLine();
-					$this->outputLine(sprintf('Relations for "%s"', $tableName));
-					$this->outputLine();
-					$this->outputLine(implode("\n", $relations));
-				}
-			}
-		}
-	}
+                    $this->outputLine();
+                    $this->outputLine('--------------------------------------------------------------------');
+                    $this->outputLine();
+                    $this->outputLine(sprintf('Relations for "%s"', $tableName));
+                    $this->outputLine();
+                    $this->outputLine(implode("\n", $relations));
+                }
+            }
+        }
+    }
 
-	/**
-	 * Get the Vidi Module Loader.
-	 *
-	 * @return \Fab\Vidi\Grid\GridAnalyserService
-	 */
-	protected function getGridAnalyserService() {
-		return GeneralUtility::makeInstance('Fab\Vidi\Grid\GridAnalyserService');
-	}
+    /**
+     * Get the Vidi Module Loader.
+     *
+     * @return \Fab\Vidi\Grid\GridAnalyserService
+     */
+    protected function getGridAnalyserService()
+    {
+        return GeneralUtility::makeInstance('Fab\Vidi\Grid\GridAnalyserService');
+    }
 }

@@ -20,38 +20,41 @@ use Fab\Vidi\Tca\Tca;
 /**
  * View which renders check.
  */
-class RelationsCheck extends AbstractComponentView {
+class RelationsCheck extends AbstractComponentView
+{
 
-	/**
-	 * @var array
-	 */
-	protected $invalidFields = array();
+    /**
+     * @var array
+     */
+    protected $invalidFields = array();
 
-	/**
-	 * Renders a button for uploading assets.
-	 *
-	 * @return string
-	 */
-	public function render() {
+    /**
+     * Renders a button for uploading assets.
+     *
+     * @return string
+     */
+    public function render()
+    {
 
-		$result = '';
+        $result = '';
 
-		// Check whether storage is configured or not.
-		if (!$this->isTcaValid()) {
-			$result .= $this->formatMessageTcaIsNotValid();
-		}
+        // Check whether storage is configured or not.
+        if (!$this->isTcaValid()) {
+            $result .= $this->formatMessageTcaIsNotValid();
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 
-	/**
-	 * Format a message whenever the storage is offline.
-	 *
-	 * @return string
-	 */
-	protected function formatMessageTcaIsNotValid() {
+    /**
+     * Format a message whenever the storage is offline.
+     *
+     * @return string
+     */
+    protected function formatMessageTcaIsNotValid()
+    {
 
-		$result = <<< EOF
+        $result = <<< EOF
 			<div class="typo3-message message-warning">
 				<div class="message-header">
 					Grid may have trouble to render because of wrong / missing TCA.
@@ -66,18 +69,19 @@ class RelationsCheck extends AbstractComponentView {
 				</div>
 			</div>
 EOF;
-		return $result;
-	}
+        return $result;
+    }
 
-	/**
-	 * Check relations of current data type in the Grid.
-	 *
-	 * @return string
-	 */
-	protected function formatMessageHelperText() {
-		$helperText = '';
-		foreach ($this->invalidFields as $invalidField) {
-			$helperText .= <<<EOF
+    /**
+     * Check relations of current data type in the Grid.
+     *
+     * @return string
+     */
+    protected function formatMessageHelperText()
+    {
+        $helperText = '';
+        foreach ($this->invalidFields as $invalidField) {
+            $helperText .= <<<EOF
 				<br />
 				In file EXT:my_ext/Configuration/TCA/{$this->getModuleLoader()->getDataType()}.php
 <pre>
@@ -111,35 +115,36 @@ if (!empty(\$GLOBALS['TCA']['{$invalidField}'])) {
 
 </pre>
 EOF;
-		}
-		return $helperText;
-	}
+        }
+        return $helperText;
+    }
 
-	/**
-	 * Check relations of current data type in the Grid.
-	 *
-	 * @return boolean
-	 */
-	protected function isTcaValid() {
+    /**
+     * Check relations of current data type in the Grid.
+     *
+     * @return boolean
+     */
+    protected function isTcaValid()
+    {
 
-		$dataType = $this->getModuleLoader()->getDataType();
-		$table = Tca::table($dataType);
+        $dataType = $this->getModuleLoader()->getDataType();
+        $table = Tca::table($dataType);
 
-		// Hunt for System Fields which has been removed
-		// @todo remove me in 0.6 + 2 versions
-		$systemFields = array();
-		foreach (Tca::grid($dataType)->getFields() as $fieldName => $configuration) {
-			if (Tca::grid($dataType)->isSystem($fieldName) && !Tca::grid($dataType)->hasRenderers($fieldName)) {
-				$systemFields[] =  $fieldName;
-			}
-		}
+        // Hunt for System Fields which has been removed
+        // @todo remove me in 0.6 + 2 versions
+        $systemFields = array();
+        foreach (Tca::grid($dataType)->getFields() as $fieldName => $configuration) {
+            if (Tca::grid($dataType)->isSystem($fieldName) && !Tca::grid($dataType)->hasRenderers($fieldName)) {
+                $systemFields[] = $fieldName;
+            }
+        }
 
-		if (!empty($systemFields)) {
-			print 'You are using some old Grid configuration which requires to be changed. Don\'t worry it is simple and quickly done.<br/>';
-			print 'We now use Grid Renderers to render the special columns.<br/>';
-			print '<strong>Look for string "' . implode('", "', $systemFields) . '" in Configuration/* and replace by the following:</strong><br/>';
+        if (!empty($systemFields)) {
+            print 'You are using some old Grid configuration which requires to be changed. Don\'t worry it is simple and quickly done.<br/>';
+            print 'We now use Grid Renderers to render the special columns.<br/>';
+            print '<strong>Look for string "' . implode('", "', $systemFields) . '" in Configuration/* and replace by the following:</strong><br/>';
 
-			print <<<EOF
+            print <<<EOF
 <pre>
 'columns' => array(
 
@@ -157,31 +162,31 @@ EOF;
 </pre>
 
 EOF;
-			print 'Don\'t forget to clear the cache afterwards.<br/>';
-			exit();
-		}
+            print 'Don\'t forget to clear the cache afterwards.<br/>';
+            exit();
+        }
 
-		foreach (Tca::grid($dataType)->getFields() as $fieldName => $configuration) {
+        foreach (Tca::grid($dataType)->getFields() as $fieldName => $configuration) {
 
-			if ($table->hasField($fieldName) && $table->field($fieldName)->hasMany()) {
-				if ($table->field($fieldName)->hasRelationManyToMany()) {
+            if ($table->hasField($fieldName) && $table->field($fieldName)->hasMany()) {
+                if ($table->field($fieldName)->hasRelationManyToMany()) {
 
-					$foreignTable = $table->field($fieldName)->getForeignTable();
-					$manyToManyTable = $table->field($fieldName)->getManyToManyTable();
-					$foreignField = $table->field($fieldName)->getForeignField();
+                    $foreignTable = $table->field($fieldName)->getForeignTable();
+                    $manyToManyTable = $table->field($fieldName)->getManyToManyTable();
+                    $foreignField = $table->field($fieldName)->getForeignField();
 
-					if (!$foreignField) {
-						$this->invalidFields[] = $fieldName;
-					} elseif (!$foreignTable) {
-						$this->invalidFields[] = $fieldName;
-					} elseif (!$manyToManyTable) {
-						$this->invalidFields[] = $fieldName;
-					}
-				}
-			}
-		}
+                    if (!$foreignField) {
+                        $this->invalidFields[] = $fieldName;
+                    } elseif (!$foreignTable) {
+                        $this->invalidFields[] = $fieldName;
+                    } elseif (!$manyToManyTable) {
+                        $this->invalidFields[] = $fieldName;
+                    }
+                }
+            }
+        }
 
-		return empty($this->invalidFields);
-	}
+        return empty($this->invalidFields);
+    }
 
 }

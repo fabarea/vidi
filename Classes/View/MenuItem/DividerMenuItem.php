@@ -19,14 +19,16 @@ use Fab\Vidi\View\AbstractComponentView;
 /**
  * View which renders a "divider" menu item to be placed in the grid menu.
  */
-class DividerMenuItem extends AbstractComponentView {
+class DividerMenuItem extends AbstractComponentView
+{
 
-	/**
-	 * Renders a "divider" menu item to be placed in the grid menu.
-	 *
-	 * @return string
-	 */
-	public function render() {
-		return '<li class="divider"></li>';
-	}
+    /**
+     * Renders a "divider" menu item to be placed in the grid menu.
+     *
+     * @return string
+     */
+    public function render()
+    {
+        return '<li role="separator" class="divider"></li>';
+    }
 }

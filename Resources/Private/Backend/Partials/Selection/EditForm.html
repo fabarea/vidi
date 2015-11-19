@@ -1,8 +1,9 @@
 <div xmlns="http://www.w3.org/1999/xhtml" lang="en"
      xmlns:f="http://typo3.org/ns/fluid/ViewHelpers"
-     xmlns:v="http://typo3.org/ns/Fab/vidi/ViewHelpers">
+     xmlns:v="http://typo3.org/ns/Fab/Vidi/ViewHelpers">
 
 	<f:section name="EditForm">
+
 		<f:form name="selection"
 		        object="{selection}"
 		        controller="Selection"
@@ -13,36 +14,49 @@
 
 			<f:form.hidden property="query" class="selection-query"/>
 			<f:form.hidden property="speakingQuery" class="selection-speakingQuery"/>
-			<div class="modal-selection-column-1">
-				<f:form.select class="form-control-selection" property="visibility" options="{v:selection.visibilityOptions()}"/>
-			</div>
-			<div class="modal-selection-column-2">
-				<f:form.textfield class="form-control-selection" property="name" title="{selection.speakingQuery}"/>
 
-				<f:link.action
-						title="{f:translate(key: 'selection.update')}"
-						class="btn-selection-update"
-						controller="Selection"
-						action="update"
-						style="visibility: hidden"
-						arguments="{dataType: '{v:moduleLoader(key: \'dataType\')}'}">
-					<v:sprite name="actions-document-save"/></f:link.action>
+			<div class="modal-selection-row">
+				<div class="modal-selection-column-1">
+					<f:form.select class="form-control-selection"
+					               property="visibility"
+					               options="{v:selection.visibilityOptions()}"/>
+				</div>
+				<div class="modal-selection-column-2">
+					<f:form.textfield class="form-control-selection" property="name" title="{selection.speakingQuery}"/>
+				</div>
+				<div class="modal-selection-column-3">
+					<div class="btn-group" role="group" aria-label="">
 
-				<f:link.action
-						title="{f:translate(key: 'delete')}"
-						class="btn-selection-delete"
-						controller="Selection"
-						action="delete"
-						arguments="{selection: '{selection.uid}'}">
-					<v:sprite name="actions-edit-delete"/></f:link.action>
+						<f:link.action
+								title="{f:translate(key: 'selection.update')}"
+								class="btn btn-default btn-sm btn-selection-update"
+								controller="Selection"
+								action="update"
+								style="visibility: hidden"
+								arguments="{dataType: '{v:moduleLoader(key: \'dataType\')}'}">
+							<v:sprite name="actions-document-save"/>
+						</f:link.action>
 
-				<f:link.action
-						title="{f:translate(key: 'query.update')}"
-						class="btn-selection-speakingQuery"
-						controller="Selection"
-						action="update"
-						arguments="{selection: '{selection.uid}'}">
-					<v:sprite name="extensions-vidi-query"/></f:link.action>
+						<f:link.action
+								title="{f:translate(key: 'delete')}"
+								class="btn btn-default btn-sm btn-selection-delete"
+								controller="Selection"
+								action="delete"
+								additionalAttributes="{data-selection-title : '{selection.name}'}"
+								arguments="{selection: '{selection.uid}'}">
+							<v:sprite name="actions-edit-delete"/>
+						</f:link.action>
+
+						<f:link.action
+								title="{f:translate(key: 'query.update')}"
+								class="btn btn-default btn-sm btn-selection-speakingQuery"
+								controller="Selection"
+								action="update"
+								arguments="{selection: '{selection.uid}'}">
+							<v:sprite name="extensions-vidi-query"/>
+						</f:link.action>
+					</div>
+				</div>
 			</div>
 		</f:form>
 	</f:section>

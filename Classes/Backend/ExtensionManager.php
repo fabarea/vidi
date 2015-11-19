@@ -20,41 +20,43 @@ use Fab\Vidi\Configuration\ConfigurationUtility;
 /**
  * Display custom fields in the Extension Manager.
  */
-class ExtensionManager {
+class ExtensionManager
+{
 
-	/**
-	 * @var string
-	 */
-	protected $extKey = 'vidi';
+    /**
+     * @var string
+     */
+    protected $extKey = 'vidi';
 
-	/**
-	 * @var array
-	 */
-	protected $dataTypes = array('fe_users', 'fe_groups');
+    /**
+     * @var array
+     */
+    protected $dataTypes = array('fe_users', 'fe_groups');
 
-	/**
-	 * Display a message to the Extension Manager whether the configuration is OK or KO.
-	 *
-	 * @param array $params
-	 * @param \TYPO3\CMS\Core\TypoScript\ConfigurationForm $tsObj
-	 * @return string
-	 */
-	public function renderDataTypes(&$params, &$tsObj) {
+    /**
+     * Display a message to the Extension Manager whether the configuration is OK or KO.
+     *
+     * @param array $params
+     * @param \TYPO3\CMS\Core\TypoScript\ConfigurationForm $tsObj
+     * @return string
+     */
+    public function renderDataTypes(&$params, &$tsObj)
+    {
 
-		$configuration = ConfigurationUtility::getInstance()->getConfiguration();
-		$dataTypes = GeneralUtility::trimExplode(',', $configuration['data_types']);
+        $configuration = ConfigurationUtility::getInstance()->getConfiguration();
+        $dataTypes = GeneralUtility::trimExplode(',', $configuration['data_types']);
 
-		$options = '';
-		foreach ($this->dataTypes as $dataType) {
-			$checked = '';
+        $options = '';
+        foreach ($this->dataTypes as $dataType) {
+            $checked = '';
 
-			if (in_array($dataType, $dataTypes)) {
-				$checked = 'checked="checked"';
-			}
-			$options .= '<label><input type="checkbox" class="fieldDataType" value="' . $dataType . '" ' . $checked . ' /> ' . $dataType . '</label>';
-		}
+            if (in_array($dataType, $dataTypes)) {
+                $checked = 'checked="checked"';
+            }
+            $options .= '<label><input type="checkbox" class="fieldDataType" value="' . $dataType . '" ' . $checked . ' /> ' . $dataType . '</label>';
+        }
 
-		$output = <<<EOF
+        $output = <<<EOF
 				<div class="typo3-tstemplate-ceditor-row" id="userTS-dataTypes">
 					<script type="text/javascript">
 						(function($) {
@@ -81,6 +83,6 @@ class ExtensionManager {
 				</div>
 EOF;
 
-		return $output;
-	}
+        return $output;
+    }
 }

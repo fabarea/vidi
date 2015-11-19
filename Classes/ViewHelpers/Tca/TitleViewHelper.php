@@ -21,17 +21,19 @@ use Fab\Vidi\Tca\Tca;
 /**
  * View helper which returns the title of a content object.
  */
-class TitleViewHelper extends AbstractViewHelper {
+class TitleViewHelper extends AbstractViewHelper
+{
 
-	/**
-	 * Returns the title of a content object.
-	 *
-	 * @param Content $content
-	 * @return string
-	 */
-	public function render(Content $content) {
-		$table = Tca::table($content->getDataType());
-		return $content[$table->getLabelField()];
-	}
+    /**
+     * Returns the title of a content object.
+     *
+     * @param Content $content
+     * @return string
+     */
+    public function render(Content $content)
+    {
+        $table = Tca::table($content->getDataType());
+        return $content[$table->getLabelField()];
+    }
 
 }

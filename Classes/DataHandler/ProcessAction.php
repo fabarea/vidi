@@ -19,16 +19,17 @@ use TYPO3\CMS\Core\Type\Enumeration;
 /**
  * Enumeration object for process action.
  */
-class ProcessAction extends Enumeration {
+class ProcessAction extends Enumeration
+{
 
-	const REMOVE = 'remove';
+    const REMOVE = 'remove';
 
-	const UPDATE = 'update';
+    const UPDATE = 'update';
 
-	const COPY = 'copy';
+    const COPY = 'copy';
 
-	const MOVE = 'move';
+    const MOVE = 'move';
 
-	const LOCALIZE = 'localize';
+    const LOCALIZE = 'localize';
 
 }

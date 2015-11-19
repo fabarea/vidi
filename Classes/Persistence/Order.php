@@ -17,44 +17,48 @@ namespace Fab\Vidi\Persistence;
 /**
  * Order class for order that will apply to a query
  */
-class Order  {
+class Order
+{
 
-	/**
-	 * The orderings
-	 *
-	 * @var array
-	 */
-	protected $orderings = array();
+    /**
+     * The orderings
+     *
+     * @var array
+     */
+    protected $orderings = array();
 
-	/**
-	 * Constructs a new Order
-	 *
-	 * @para array $orders
-	 * @param array $orders
-	 */
-	public function __construct($orders = array()) {
-		foreach ($orders as $order => $direction) {
-			$this->addOrdering($order, $direction);
-		}
-	}
+    /**
+     * Constructs a new Order
+     *
+     * @para array $orders
+     * @param array $orders
+     */
+    public function __construct($orders = array())
+    {
+        foreach ($orders as $order => $direction) {
+            $this->addOrdering($order, $direction);
+        }
+    }
 
-	/**
-	 * Add ordering
-	 *
-	 * @param string $order The order
-	 * @param string $direction ASC / DESC
-	 * @return void
-	 */
-	public function addOrdering($order, $direction) {
-		$this->orderings[$order] = $direction;
-	}
+    /**
+     * Add ordering
+     *
+     * @param string $order The order
+     * @param string $direction ASC / DESC
+     * @return void
+     */
+    public function addOrdering($order, $direction)
+    {
+        $this->orderings[$order] = $direction;
+    }
 
-	/**
-	 * Returns the order
-	 *
-	 * @return array The order
-	 */
-	public function getOrderings() {
-		return $this->orderings;
-	}
+    /**
+     * Returns the order
+     *
+     * @return array The order
+     */
+    public function getOrderings()
+    {
+        return $this->orderings;
+    }
 }

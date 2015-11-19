@@ -20,174 +20,191 @@ use Fab\Vidi\Persistence\Order;
 /**
  * Class for storing arguments of a "after find content objects" signal.
  */
-class AfterFindContentObjectsSignalArguments {
+class AfterFindContentObjectsSignalArguments
+{
 
-	/**
-	 * @var string
-	 */
-	protected $dataType;
+    /**
+     * @var string
+     */
+    protected $dataType;
 
-	/**
-	 * @var array
-	 */
-	protected $contentObjects;
+    /**
+     * @var array
+     */
+    protected $contentObjects;
 
-	/**
-	 * @var Matcher
-	 */
-	protected $matcher;
+    /**
+     * @var Matcher
+     */
+    protected $matcher;
 
-	/**
-	 * @var Order
-	 */
-	protected $order;
+    /**
+     * @var Order
+     */
+    protected $order;
 
-	/**
-	 * @var int
-	 */
-	protected $limit;
+    /**
+     * @var int
+     */
+    protected $limit;
 
-	/**
-	 * @var int
-	 */
-	protected $offset;
+    /**
+     * @var int
+     */
+    protected $offset;
 
-	/**
-	 * @var bool
-	 */
-	protected $hasBeenProcessed;
+    /**
+     * @var bool
+     */
+    protected $hasBeenProcessed;
 
-	/**
-	 * @var int
-	 */
-	protected $numberOfObjects = 0;
+    /**
+     * @var int
+     */
+    protected $numberOfObjects = 0;
 
-	/**
-	 * @param array $contentObjects
-	 * @return $this
-	 */
-	public function setContentObjects($contentObjects) {
-		$this->contentObjects = $contentObjects;
-		return $this;
-	}
+    /**
+     * @param array $contentObjects
+     * @return $this
+     */
+    public function setContentObjects($contentObjects)
+    {
+        $this->contentObjects = $contentObjects;
+        return $this;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getContentObjects() {
-		return $this->contentObjects;
-	}
+    /**
+     * @return array
+     */
+    public function getContentObjects()
+    {
+        return $this->contentObjects;
+    }
 
-	/**
-	 * @param string $dataType
-	 * @return $this
-	 */
-	public function setDataType($dataType) {
-		$this->dataType = $dataType;
-		return $this;
-	}
+    /**
+     * @param string $dataType
+     * @return $this
+     */
+    public function setDataType($dataType)
+    {
+        $this->dataType = $dataType;
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getDataType() {
-		return $this->dataType;
-	}
+    /**
+     * @return string
+     */
+    public function getDataType()
+    {
+        return $this->dataType;
+    }
 
-	/**
-	 * @param boolean $hasBeenProcessed
-	 * @return $this
-	 */
-	public function setHasBeenProcessed($hasBeenProcessed) {
-		$this->hasBeenProcessed = $hasBeenProcessed;
-		return $this;
-	}
+    /**
+     * @param boolean $hasBeenProcessed
+     * @return $this
+     */
+    public function setHasBeenProcessed($hasBeenProcessed)
+    {
+        $this->hasBeenProcessed = $hasBeenProcessed;
+        return $this;
+    }
 
-	/**
-	 * @return boolean
-	 */
-	public function getHasBeenProcessed() {
-		return $this->hasBeenProcessed;
-	}
+    /**
+     * @return boolean
+     */
+    public function getHasBeenProcessed()
+    {
+        return $this->hasBeenProcessed;
+    }
 
-	/**
-	 * @param int $limit
-	 * @return $this
-	 */
-	public function setLimit($limit) {
-		$this->limit = $limit;
-		return $this;
-	}
+    /**
+     * @param int $limit
+     * @return $this
+     */
+    public function setLimit($limit)
+    {
+        $this->limit = $limit;
+        return $this;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getLimit() {
-		return $this->limit;
-	}
+    /**
+     * @return int
+     */
+    public function getLimit()
+    {
+        return $this->limit;
+    }
 
-	/**
-	 * @param \Fab\Vidi\Persistence\Matcher $matcher
-	 * @return $this
-	 */
-	public function setMatcher($matcher) {
-		$this->matcher = $matcher;
-		return $this;
-	}
+    /**
+     * @param \Fab\Vidi\Persistence\Matcher $matcher
+     * @return $this
+     */
+    public function setMatcher($matcher)
+    {
+        $this->matcher = $matcher;
+        return $this;
+    }
 
-	/**
-	 * @return \Fab\Vidi\Persistence\Matcher
-	 */
-	public function getMatcher() {
-		return $this->matcher;
-	}
+    /**
+     * @return \Fab\Vidi\Persistence\Matcher
+     */
+    public function getMatcher()
+    {
+        return $this->matcher;
+    }
 
-	/**
-	 * @return Order
-	 */
-	public function getOrder() {
-		return $this->order;
-	}
+    /**
+     * @return Order
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
 
-	/**
-	 * @param Order $order
-	 * @return $this
-	 */
-	public function setOrder($order) {
-		$this->order = $order;
-		return $this;
-	}
+    /**
+     * @param Order $order
+     * @return $this
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
+        return $this;
+    }
 
-	/**
-	 * @param int $numberOfObjects
-	 * @return $this
-	 */
-	public function setNumberOfObjects($numberOfObjects) {
-		$this->numberOfObjects = $numberOfObjects;
-		return $this;
-	}
+    /**
+     * @param int $numberOfObjects
+     * @return $this
+     */
+    public function setNumberOfObjects($numberOfObjects)
+    {
+        $this->numberOfObjects = $numberOfObjects;
+        return $this;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getNumberOfObjects() {
-		return $this->numberOfObjects;
-	}
+    /**
+     * @return int
+     */
+    public function getNumberOfObjects()
+    {
+        return $this->numberOfObjects;
+    }
 
-	/**
-	 * @param int $offset
-	 * @return $this
-	 */
-	public function setOffset($offset) {
-		$this->offset = $offset;
-		return $this;
-	}
+    /**
+     * @param int $offset
+     * @return $this
+     */
+    public function setOffset($offset)
+    {
+        $this->offset = $offset;
+        return $this;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getOffset() {
-		return $this->offset;
-	}
+    /**
+     * @return int
+     */
+    public function getOffset()
+    {
+        return $this->offset;
+    }
 
 }

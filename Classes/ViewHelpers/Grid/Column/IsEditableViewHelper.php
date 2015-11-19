@@ -20,16 +20,18 @@ use Fab\Vidi\Tca\Tca;
 /**
  * Tells whether the field name is editable in the Grid.
  */
-class IsEditableViewHelper extends AbstractViewHelper {
+class IsEditableViewHelper extends AbstractViewHelper
+{
 
-	/**
-	 * Return whether field name is editable in the Grid.
-	 *
-	 * @param string $name the column Name
-	 * @return boolean
-	 */
-	public function render($name) {
-		return Tca::grid()->isEditable($name);
-	}
+    /**
+     * Return whether field name is editable in the Grid.
+     *
+     * @param string $name the column Name
+     * @return boolean
+     */
+    public function render($name)
+    {
+        return Tca::grid()->isEditable($name);
+    }
 
 }

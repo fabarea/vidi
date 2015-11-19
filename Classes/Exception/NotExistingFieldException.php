@@ -17,6 +17,7 @@ namespace Fab\Vidi\Exception;
 /**
  * Handle Exception for not existing field
  */
-class NotExistingFieldException extends \Exception {
+class NotExistingFieldException extends \Exception
+{
 
 }

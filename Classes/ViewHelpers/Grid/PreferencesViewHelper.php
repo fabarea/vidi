@@ -21,23 +21,26 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 /**
  * View helper which returns Grid preferences.
  */
-class PreferencesViewHelper extends AbstractViewHelper {
+class PreferencesViewHelper extends AbstractViewHelper
+{
 
-	/**
-	 * Returns Grid preferences for the given key.
-	 *
-	 * @param string $key
-	 * @return mixed
-	 */
-	public function render($key) {
-		return $this->getModulePreferences()->get($key);
-	}
+    /**
+     * Returns Grid preferences for the given key.
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public function render($key)
+    {
+        return $this->getModulePreferences()->get($key);
+    }
 
-	/**
-	 * @return ModulePreferences
-	 */
-	protected function getModulePreferences() {
-		return GeneralUtility::makeInstance('Fab\Vidi\Module\ModulePreferences');
-	}
+    /**
+     * @return ModulePreferences
+     */
+    protected function getModulePreferences()
+    {
+        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModulePreferences');
+    }
 
 }

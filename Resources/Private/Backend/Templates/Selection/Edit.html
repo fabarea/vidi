@@ -1,7 +1,50 @@
-<div class="heading">
-	<f:translate key="selections"/>
-</div>
-<div class="modal-selection-wrapper">
+<style>
+	/*
+	 * Selection modal window
+	 */
+	.modal-selection-row {
+		clear: both;
+	}
+
+	.modal-selection-column-1 {
+		width: 20%;
+		float: left;
+	}
+
+	.modal-selection-column-1 select {
+		width: 99%;
+	}
+
+	.modal-selection-column-2 {
+		margin-left: 5px;
+		width: 65%;
+		min-height: 1px;
+		float: left;
+	}
+
+	.modal-selection-column-2 input {
+		width: 98%;
+		padding-right: 3px;
+	}
+
+	.modal-selection-column-3 {
+		float: left
+	}
+
+	.modal-selection-waiting {
+		text-align: center;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+	}
+
+	.modal-selection-separator {
+		clear: both;
+		margin-top: 20px;
+		font-weight: bold;
+	}
+</style>
+<div class="modal-selection-row">
 
 	<div class="modal-selection-column-1">
 		<strong>
@@ -13,41 +56,54 @@
 			<f:translate key="name"/>
 		</strong>
 	</div>
-
-	<f:for each="{selections}" as="selection">
-		<f:render section="EditForm" partial="Selection/EditForm" arguments="{_all}"/>
-	</f:for>
-
-	<br style="clear:both"/>
-
-	<div class="separator">
-		<f:translate key="selection.add"/>
+	<div class="modal-selection-column-3">
 	</div>
+</div>
+<f:for each="{selections}" as="selection">
+	<f:render section="EditForm" partial="Selection/EditForm" arguments="{_all}"/>
+</f:for>
 
-	<f:form action="create"
-	        controller="Selection"
-	        id="form-selection-create"
-	        name="selection"
-	        method="post"
-	        class="form-horizontal">
-		<f:form.hidden property="query" class="selection-query"/>
-		<f:form.hidden property="speakingQuery" class="selection-speakingQuery"/>
+<br/>
+<div class="modal-selection-separator">
+	<f:translate key="selection.add"/>
+</div>
+
+<f:form action="create"
+        controller="Selection"
+        id="form-selection-create"
+        name="selection"
+        method="post"
+        class="form-horizontal">
+
+	<f:form.hidden property="query" class="selection-query"/>
+	<f:form.hidden property="speakingQuery" class="selection-speakingQuery"/>
+
+	<div class="modal-selection-row">
 		<div class="modal-selection-column-1">
-			<f:form.select options="{v:selection.visibilityOptions()}" property="visibility"/>
+			<f:form.select options="{v:selection.visibilityOptions()}"
+			               property="visibility"
+			               class="form-control-selection"/>
 		</div>
+
 		<div class="modal-selection-column-2">
 			<f:form.textfield value="{selection.name}"
 			                  property="name"
+			                  class="form-control-selection"
+			                  style="padding-right: 22px"
 			                  placeholder="{f:translate(key: 'enter_name_for_selection')}"/>
+
+		</div>
+		<div class="modal-selection-column-3">
 			<a href="#"
-			   onclick="$(this).closest('form').submit()"
-			   title="{f:translate(key: 'selection.add')}"
-			   style="padding-left: 22px">
-				<v:sprite name="actions-document-new"/>
+			   class="btn btn-default btn-sm btn-selection-create"
+			   title="{f:translate(key: 'selection.add')}">
+				<v:sprite name="actions-document-save"/>
 			</a>
 		</div>
-	</f:form>
-</div>
+	</div>
+</f:form>
+<br/>
+
 
 <div class="modal-selection-waiting" style="display: none">
 	<img src="{v:publicPath()}Resources/Public/Images/loading.gif" width="40" height="" alt=""/>

@@ -20,54 +20,55 @@ use Fab\Vidi\Persistence\Matcher;
 /**
  * Interface dealing with Facet for the Visual Search bar.
  */
-interface FacetInterface {
+interface FacetInterface
+{
 
-	/**
-	 * Return the "key" of the facet.
-	 *
-	 * @return string
-	 */
-	public function getName();
+    /**
+     * Return the "key" of the facet.
+     *
+     * @return string
+     */
+    public function getName();
 
-	/**
-	 * Return the "label" of the facet.
-	 *
-	 * @return string
-	 */
-	public function getLabel();
+    /**
+     * Return the "label" of the facet.
+     *
+     * @return string
+     */
+    public function getLabel();
 
-	/**
-	 * Return possible "suggestions" of the facet.
-	 *
-	 * @return array
-	 */
-	public function getSuggestions();
+    /**
+     * Return possible "suggestions" of the facet.
+     *
+     * @return array
+     */
+    public function getSuggestions();
 
-	/**
-	 * Tell whether the Facet has suggestion or not.
-	 *
-	 * @return bool
-	 */
-	public function hasSuggestions();
+    /**
+     * Tell whether the Facet has suggestion or not.
+     *
+     * @return bool
+     */
+    public function hasSuggestions();
 
-	/**
-	 * Set the data type.
-	 *
-	 * @param string $dataType
-	 * @return $this
-	 */
-	public function setDataType($dataType);
+    /**
+     * Set the data type.
+     *
+     * @param string $dataType
+     * @return $this
+     */
+    public function setDataType($dataType);
 
-	/**
-	 * @return bool
-	 */
-	public function canModifyMatcher();
+    /**
+     * @return bool
+     */
+    public function canModifyMatcher();
 
-	/**
-	 * @param Matcher $matcher
-	 * @param $value
-	 * @return Matcher
-	 */
-	public function modifyMatcher(Matcher $matcher, $value);
+    /**
+     * @param Matcher $matcher
+     * @param $value
+     * @return Matcher
+     */
+    public function modifyMatcher(Matcher $matcher, $value);
 
 }

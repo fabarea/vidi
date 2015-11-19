@@ -19,20 +19,22 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 /**
  * View helper which connects the Module Loader object.
  */
-class ModuleLoaderViewHelper extends AbstractViewHelper {
+class ModuleLoaderViewHelper extends AbstractViewHelper
+{
 
-	/**
-	 * Interface with the Module Loader.
-	 *
-	 * @param string $key
-	 * @return string
-	 */
-	public function render($key) {
-		$getter = 'get' . ucfirst($key);
+    /**
+     * Interface with the Module Loader.
+     *
+     * @param string $key
+     * @return string
+     */
+    public function render($key)
+    {
+        $getter = 'get' . ucfirst($key);
 
-		/** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
-		$moduleLoader = $this->objectManager->get('Fab\Vidi\Module\ModuleLoader');
-		return $moduleLoader->$getter();
-	}
+        /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
+        $moduleLoader = $this->objectManager->get('Fab\Vidi\Module\ModuleLoader');
+        return $moduleLoader->$getter();
+    }
 
 }

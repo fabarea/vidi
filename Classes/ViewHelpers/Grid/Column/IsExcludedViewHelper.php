@@ -20,17 +20,19 @@ use Fab\Vidi\Tca\Tca;
 /**
  * Tells whether the field name is excluded from the Grid.
  */
-class IsExcludedViewHelper extends AbstractViewHelper {
+class IsExcludedViewHelper extends AbstractViewHelper
+{
 
-	/**
-	 * Returns whether the column is excluded from the Grid.
-	 *
-	 * @param string $name the column Name
-	 * @return bool
-	 */
-	public function render($name) {
-		$excludedFields = Tca::grid()->getExcludedFields();
-		return !in_array($name, $excludedFields);
-	}
+    /**
+     * Returns whether the column is excluded from the Grid.
+     *
+     * @param string $name the column Name
+     * @return bool
+     */
+    public function render($name)
+    {
+        $excludedFields = Tca::grid()->getExcludedFields();
+        return !in_array($name, $excludedFields);
+    }
 
 }

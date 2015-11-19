@@ -20,17 +20,19 @@ use Fab\Vidi\Tca\Tca;
 /**
  * View helper which returns the label of a field.
  */
-class LabelViewHelper extends AbstractViewHelper {
+class LabelViewHelper extends AbstractViewHelper
+{
 
-	/**
-	 * Returns the label of a field
-	 *
-	 * @param string $dataType
-	 * @param string $fieldName
-	 * @return string
-	 */
-	public function render($dataType, $fieldName) {
-		return Tca::table($dataType)->field($fieldName)->getLabel();
-	}
+    /**
+     * Returns the label of a field
+     *
+     * @param string $dataType
+     * @param string $fieldName
+     * @return string
+     */
+    public function render($dataType, $fieldName)
+    {
+        return Tca::table($dataType)->field($fieldName)->getLabel();
+    }
 
 }

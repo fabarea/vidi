@@ -20,38 +20,40 @@ use Fab\Vidi\Module\ModuleLoader;
 /**
  * View helper for rendering components
  */
-class ComponentsViewHelper extends AbstractViewHelper {
+class ComponentsViewHelper extends AbstractViewHelper
+{
 
-	/**
-	 * @var \TYPO3\CMS\Extbase\Object\ObjectManager
-	 * @inject
-	 */
-	protected $objectManager;
+    /**
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+     * @inject
+     */
+    protected $objectManager;
 
-	/**
-	 * Renders the position number of an content object.
-	 *
-	 * @param  string $part
-	 * @return string
-	 */
-	public function render($part) {
+    /**
+     * Renders the position number of an content object.
+     *
+     * @param  string $part
+     * @return string
+     */
+    public function render($part)
+    {
 
-		/** @var ModuleLoader $moduleLoader */
-		$moduleLoader = $this->objectManager->get('Fab\Vidi\Module\ModuleLoader');
+        /** @var ModuleLoader $moduleLoader */
+        $moduleLoader = $this->objectManager->get('Fab\Vidi\Module\ModuleLoader');
 
-		$getComponents = 'get' . ucfirst($part) . 'Components';
-		$components = $moduleLoader->$getComponents();
+        $getComponents = 'get' . ucfirst($part) . 'Components';
+        $components = $moduleLoader->$getComponents();
 
-		$result = '';
-		foreach ($components as $component) {
-			$viewHelper = $this->objectManager->get($component);
+        $result = '';
+        foreach ($components as $component) {
+            $viewHelper = $this->objectManager->get($component);
 
-			// Get possible arguments but remove first one.
-			$arguments = func_get_args();
-			array_shift($arguments);
-			$result .= call_user_func_array(array($viewHelper, 'render'), $arguments);
-		}
+            // Get possible arguments but remove first one.
+            $arguments = func_get_args();
+            array_shift($arguments);
+            $result .= call_user_func_array(array($viewHelper, 'render'), $arguments);
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 }

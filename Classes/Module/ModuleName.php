@@ -19,16 +19,17 @@ use TYPO3\CMS\Core\Type\Enumeration;
 /**
  * Enumeration object for module name.
  */
-class ModuleName extends Enumeration {
+class ModuleName extends Enumeration
+{
 
-	const WEB = 'web';
+    const WEB = 'web';
 
-	const FILE = 'file';
+    const FILE = 'file';
 
-	const USER = 'user';
+    const USER = 'user';
 
-	const ADMIN = 'admin';
+    const ADMIN = 'admin';
 
-	const SYSTEM = 'system';
+    const SYSTEM = 'system';
 
 }

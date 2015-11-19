@@ -17,6 +17,7 @@ namespace Fab\Vidi\Exception;
 /**
  * Handle Exception for missing property
  */
-class NotExistingClassException extends \Exception {
+class NotExistingClassException extends \Exception
+{
 
 }

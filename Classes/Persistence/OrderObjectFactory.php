@@ -21,38 +21,46 @@ use Fab\Vidi\Tca\Tca;
 /**
  * Factory class related to Order object.
  */
-class OrderObjectFactory implements SingletonInterface {
+class OrderObjectFactory implements SingletonInterface
+{
 
-	/**
-	 * Gets a singleton instance of this class.
-	 *
-	 * @return \Fab\Vidi\Persistence\OrderObjectFactory
-	 */
-	static public function getInstance() {
-		return GeneralUtility::makeInstance('Fab\Vidi\Persistence\OrderObjectFactory');
-	}
+    /**
+     * Gets a singleton instance of this class.
+     *
+     * @return \Fab\Vidi\Persistence\OrderObjectFactory
+     */
+    static public function getInstance()
+    {
+        return GeneralUtility::makeInstance('Fab\Vidi\Persistence\OrderObjectFactory');
+    }
 
-	/**
-	 * Returns an order object.
-	 *
-	 * @param string $dataType
-	 * @return \Fab\Vidi\Persistence\Order
-	 */
-	public function getOrder($dataType = '') {
+    /**
+     * Returns an order object.
+     *
+     * @param string $dataType
+     * @return \Fab\Vidi\Persistence\Order
+     */
+    public function getOrder($dataType = '')
+    {
 
-		// Default ordering
-		$order = Tca::table($dataType)->getDefaultOrderings();
+        // Default ordering
+        $order = Tca::table($dataType)->getDefaultOrderings();
 
-		// Retrieve a possible id of the column from the request
-		$columnPosition = GeneralUtility::_GP('iSortCol_0');
-		if ($columnPosition > 0) {
-			$field = Tca::grid()->getFieldNameByPosition($columnPosition);
+        // Retrieve a possible id of the column from the request
+        $orderings = GeneralUtility::_GP('order');
 
-			$direction = GeneralUtility::_GP('sSortDir_0');
-			$order = array(
-				$field => strtoupper($direction)
-			);
-		}
-		return GeneralUtility::makeInstance('Fab\Vidi\Persistence\Order', $order);
-	}
+        if (is_array($orderings) && isset($orderings[0])) {
+            $columnPosition = $orderings[0]['column'];
+            $direction = $orderings[0]['dir'];
+
+            if ($columnPosition > 0) {
+                $field = Tca::grid()->getFieldNameByPosition($columnPosition);
+
+                $order = array(
+                    $field => strtoupper($direction)
+                );
+            }
+        }
+        return GeneralUtility::makeInstance('Fab\Vidi\Persistence\Order', $order);
+    }
 }

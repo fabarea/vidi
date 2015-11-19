@@ -17,26 +17,28 @@ namespace Fab\Vidi\Module;
 /**
  * Enumeration object for preference name.
  */
-class ConfigurablePart {
+class ConfigurablePart
+{
 
-	const __default = '';
-	const EXCLUDED_FIELDS = 'excluded_fields';
-	const MENU_VISIBLE_ITEMS = 'menuVisibleItems';
-	const MENU_VISIBLE_ITEMS_DEFAULT = 'menuVisibleItemsDefault';
+    const __default = '';
+    const EXCLUDED_FIELDS = 'excluded_fields';
+    const MENU_VISIBLE_ITEMS = 'menuVisibleItems';
+    const MENU_VISIBLE_ITEMS_DEFAULT = 'menuVisibleItemsDefault';
 
-	/**
-	 * Get the valid values for this enum.
-	 *
-	 * @param boolean $include_default
-	 * @return array
-	 */
-	static public function getParts($include_default = FALSE) {
+    /**
+     * Get the valid values for this enum.
+     *
+     * @param boolean $include_default
+     * @return array
+     */
+    static public function getParts($include_default = FALSE)
+    {
 
-		return array(
-			'EXCLUDED_FIELDS' => self::EXCLUDED_FIELDS,
-			'MENU_VISIBLE_ITEMS' => self::MENU_VISIBLE_ITEMS,
-			'MENU_VISIBLE_ITEMS_DEFAULT' => self::MENU_VISIBLE_ITEMS_DEFAULT,
-		);
-	}
+        return array(
+            'EXCLUDED_FIELDS' => self::EXCLUDED_FIELDS,
+            'MENU_VISIBLE_ITEMS' => self::MENU_VISIBLE_ITEMS,
+            'MENU_VISIBLE_ITEMS_DEFAULT' => self::MENU_VISIBLE_ITEMS_DEFAULT,
+        );
+    }
 
 }

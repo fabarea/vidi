@@ -19,30 +19,31 @@ use TYPO3\CMS\Core\Type\Enumeration;
 /**
  * Enumeration object for field type.
  */
-class FieldType extends Enumeration {
+class FieldType extends Enumeration
+{
 
-	const TEXT = 'text';
+    const TEXT = 'text';
 
-	const NUMBER = 'number';
+    const NUMBER = 'number';
 
-	const EMAIL = 'email';
+    const EMAIL = 'email';
 
-	const DATE = 'date';
+    const DATE = 'date';
 
-	const DATETIME = 'datetime';
+    const DATETIME = 'datetime';
 
-	const TEXTAREA = 'textarea';
+    const TEXTAREA = 'textarea';
 
-	const SELECT = 'select';
+    const SELECT = 'select';
 
-	const RADIO = 'radio';
+    const RADIO = 'radio';
 
-	const CHECKBOX = 'check';
+    const CHECKBOX = 'check';
 
-	const FILE = 'file';
+    const FILE = 'file';
 
-	const MULTISELECT = 'multiselect';
+    const MULTISELECT = 'multiselect';
 
-	const TREE = 'tree';
+    const TREE = 'tree';
 
 }

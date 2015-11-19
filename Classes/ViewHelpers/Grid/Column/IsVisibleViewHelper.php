@@ -20,16 +20,18 @@ use Fab\Vidi\Tca\Tca;
 /**
  * Tells whether the field name is visible in the Grid.
  */
-class IsVisibleViewHelper extends AbstractViewHelper {
+class IsVisibleViewHelper extends AbstractViewHelper
+{
 
-	/**
-	 * Returns whether the column is visible.
-	 *
-	 * @param string $name the column Name
-	 * @return bool
-	 */
-	public function render($name) {
-		return Tca::grid()->isVisible($name);
-	}
+    /**
+     * Returns whether the column is visible.
+     *
+     * @param string $name the column Name
+     * @return bool
+     */
+    public function render($name)
+    {
+        return Tca::grid()->isVisible($name);
+    }
 
 }

@@ -22,44 +22,48 @@ use TYPO3\CMS\Install\Status\Exception as StatusException;
 /**
  * Simple JsonView (currently returns an associative array)
  */
-class JsonView extends AbstractView {
+class JsonView extends AbstractView
+{
 
-	/**
-	 * @var \TYPO3\CMS\Extbase\Mvc\Web\Response
-	 */
-	protected $response;
+    /**
+     * @var \TYPO3\CMS\Extbase\Mvc\Web\Response
+     */
+    protected $response;
 
-	/**
-	 * @var JsonResult
-	 */
-	protected $result;
+    /**
+     * @var JsonResult
+     */
+    protected $result;
 
-	/**
-	 * @return string
-	 */
-	public function render() {
-		# As of this writing, Json header is not automatically sent in the BE... even with json=format.
-		$this->response->setHeader('Content-Type', 'application/json');
-		$this->response->sendHeaders();
+    /**
+     * @return string
+     */
+    public function render()
+    {
+        # As of this writing, Json header is not automatically sent in the BE... even with json=format.
+        $this->response->setHeader('Content-Type', 'application/json');
+        $this->response->sendHeaders();
 
-		return json_encode($this->result->toArray());
-	}
+        return json_encode($this->result->toArray());
+    }
 
-	/**
-	 * @param \TYPO3\CMS\Extbase\Mvc\Web\Response $response
-	 * @return void
-	 */
-	public function setResponse(Response $response) {
-		$this->response = $response;
-	}
+    /**
+     * @param \TYPO3\CMS\Extbase\Mvc\Web\Response $response
+     * @return void
+     */
+    public function setResponse(Response $response)
+    {
+        $this->response = $response;
+    }
 
-	/**
-	 * @param \Fab\Vidi\Mvc\JsonResult $result
-	 * @return $this
-	 */
-	public function setResult(JsonResult $result) {
-		$this->result = $result;
-		return $this;
-	}
+    /**
+     * @param \Fab\Vidi\Mvc\JsonResult $result
+     * @return $this
+     */
+    public function setResult(JsonResult $result)
+    {
+        $this->result = $result;
+        return $this;
+    }
 
 }
