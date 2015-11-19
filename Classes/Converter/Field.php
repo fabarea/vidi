@@ -93,15 +93,6 @@ class Field implements SingletonInterface
 
     /**
      * @return string
-     * @deprecated use toPropertyName. Will be removed in 0.3.0 + 2 version.
-     */
-    public function toProperty()
-    {
-        return $this->toPropertyName();
-    }
-
-    /**
-     * @return string
      * @throws \Exception
      */
     protected function getFieldName()

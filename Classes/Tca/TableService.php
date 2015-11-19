@@ -280,23 +280,6 @@ class TableService extends AbstractTca
     }
 
     /**
-     * Tells whether the field is considered as system, e.g. uid, crdate, tstamp, etc...
-     *
-     * @param string $fieldName
-     * @return bool
-     * @deprecated use Tca::table($tableName)->field($fieldName)->isSystem()
-     */
-    public function isSystem($fieldName)
-    {
-        $systemFields = array(
-            'uid', 'tstamp', 'crdate', 'deleted', 'hidden', 'starttime', 'endtime',
-            'sys_language_uid', 'l18n_parent', 'l18n_diffsource',
-            't3ver_oid', 't3ver_id', 't3ver_wsid', 't3ver_label', 't3ver_state', 't3ver_stage', 't3ver_count', 't3ver_tstamp', 't3_origuid'
-        );
-        return in_array($fieldName, $systemFields);
-    }
-
-    /**
      * Returns an array containing the field names.
      *
      * @return array

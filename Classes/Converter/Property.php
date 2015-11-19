@@ -96,15 +96,6 @@ class Property
 
     /**
      * @return string
-     * @deprecated use toFieldName. Will be removed in 0.3.0 + 2 version.
-     */
-    public function toField()
-    {
-        return $this->toFieldName();
-    }
-
-    /**
-     * @return string
      * @throws \Exception
      */
     protected function getPropertyName()

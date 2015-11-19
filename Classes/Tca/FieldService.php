@@ -343,15 +343,6 @@ class FieldService extends AbstractTca
     }
 
     /**
-     * @return string
-     * @deprecated in 0.4.0, will be removed two version later.
-     */
-    public function getFieldType()
-    {
-        return $this->getType();
-    }
-
-    /**
      * Return the default value.
      *
      * @return bool

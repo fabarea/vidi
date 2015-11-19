@@ -167,18 +167,6 @@ class GridService extends AbstractTca
     }
 
     /**
-     * Tell whether the column is internal or not.
-     *
-     * @param string $fieldName
-     * @return boolean
-     * @deprecated will be removed in 0.6 + 2 versions. Must be removed in class RelationsCheck as well.
-     */
-    public function isSystem($fieldName)
-    {
-        return strpos($fieldName, '__') === 0;
-    }
-
-    /**
      * Returns the field name given its position.
      *
      * @param string $position the position of the field in the grid
@@ -637,25 +625,6 @@ class GridService extends AbstractTca
      */
     protected function instantiateStandardFacet($facetName)
     {
-
-        // Find appropriate facet or create an instance.
-//		$facet = $facetName;
-//		if (is_string($facetName)) {
-//
-//			// Retrieve the
-//			foreach ($this->getFacets() as $facetNameOrObject) {
-//
-//				if ($facetNameOrObject instanceof FacetInterface) {
-//					if ($facetNameOrObject->getName() === $facetName) {
-//						$facet = $facetNameOrObject;
-//					}
-//				} elseif ($facetNameOrObject === $facetName) {
-//
-//				}
-//			}
-//		}
-
-
         $label = $this->getLabel($facetName);
 
         /** @var StandardFacet $facetName */
