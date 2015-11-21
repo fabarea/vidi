@@ -267,7 +267,7 @@ define([
 			var buttons = [
 				{
 					text: TYPO3.l10n.localize('cancel'),
-					btnClass: 'btn-primary',
+					btnClass: 'btn btn-default',
 					trigger: function() {
 						Modal.dismiss();
 					}
@@ -280,7 +280,7 @@ define([
 				// Push configuration for "relation" editing: "remove" relation case.
 				buttons.push({
 					text: TYPO3.l10n.localize('relation.remove'),
-					btnClass: 'btn-save-relation',
+					btnClass: 'btn btn-default btn-save-relation',
 					trigger: function() {
 
 						// Set "hidden" controller by JavaScript.
@@ -292,7 +292,7 @@ define([
 				// Push configuration for "relation" editing: "append" relation case.
 				buttons.push({
 					text: TYPO3.l10n.localize('relation.append'),
-					btnClass: 'btn-save-relation',
+					btnClass: 'btn  btn-default btn-save-relation',
 					trigger: function() {
 
 						// Set "hidden" controller by JavaScript.
@@ -305,7 +305,7 @@ define([
 				// Push configuration for "relation" editing: "replace" relation case.
 				buttons.push({
 					text: TYPO3.l10n.localize('relation.replace'),
-					btnClass: 'btn-save-relation',
+					btnClass: 'btn btn-primary btn-save-relation',
 					trigger: function() {
 
 						// Set "hidden" controller by JavaScript.
@@ -317,7 +317,7 @@ define([
 			} else {
 				buttons.push({
 					text: TYPO3.l10n.localize('save.relations'),
-					btnClass: 'btn-save-relation',
+					btnClass: 'btn btn-primary btn-save-relation',
 					trigger: function() {
 						Vidi.Edit.submit();
 					}

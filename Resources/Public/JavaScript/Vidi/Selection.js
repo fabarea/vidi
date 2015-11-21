@@ -103,7 +103,7 @@ define([
 			var buttons = [
 				{
 					text: TYPO3.l10n.localize('close'),
-					btnClass: 'btn-primary',
+					btnClass: 'btn btn-primary',
 					trigger: function() {
 						Modal.dismiss();
 					}

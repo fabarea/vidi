@@ -45,14 +45,14 @@ define([
 					[
 						{
 							text: TYPO3.l10n.localize('cancel'),
-							btnClass: '',
+							btnClass: 'btn btn-default',
 							trigger: function() {
 								Modal.dismiss();
 							}
 						},
 						{
 							text: TYPO3.l10n.localize('delete'),
-							btnClass: 'btn-warning',
+							btnClass: 'btn btn-warning',
 							trigger: function() {
 
 								// Avoid double sumbit.
@@ -146,14 +146,14 @@ define([
 				[
 					{
 						text: TYPO3.l10n.localize('cancel'),
-						btnClass: '',
+						btnClass: 'btn btn-default',
 						trigger: function() {
 							Modal.dismiss();
 						}
 					},
 					{
 						text: TYPO3.l10n.localize('delete'),
-						btnClass: 'btn-warning',
+						btnClass: 'btn btn-warning',
 						trigger: function() {
 
 							// Avoid double sumbit.

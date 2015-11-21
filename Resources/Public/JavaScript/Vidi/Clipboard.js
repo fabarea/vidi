@@ -109,13 +109,13 @@ define([
 			var buttons = [
 				{
 					text: TYPO3.l10n.localize('cancel'),
-					btnClass: 'btn-primary',
+					btnClass: 'btn btn-default',
 					trigger: function() {
 						Modal.dismiss();
 					}
 				}, {
 					text: TYPO3.l10n.localize('clipboard.copy_items'),
-					btnClass: 'btn-clipboard-copy btn-clipboard',
+					btnClass: 'btn btn-default btn-clipboard-copy btn-clipboard',
 					trigger: function() {
 
 						// Avoid double click on this button.
@@ -134,7 +134,7 @@ define([
 					}
 				}, {
 					text: TYPO3.l10n.localize('clipboard.move_items'),
-					btnClass: 'btn-clipboard-move btn-clipboard',
+					btnClass: 'btn btn-primary btn-clipboard-move btn-clipboard',
 					trigger: function() {
 
 						// Avoid double click on this button.
