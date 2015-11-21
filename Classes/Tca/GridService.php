@@ -275,6 +275,14 @@ class GridService extends AbstractTca
 
             // Fetch all fields of the TCA and merge it back to the fields configured for Grid.
             $tableFieldNames = Tca::table($this->tableName)->getFields();
+
+            // Just remove system fields from the Grid.
+            foreach ($tableFieldNames as $key => $fieldName) {
+                if (in_array($fieldName, Tca::getSystemFields())) {
+                    unset($tableFieldNames[$key]);
+                }
+            }
+
             $additionalFields = array_diff($tableFieldNames, $gridFieldNames);
 
             if (!empty($additionalFields)) {
@@ -339,12 +347,16 @@ class GridService extends AbstractTca
      */
     public function getFacets()
     {
-        if (is_null($this->facets) && is_array($this->tca['facets'])) {
-            foreach ($this->tca['facets'] as $facetNameOrObject) {
-                if ($facetNameOrObject instanceof FacetInterface) {
-                    $this->facets[$facetNameOrObject->getName()] = $facetNameOrObject;
-                } else {
-                    $this->facets[$facetNameOrObject] = $this->instantiateStandardFacet($facetNameOrObject);
+        if (is_null($this->facets)) {
+            $this->facets = array();
+
+            if (is_array($this->tca['facets'])) {
+                foreach ($this->tca['facets'] as $facetNameOrObject) {
+                    if ($facetNameOrObject instanceof FacetInterface) {
+                        $this->facets[$facetNameOrObject->getName()] = $facetNameOrObject;
+                    } else {
+                        $this->facets[$facetNameOrObject] = $this->instantiateStandardFacet($facetNameOrObject);
+                    }
                 }
             }
         }

@@ -133,7 +133,7 @@ class NewButton extends AbstractComponentView
     {
         if (GeneralUtility::_GP(Parameter::PID)) {
             $pid = GeneralUtility::_GP(Parameter::PID);
-        } elseif (Tca::table()->get('rootLevel')) {
+        } elseif ((int)Tca::table()->get('rootLevel') === 1) {
             $pid = 0;
         } else {
             // Get configuration from User TSconfig if any
@@ -146,7 +146,7 @@ class NewButton extends AbstractComponentView
                 $pid = $this->getModuleLoader()->getDefaultPid();
             }
         }
-        return $pid;
+        return (int)$pid;
     }
 
 }

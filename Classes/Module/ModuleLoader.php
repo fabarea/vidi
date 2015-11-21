@@ -76,7 +76,7 @@ class ModuleLoader
     /**
      * @var string
      */
-    protected $icon = 'EXT:vidi/ext_icon.gif';
+    protected $icon = '';
 
     /**
      * @var string
@@ -182,13 +182,16 @@ class ModuleLoader
 
         // Register and displays module in the BE only if told, default is TRUE.
         if ($this->isShown) {
-
             $moduleConfiguration = array(
+                #'routeTarget' => \Fab\Vidi\Controller\Backend\ContentController::class . '::mainAction', // what to do here?
                 'access' => $this->access,
-                'icon' => $this->icon,
                 'labels' => $this->moduleLanguageFile,
                 'inheritNavigationComponentFromMainModule' => TRUE
             );
+
+            if (!empty($this->icon)) {
+                $moduleConfiguration['icon'] = $this->icon;
+            }
 
             if (!is_null($this->showPageTree)) {
                 if ($this->showPageTree) {

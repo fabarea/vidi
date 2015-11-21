@@ -17,7 +17,8 @@ namespace Fab\Vidi\Configuration;
 use TYPO3\CMS\Core\Database\TableConfigurationPostProcessingHookInterface;
 use Fab\Vidi\Grid\ButtonGroupComponent;
 use Fab\Vidi\Grid\CheckBoxComponent;
-use Fab\Vidi\Tca\Tca;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility;
 
 /**
  * Add a Grid TCA to each "data type" enabling to display a Vidi module in the BE.
@@ -32,57 +33,55 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
      */
     public function processData()
     {
-        foreach ($GLOBALS['TCA'] as $dataType => $configuration) {
-            if (empty($configuration['grid']) && $this->hasLabelField($dataType)) {
-                $GLOBALS['TCA'][$dataType]['grid'] = $this->getGridTca($dataType);
-            }
+
+        /** @var ConfigurationUtility $configurationUtility */
+        $configurationUtility = $this->getObjectManager()->get(ConfigurationUtility::class);
+        $configuration = $configurationUtility->getCurrentConfiguration('vidi');
+
+        $dataTypes = GeneralUtility::trimExplode(',', $configuration['data_types']['value'], TRUE);
+
+        foreach ($dataTypes as $dataType) {
+            $this->ensureMinimumTcaForGrid($dataType);
         }
 
         return array($GLOBALS['TCA']);
     }
 
     /**
-     * @param string $tableName
-     * @return array
+     * @param string $dataType
      */
-    protected function getGridTca($tableName)
+    protected function ensureMinimumTcaForGrid($dataType)
     {
-        $labelField = $this->getLabelField($tableName);
+        $labelField = $this->getLabelField($dataType);
+        if (empty($GLOBALS['TCA'][$dataType]['grid'])) {
+            $GLOBALS['TCA'][$dataType]['grid'] = array();
+        }
 
-        $tca = array(
-            'facets' => array(
+        if (empty($GLOBALS['TCA'][$dataType]['grid']['facet'])) {
+            $GLOBALS['TCA'][$dataType]['grid']['facets'] = [
                 'uid',
                 $labelField,
-            ),
-            'columns' => array(
-                '__checkbox' => array(
+            ];
+        }
+
+        if (empty($GLOBALS['TCA'][$dataType]['grid']['columns'])) {
+            $GLOBALS['TCA'][$dataType]['grid']['columns'] = [
+                '__checkbox' => [
                     'renderer' => new CheckBoxComponent(),
-                ),
-                'uid' => array(
+                ],
+                'uid' => [
                     'visible' => FALSE,
                     'label' => 'Id',
                     'width' => '5px',
-                ),
-                $labelField => array(
+                ],
+                $labelField => [
                     'editable' => TRUE,
-                ),
-                'tstamp' => array(
-                    'visible' => FALSE,
-                    'format' => 'Fab\Vidi\Formatter\Date',
-                    'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:tstamp',
-                ),
-                'crdate' => array(
-                    'visible' => FALSE,
-                    'format' => 'Fab\Vidi\Formatter\Date',
-                    'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:crdate',
-                ),
-                '__buttons' => array(
+                ],
+                '__buttons' => [
                     'renderer' => new ButtonGroupComponent(),
-                ),
-            ),
-        );
-
-        return $tca;
+                ],
+            ];
+        }
     }
 
     /**
@@ -106,4 +105,13 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
     {
         return isset($GLOBALS['TCA'][$dataType]['ctrl']['label']);
     }
+
+    /**
+     * @return \TYPO3\CMS\Extbase\Object\ObjectManager
+     */
+    protected function getObjectManager()
+    {
+        return GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
+    }
+
 }

@@ -24,14 +24,9 @@ class ExtensionManager
 {
 
     /**
-     * @var string
-     */
-    protected $extKey = 'vidi';
-
-    /**
      * @var array
      */
-    protected $dataTypes = array('fe_users', 'fe_groups');
+    protected $excludedContentTypes = array('pages', 'pages_language_overlay', 'tx_rtehtmlarea_acronym');
 
     /**
      * Display a message to the Extension Manager whether the configuration is OK or KO.
@@ -44,45 +39,80 @@ class ExtensionManager
     {
 
         $configuration = ConfigurationUtility::getInstance()->getConfiguration();
-        $dataTypes = GeneralUtility::trimExplode(',', $configuration['data_types']);
-
+        $selectedDataTypes = GeneralUtility::trimExplode(',', $configuration['data_types']);
         $options = '';
-        foreach ($this->dataTypes as $dataType) {
+        foreach ($this->getDataTypes() as $dataType) {
             $checked = '';
 
-            if (in_array($dataType, $dataTypes)) {
+            if (in_array($dataType, $selectedDataTypes)) {
                 $checked = 'checked="checked"';
             }
-            $options .= '<label><input type="checkbox" class="fieldDataType" value="' . $dataType . '" ' . $checked . ' /> ' . $dataType . '</label>';
+            $options .= sprintf(
+                '<li><label><input type="checkbox" class="fieldDataType" value="%s" %s /> %s</label></li>',
+                $dataType,
+                $checked,
+                $dataType
+            );
         }
 
+        $menu = sprintf('<ul class="list-unstyled" style="margin-top: 10px;">%s</ul>', $options);
+
+        // Assemble final output.
         $output = <<<EOF
-				<div class="typo3-tstemplate-ceditor-row" id="userTS-dataTypes">
-					<script type="text/javascript">
-						(function($) {
-						    $(function() {
+            <div class="form-group form-group-dashed>
+                <div class="form-control-wrap">
 
-								// Handler which will concatenate selected data types.
-								$('.fieldDataType').change(function() {
-									var selected = [];
+				    <div class="typo3-tstemplate-ceditor-row" id="userTS-dataTypes">
+                    <script type="text/javascript">
+                        (function($) {
+                            $(function() {
 
-									$('.fieldDataType').each(function(){
-										if ($(this).is(':checked')) {
-											selected.push($(this).val());
-										}
-									});
+                                // Handler which will concatenate selected data types.
+                                $('.fieldDataType').change(function() {
 
-									$('#fieldDataTypes').val(selected.join(','));
-								});
-						    });
-						})(jQuery);
-					</script>
-					$options
+                                    var dataTypes = $('#fieldDataTypes').val();
+                                    var currentValue = $(this).val();
 
-					<input type="hidden" id="fieldDataTypes" name="tx_extensionmanager_tools_extensionmanagerextensionmanager[config][data_types][value]" value="{$configuration['data_types']}" />
+                                    // In any case remove item
+                                    var expression = new RegExp(', *' + currentValue, 'i');
+                                    dataTypes = dataTypes.replace(expression, '');
+                                    $('#fieldDataTypes').val(dataTypes);
+
+                                    // Append new data type at the end if checked.
+                                    if ($(this).is(':checked')) {
+                                        $('#fieldDataTypes').val(dataTypes + ', ' + currentValue);
+                                    }
+                                });
+                            });
+                        })(jQuery);
+                    </script>
+					<input type="text" class="form-control" id="fieldDataTypes" name="tx_extensionmanager_tools_extensionmanagerextensionmanager[config][data_types][value]" value="{$configuration['data_types']}" />
 				</div>
+                $menu
+            </div>
 EOF;
 
         return $output;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDataTypes()
+    {
+
+        $dataTypes = [];
+        foreach ($GLOBALS['TCA'] as $contentType => $tca) {
+            if (!in_array($contentType, $this->excludedContentTypes)
+                && isset($GLOBALS['TCA'][$contentType]['ctrl']['label'])
+                && (
+                    !isset($GLOBALS['TCA'][$contentType]['ctrl']['hideTable'])
+                    || TRUE !== (bool)$GLOBALS['TCA'][$contentType]['ctrl']['hideTable']
+                )
+            ) {
+                $dataTypes[] = $contentType;
+            }
+        }
+        return $dataTypes;
     }
 }

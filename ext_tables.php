@@ -1,132 +1,170 @@
 <?php
 
 if (!defined('TYPO3_MODE')) {
-	die ('Access denied.');
+    die ('Access denied.');
 }
 
 // Check from Vidi configuration what default module should be loaded.
 // Make sure the class exists to avoid a Runtime Error
 if (TYPO3_MODE == 'BE') {
 
-	// Add content main module before 'user'
-	// There are not API for doing this... ;(
-	if (!isset($GLOBALS['TBE_MODULES']['content'])) {
-		$modules = array();
-		foreach ($GLOBALS['TBE_MODULES'] as $key => $val) {
-			if ($key == 'user') {
-				$modules['content'] = '';
-			}
-			$modules[$key] = $val;
-		}
-		$GLOBALS['TBE_MODULES'] = $modules;
-		\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
-			'content',
-			'',
-			'',
-			\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('vidi') . 'mod/content/');
-	}
+    // Add content main module before 'user'
+    if (!isset($GLOBALS['TBE_MODULES']['content'])) {
 
-	/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-	$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+        // Position module "content" after module "user" manually. No API is available for that, it seems...
+        $modules = [];
+        foreach ($GLOBALS['TBE_MODULES'] as $key => $val) {
+            if ($key == 'user') {
+                $modules['content'] = '';
+            }
+            $modules[$key] = $val;
+        }
+        $GLOBALS['TBE_MODULES'] = $modules;
 
-	/** @var \TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility $configurationUtility */
-	$configurationUtility = $objectManager->get('TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility');
-	$configuration = $configurationUtility->getCurrentConfiguration('vidi');
+        // Register "data management" module.
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+            'content',
+            '',
+            '',
+            '',
+            [
+                'name' => 'content',
+                'access' => 'user,group',
+                'labels' => [
+                    'll_ref' => 'LLL:EXT:vidi/Resources/Private/Language/content_module.xlf',
+                ],
+            ]
+        );
+    }
 
-	// Loop around the data types and register them to be displayed within a BE module.
-	if ($configuration['data_types']['value']) {
+    /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+    $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
 
-		$dataTypes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['data_types']['value']);
-		foreach ($dataTypes as $dataType) {
+    /** @var \TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility $configurationUtility */
+    $configurationUtility = $objectManager->get('TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility');
+    $configuration = $configurationUtility->getCurrentConfiguration('vidi');
 
-			/** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
-			$moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader', $dataType);
+    $pids = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['default_pid']['value'], TRUE);
+    $defaultPid = array_shift($pids);
+    $defaultPids = [];
+    foreach ($pids as $dataTypeAndPid) {
+        $parts = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(':', $dataTypeAndPid);
+        if (count($parts) === 2) {
+            $defaultPids[$parts[0]] = $parts[1];
+        }
+    }
 
-			/** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
-			$moduleLoader->setIcon(sprintf('EXT:vidi/Resources/Public/Images/%s.png', $dataType))
-				->setModuleLanguageFile(sprintf('LLL:EXT:vidi/Resources/Private/Language/%s.xlf', $dataType))
-				->setDefaultPid($configuration['default_pid']['value'])
-				->register();
-		}
-	}
+    // Loop around the data types and register them to be displayed within a BE module.
+    if ($configuration['data_types']['value']) {
 
-	// Possible Static TS loading
-	if (TRUE === isset($configuration['autoload_typoscript']['value']) && FALSE === (bool)$configuration['autoload_typoscript']['value']) {
-		\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('vidi', 'Configuration/TypoScript', 'Vidi: versatile and interactive display');
-	}
+        $dataTypes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['data_types']['value'], TRUE);
+        foreach ($dataTypes as $dataType) {
 
-	// Register List2 only if beta feature is enabled.
-	if ($configuration['activate_beta_features']['value']) {
-		$labelFile = 'LLL:EXT:vidi/Resources/Private/Language/locallang_module.xlf';
+            /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
+            $moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader', $dataType);
 
-		if (!$configuration['hide_module_list']['value']) {
-			$labelFile = 'LLL:EXT:vidi/Resources/Private/Language/locallang_module_transitional.xlf';
-		}
+            // Special case already defined in Vidi.
+            if ($dataType === 'fe_users') {
+                $languageFile = 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf';
+                $icon = 'EXT:core/Resources/Public/Icons/T3Icons/status/status-user-frontend.svg';
+                $icon = 'EXT:vidi/Resources/Public/Images/fe_users.png';
+            } elseif ($dataType === 'fe_groups') {
+                $languageFile = 'LLL:EXT:vidi/Resources/Private/Language/fe_groups.xlf';
+                $icon = 'EXT:core/Resources/Public/Icons/T3Icons/status/status-user-group-frontend.svg';
+                $icon = 'EXT:vidi/Resources/Public/Images/fe_groups.png';
+            } else {
+                $languageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Fab\Vidi\Backend\LanguageFileGenerator::class);
+                $languageFile = $languageService->generate($dataType);
+                $icon = '';
+            }
 
-		\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-			'vidi',
-			'web', // Make module a submodule of 'web'
-			'm1', // Submodule key
-			'after:list', // Position
-			array(
-				'Content' => 'index, list, delete, update, edit, copy, move, localize, sort, copyClipboard, moveClipboard',
-				'Tool' => 'welcome, work',
-				'Facet' => 'autoSuggest, autoSuggests',
-				'Selection' => 'edit, update, create, delete, list, show',
-				'UserPreferences' => 'save',
-				'Clipboard' => 'save, flush, show',
-			), array(
-				'access' => 'user,group',
-				'icon' => 'EXT:vidi/Resources/Public/Images/list.png',
-				'labels' => $labelFile,
-			)
-		);
-	}
+            $pid = isset($defaultPids[$dataType]) ? $defaultPids[$dataType] : $defaultPid;
 
-	if ($configuration['hide_module_list']['value']) {
+            /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
+            $moduleLoader->setIcon($icon)
+                ->setModuleLanguageFile($languageFile)
+                ->setDefaultPid($pid)
+                ->register();
+        }
+    }
 
-		// Default User TSConfig to be added in any case.
-		TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('
+    // Possible Static TS loading
+    if (TRUE === isset($configuration['autoload_typoscript']['value']) && FALSE === (bool)$configuration['autoload_typoscript']['value']) {
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('vidi', 'Configuration/TypoScript', 'Vidi: versatile and interactive display');
+    }
 
-			# Hide the module in the BE.
-			options.hideModules.web := addToList(list)
-		');
-	}
+    // Register List2 only if beta feature is enabled.
+    // @todo let see what we do with that
+    #if ($configuration['activate_beta_features']['value']) {
+    #	$labelFile = 'LLL:EXT:vidi/Resources/Private/Language/locallang_module.xlf';
+    #
+    #	if (!$configuration['hide_module_list']['value']) {
+    #		$labelFile = 'LLL:EXT:vidi/Resources/Private/Language/locallang_module_transitional.xlf';
+    #	}
+    #
+    #	\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+    #		'vidi',
+    #		'web', // Make module a submodule of 'web'
+    #		'm1', // Submodule key
+    #		'after:list', // Position
+    #		array(
+    #			'Content' => 'index, list, delete, update, edit, copy, move, localize, sort, copyClipboard, moveClipboard',
+    #			'Tool' => 'welcome, work',
+    #			'Facet' => 'autoSuggest, autoSuggests',
+    #			'Selection' => 'edit, update, create, delete, list, show',
+    #			'UserPreferences' => 'save',
+    #			'Clipboard' => 'save, flush, show',
+    #		), array(
+    #			'access' => 'user,group',
+    #			'icon' => 'EXT:vidi/Resources/Public/Images/list.png',
+    #			'labels' => $labelFile,
+    #		)
+    #	);
+    #}
+    #if ($configuration['hide_module_list']['value']) {
+    #
+    #	// Default User TSConfig to be added in any case.
+    #	TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('
+    #
+    #		# Hide the module in the BE.
+    #		options.hideModules.web := addToList(list)
+    #	');
+    #}
 
-	/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-	$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+    /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+    $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
 
-	/** @var $signalSlotDispatcher \TYPO3\CMS\Extbase\SignalSlot\Dispatcher */
-	$signalSlotDispatcher = $objectManager->get('TYPO3\CMS\Extbase\SignalSlot\Dispatcher');
+    /** @var $signalSlotDispatcher \TYPO3\CMS\Extbase\SignalSlot\Dispatcher */
+    $signalSlotDispatcher = $objectManager->get('TYPO3\CMS\Extbase\SignalSlot\Dispatcher');
 
-	// Connect "processContentData" signal slot with the "ContentObjectProcessor".
-	$signalSlotDispatcher->connect(
-		'Fab\Vidi\Controller\Backend\ContentController',
-		'processContentData',
-		'Fab\Vidi\Processor\ContentObjectProcessor',
-		'processRelations',
-		TRUE
-	);
+    // Connect "processContentData" signal slot with the "ContentObjectProcessor".
+    $signalSlotDispatcher->connect(
+        'Fab\Vidi\Controller\Backend\ContentController',
+        'processContentData',
+        'Fab\Vidi\Processor\ContentObjectProcessor',
+        'processRelations',
+        TRUE
+    );
 
-	// Connect "processContentData" signal with the "MarkerProcessor".
-	$signalSlotDispatcher->connect(
-		'Fab\Vidi\Controller\Backend\ContentController',
-		'processContentData',
-		'Fab\Vidi\Processor\MarkerProcessor',
-		'processMarkers',
-		TRUE
-	);
+    // Connect "processContentData" signal with the "MarkerProcessor".
+    $signalSlotDispatcher->connect(
+        'Fab\Vidi\Controller\Backend\ContentController',
+        'processContentData',
+        'Fab\Vidi\Processor\MarkerProcessor',
+        'processMarkers',
+        TRUE
+    );
 
-	// Register default Tools for Vidi.
-	\Fab\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'Fab\Vidi\Tool\ModulePreferencesTool');
-	\Fab\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'Fab\Vidi\Tool\RelationAnalyserTool');
+    // Register default Tools for Vidi.
+    \Fab\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'Fab\Vidi\Tool\ModulePreferencesTool');
+    \Fab\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'Fab\Vidi\Tool\RelationAnalyserTool');
 }
 
 // Add new sprite icon.
 \TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons(
-	array(
-		'go' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('vidi') . 'Resources/Public/Images/bullet_go.png',
-		'query' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('vidi') . 'Resources/Public/Images/drive_disk.png',
-	),
-	'vidi'
+    [
+        'go' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('vidi') . 'Resources/Public/Images/bullet_go.png',
+        'query' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('vidi') . 'Resources/Public/Images/drive_disk.png',
+    ],
+    'vidi'
 );
