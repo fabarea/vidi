@@ -27,6 +27,7 @@ define([
 		'Fab/Vidi/Vidi/Export',
 		'Fab/Vidi/Vidi/Clipboard',
 		'datatables',
+		'Fab/Vidi/DataTables/dataTables.rowReordering',
 		'Fab/Vidi/DataTables/dataTables.bootstrap'
 	],
 	function($, Notification, Grid, Visibility, Delete, EditInline) {
@@ -150,16 +151,13 @@ define([
 		 */
 		Vidi.grid = $('#content-list').dataTable(Grid.getOptions());
 
-		//if (Vidi.module.hasSortingByDragAndDrop) {
-		//	Vidi.grid.rowReordering({
-		//			sURL: Vidi.module.moduleUrl + '&' + Vidi.module.parameterPrefix + '[format]=json' + '&' + Vidi.module.parameterPrefix + '[controller]=Content' + '&' + Vidi.module.parameterPrefix + '[action]=sort',
-		//			sRequestType: 'GET'
-		//		}
-		//	);
-		//}
-		//
-		//// Add place holder for the search.
-		//$('.dataTables_filter input').attr('placeholder', Vidi.translate('search'));
+		if (Vidi.module.hasSortingByDragAndDrop) {
+			Vidi.grid.rowReordering({
+					sURL: Vidi.module.moduleUrl + '&' + Vidi.module.parameterPrefix + '[format]=json' + '&' + Vidi.module.parameterPrefix + '[controller]=Content' + '&' + Vidi.module.parameterPrefix + '[action]=sort',
+					sRequestType: 'GET'
+				}
+			);
+		}
 
 		return Vidi;
 	});
