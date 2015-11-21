@@ -30,7 +30,7 @@ class ButtonGroupRenderer extends ColumnRendererAbstract
         $configuration = array(
             'sortable' => FALSE,
             'canBeHidden' => FALSE,
-            #'width' => '70px',
+            'width' => '100px',
         );
         parent::__construct($configuration);
     }
