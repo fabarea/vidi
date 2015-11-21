@@ -184,4 +184,13 @@ abstract class ColumnRendererAbstract implements ColumnRendererInterface
     {
         return GeneralUtility::makeInstance(IconFactory::class);
     }
+
+    /**
+     * @return \TYPO3\CMS\Lang\LanguageService
+     */
+    protected function getLanguageService()
+    {
+        return GeneralUtility::makeInstance('TYPO3\CMS\Lang\LanguageService');
+    }
+
 }
