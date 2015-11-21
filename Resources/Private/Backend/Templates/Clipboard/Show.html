@@ -8,18 +8,19 @@
 	<f:form.hidden name="target" value="{target}"/>
 
 	<f:if condition="{objects}">
-		<ul style="max-height: 320px; overflow: scroll; margin-top: 10px">
+		<ul class="list-unstyled" style="max-height: 320px; overflow: scroll; margin-top: 10px">
 			<f:for each="{objects}" as="object">
 				<li title="uid: {object.uid}">
-					- <v:tca.title content="{object}"/>
+					-
+					<v:tca.title content="{object}"/>
 				</li>
 			</f:for>
 		</ul>
 	</f:if>
 
-	<label class="checkbox" style="width: 200px; padding-top: 10px;">
+	<label style="padding-top: 10px; font-weight: normal">
 		<input type="checkbox" name="flushClipboard" class="btn-clipboard-flush" checked>
-		<f:translate key="clipboard.empty_clipboard" />
+		<f:translate key="clipboard.empty_clipboard"/>
 	</label>
 
 </f:form>

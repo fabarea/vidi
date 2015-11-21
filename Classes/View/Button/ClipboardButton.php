@@ -32,12 +32,20 @@ class ClipboardButton extends AbstractComponentView
      */
     public function render()
     {
-        $output = sprintf('<div style="float: left;"><a style="%s" href="%s" title="%s" class="btn-clipboard-copy-or-move">%s</a></div>',
-            $this->getClipboardService()->hasItems() ? '' : 'display: none;',
-            $this->getShowClipboardUri(),
-            LocalizationUtility::translate('clipboard.copy_or_move', 'vidi'),
-            $this->getIconFactory()->getIcon('actions-document-paste-after', Icon::SIZE_SMALL)
-        );
+        $button = $this->makeLinkButton()
+            ->setHref($this->getShowClipboardUri())
+            ->setDataAttributes([
+                'style' => $this->getClipboardService()->hasItems() ? '' : 'display: none;',
+            ])
+            ->setClasses('btn-clipboard-copy-or-move')
+            ->setTitle($this->getLanguageService()->sL('LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:clipboard.copy_or_move'))
+            ->setIcon($this->getIconFactory()->getIcon('actions-document-paste-after', Icon::SIZE_SMALL))
+            ->render();
+
+        // Hack! No API for adding a style upon a button
+        $button = str_replace('data-style', 'style', $button);
+
+        $output = sprintf('<div style="float: left; margin-right: 3px">%s</div>', $button);
         return $output;
     }
 

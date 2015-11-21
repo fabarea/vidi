@@ -21,7 +21,6 @@ define([
 	'TYPO3/CMS/Backend/Modal',
 	'Fab/Vidi/Vidi/Grid',
 	'Fab/Vidi/Vidi/Response',
-	'Fab/Vidi/jQuery/jquery.form',
 	'Fab/Vidi/Vidi/Session'
 ], function($, Modal) {
 	'use strict';
@@ -372,7 +371,7 @@ define([
 
 			Vidi.modal = Modal.loadUrl(
 				TYPO3.l10n.localize('action.edit') + ' ' + this.getFieldLabel(),
-				TYPO3.Severity.notice,
+				TYPO3.Severity.warning,
 				this.getButtons(),
 				this.url,
 				function() { // callback

@@ -118,17 +118,14 @@ define([
 					btnClass: 'btn btn-default btn-clipboard-copy btn-clipboard',
 					trigger: function() {
 
-						// Avoid double click on this button.
-						$('.btn-clipboard').addClass('disabled');
-
-						var action = $('#form-clipboard-copy-or-move').attr('action');
+						var action = $('#form-clipboard-copy-or-move', Vidi.modal).attr('action');
 						action += '&' + Vidi.module.parameterPrefix + '[action]=copyClipboard';
-						$('#form-clipboard-copy-or-move')
+						$('#form-clipboard-copy-or-move', Vidi.modal)
 							.attr('action', action)
 							.submit();
 
 						// Possibly hide clipboard button if it was told so.
-						if ($('.btn-clipboard-flush').is(':checked')) {
+						if ($('.btn-clipboard-flush', Vidi.modal).is(':checked')) {
 							$('.btn-clipboard-copy-or-move').hide();
 						}
 					}
@@ -137,17 +134,14 @@ define([
 					btnClass: 'btn btn-primary btn-clipboard-move btn-clipboard',
 					trigger: function() {
 
-						// Avoid double click on this button.
-						$('.btn-clipboard').addClass('disabled')
-
-						var action = $('#form-clipboard-copy-or-move').attr('action');
+						var action = $('#form-clipboard-copy-or-move', Vidi.modal).attr('action');
 						action += '&' + Vidi.module.parameterPrefix + '[action]=moveClipboard';
-						$('#form-clipboard-copy-or-move')
+						$('#form-clipboard-copy-or-move', Vidi.modal)
 							.attr('action', action)
 							.submit();
 
 						// Possibly hide clipboard button if it was told so.
-						if ($('.btn-clipboard-flush').is(':checked')) {
+						if ($('.btn-clipboard-flush', Vidi.modal).is(':checked')) {
 							$('.btn-clipboard-copy-or-move').hide();
 						}
 					}
@@ -165,23 +159,31 @@ define([
 		showWindow: function(url) {
 
 			Vidi.modal = Modal.loadUrl(
-				'TODO123',
+				TYPO3.l10n.localize('clipboard.copy_or_move'),
 				TYPO3.Severity.notice,
 				this.getButtons(),
 				url,
 				function() {
 
 					// bind submit handler to form.
-					$('#form-clipboard-copy-or-move').on('submit', function(e) {
+					$('#form-clipboard-copy-or-move', Vidi.modal).on('submit', function(e) {
 
 						// Prevent native submit.
 						e.preventDefault();
 
-						// Register
-						$(this).ajaxSubmit({
+						// Ajax request
+						$.ajax({
+							url: $(this).attr('action'),
+							data: $(this).serialize(),
+							beforeSend: function(arr, $form, options) {
+
+								// Avoid double click on this button.
+								$('.btn-clipboard', Vidi.modal).addClass('disabled');
+							},
 
 							/**
 							 * On success call back
+							 *
 							 * @param response
 							 */
 							success: function(response) {
@@ -192,7 +194,7 @@ define([
 								// Reload the grid.
 								Vidi.grid.fnDraw();
 							}
-						})
+						});
 					});
 				}
 			);
