@@ -14,9 +14,9 @@ namespace Fab\Vidi\Configuration;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Grid\ButtonGroupRenderer;
+use Fab\Vidi\Grid\CheckBoxRenderer;
 use TYPO3\CMS\Core\Database\TableConfigurationPostProcessingHookInterface;
-use Fab\Vidi\Grid\ButtonGroupComponent;
-use Fab\Vidi\Grid\CheckBoxComponent;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility;
 
@@ -67,7 +67,7 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
         if (empty($GLOBALS['TCA'][$dataType]['grid']['columns'])) {
             $GLOBALS['TCA'][$dataType]['grid']['columns'] = [
                 '__checkbox' => [
-                    'renderer' => new CheckBoxComponent(),
+                    'renderer' => new CheckBoxRenderer(),
                 ],
                 'uid' => [
                     'visible' => FALSE,
@@ -78,7 +78,7 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
                     'editable' => TRUE,
                 ],
                 '__buttons' => [
-                    'renderer' => new ButtonGroupComponent(),
+                    'renderer' => new ButtonGroupRenderer(),
                 ],
             ];
         }

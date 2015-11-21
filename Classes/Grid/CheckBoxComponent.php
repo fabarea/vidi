@@ -16,8 +16,9 @@ namespace Fab\Vidi\Grid;
 
 /**
  * Class for configuring the "Check Box" Grid Renderer.
+ * @deprecated will be removed in Vidi 2.0 + 2. Use CheckBoxRenderer instead.
  */
-class CheckBoxComponent extends GenericColumn
+class CheckBoxComponent extends ColumnRendererAbstract
 {
 
     /**
@@ -31,7 +32,16 @@ class CheckBoxComponent extends GenericColumn
             'canBeHidden' => FALSE,
             'html' => '<input type="checkbox" class="checkbox-row-top"/>',
         );
-        $className = 'Fab\Vidi\Grid\CheckBoxRenderer';
-        parent::__construct($className, $configuration);
+        parent::__construct($configuration);
+    }
+
+    /**
+     * Render a column in the Grid.
+     *
+     * @return string
+     */
+    public function render()
+    {
+        return 'Please, replace "CheckBoxComponent" by "CheckBoxRenderer" in TCA';
     }
 }

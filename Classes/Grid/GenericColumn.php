@@ -16,6 +16,7 @@ namespace Fab\Vidi\Grid;
 
 /**
  * Class for configuring a column in the Grid.
+ * @deprecated will be removed in Vidi 2.0 + 2. Use ColumnRendererAbstract instead.
  */
 class GenericColumn implements ColumnInterface
 {
@@ -44,6 +45,7 @@ class GenericColumn implements ColumnInterface
 
     /**
      * @return string
+     * @deprecated will be removed in Vidi 2.0 + 2.
      */
     public function getClassName()
     {
@@ -52,6 +54,7 @@ class GenericColumn implements ColumnInterface
 
     /**
      * @return array
+     * @deprecated will be removed in Vidi 2.0 + 2.
      */
     public function getConfiguration()
     {
@@ -60,6 +63,7 @@ class GenericColumn implements ColumnInterface
 
     /**
      * @return array
+     * @deprecated will be removed in Vidi 2.0 + 2.
      */
     public function toArray()
     {
@@ -75,8 +79,8 @@ class GenericColumn implements ColumnInterface
      * @param array $states
      * @return GenericColumn
      */
-    static public function __set_state($states)
-    {
-        return new GenericColumn($states['className'], $states['configuration']);
-    }
+//    static public function __set_state($states)
+//    {
+//        return new GenericColumn($states['className'], $states['configuration']);
+//    }
 }

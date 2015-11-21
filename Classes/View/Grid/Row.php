@@ -80,6 +80,7 @@ class Row extends AbstractComponentView
                     // if is relation has one
                     foreach ($renderers as $rendererClassName => $rendererConfiguration) {
 
+                        // @todo when removing ColumnInterface in v2.0 + 2 version, GeneralUtility::makeInstance is not always necessary as it could be an object already
                         /** @var $rendererObject \Fab\Vidi\Grid\ColumnRendererInterface */
                         $rendererObject = GeneralUtility::makeInstance($rendererClassName);
                         $value .= $rendererObject
@@ -99,7 +100,7 @@ class Row extends AbstractComponentView
                 $value = $this->formatValue($value, $configuration);
 
                 // Here, there is the chance to further "decorate" the value for inline editing, localization, ...
-                if ($this->willBeEnriched($value, $object, $fieldNameAndPath)) {
+                if ($this->willBeEnriched()) {
 
                     $localizedStructure = $this->initializeLocalizedStructure($value);
 

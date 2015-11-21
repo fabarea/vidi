@@ -21,13 +21,26 @@ class CheckBoxRenderer extends ColumnRendererAbstract
 {
 
     /**
+     * Configure the "Check Box" Grid Renderer.
+     */
+    public function __construct()
+    {
+        $configuration = array(
+            'width' => '5px',
+            'sortable' => FALSE,
+            'canBeHidden' => FALSE,
+            'html' => '<input type="checkbox" class="checkbox-row-top"/>',
+        );
+        parent::__construct($configuration);
+    }
+
+    /**
      * Render the "Check Box" in the Grid.
      *
      * @return string
      */
     public function render()
     {
-
         return sprintf('<input type="checkbox" class="checkbox-row" data-index="%s" data-uid="%s"/>',
             $this->getRowIndex(),
             $this->getObject()->getUid()

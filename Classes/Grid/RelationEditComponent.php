@@ -16,17 +16,18 @@ namespace Fab\Vidi\Grid;
 
 /**
  * Class for configuring a "Edit Relation" Grid Renderer in the Grid TCA.
+ * @deprecated will be removed in Vidi 2.0 + 2. Use RelationEditRenderer instead.
  */
-class RelationEditComponent extends GenericColumn
+class RelationEditComponent extends ColumnRendererAbstract
 {
 
     /**
-     * Constructor for a "Edit Relation" Grid Renderer Component.
+     * Render a column in the Grid.
+     *
+     * @return string
      */
-    public function __construct()
+    public function render()
     {
-        $className = 'Fab\Vidi\Grid\RelationEditRenderer';
-        parent::__construct($className, array());
+        return 'Please, replace "RelationEditComponent" by "RelationEditRenderer" in TCA';
     }
-
 }

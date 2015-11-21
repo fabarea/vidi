@@ -14,6 +14,7 @@ namespace Fab\Vidi\Tca;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Grid\ColumnInterface;
 use Fab\Vidi\Grid\ColumnRendererInterface;
 use Fab\Vidi\Grid\GenericColumn;
 use Fab\Vidi\Module\ConfigurablePart;
@@ -523,9 +524,9 @@ class GridService extends AbstractTca
         $result = array();
         if (is_string($renderer)) {
             $result[$renderer] = array();
-        } elseif ($renderer instanceof GenericColumn) {
+        } elseif ($renderer instanceof ColumnInterface || $renderer instanceof ColumnRendererInterface) {
             /** @var GenericColumn $renderer */
-            $result[$renderer->getClassName()] = $renderer->getConfiguration();
+            $result[get_class($renderer)] = $renderer->getConfiguration();
         }
         return $result;
     }

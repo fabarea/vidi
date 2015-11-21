@@ -22,7 +22,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class ColumnRendererAbstract implements ColumnRendererInterface
 {
-
     /**
      * The content object.
      *
@@ -49,6 +48,34 @@ abstract class ColumnRendererAbstract implements ColumnRendererInterface
      * @var array
      */
     protected $gridRendererConfiguration = array();
+
+    /**
+     * @var array
+     */
+    protected $configuration = array();
+
+    /**
+     * Constructor of a Generic component in Vidi.
+     *
+     * @param array $configuration
+     * @param array $legacyParameterConfiguration
+     */
+    public function __construct($configuration = array(), $legacyParameterConfiguration = array())
+    {
+        if (is_string($configuration)) {
+            $configuration = $legacyParameterConfiguration;
+            GeneralUtility::deprecationLog('ColumnRendererAbstract: first parameter must now be an array. Please edit me in ' . get_class($this));
+        }
+        $this->configuration = $configuration;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfiguration()
+    {
+        return $this->configuration;
+    }
 
     /**
      * @return \Fab\Vidi\Domain\Model\Content
@@ -157,5 +184,4 @@ abstract class ColumnRendererAbstract implements ColumnRendererInterface
     {
         return GeneralUtility::makeInstance(IconFactory::class);
     }
-
 }

@@ -16,23 +16,13 @@ namespace Fab\Vidi\Grid;
 
 /**
  *  Interface for configuring a column in the Grid.
+ * @deprecated will be removed in Vidi 2.0 + 2. Use ButtonGroupRenderer instead.
  */
 interface ColumnInterface
 {
-
-    /**
-     * @return string
-     */
-    public function getClassName();
-
     /**
      * @return array
      */
     public function getConfiguration();
-
-    /**
-     * @return string
-     */
-    public function toArray();
 
 }

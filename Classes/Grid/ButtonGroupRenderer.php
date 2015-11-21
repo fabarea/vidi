@@ -23,6 +23,19 @@ class ButtonGroupRenderer extends ColumnRendererAbstract
 {
 
     /**
+     * Configure the "Button Group" Grid Renderer.
+     */
+    public function __construct()
+    {
+        $configuration = array(
+            'sortable' => FALSE,
+            'canBeHidden' => FALSE,
+            #'width' => '70px',
+        );
+        parent::__construct($configuration);
+    }
+
+    /**
      * Render the "Button Group" in the Grid, e.g. edit, delete, etc..
      *
      * @return string

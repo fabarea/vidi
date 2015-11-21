@@ -57,4 +57,9 @@ interface ColumnRendererInterface
      */
     public function setGridRendererConfiguration($configuration);
 
+    /**
+     * @return array
+     */
+    public function getConfiguration();
+
 }

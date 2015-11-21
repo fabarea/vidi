@@ -16,8 +16,9 @@ namespace Fab\Vidi\Grid;
 
 /**
  * Class for configuring a "Button Group" Grid Renderer.
+ * @deprecated will be removed in Vidi 2.0 + 2. Use ButtonGroupRenderer instead.
  */
-class ButtonGroupComponent extends GenericColumn
+class ButtonGroupComponent extends ColumnRendererAbstract
 {
 
     /**
@@ -28,9 +29,17 @@ class ButtonGroupComponent extends GenericColumn
         $configuration = array(
             'sortable' => FALSE,
             'canBeHidden' => FALSE,
-//            'width' => '70px',
         );
-        $className = 'Fab\Vidi\Grid\ButtonGroupRenderer';
-        parent::__construct($className, $configuration);
+        parent::__construct($configuration);
+    }
+
+    /**
+     * Render a column in the Grid.
+     *
+     * @return string
+     */
+    public function render()
+    {
+        return 'Please, replace "ButtonGroupComponent" by "ButtonGroupRenderer" in TCA';
     }
 }
