@@ -33,7 +33,6 @@ $.extend( DataTable.ext.classes, {
 	sLengthSelect: "form-control input-sm"
 } );
 
-
 /* Bootstrap paging button renderer */
 DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, buttons, page, pages ) {
 	var api     = new DataTable.Api( settings );
@@ -184,6 +183,34 @@ if ( DataTable.TableTools ) {
 		}
 	} );
 }
+
+/**
+ * Add API for resetting display
+ *
+ * @param {object} oSettings
+ * @param {boolean} bDraw
+ * @return void
+ */
+$.fn.dataTableExt.oApi.fnResetDisplay = function (oSettings, bDraw) {
+
+	// Reset various filter
+	oSettings.oPreviousSearch.sSearch = '';
+	oSettings.aaSorting = [];
+	oSettings._iDisplayStart = 0;
+	oSettings._iDisplayLength = 10;
+
+	// Reset UI
+	$('#content-list_length').find('select').val(10);
+	$('#content-list_filter').find('input').val('');
+
+	if (typeof bDraw === 'undefined') {
+		bDraw = true;
+	}
+
+	if (bDraw) {
+		this.fnDraw();
+	}
+};
 
 }; // /factory
 
