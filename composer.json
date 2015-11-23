@@ -8,5 +8,10 @@
 	"support": {
 		"issues": "https://github.com/fabarea/vidi/issues"
 	},
-	"version": "1.4.0-dev"
+	"autoload": {
+		"psr-4": {
+			"Fab\\Vidi\\": "Classes/"
+		}
+	},
+	"version": "2.0.0-dev"
 }
