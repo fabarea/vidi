@@ -194,6 +194,9 @@ Vidi.VisualSearch = {
 			if (label == searchTerm) {
 				value = _value;
 			}
+
+			// Remove segment in case the key was prefixed for json encoding reasons.
+			value = value.replace('key-', '');
 		});
 
 		return value;
