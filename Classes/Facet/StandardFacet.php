@@ -103,6 +103,12 @@ class StandardFacet implements FacetInterface
             if (!empty($localizedLabel)) {
                 $label = $localizedLabel;
             }
+
+            // Hack to have object correctly json encoded.
+            if (is_numeric($key)) {
+                $key = 'key-' . $key;
+            }
+
             $values[$key] = $label;
         }
 
