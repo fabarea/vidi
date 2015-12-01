@@ -3,8 +3,13 @@
 	"type": "typo3-cms-extension",
 	"description": "Generic listing of records with versatile ways of interacting with the data, e.g. advanced filter, inline editing, mass editing, ... Veni, vidi, vici!",
 	"homepage": "https://github.com/fabarea/vidi",
-	"license": ["GPL-2.0+"],
-	"keywords": ["TYPO3 CMS", "generic listing"],
+	"license": [
+		"GPL-2.0+"
+	],
+	"keywords": [
+		"TYPO3 CMS",
+		"generic listing"
+	],
 	"support": {
 		"issues": "https://github.com/fabarea/vidi/issues"
 	},
@@ -12,6 +17,12 @@
 		"psr-4": {
 			"Fab\\Vidi\\": "Classes/"
 		}
+	},
+	"extra": {
+		"autoload-case-sensitivity": false,
+		"class-alias-maps": [
+			"Migrations/Code/ClassAliasMap.php"
+		]
 	},
 	"version": "2.1.0-dev"
 }

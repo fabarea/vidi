@@ -202,7 +202,7 @@ class ModuleLoader
             }
 
             ExtensionUtility::registerModule(
-                'vidi',
+                'Fab.vidi',
                 $this->mainModule,
                 $this->dataType . '_' . $this->moduleKey,
                 $this->position,

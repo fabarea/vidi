@@ -1,9 +1,9 @@
 <?php
 return array(
-	'Tx_Vidi_Controller_ContentController' => 'Fab\Vidi\Controller\Backend\ContentController',
-	'Tx_Vidi_Controller_FacetController' => 'Fab\Vidi\Controller\Backend\FacetController',
-	'Tx_Vidi_Controller_ToolController' => 'Fab\Vidi\Controller\Backend\ToolController',
-	'Tx_Vidi_Controller_SelectionController' => 'Fab\Vidi\Controller\Backend\SelectionController',
-	'Tx_Vidi_Controller_UserPreferencesController' => 'Fab\Vidi\Controller\Backend\UserPreferencesController',
-	'Tx_Vidi_Controller_ClipboardController' => 'Fab\Vidi\Controller\Backend\ClipboardController',
+	'Fab\Vidi\Controller\ContentController' => 'Fab\Vidi\Controller\Backend\ContentController',
+	'Fab\Vidi\Controller\FacetController' => 'Fab\Vidi\Controller\Backend\FacetController',
+	'Fab\Vidi\Controller\ToolController' => 'Fab\Vidi\Controller\Backend\ToolController',
+	'Fab\Vidi\Controller\SelectionController' => 'Fab\Vidi\Controller\Backend\SelectionController',
+	'Fab\Vidi\Controller\UserPreferencesController' => 'Fab\Vidi\Controller\Backend\UserPreferencesController',
+	'Fab\Vidi\Controller\ClipboardController' => 'Fab\Vidi\Controller\Backend\ClipboardController',
 );
