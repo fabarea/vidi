@@ -16,17 +16,12 @@ $EM_CONF[$_EXTKEY] = array (
   'author_email' => 'fabien.udriot@typo3.org',
   'module' => '',
   'state' => 'beta',
-  'uploadfolder' => '0',
-  'modify_tables' => '',
-  'clearCacheOnLoad' => 0,
-  'version' => '2.1.0-dev',
+  'version' => '2.0.1',
   'constraints' =>
   array (
     'depends' =>
     array (
-      'cms' => '',
-      'fluid' => '',
-      'typo3' => '7.5.0-7.99.99',
+      'typo3' => '7.6.0-7.99.99',
     ),
     'conflicts' =>
     array (
