@@ -18,6 +18,10 @@
 			"Fab\\Vidi\\": "Classes/"
 		}
 	},
+	"replace": {
+		"vidi": "self.version",
+		"typo3-ter/vidi": "self.version"
+	},
 	"extra": {
 		"autoload-case-sensitivity": false,
 		"class-alias-maps": [
