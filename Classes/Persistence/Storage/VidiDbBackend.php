@@ -1110,9 +1110,8 @@ class VidiDbBackend
             }
         }
 
-        // Retrieve the original uid
-        // @todo It looks for me this code will never be used! "_ORIG_uid" is something from extbase. Adjust me or remove me in 0.4 + 2 version!
-        $pageRepository->versionOL($tableName, $row, TRUE);
+        // Retrieve the original uid; Used for Workspaces!
+        $pageRepository->versionOL($tableName, $row, true, true);
         if ($pageRepository->versioningPreview && isset($row['_ORIG_uid'])) {
             $row['uid'] = $row['_ORIG_uid'];
         }
