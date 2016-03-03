@@ -16,6 +16,7 @@ namespace Fab\Vidi\Controller\Backend;
 
 use Fab\Vidi\Tca\FieldType;
 use Fab\Vidi\View\Grid\Row;
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
@@ -38,12 +39,6 @@ class ContentController extends ActionController
 {
 
     /**
-     * @var \TYPO3\CMS\Core\Page\PageRenderer
-     * @inject
-     */
-    protected $pageRenderer;
-
-    /**
      * @var \Fab\Vidi\Domain\Repository\SelectionRepository
      * @inject
      */
@@ -54,7 +49,8 @@ class ContentController extends ActionController
      */
     public function initializeAction()
     {
-        $this->pageRenderer->addInlineLanguageLabelFile('EXT:vidi/Resources/Private/Language/locallang.xlf');
+        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+        $pageRenderer->addInlineLanguageLabelFile('EXT:vidi/Resources/Private/Language/locallang.xlf');
 
         // Configure property mapping to retrieve the file object.
         if ($this->arguments->hasArgument('columns')) {
