@@ -104,9 +104,6 @@ As example, let display a list of all Frontend Users belonging to User Group "1"
 	{namespace m=Fab\Vidi\ViewHelpers}
 
 
-**TODO**: Implement selection saving! There is in the pipeline the possibility to save a selection
-in a BE module and retrieve that selection on the Frontend. Looking for some opportunities...
-
 Vidi Content Repository (programming way)
 -----------------------------------------
 
