@@ -1,7 +1,6 @@
 <?php
 namespace Fab\Vidi\ViewHelpers\Be;
 
-
 /**
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,6 +14,8 @@ namespace Fab\Vidi\ViewHelpers\Be;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper;
 
 /**
@@ -24,26 +25,21 @@ class RequireJsViewHelper extends AbstractBackendViewHelper
 {
 
     /**
-     * @var \TYPO3\CMS\Core\Page\PageRenderer
-     * @inject
-     */
-    protected $pageRenderer;
-
-    /**
      * Load RequireJS code.
      *
      * @return void
-     * @api
      */
     public function render()
     {
 
+        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+
         $content = $this->renderChildren();
-        $this->pageRenderer->addJsInlineCode('vidi-inline', $content);
+        $pageRenderer->addJsInlineCode('vidi-inline', $content);
 
         $configuration['paths']['Fab/Vidi'] = '../typo3conf/ext/vidi/Resources/Public/JavaScript';
-        $this->pageRenderer->addRequireJsConfiguration($configuration);
-        $this->pageRenderer->loadRequireJsModule('Fab/Vidi/Vidi/Main');
+        $pageRenderer->addRequireJsConfiguration($configuration);
+        $pageRenderer->loadRequireJsModule('Fab/Vidi/Vidi/Main');
     }
 
 }
