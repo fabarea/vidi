@@ -1,12 +1,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"
-      xmlns:f="http://typo3.org/ns/fluid/ViewHelpers"
       xmlns:v="http://typo3.org/ns/Fab/Vidi/ViewHelpers">
 
 <f:layout name="Default"/>
 
 <f:section name="main">
 
-	<div class="module-docheader t3js-module-docheader">
+	<div id="navbar-main" class="module-docheader t3js-module-docheader">
 		<div class="module-docheader-bar module-docheader-bar-navigation t3js-module-docheader-bar t3js-module-docheader-bar-navigation">
 			<div class="module-docheader-bar-column-left">
 				{v:render.components(part: 'docHeaderTopLeft')}
@@ -61,102 +60,107 @@
 		</div>
 	</div>
 
+	<div id="navbar-sub" class="ajax-response-header module-docheader t3js-module-docheader" style="display: none"></div>
+
 	<f:flashMessages/>
 
 	<div class="module-body t3js-module-body">
 
-		{v:render.components(part: 'gridTop')}
+		<div id="container-main-top">
+		     {v:render.components(part: 'gridTop')}
 
-		<div style="display: none">
+			<div style="display: none">
 
-			<f:link.action id="link-auto-suggest" controller="Facet" action="autoSuggest" format="json"/>
-			<f:link.action id="link-auto-suggests" controller="Facet" action="autoSuggests" format="json"/>
-			<input type="hidden" id="ajax-additional-parameters"/>
+				<f:link.action id="link-auto-suggest" controller="Facet" action="autoSuggest" format="json"/>
+				<f:link.action id="link-auto-suggests" controller="Facet" action="autoSuggests" format="json"/>
+				<input type="hidden" id="ajax-additional-parameters"/>
 
-			<!-- this part is going to be moved next to the Visual Search bar -->
-			<f:render section="List" partial="Selection/List" arguments="{_all}"/>
+				<!-- this part is going to be moved next to the Visual Search bar -->
+				<f:render section="List" partial="Selection/List" arguments="{_all}"/>
 
-			<f:link.action
-					id="link-selection-list"
-					controller="Selection"
-					action="list"
-					arguments="{dataType: '{v:moduleLoader(key: \'dataType\')}'}"/>
+				<f:link.action
+						id="link-selection-list"
+						controller="Selection"
+						action="list"
+						arguments="{dataType: '{v:moduleLoader(key: \'dataType\')}'}"/>
 
-			<f:link.action
-					id="link-selection-edit"
-					controller="Selection"
-					action="edit"
-					arguments="{dataType: '{v:moduleLoader(key: \'dataType\')}'}"/>
+				<f:link.action
+						id="link-selection-edit"
+						controller="Selection"
+						action="edit"
+						arguments="{dataType: '{v:moduleLoader(key: \'dataType\')}'}"/>
 
-			<f:link.action
-					id="link-facet-suggest"
-					controller="Facet"
-					action="suggest"
-					format="json"/>
+				<f:link.action
+						id="link-facet-suggest"
+						controller="Facet"
+						action="suggest"
+						format="json"/>
 
 
-			<f:link.action
-					id="link-user-preferences"
-					controller="UserPreferences"
-					action="save"
-					arguments="{preferenceSignature: '{v:modulePreferences(key: \'signature\')}'}"/>
-		</div>
+				<f:link.action
+						id="link-user-preferences"
+						controller="UserPreferences"
+						action="save"
+						arguments="{preferenceSignature: '{v:modulePreferences(key: \'signature\')}'}"/>
+			</div>
 
-		<table class="table table-striped table-hover typo3-extension-list dataTable"
-		       id="content-list">
-			<thead>
-			<tr class="t3-row-header">
-				<f:for each="{columns}" key="columnName" as="configuration">
-					<th>
-						<f:if condition="{v:grid.column.header(name: '{columnName}')}">
-							<f:then>
-								<f:format.raw>{v:grid.column.header(name: '{columnName}')}</f:format.raw>
-							</f:then>
-							<f:else>
-								<v:grid.column.title/>
-								<f:if condition="{v:grid.column.isEditable(name: '{columnName}')}">
-									<f:link.action action="edit"
-									               class="mass-edit {f:if(condition: '{v:grid.column.hasRelation()}', then: 'mass-edit-relation', else: 'mass-edit-scalar')}"
-									               arguments="{fieldNameAndPath: '{v:grid.column.fieldName()}'}"
-									               style="opacity: 0">
-										<v:sprite name="actions-document-open"/>
-									</f:link.action>
-								</f:if>
-							</f:else>
-						</f:if>
+			<table class="table table-striped table-hover typo3-extension-list dataTable"
+			       id="content-list">
+				<thead>
+				<tr class="t3-row-header">
+					<f:for each="{columns}" key="columnName" as="configuration">
+						<th>
+							<f:if condition="{v:grid.column.header(name: '{columnName}')}">
+								<f:then>
+									<f:format.raw>{v:grid.column.header(name: '{columnName}')}</f:format.raw>
+								</f:then>
+								<f:else>
+									<v:grid.column.title/>
+									<f:if condition="{v:grid.column.isEditable(name: '{columnName}')}">
+										<f:link.action action="edit"
+										               class="mass-edit {f:if(condition: '{v:grid.column.hasRelation()}', then: 'mass-edit-relation', else: 'mass-edit-scalar')}"
+										               arguments="{fieldNameAndPath: '{v:grid.column.fieldName()}'}"
+										               style="opacity: 0">
+											<v:sprite name="actions-document-open"/>
+										</f:link.action>
+									</f:if>
+								</f:else>
+							</f:if>
+						</th>
+					</f:for>
+				</tr>
+				</thead>
+				<tbody/>
+				<tfoot>
+				<tr>
+					<th colspan="{numberOfColumns}">
+						<div class="dropup">
+							<a class="btn btn-default btn-sm dropdown-toggle mass-action-label"
+							   data-toggle="dropdown"
+							   href="#"
+							   onclick="return false"
+							   aria-haspopup="true"
+							   aria-expanded="false">
+								[mass action label]
+							</a>
+							<ul class="dropdown-menu mass-action-items">
+								{v:render.components(part: 'menuMassAction')}
+							</ul>
+						</div>
 					</th>
-				</f:for>
-			</tr>
-			</thead>
-			<tbody/>
-			<tfoot>
-			<tr>
-				<th colspan="{numberOfColumns}">
-					<div class="dropup">
-						<a class="btn btn-default btn-sm dropdown-toggle mass-action-label"
-						   data-toggle="dropdown"
-						   href="#"
-						   onclick="return false"
-						   aria-haspopup="true"
-						   aria-expanded="false">
-							[mass action label]
-						</a>
-						<ul class="dropdown-menu mass-action-items">
-							{v:render.components(part: 'menuMassAction')}
-						</ul>
-					</div>
-				</th>
-			</tr>
-			</tfoot>
-		</table>
-		{v:render.components(part: 'gridBottom')}
-	</div>
-
-	<div id="container-main-sub" class="ajax-response-body container" style="display: none">
-		<div class="container" style="text-align: center">
-			<f:image src="{f:uri.resource(path:'Images/loading.gif')}" alt=""/>
+				</tr>
+				</tfoot>
+			</table>
+			{v:render.components(part: 'gridBottom')}
+		</div>
+		<div id="container-main-sub" class="ajax-response-body" style="display: none">
+			<div class="container" style="text-align: center">
+				<f:image src="{f:uri.resource(path:'Images/loading.gif')}" alt=""/>
+			</div>
 		</div>
 	</div>
+
+
 	<div id="footer" class="ajax-response-footer"></div>
 
 </f:section>
