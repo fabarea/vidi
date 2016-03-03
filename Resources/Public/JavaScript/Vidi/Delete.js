@@ -41,7 +41,7 @@ define([
 				Vidi.modal = Modal.confirm(
 					TYPO3.l10n.localize('delete'),
 					TYPO3.l10n.localize('confirm-delete', {0: $(this).data('label')}),
-					TYPO3.Severity.warning,
+					top.TYPO3.Severity.warning,
 					[
 						{
 							text: TYPO3.l10n.localize('cancel'),
@@ -140,9 +140,9 @@ define([
 		massRemove: function(message, url) {
 
 			Vidi.modal = Modal.show(
-				TYPO3.l10n.localize('delete'),
+				top.TYPO3.l10n.localize('delete'),
 				message,
-				TYPO3.Severity.warning,
+				top.TYPO3.Severity.warning,
 				[
 					{
 						text: TYPO3.l10n.localize('cancel'),

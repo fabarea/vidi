@@ -122,7 +122,7 @@ define([
 
 			Vidi.modal = Modal.loadUrl(
 				TYPO3.l10n.localize('selections'),
-				TYPO3.Severity.notice,
+				top.TYPO3.Severity.notice,
 				this.getButtons(),
 				$('#link-selection-edit').attr('href'),
 				function() {

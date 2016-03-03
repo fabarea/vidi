@@ -160,7 +160,7 @@ define([
 
 			Vidi.modal = Modal.loadUrl(
 				TYPO3.l10n.localize('clipboard.copy_or_move'),
-				TYPO3.Severity.notice,
+				top.TYPO3.Severity.notice,
 				this.getButtons(),
 				url,
 				function() {
