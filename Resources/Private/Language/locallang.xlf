@@ -55,6 +55,9 @@
 			<trans-unit id="action.edit">
 				<source>Edit</source>
 			</trans-unit>
+			<trans-unit id="action.move">
+				<source>Move</source>
+			</trans-unit>
 			<trans-unit id="duplicate">
 				<source>Duplicate</source>
 			</trans-unit>
