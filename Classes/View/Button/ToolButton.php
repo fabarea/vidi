@@ -16,9 +16,6 @@ namespace Fab\Vidi\View\Button;
 
 use Fab\Vidi\Tool\ToolRegistry;
 use Fab\Vidi\View\AbstractComponentView;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Imaging\Icon;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * View helper which renders a dropdown menu for storage.

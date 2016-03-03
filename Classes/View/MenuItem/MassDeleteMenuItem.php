@@ -15,7 +15,6 @@ namespace Fab\Vidi\View\MenuItem;
  */
 
 use TYPO3\CMS\Core\Imaging\Icon;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Fab\Vidi\View\AbstractComponentView;
 
 /**
@@ -34,7 +33,7 @@ class MassDeleteMenuItem extends AbstractComponentView
         return sprintf('<li><a href="%s" class="mass-delete" >%s %s</a>',
             $this->getMassDeleteUri(),
             $this->getIconFactory()->getIcon('actions-edit-delete', Icon::SIZE_SMALL),
-            LocalizationUtility::translate('delete', 'vidi')
+            $this->getLanguageService()->sL('LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:delete')
         );
     }
 

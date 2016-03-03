@@ -15,7 +15,6 @@ namespace Fab\Vidi\View\MenuItem;
  */
 
 use TYPO3\CMS\Core\Imaging\Icon;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Fab\Vidi\View\AbstractComponentView;
 
 /**
@@ -34,7 +33,7 @@ class ExportXmlMenuItem extends AbstractComponentView
     {
         $result = sprintf('<li><a href="#" class="export-xml" data-format="xml">%s %s</a></li>',
             $this->getIconFactory()->getIcon('mimetypes-text-html', Icon::SIZE_SMALL),
-            LocalizationUtility::translate('export-xml', 'vidi')
+            $this->getLanguageService()->sL('LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:export-xml')
         );
         return $result;
     }

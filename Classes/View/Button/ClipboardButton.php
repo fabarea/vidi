@@ -17,7 +17,6 @@ namespace Fab\Vidi\View\Button;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\View\AbstractComponentView;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * View which renders a "clipboard" button to be placed in the doc header.

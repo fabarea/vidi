@@ -15,7 +15,6 @@ namespace Fab\Vidi\View\MenuItem;
  */
 
 use TYPO3\CMS\Core\Imaging\Icon;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Fab\Vidi\View\AbstractComponentView;
 
 /**
@@ -34,7 +33,7 @@ class ExportCsvMenuItem extends AbstractComponentView
     {
         $result = sprintf('<li><a href="#" class="export-csv" data-format="csv">%s %s</a></li>',
             $this->getIconFactory()->getIcon('mimetypes-text-csv', Icon::SIZE_SMALL),
-            LocalizationUtility::translate('export-csv', 'vidi')
+            $this->getLanguageService()->sL('LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:export-csv')
         );
         return $result;
     }

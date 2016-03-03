@@ -17,7 +17,6 @@ namespace Fab\Vidi\View\MenuItem;
 use Fab\Media\Module\MediaModule;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Fab\Vidi\View\AbstractComponentView;
 
 /**
@@ -38,7 +37,7 @@ class ClipboardMenuItem extends AbstractComponentView
             $output = sprintf('<li><a href="%s" class="clipboard-save" >%s %s</a>',
                 $this->getSaveInClipboardUri(),
                 $this->getIconFactory()->getIcon('actions-document-paste-after', Icon::SIZE_SMALL),
-                LocalizationUtility::translate('clipboard.save', 'vidi')
+                $this->getLanguageService()->sL('LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:save')
             );
         }
         return $output;
@@ -64,6 +63,6 @@ class ClipboardMenuItem extends AbstractComponentView
      */
     protected function getMediaModule()
     {
-        return GeneralUtility::makeInstance('Fab\Media\Module\MediaModule');
+        return GeneralUtility::makeInstance(MediaModule::class);
     }
 }
