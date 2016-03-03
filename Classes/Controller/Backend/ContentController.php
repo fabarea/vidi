@@ -99,8 +99,12 @@ class ContentController extends ActionController
         $order = OrderObjectFactory::getInstance()->getOrder();
         $pager = PagerObjectFactory::getInstance()->getPager();
 
+        // If we are given a list of uids to export, do not use a limit because we want them all.
+        $inCriteria = $matcher->getInCriteria();
+        $limit = empty($inCriteria) ? $pager->getLimit() : NULL;
+
         // Fetch objects via the Content Service.
-        $contentService = $this->getContentService()->findBy($matcher, $order, $pager->getLimit(), $pager->getOffset());
+        $contentService = $this->getContentService()->findBy($matcher, $order, $limit, $pager->getOffset());
         $pager->setCount($contentService->getNumberOfObjects());
 
         // Assign values.
