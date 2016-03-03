@@ -1016,7 +1016,7 @@ class VidiDbBackend
                     $order = 'DESC';
                     break;
                 default:
-                    throw new Exception\UnsupportedOrderException('Unsupported order encountered.', 1242816074);
+                    throw new Exception\UnsupportedOrderException('Unsupported order encountered.', 1456845126);
             }
 
             $tableName = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $this->query->getType());
