@@ -47,7 +47,7 @@ class ModulePreferencesTool extends AbstractTool
      */
     public function getDescription()
     {
-        $templateNameAndPath = 'EXT:vidi/Resources/Private/Backend/Standalone/Tool/ModulePreferences/Launcher.html';
+        $templateNameAndPath = 'EXT:vidi/Resources/Private/Standalone/Tool/ModulePreferences/Launcher.html';
         $view = $this->initializeStandaloneView($templateNameAndPath);
         $view->assign('sitePath', PATH_site);
         return $view->render();
@@ -75,7 +75,7 @@ class ModulePreferencesTool extends AbstractTool
             $this->getModulePreferences()->save($arguments);
         }
 
-        $templateNameAndPath = 'EXT:vidi/Resources/Private/Backend/Standalone/Tool/ModulePreferences/WorkResult.html';
+        $templateNameAndPath = 'EXT:vidi/Resources/Private/Standalone/Tool/ModulePreferences/WorkResult.html';
         $view = $this->initializeStandaloneView($templateNameAndPath);
 
         $view->assign('title', Tca::table($this->getModuleLoader()->getDataType())->getTitle());

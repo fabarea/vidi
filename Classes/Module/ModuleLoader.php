@@ -183,7 +183,7 @@ class ModuleLoader
         // Register and displays module in the BE only if told, default is TRUE.
         if ($this->isShown) {
             $moduleConfiguration = array(
-                #'routeTarget' => \Fab\Vidi\Controller\Backend\ContentController::class . '::mainAction', // what to do here?
+                #'routeTarget' => \Fab\Vidi\Controller\ContentController::class . '::mainAction', // what to do here?
                 'access' => $this->access,
                 'labels' => $this->moduleLanguageFile,
                 'inheritNavigationComponentFromMainModule' => TRUE

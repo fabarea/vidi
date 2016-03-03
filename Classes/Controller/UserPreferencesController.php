@@ -1,5 +1,5 @@
 <?php
-namespace Fab\Vidi\Controller\Backend;
+namespace Fab\Vidi\Controller;
 
 /**
  * This file is part of the TYPO3 CMS project.
