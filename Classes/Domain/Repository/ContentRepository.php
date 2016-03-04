@@ -39,7 +39,7 @@ class ContentRepository implements RepositoryInterface
      *
      * @var bool
      */
-    protected $rawResult = FALSE;
+    protected $rawResult = false;
 
     /**
      * The data type to be returned, e.g fe_users, fe_groups, tt_content, etc...
@@ -94,7 +94,7 @@ class ContentRepository implements RepositoryInterface
      * @param Matcher $matcher
      * @return Content[]
      */
-    public function findDistinctValues($propertyName, Matcher $matcher = NULL)
+    public function findDistinctValues($propertyName, Matcher $matcher = null)
     {
         $query = $this->createQuery();
         $query->setDistinct($propertyName);
@@ -103,7 +103,7 @@ class ContentRepository implements RepositoryInterface
         $constraint = $query->logicalNot($query->equals($propertyName, ''));
 
         // Add some additional constraints from the Matcher object.
-        $matcherConstraint = NULL;
+        $matcherConstraint = null;
         if (!is_null($matcher)) {
             $matcherConstraint = $this->computeConstraints($query, $matcher);
         }
@@ -126,7 +126,7 @@ class ContentRepository implements RepositoryInterface
      * @param Matcher $matcher
      * @return int
      */
-    public function countDistinctValues($propertyName, Matcher $matcher = NULL)
+    public function countDistinctValues($propertyName, Matcher $matcher = null)
     {
         $query = $this->createQuery();
         $query->setDistinct($propertyName);
@@ -135,7 +135,7 @@ class ContentRepository implements RepositoryInterface
         $constraint = $query->logicalNot($query->equals($propertyName, ''));
 
         // Add some additional constraints from the Matcher object.
-        $matcherConstraint = NULL;
+        $matcherConstraint = null;
         if (!is_null($matcher)) {
             $matcherConstraint = $this->computeConstraints($query, $matcher);
         }
@@ -155,7 +155,7 @@ class ContentRepository implements RepositoryInterface
      * Finds an object matching the given identifier.
      *
      * @param int $uid The identifier of the object to find
-     * @return Content|NULL
+     * @return Content|null
      * @api
      */
     public function findByUid($uid)
@@ -186,12 +186,13 @@ class ContentRepository implements RepositoryInterface
      * @param int $offset
      * @return Content[]
      */
-    public function findBy(Matcher $matcher, Order $order = NULL, $limit = NULL, $offset = NULL)
+    public function findBy(Matcher $matcher, Order $order = null, $limit = null, $offset = null)
     {
 
         $query = $this->createQuery();
 
-        if ($limit) {
+        $limit = (int)$limit; // make sure to cast
+        if ($limit > 0) {
             $query->setLimit($limit);
         }
 
@@ -409,7 +410,7 @@ class ContentRepository implements RepositoryInterface
      * Finds an object matching the given identifier.
      *
      * @param mixed $identifier The identifier of the object to find
-     * @return Content|NULL
+     * @return Content|null
      * @api
      */
     public function findByIdentifier($identifier)
@@ -474,7 +475,7 @@ class ContentRepository implements RepositoryInterface
 
             // Default choice for the BE.
             if ($this->isBackendMode()) {
-                $querySettings->setIgnoreEnableFields(TRUE);
+                $querySettings->setIgnoreEnableFields(true);
             }
 
             $query->setQuerySettings($querySettings);
@@ -548,7 +549,7 @@ class ContentRepository implements RepositoryInterface
      */
     protected function hasForeignRelationIn($ordering)
     {
-        return strpos($ordering, '.') !== FALSE;
+        return strpos($ordering, '.') !== false;
     }
 
     /**
@@ -568,12 +569,12 @@ class ContentRepository implements RepositoryInterface
      *
      * @param Query $query
      * @param Matcher $matcher
-     * @return ConstraintInterface|NULL
+     * @return ConstraintInterface|null
      */
     protected function computeConstraints(Query $query, Matcher $matcher)
     {
 
-        $constraints = NULL;
+        $constraints = null;
 
         $collectedConstraints = array();
 
@@ -610,17 +611,17 @@ class ContentRepository implements RepositoryInterface
      *
      * @param Query $query
      * @param Matcher $matcher
-     * @return ConstraintInterface|NULL
+     * @return ConstraintInterface|null
      */
     protected function computeSearchTermConstraint(Query $query, Matcher $matcher)
     {
 
-        $result = NULL;
+        $result = null;
 
         // Search term case
         if ($matcher->getSearchTerm()) {
 
-            $fields = GeneralUtility::trimExplode(',', Tca::table($this->dataType)->getSearchFields(), TRUE);
+            $fields = GeneralUtility::trimExplode(',', Tca::table($this->dataType)->getSearchFields(), true);
 
             $constraints = array();
             $likeClause = sprintf('%%%s%%', $matcher->getSearchTerm());
@@ -654,9 +655,9 @@ class ContentRepository implements RepositoryInterface
      */
     protected function isSuitableForLike($fieldNameAndPath, $value)
     {
-        $isSuitable = TRUE;
+        $isSuitable = true;
 
-        // TRUE means it is a string
+        // true means it is a string
         if (!MathUtility::canBeInterpretedAsInteger($value)) {
 
             $dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $this->dataType);
@@ -665,7 +666,7 @@ class ContentRepository implements RepositoryInterface
             if (Tca::table($dataType)->field($fieldName)->isNumerical()
                 && !Tca::table($dataType)->field($fieldName)->hasRelation()
             ) {
-                $isSuitable = FALSE;
+                $isSuitable = false;
             }
         }
 
@@ -678,11 +679,11 @@ class ContentRepository implements RepositoryInterface
      * @param Query $query
      * @param Matcher $matcher
      * @param string $operator
-     * @return ConstraintInterface|NULL
+     * @return ConstraintInterface|null
      */
     protected function computeConstraint(Query $query, Matcher $matcher, $operator)
     {
-        $result = NULL;
+        $result = null;
 
         $operatorName = ucfirst($operator);
         $getCriteria = sprintf('get%sCriteria', $operatorName);
@@ -712,7 +713,7 @@ class ContentRepository implements RepositoryInterface
                     }
 
                     // If different means we should restore the prepended path segment for proper SQL parser.
-                    // This is TRUE for a composite field, e.g items.sys_file_metadata for categories.
+                    // This is true for a composite field, e.g items.sys_file_metadata for categories.
                     if ($fieldName !== $fieldPath) {
                         $fieldNameAndPath = $fieldPath . '.' . $fieldNameAndPath;
                     }
@@ -828,8 +829,8 @@ class ContentRepository implements RepositoryInterface
      * Signal that is called for post-processing the computed constraints object.
      *
      * @param Query $query
-     * @param ConstraintInterface|NULL $constraints
-     * @return ConstraintInterface|NULL $constraints
+     * @param ConstraintInterface|null $constraints
+     * @return ConstraintInterface|null $constraints
      * @signal
      */
     protected function emitPostProcessConstraintsSignal(Query $query, $constraints)
