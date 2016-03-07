@@ -686,7 +686,7 @@ class ContentRepository implements RepositoryInterface
         $result = null;
 
         $operatorName = ucfirst($operator);
-        $getCriteria = sprintf('get%sCriteria', $operatorName);
+        $getCriteria = sprintf('get%s', $operatorName);
         $criteria = $matcher->$getCriteria();
 
         if (!empty($criteria)) {

@@ -43,60 +43,92 @@ class Matcher
     /**
      * @var array
      */
-    protected $supportedOperators = array('equals', 'in', 'like');
+    protected $supportedOperators = [
+        '=' => 'equals',
+        'in' => 'in',
+        'like' => 'like',
+        '>' => 'greaterThan',
+        '>=' => 'greaterThanOrEqual',
+        '<' => 'lessThan',
+        '<=' => 'lessThanOrEqual'
+    ];
 
     /**
-     * Associative values used for "equals" operator ($fieldName => $value)
-     *
      * @var array
      */
-    protected $equalsCriteria = array();
+    protected $equals = [];
 
     /**
-     * Associative values used for "in" operator ($fieldName => $value)
-     *
      * @var array
      */
-    protected $inCriteria = array();
+    protected $greaterThan = [];
 
     /**
-     * Associative values used for "like" operator ($fieldName => $value)
-     *
      * @var array
      */
-    protected $likeCriteria = array();
+    protected $greaterThanOrEqual = [];
 
     /**
-     * Default logical operator for like.
-     *
+     * @var array
+     */
+    protected $lessThan = [];
+
+    /**
+     * @var array
+     */
+    protected $lessThanOrEqual = [];
+
+    /**
+     * @var array
+     */
+    protected $in = [];
+
+    /**
+     * @var array
+     */
+    protected $like = [];
+
+    /**
      * @var string
      */
     protected $defaultLogicalSeparator = self::LOGICAL_AND;
 
     /**
-     * Default logical operator for equals.
-     *
      * @var string
      */
     protected $logicalSeparatorForEquals = self::LOGICAL_AND;
 
     /**
-     * Default logical operator for equals.
-     *
+     * @var string
+     */
+    protected $logicalSeparatorForGreaterThan = self::LOGICAL_AND;
+
+    /**
+     * @var string
+     */
+    protected $logicalSeparatorForGreaterThanOrEqual = self::LOGICAL_AND;
+
+    /**
+     * @var string
+     */
+    protected $logicalSeparatorForLessThan = self::LOGICAL_AND;
+
+    /**
+     * @var string
+     */
+    protected $logicalSeparatorForLessThanOrEqual = self::LOGICAL_AND;
+
+    /**
      * @var string
      */
     protected $logicalSeparatorForIn = self::LOGICAL_AND;
 
     /**
-     * Default logical operator for like.
-     *
      * @var string
      */
     protected $logicalSeparatorForLike = self::LOGICAL_AND;
 
     /**
-     * Default logical operator for the search term.
-     *
      * @var string
      */
     protected $logicalSeparatorForSearchTerm = self::LOGICAL_OR;
@@ -104,11 +136,11 @@ class Matcher
     /**
      * Constructs a new Matcher
      *
-     * @param array $matches associative array($field => $value)
+     * @param array $matches associative [$field => $value]
      * @param string $dataType which corresponds to an entry of the TCA (table name).
      * @return \Fab\Vidi\Persistence\Matcher
      */
-    public function __construct($matches = array(), $dataType = '')
+    public function __construct($matches = [], $dataType = '')
     {
         $this->dataType = $dataType;
         $this->matches = $matches;
@@ -135,9 +167,9 @@ class Matcher
     /**
      * @return array
      */
-    public function getEqualsCriteria()
+    public function getEquals()
     {
-        return $this->equalsCriteria;
+        return $this->equals;
     }
 
     /**
@@ -147,16 +179,92 @@ class Matcher
      */
     public function equals($fieldNameAndPath, $operand)
     {
-        $this->equalsCriteria[] = array('fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand);
+        $this->equals[] = ['fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand];
         return $this;
     }
 
     /**
      * @return array
      */
-    public function getLikeCriteria()
+    public function getGreaterThan()
     {
-        return $this->likeCriteria;
+        return $this->greaterThan;
+    }
+
+    /**
+     * @param $fieldNameAndPath
+     * @param $operand
+     * @return $this
+     */
+    public function greaterThan($fieldNameAndPath, $operand)
+    {
+        $this->greaterThan[] = ['fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand];
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGreaterThanOrEqual()
+    {
+        return $this->greaterThanOrEqual;
+    }
+
+    /**
+     * @param $fieldNameAndPath
+     * @param $operand
+     * @return $this
+     */
+    public function greaterThanOrEqual($fieldNameAndPath, $operand)
+    {
+        $this->greaterThanOrEqual[] = ['fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand];
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLessThan()
+    {
+        return $this->lessThan;
+    }
+
+    /**
+     * @param $fieldNameAndPath
+     * @param $operand
+     * @return $this
+     */
+    public function lessThan($fieldNameAndPath, $operand)
+    {
+        $this->lessThan[] = ['fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand];
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLessThanOrEqual()
+    {
+        return $this->lessThanOrEqual;
+    }
+
+    /**
+     * @param $fieldNameAndPath
+     * @param $operand
+     * @return $this
+     */
+    public function lessThanOrEqual($fieldNameAndPath, $operand)
+    {
+        $this->lessThanOrEqual[] = ['fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand];
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLike()
+    {
+        return $this->like;
     }
 
     /**
@@ -166,16 +274,16 @@ class Matcher
      */
     public function in($fieldNameAndPath, $operand)
     {
-        $this->inCriteria[] = array('fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand);
+        $this->in[] = ['fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand];
         return $this;
     }
 
     /**
      * @return array
      */
-    public function getInCriteria()
+    public function getIn()
     {
-        return $this->inCriteria;
+        return $this->in;
     }
 
     /**
@@ -187,7 +295,7 @@ class Matcher
     public function like($fieldNameAndPath, $operand, $addWildCard = TRUE)
     {
         $wildCardSymbol = $addWildCard ? '%' : '';
-        $this->likeCriteria[] = array('fieldNameAndPath' => $fieldNameAndPath, 'operand' => $wildCardSymbol . $operand . $wildCardSymbol);
+        $this->like[] = ['fieldNameAndPath' => $fieldNameAndPath, 'operand' => $wildCardSymbol . $operand . $wildCardSymbol];
         return $this;
     }
 
@@ -224,6 +332,78 @@ class Matcher
     public function setLogicalSeparatorForEquals($logicalSeparatorForEquals)
     {
         $this->logicalSeparatorForEquals = $logicalSeparatorForEquals;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogicalSeparatorForGreaterThan()
+    {
+        return $this->logicalSeparatorForGreaterThan;
+    }
+
+    /**
+     * @param string $logicalSeparatorForGreaterThan
+     * @return $this
+     */
+    public function setLogicalSeparatorForGreaterThan($logicalSeparatorForGreaterThan)
+    {
+        $this->logicalSeparatorForGreaterThan = $logicalSeparatorForGreaterThan;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogicalSeparatorForGreaterThanOrEqual()
+    {
+        return $this->logicalSeparatorForGreaterThanOrEqual;
+    }
+
+    /**
+     * @param string $logicalSeparatorForGreaterThanOrEqual
+     * @return $this
+     */
+    public function setLogicalSeparatorForGreaterThanOrEqual($logicalSeparatorForGreaterThanOrEqual)
+    {
+        $this->logicalSeparatorForGreaterThanOrEqual = $logicalSeparatorForGreaterThanOrEqual;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogicalSeparatorForLessThan()
+    {
+        return $this->logicalSeparatorForLessThan;
+    }
+
+    /**
+     * @param string $logicalSeparatorForLessThan
+     * @return $this
+     */
+    public function setLogicalSeparatorForLessThan($logicalSeparatorForLessThan)
+    {
+        $this->logicalSeparatorForLessThan = $logicalSeparatorForLessThan;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogicalSeparatorForLessThanOrEqual()
+    {
+        return $this->logicalSeparatorForLessThanOrEqual;
+    }
+
+    /**
+     * @param string $logicalSeparatorForLessThanOrEqual
+     * @return $this
+     */
+    public function setLogicalSeparatorForLessThanOrEqual($logicalSeparatorForLessThanOrEqual)
+    {
+        $this->logicalSeparatorForLessThanOrEqual = $logicalSeparatorForLessThanOrEqual;
         return $this;
     }
 
