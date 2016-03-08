@@ -22,5 +22,5 @@
 		"vidi": "self.version",
 		"typo3-ter/vidi": "self.version"
 	},
-	"version": "2.1.0-dev"
+	"version": "2.0.4"
 }
