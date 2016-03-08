@@ -14,6 +14,7 @@ namespace Fab\Vidi\ViewHelpers\Render;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Module\ModuleLoader;
 
@@ -22,12 +23,6 @@ use Fab\Vidi\Module\ModuleLoader;
  */
 class ComponentsViewHelper extends AbstractViewHelper
 {
-
-    /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
-     * @inject
-     */
-    protected $objectManager;
 
     /**
      * Renders the position number of an content object.
@@ -39,7 +34,7 @@ class ComponentsViewHelper extends AbstractViewHelper
     {
 
         /** @var ModuleLoader $moduleLoader */
-        $moduleLoader = $this->objectManager->get('Fab\Vidi\Module\ModuleLoader');
+        $moduleLoader = GeneralUtility::makeInstance(ModuleLoader::class);
 
         $getComponents = 'get' . ucfirst($part) . 'Components';
         $components = $moduleLoader->$getComponents();
