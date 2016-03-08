@@ -48,8 +48,8 @@ class ClipboardService implements SingletonInterface
     {
         $matcher = $this->getMatcher();
 
-        $inCriteria = $matcher->getInCriteria();
-        $likeCriteria = $matcher->getLikeCriteria();
+        $inCriteria = $matcher->getIn();
+        $likeCriteria = $matcher->getLike();
         $searchTerm = $matcher->getSearchTerm();
 
         $hasItems = !empty($inCriteria) || !empty($likeCriteria) || !empty($searchTerm);
