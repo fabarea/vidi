@@ -69,7 +69,7 @@ class ToXlsViewHelper extends AbstractToFormatViewHelper
     {
 
         /** @var SpreadSheetService $spreadSheet */
-        $spreadSheet = GeneralUtility::makeInstance('Fab\Vidi\Service\SpreadSheetService');
+        $spreadSheet = GeneralUtility::makeInstance(SpreadSheetService::class);
 
         // Handle object header, get the first object and get the list of fields.
         /** @var \Fab\Vidi\Domain\Model\Content $object */

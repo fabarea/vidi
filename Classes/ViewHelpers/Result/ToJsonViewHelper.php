@@ -14,6 +14,7 @@ namespace Fab\Vidi\ViewHelpers\Result;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\ViewHelpers\Grid\RowsViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -69,10 +70,10 @@ class ToJsonViewHelper extends AbstractViewHelper
     }
 
     /**
-     * @return \Fab\Vidi\ViewHelpers\Grid\RowsViewHelper
+     * @return RowsViewHelper
      */
     protected function getRowsViewHelper()
     {
-        return $this->objectManager->get('Fab\Vidi\ViewHelpers\Grid\RowsViewHelper');
+        return $this->objectManager->get(RowsViewHelper::class);
     }
 }

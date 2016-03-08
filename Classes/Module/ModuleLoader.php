@@ -144,7 +144,7 @@ class ModuleLoader
     /**
      * @param string $dataType
      */
-    public function __construct($dataType = NULL)
+    public function __construct($dataType = null)
     {
         $this->dataType = $dataType;
     }

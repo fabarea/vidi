@@ -88,7 +88,7 @@ class ContentController extends ActionController
      * @validate $matches Fab\Vidi\Domain\Validator\MatchesValidator
      * @return void
      */
-    public function listAction(array $columns = array(), $matches = array())
+    public function listAction(array $columns = [], $matches = [])
     {
         // Initialize some objects related to the query.
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
@@ -133,7 +133,7 @@ class ContentController extends ActionController
      * @return string
      * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
-    public function updateAction($fieldNameAndPath, array $content, array $matches = array(), $savingBehavior = SavingBehavior::REPLACE, $language = 0, $columns = array())
+    public function updateAction($fieldNameAndPath, array $content, array $matches = [], $savingBehavior = SavingBehavior::REPLACE, $language = 0, $columns = [])
     {
 
         // Instantiate the Matcher object according different rules.
@@ -188,7 +188,7 @@ class ContentController extends ActionController
                 // Re-fetch the updated result.
                 $updatedResult = $this->getContentObjectResolver()->getValue($updatedObject, $fieldNameAndPath, $updatedFieldName, $language);
                 if (is_array($updatedResult)) {
-                    $_updatedResult = array(); // reset result set.
+                    $_updatedResult = []; // reset result set.
 
                     /** @var Content $contentObject */
                     foreach ($updatedResult as $contentObject) {
@@ -233,7 +233,7 @@ class ContentController extends ActionController
      * @param int $previousIdentifier
      * @return string
      */
-    public function sortAction(array $matches = array(), $previousIdentifier = NULL)
+    public function sortAction(array $matches = [], $previousIdentifier = NULL)
     {
 
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
@@ -289,7 +289,7 @@ class ContentController extends ActionController
      * @param bool $hasRecursiveSelection
      * @throws \Exception
      */
-    public function editAction($fieldNameAndPath, array $matches = array(), $hasRecursiveSelection = FALSE)
+    public function editAction($fieldNameAndPath, array $matches = [], $hasRecursiveSelection = FALSE)
     {
 
         // Instantiate the Matcher object according different rules.
@@ -330,7 +330,7 @@ class ContentController extends ActionController
 
             // Initialize the matcher object.
             /** @var \Fab\Vidi\Persistence\Matcher $matcher */
-            $matcher = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Matcher', array(), $relatedDataType);
+            $matcher = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Matcher', [], $relatedDataType);
 
             // Default ordering for related data type.
             $defaultOrderings = Tca::table($relatedDataType)->getDefaultOrderings();
@@ -345,7 +345,7 @@ class ContentController extends ActionController
                 $fieldConfiguration = Tca::table($dataType)->field($fieldName)->getConfiguration();
                 $parentField = $fieldConfiguration['treeConfig']['parentField'];
 
-                $flatTree = array();
+                $flatTree = [];
                 foreach ($relatedContents as $node) {
                     $flatTree[$node->getUid()] = array(
                         'item' => $node,
@@ -353,7 +353,7 @@ class ContentController extends ActionController
                     );
                 }
 
-                $tree = array();
+                $tree = [];
 
                 // If leaves are selected without its parents selected, those are shown as parent
                 foreach ($flatTree as $id => &$flatNode) {
@@ -392,7 +392,7 @@ class ContentController extends ActionController
      * @param array $matches
      * @return string
      */
-    public function deleteAction(array $matches = array())
+    public function deleteAction(array $matches = [])
     {
 
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
@@ -442,7 +442,7 @@ class ContentController extends ActionController
      * @throws \Exception
      * @return string
      */
-    public function copyAction($target, array $matches = array())
+    public function copyAction($target, array $matches = [])
     {
         // @todo
         throw new \Exception('Not yet implemented', 1410192546);
@@ -510,7 +510,7 @@ class ContentController extends ActionController
      * @param array $matches
      * @return string
      */
-    public function moveAction($target, array $matches = array())
+    public function moveAction($target, array $matches = [])
     {
 
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
@@ -613,7 +613,7 @@ class ContentController extends ActionController
      * @return string
      * @throws \Exception
      */
-    public function localizeAction($fieldNameAndPath, array $matches = array(), $language = 0)
+    public function localizeAction($fieldNameAndPath, array $matches = [], $language = 0)
     {
 
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
