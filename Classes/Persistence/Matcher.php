@@ -19,7 +19,6 @@ namespace Fab\Vidi\Persistence;
  */
 class Matcher
 {
-
     /**
      * The logical OR
      */

@@ -14,6 +14,7 @@ namespace Fab\Vidi\Resolver;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Tca\Tca;
@@ -125,10 +126,10 @@ class FieldPathResolver implements SingletonInterface
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader
+     * @return ModuleLoader
      */
     protected function getModuleLoader()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+        return GeneralUtility::makeInstance(ModuleLoader::class);
     }
 }

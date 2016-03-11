@@ -58,7 +58,6 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper
         }
     }
 
-
     /**
      * Write the CSV file to a temporary location.
      *

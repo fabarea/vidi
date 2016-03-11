@@ -372,10 +372,10 @@ class GridService extends AbstractTca
      */
     public function isSortable($fieldName)
     {
-        $defaultValue = TRUE;
+        $defaultValue = true;
         $hasSortableField = Tca::table($this->tableName)->hasSortableField();
         if ($hasSortableField) {
-            $isSortable = FALSE;
+            $isSortable = false;
         } else {
             $isSortable = $this->get($fieldName, 'sortable', $defaultValue);
         }

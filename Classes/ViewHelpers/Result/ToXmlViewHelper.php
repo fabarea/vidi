@@ -39,7 +39,7 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper
             $this->initializeEnvironment($objects);
             $this->exportFileNameAndPath .= '.xml'; // add extension to the file.
 
-            // Write the exported data to a CSV file.
+            // Write the exported data to a XML file.
             $this->writeXmlFile($objects);
 
             // We must generate a zip archive since there are files included.
@@ -67,7 +67,7 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper
     protected function writeXmlFile(array $objects)
     {
 
-        // Handle CSV header, get first object of $objects
+        // Get first object of $objects to check whether it contains possible files to include.
         /** @var \Fab\Vidi\Domain\Model\Content $object */
         $object = reset($objects);
         $this->checkWhetherObjectMayIncludeFiles($object);

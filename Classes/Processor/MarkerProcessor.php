@@ -14,6 +14,7 @@ namespace Fab\Vidi\Processor;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Resolver\ContentObjectResolver;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Signal\ProcessContentDataSignalArguments;
@@ -128,11 +129,11 @@ class MarkerProcessor implements SingletonInterface
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\ContentObjectResolver
+     * @return ContentObjectResolver
      */
     protected function getContentObjectResolver()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Resolver\ContentObjectResolver');
+        return GeneralUtility::makeInstance(ContentObjectResolver::class);
     }
 
 }

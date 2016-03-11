@@ -15,11 +15,14 @@ namespace Fab\Vidi\Persistence;
  */
 
 use Fab\Vidi\Module\ModuleName;
+use Fab\Vidi\Resolver\FieldPathResolver;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use Fab\Vidi\Module\ModuleLoader;
 use Fab\Vidi\Tca\Tca;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Factory class related to Matcher object.
@@ -30,11 +33,11 @@ class MatcherObjectFactory implements SingletonInterface
     /**
      * Gets a singleton instance of this class.
      *
-     * @return \Fab\Vidi\Persistence\MatcherObjectFactory
+     * @return $this
      */
     static public function getInstance()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Persistence\MatcherObjectFactory');
+        return GeneralUtility::makeInstance(self::class);
     }
 
     /**
@@ -52,7 +55,7 @@ class MatcherObjectFactory implements SingletonInterface
         }
 
         /** @var $matcher Matcher */
-        $matcher = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Matcher', array(), $dataType);
+        $matcher = GeneralUtility::makeInstance(Matcher::class, array(), $dataType);
 
         $matcher = $this->applyCriteriaFromDataTables($matcher, $dataType);
         $matcher = $this->applyCriteriaFromMatchesArgument($matcher, $matches);
@@ -94,7 +97,6 @@ class MatcherObjectFactory implements SingletonInterface
      */
     protected function applyCriteriaFromMatchesArgument(Matcher $matcher, $matches)
     {
-
         foreach ($matches as $fieldNameAndPath => $value) {
             // CSV values should be considered as "in" operator in Query, otherwise "equals".
             $explodedValues = GeneralUtility::trimExplode(',', $value, TRUE);
@@ -194,7 +196,7 @@ class MatcherObjectFactory implements SingletonInterface
         if (strlen($matcher->getDataType()) <= 0) {
 
             /** @var ModuleLoader $moduleLoader */
-            $moduleLoader = $this->getObjectManager()->get('Fab\Vidi\Module\ModuleLoader');
+            $moduleLoader = $this->getObjectManager()->get(ModuleLoader::class);
             $matcher->setDataType($moduleLoader->getDataType());
         }
 
@@ -204,37 +206,37 @@ class MatcherObjectFactory implements SingletonInterface
     /**
      * Get the SignalSlot dispatcher
      *
-     * @return \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+     * @return Dispatcher
      */
     protected function getSignalSlotDispatcher()
     {
-        return $this->getObjectManager()->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+        return $this->getObjectManager()->get(Dispatcher::class);
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Object\ObjectManager
+     * @return ObjectManager
      */
     protected function getObjectManager()
     {
-        return GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+        return GeneralUtility::makeInstance(ObjectManager::class);
     }
 
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader
+     * @return ModuleLoader
      */
     protected function getModuleLoader()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+        return GeneralUtility::makeInstance(ModuleLoader::class);
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\FieldPathResolver
+     * @return FieldPathResolver
      */
     protected function getFieldPathResolver()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
+        return GeneralUtility::makeInstance(FieldPathResolver::class);
     }
 
     /**
@@ -244,6 +246,6 @@ class MatcherObjectFactory implements SingletonInterface
      */
     protected function isBackendMode()
     {
-        return TYPO3_MODE == 'BE';
+        return TYPO3_MODE === 'BE';
     }
 }

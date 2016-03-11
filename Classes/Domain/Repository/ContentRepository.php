@@ -14,8 +14,15 @@ namespace Fab\Vidi\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\DataHandler\DataHandlerFactory;
+use Fab\Vidi\Domain\Validator\ContentValidator;
+use Fab\Vidi\Domain\Validator\LanguageValidator;
+use Fab\Vidi\Persistence\QuerySettings;
+use Fab\Vidi\Resolver\FieldPathResolver;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\RepositoryInterface;
@@ -462,7 +469,7 @@ class ContentRepository implements RepositoryInterface
     public function createQuery()
     {
         /** @var Query $query */
-        $query = $this->getObjectManager()->get('Fab\Vidi\Persistence\Query', $this->dataType);
+        $query = $this->getObjectManager()->get(Query::class, $this->dataType);
         $query->setSourceFieldName($this->sourceFieldName);
 
         if ($this->defaultQuerySettings) {
@@ -470,8 +477,8 @@ class ContentRepository implements RepositoryInterface
         } else {
 
             // Initialize and pass the query settings at this level.
-            /** @var \Fab\Vidi\Persistence\QuerySettings $querySettings */
-            $querySettings = $this->getObjectManager()->get('Fab\Vidi\Persistence\QuerySettings');
+            /** @var QuerySettings $querySettings */
+            $querySettings = $this->getObjectManager()->get(QuerySettings::class);
 
             // Default choice for the BE.
             if ($this->isBackendMode()) {
@@ -731,12 +738,12 @@ class ContentRepository implements RepositoryInterface
     }
 
     /**
-     * @return \TYPO3\CMS\Core\DataHandling\DataHandler
+     * @return DataHandler
      */
     protected function getDataHandler()
     {
         if (!$this->dataHandler) {
-            $this->dataHandler = GeneralUtility::makeInstance('TYPO3\CMS\Core\DataHandling\DataHandler');
+            $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
         }
         return $this->dataHandler;
     }
@@ -755,7 +762,7 @@ class ContentRepository implements RepositoryInterface
         $fieldName = Property::name($propertyName)->of($this->dataType)->toFieldName();
 
         /** @var $matcher Matcher */
-        $matcher = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Matcher', array(), $this->getDataType());
+        $matcher = GeneralUtility::makeInstance(Matcher::class, array(), $this->getDataType());
 
         $table = Tca::table($this->dataType);
         if ($table->field($fieldName)->isGroup()) {
@@ -776,11 +783,11 @@ class ContentRepository implements RepositoryInterface
     }
 
     /**
-     * @return \Fab\Vidi\DataHandler\DataHandlerFactory
+     * @return DataHandlerFactory
      */
     protected function getDataHandlerFactory()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\DataHandler\DataHandlerFactory');
+        return GeneralUtility::makeInstance(DataHandlerFactory::class);
     }
 
     /**
@@ -794,35 +801,35 @@ class ContentRepository implements RepositoryInterface
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\FieldPathResolver
+     * @return FieldPathResolver
      */
     protected function getFieldPathResolver()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
+        return GeneralUtility::makeInstance(FieldPathResolver::class);
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Object\ObjectManager
+     * @return ObjectManager
      */
     protected function getObjectManager()
     {
-        return GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+        return GeneralUtility::makeInstance(ObjectManager::class);
     }
 
     /**
-     * @return \Fab\Vidi\Domain\Validator\ContentValidator
+     * @return ContentValidator
      */
     protected function getContentValidator()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Domain\Validator\ContentValidator');
+        return GeneralUtility::makeInstance(ContentValidator::class);
     }
 
     /**
-     * @return \Fab\Vidi\Domain\Validator\LanguageValidator
+     * @return LanguageValidator
      */
     protected function getLanguageValidator()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Domain\Validator\LanguageValidator');
+        return GeneralUtility::makeInstance(LanguageValidator::class);
     }
 
     /**
@@ -836,7 +843,7 @@ class ContentRepository implements RepositoryInterface
     protected function emitPostProcessConstraintsSignal(Query $query, $constraints)
     {
         $result = $this->getSignalSlotDispatcher()->dispatch(
-            'Fab\Vidi\Domain\Repository\ContentRepository',
+            self::class,
             'postProcessConstraintsObject',
             array(
                 $query,
@@ -852,7 +859,7 @@ class ContentRepository implements RepositoryInterface
      */
     protected function getSignalSlotDispatcher()
     {
-        return $this->getObjectManager()->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+        return $this->getObjectManager()->get(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
     }
 
 }

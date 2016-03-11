@@ -14,7 +14,12 @@ namespace Fab\Vidi\ViewHelpers\Content;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Persistence\QuerySettings;
+use Fab\Vidi\Persistence\ResultSetStorage;
+use Fab\Vidi\Resolver\FieldPathResolver;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Persistence\Matcher;
 use Fab\Vidi\Persistence\Order;
@@ -126,7 +131,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      *
      * @param string $dataType
      * @param array $order
-     * @return \Fab\Vidi\Persistence\Order
+     * @return Order
      */
     public function getOrder($dataType, array $order = array())
     {
@@ -135,7 +140,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
             $order = Tca::table($dataType)->getDefaultOrderings();
         }
 
-        $order = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Order', $order);
+        $order = GeneralUtility::makeInstance(Order::class, $order);
 
         // Trigger signal for post processing Order Object.
         $this->emitPostProcessOrderObjectSignal($dataType, $order);
@@ -144,11 +149,11 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
     }
 
     /**
-     * @return \Fab\Vidi\Persistence\ResultSetStorage
+     * @return ResultSetStorage
      */
     public function getResultSetStorage()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Persistence\ResultSetStorage');
+        return GeneralUtility::makeInstance(ResultSetStorage::class);
     }
 
     /**
@@ -202,19 +207,19 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
     /**
      * Get the SignalSlot dispatcher
      *
-     * @return \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+     * @return Dispatcher
      */
     protected function getSignalSlotDispatcher()
     {
-        return $this->getObjectManager()->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+        return $this->getObjectManager()->get(Dispatcher::class);
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Object\ObjectManager
+     * @return ObjectManager
      */
     protected function getObjectManager()
     {
-        return GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+        return GeneralUtility::makeInstance(ObjectManager::class);
     }
 
     /**
@@ -223,18 +228,18 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      */
     protected function getDefaultQuerySettings($ignoreEnableFields)
     {
-        /** @var \Fab\Vidi\Persistence\QuerySettings $defaultQuerySettings */
-        $defaultQuerySettings = GeneralUtility::makeInstance('Fab\Vidi\Persistence\QuerySettings');
+        /** @var QuerySettings $defaultQuerySettings */
+        $defaultQuerySettings = GeneralUtility::makeInstance(QuerySettings::class);
         $defaultQuerySettings->setIgnoreEnableFields($ignoreEnableFields);
         return $defaultQuerySettings;
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\FieldPathResolver
+     * @return FieldPathResolver
      */
     protected function getFieldPathResolver()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
+        return GeneralUtility::makeInstance(FieldPathResolver::class);
     }
 
 }

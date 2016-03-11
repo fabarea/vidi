@@ -14,11 +14,14 @@ namespace Fab\Vidi\Service;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
 use Fab\Vidi\Persistence\Matcher;
 use Fab\Vidi\Persistence\Order;
 use Fab\Vidi\Signal\AfterFindContentObjectsSignalArguments;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * File References service.
@@ -46,7 +49,7 @@ class ContentService
      * Constructor
      *
      * @param string $dataType
-     * @return \Fab\Vidi\Service\ContentService
+     * @return ContentService
      */
     public function __construct($dataType = '')
     {
@@ -101,8 +104,8 @@ class ContentService
     protected function emitAfterFindContentObjectsSignal($contentObjects, Matcher $matcher, Order $order = NULL, $limit = 0, $offset = 0)
     {
 
-        /** @var \Fab\Vidi\Signal\AfterFindContentObjectsSignalArguments $signalArguments */
-        $signalArguments = GeneralUtility::makeInstance('Fab\Vidi\Signal\AfterFindContentObjectsSignalArguments');
+        /** @var AfterFindContentObjectsSignalArguments $signalArguments */
+        $signalArguments = GeneralUtility::makeInstance(AfterFindContentObjectsSignalArguments::class);
         $signalArguments->setDataType($this->dataType)
             ->setContentObjects($contentObjects)
             ->setMatcher($matcher)
@@ -111,30 +114,30 @@ class ContentService
             ->setOffset($offset)
             ->setHasBeenProcessed(FALSE);
 
-        $signalResult = $this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\Service\ContentService', 'afterFindContentObjects', array($signalArguments));
+        $signalResult = $this->getSignalSlotDispatcher()->dispatch(ContentService::class, 'afterFindContentObjects', array($signalArguments));
         return $signalResult[0];
     }
 
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader
+     * @return ModuleLoader
      */
     protected function getModuleLoader()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+        return GeneralUtility::makeInstance(ModuleLoader::class);
     }
 
     /**
      * Get the SignalSlot dispatcher.
      *
-     * @return \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+     * @return Dispatcher
      */
     protected function getSignalSlotDispatcher()
     {
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
-        return $objectManager->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+        /** @var ObjectManager $objectManager */
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        return $objectManager->get(Dispatcher::class);
     }
 
     /**

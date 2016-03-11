@@ -14,10 +14,19 @@ namespace Fab\Vidi\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Language\LanguageService;
+use Fab\Vidi\Module\ModuleLoader;
+use Fab\Vidi\Persistence\Matcher;
+use Fab\Vidi\Persistence\Order;
+use Fab\Vidi\Resolver\ContentObjectResolver;
+use Fab\Vidi\Resolver\FieldPathResolver;
+use Fab\Vidi\Service\ClipboardService;
+use Fab\Vidi\Service\ContentService;
 use Fab\Vidi\Tca\FieldType;
+use Fab\Vidi\TypeConverter\CsvToArrayConverter;
 use Fab\Vidi\View\Grid\Row;
+use Fab\Vidi\View\Uri\EditUri;
 use TYPO3\CMS\Core\Page\PageRenderer;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -31,6 +40,7 @@ use Fab\Vidi\Persistence\OrderObjectFactory;
 use Fab\Vidi\Persistence\PagerObjectFactory;
 use Fab\Vidi\Signal\ProcessContentDataSignalArguments;
 use Fab\Vidi\Tca\Tca;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Controller which handles actions related to Vidi in the Backend.
@@ -55,8 +65,8 @@ class ContentController extends ActionController
         // Configure property mapping to retrieve the file object.
         if ($this->arguments->hasArgument('columns')) {
 
-            /** @var \Fab\Vidi\TypeConverter\CsvToArrayConverter $typeConverter */
-            $typeConverter = $this->objectManager->get('Fab\Vidi\TypeConverter\CsvToArrayConverter');
+            /** @var CsvToArrayConverter $typeConverter */
+            $typeConverter = $this->objectManager->get(CsvToArrayConverter::class);
 
             $propertyMappingConfiguration = $this->arguments->getArgument('columns')->getPropertyMappingConfiguration();
             $propertyMappingConfiguration->setTypeConverter($typeConverter);
@@ -169,7 +179,7 @@ class ContentController extends ActionController
             $contentData['uid'] = $identifier;
 
             /** @var Content $dataObject */
-            $dataObject = GeneralUtility::makeInstance('Fab\Vidi\Domain\Model\Content', $dataType, $contentData);
+            $dataObject = GeneralUtility::makeInstance(Content::class, $dataType, $contentData);
 
             // Properly update object.
             ContentRepositoryFactory::getInstance($dataType)->update($dataObject);
@@ -329,13 +339,13 @@ class ContentController extends ActionController
             $relatedDataType = Tca::table($dataType)->field($fieldName)->getForeignTable();
 
             // Initialize the matcher object.
-            /** @var \Fab\Vidi\Persistence\Matcher $matcher */
-            $matcher = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Matcher', [], $relatedDataType);
+            /** @var Matcher $matcher */
+            $matcher = GeneralUtility::makeInstance(Matcher::class, [], $relatedDataType);
 
             // Default ordering for related data type.
             $defaultOrderings = Tca::table($relatedDataType)->getDefaultOrderings();
-            /** @var \Fab\Vidi\Persistence\Order $order */
-            $defaultOrder = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Order', $defaultOrderings);
+            /** @var Order $order */
+            $defaultOrder = GeneralUtility::makeInstance(Order::class, $defaultOrderings);
 
             // Fetch related contents
             $relatedContents = ContentRepositoryFactory::getInstance($relatedDataType)->findBy($matcher, $defaultOrder);
@@ -667,8 +677,8 @@ class ContentController extends ActionController
                     throw new \Exception($message, 1412343099);
                 }
 
-                /** @var \Fab\Vidi\View\Uri\EditUri $uri */
-                $uriRenderer = GeneralUtility::makeInstance('Fab\Vidi\View\Uri\EditUri');
+                /** @var EditUri $uri */
+                $uriRenderer = GeneralUtility::makeInstance(EditUri::class);
                 $uri = $uriRenderer->render($localizedContent);
                 HttpUtility::redirect($uri);
                 break; // no need to further continue
@@ -685,27 +695,27 @@ class ContentController extends ActionController
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Service\ContentService
+     * @return ContentService
      */
     protected function getContentService()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Service\ContentService');
+        return GeneralUtility::makeInstance(ContentService::class);
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\ContentObjectResolver
+     * @return ContentObjectResolver
      */
     protected function getContentObjectResolver()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Resolver\ContentObjectResolver');
+        return GeneralUtility::makeInstance(ContentObjectResolver::class);
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\FieldPathResolver
+     * @return FieldPathResolver
      */
     protected function getFieldPathResolver()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
+        return GeneralUtility::makeInstance(FieldPathResolver::class);
     }
 
     /**
@@ -718,7 +728,7 @@ class ContentController extends ActionController
     {
         if (!$this->view instanceof JsonView) {
             /** @var JsonView $view */
-            $this->view = $this->objectManager->get('Fab\Vidi\Mvc\JsonView');
+            $this->view = $this->objectManager->get(JsonView::class);
             $this->view->setResponse($this->response);
         }
         return $this->view;
@@ -729,7 +739,7 @@ class ContentController extends ActionController
      */
     protected function getJsonResult()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Mvc\JsonResult');
+        return GeneralUtility::makeInstance(JsonResult::class);
     }
 
     /**
@@ -748,7 +758,7 @@ class ContentController extends ActionController
     {
 
         /** @var \Fab\Vidi\Signal\ProcessContentDataSignalArguments $signalArguments */
-        $signalArguments = GeneralUtility::makeInstance('Fab\Vidi\Signal\ProcessContentDataSignalArguments');
+        $signalArguments = GeneralUtility::makeInstance(\Fab\Vidi\Signal\ProcessContentDataSignalArguments::class);
         $signalArguments->setContentObject($contentObject)
             ->setFieldNameAndPath($fieldNameAndPath)
             ->setContentData($contentData)
@@ -763,39 +773,39 @@ class ContentController extends ActionController
     /**
      * Get the SignalSlot dispatcher.
      *
-     * @return \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+     * @return Dispatcher
      */
     protected function getSignalSlotDispatcher()
     {
-        return $this->objectManager->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+        return $this->objectManager->get(Dispatcher::class);
     }
 
     /**
      * Get the Clipboard service.
      *
-     * @return \Fab\Vidi\Service\ClipboardService
+     * @return ClipboardService
      */
     protected function getClipboardService()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Service\ClipboardService');
+        return GeneralUtility::makeInstance(ClipboardService::class);
     }
 
     /**
-     * @return \Fab\Vidi\Language\LanguageService
+     * @return LanguageService
      */
     protected function getLanguageService()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Language\LanguageService');
+        return GeneralUtility::makeInstance(LanguageService::class);
     }
 
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader
+     * @return ModuleLoader
      */
     protected function getModuleLoader()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+        return GeneralUtility::makeInstance(ModuleLoader::class);
     }
 
 }
