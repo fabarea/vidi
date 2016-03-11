@@ -8,7 +8,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'fabien.udriot@typo3.org',
     'module' => '',
     'state' => 'stable',
-    'version' => '2.0.7',
+    'version' => '2.1.0-dev',
     'constraints' =>
         [
             'depends' =>
