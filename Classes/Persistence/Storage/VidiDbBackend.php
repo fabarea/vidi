@@ -945,8 +945,8 @@ class VidiDbBackend
                 if (isset($GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField'])
                     && $querySettings->getLanguageUid() > 0
                 ) {
-                    $additionalWhereClause .= ' OR (' . $tableName . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['languageField'] . '=0' .
-                        ' AND ' . $tableName . '.uid NOT IN (SELECT ' . $tableName . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField'] .
+                    $additionalWhereClause .= ' OR (' . $tableNameOrAlias . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['languageField'] . '=0' .
+                        ' AND ' . $tableNameOrAlias . '.uid NOT IN (SELECT ' . $tableName . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField'] .
                         ' FROM ' . $tableName .
                         ' WHERE ' . $tableName . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField'] . '>0' .
                         ' AND ' . $tableName . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['languageField'] . '>0';
@@ -956,7 +956,6 @@ class VidiDbBackend
                         $additionalWhereClause .= ' AND ' . $tableNameOrAlias . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['delete'] . '=0';
                     }
                     $additionalWhereClause .= '))';
-                    throw new Exception('Not tested code! It will fail', 1412928284);
                 }
                 $statementParts['additionalWhereClause'][$tableNameOrAlias][] = '(' . $additionalWhereClause . ')';
             }
