@@ -14,14 +14,17 @@ namespace Fab\Vidi\Grid;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * Abstract class for rendering a column in the Grid.
  */
 abstract class ColumnRendererAbstract implements ColumnRendererInterface
 {
+
     /**
      * The content object.
      *
@@ -170,11 +173,11 @@ abstract class ColumnRendererAbstract implements ColumnRendererInterface
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader
+     * @return ModuleLoader
      */
     protected function getModuleLoader()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+        return GeneralUtility::makeInstance(ModuleLoader::class);
     }
 
     /**
@@ -186,11 +189,11 @@ abstract class ColumnRendererAbstract implements ColumnRendererInterface
     }
 
     /**
-     * @return \TYPO3\CMS\Lang\LanguageService
+     * @return LanguageService
      */
     protected function getLanguageService()
     {
-        return GeneralUtility::makeInstance('TYPO3\CMS\Lang\LanguageService');
+        return GeneralUtility::makeInstance(LanguageService::class);
     }
 
 }

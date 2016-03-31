@@ -32,46 +32,95 @@ class RelationRenderer extends ColumnRendererAbstract
      */
     public function render()
     {
+        if ($this->isBackendMode()) {
+            $output = $this->renderForBackend();
+        } else {
+            $output = $this->renderForFrontend();
+        }
 
-        $result = '';
+        return $output;
+    }
 
-        // Get TCA table service.
-        $table = Tca::table($this->object);
+    /**
+     * @return string
+     */
+    protected function renderForBackend()
+    {
+
+        $output = '';
 
         // Get label of the foreign table.
         $foreignLabelField = $this->getForeignTableLabelField($this->fieldName);
 
-        if ($table->field($this->fieldName)->hasOne()) {
+        if (Tca::table($this->object)->field($this->fieldName)->hasOne()) {
 
             $foreignObject = $this->object[$this->fieldName];
 
             if ($foreignObject) {
-                $template = '<a href="%s" data-uid="%s" class="btn-edit invisible">%s</a> <span>%s</span>';
-                $result = sprintf(
-                    $template,
+                $output = sprintf(
+                    '<a href="%s" data-uid="%s" class="btn-edit invisible">%s</a> <span>%s</span>',
                     $this->getEditUri($foreignObject),
                     $this->object->getUid(),
                     $this->getIconFactory()->getIcon('actions-document-open', Icon::SIZE_SMALL),
                     $foreignObject[$foreignLabelField]
                 );
             }
-        } elseif ($table->field($this->fieldName)->hasMany()) {
+        } elseif (Tca::table($this->object)->field($this->fieldName)->hasMany()) {
 
             if (!empty($this->object[$this->fieldName])) {
-                $template = '<li><a href="%s" data-uid="%s" class="btn-edit invisible">%s</a> <span>%s</span></li>';
 
                 /** @var $foreignObject \Fab\Vidi\Domain\Model\Content */
                 foreach ($this->object[$this->fieldName] as $foreignObject) {
-                    $result .= sprintf($template,
+                    $output .= sprintf(
+                        '<li><a href="%s" data-uid="%s" class="btn-edit invisible">%s</a> <span>%s</span></li>',
                         $this->getEditUri($foreignObject),
                         $this->object->getUid(),
                         $this->getIconFactory()->getIcon('actions-document-open', Icon::SIZE_SMALL),
-                        $foreignObject[$foreignLabelField]);
+                        $foreignObject[$foreignLabelField]
+                    );
                 }
-                $result = sprintf('<ul class="list-unstyled">%s</ul>', $result);
+                $output = sprintf('<ul class="list-unstyled">%s</ul>', $output);
             }
         }
-        return $result;
+        return $output;
+    }
+
+    /**
+     * @return string
+     */
+    protected function renderForFrontend()
+    {
+
+        $output = '';
+
+        // Get label of the foreign table.
+        $foreignLabelField = $this->getForeignTableLabelField($this->fieldName);
+
+        if (Tca::table($this->object)->field($this->fieldName)->hasOne()) {
+
+            $foreignObject = $this->object[$this->fieldName];
+
+            if ($foreignObject) {
+                $output = sprintf(
+                    '%s',
+                    $foreignObject[$foreignLabelField]
+                );
+            }
+        } elseif (Tca::table($this->object)->field($this->fieldName)->hasMany()) {
+
+            if (!empty($this->object[$this->fieldName])) {
+
+                /** @var $foreignObject \Fab\Vidi\Domain\Model\Content */
+                foreach ($this->object[$this->fieldName] as $foreignObject) {
+                    $output .= sprintf(
+                        '<li>%s</li>',
+                        $foreignObject[$foreignLabelField]
+                    );
+                }
+                $output = sprintf('<ul class="list-unstyled">%s</ul>', $output);
+            }
+        }
+        return $output;
     }
 
     /**
@@ -121,6 +170,16 @@ class RelationRenderer extends ColumnRendererAbstract
         // Compute the label of the foreign table.
         $relationDataType = $table->field($fieldName)->relationDataType();
         return Tca::table($relationDataType)->getLabelField();
+    }
+
+    /**
+     * Returns whether the current mode is Frontend
+     *
+     * @return bool
+     */
+    protected function isBackendMode()
+    {
+        return TYPO3_MODE === 'BE';
     }
 
 }

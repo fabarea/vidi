@@ -24,14 +24,23 @@ class RelationEditRenderer extends ColumnRendererAbstract
 {
 
     /**
-     * Render a representation of the relation on the GUI.
-     *
      * @return string
      */
     public function render()
     {
+        $output = '';
+        if ($this->isBackendMode()) {
+            $output = $this->renderForBackend();
+        }
 
-        $template = '<div style="text-align: right" class="pull-right invisible"><a href="%s" class="btn-edit-relation" data-field-label="%s">%s</a></div>';
+        return $output;
+    }
+
+    /**
+     * @return string
+     */
+    protected function renderForBackend()
+    {
 
         // Initialize url parameters array.
         $urlParameters = array(
@@ -48,13 +57,22 @@ class RelationEditRenderer extends ColumnRendererAbstract
             $fieldLabel = str_replace(':', '', $fieldLabel); // sanitize label
         }
 
-        $result = sprintf(
-            $template,
+        return sprintf(
+            '<div style="text-align: right" class="pull-right invisible"><a href="%s" class="btn-edit-relation" data-field-label="%s">%s</a></div>',
             $this->getModuleLoader()->getModuleUrl($urlParameters),
             $fieldLabel,
             $this->getIconFactory()->getIcon('actions-edit-add', Icon::SIZE_SMALL)
         );
-
-        return $result;
     }
+
+    /**
+     * Returns whether the current mode is Frontend
+     *
+     * @return bool
+     */
+    protected function isBackendMode()
+    {
+        return TYPO3_MODE === 'BE';
+    }
+
 }

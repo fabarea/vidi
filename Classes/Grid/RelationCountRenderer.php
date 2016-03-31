@@ -27,24 +27,25 @@ class RelationCountRenderer extends ColumnRendererAbstract
 {
 
     /**
-     * @var \TYPO3\CMS\Fluid\ViewHelpers\TranslateViewHelper
-     */
-    protected $translateViewHelper;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->translateViewHelper = GeneralUtility::makeInstance('TYPO3\CMS\Fluid\ViewHelpers\TranslateViewHelper');
-    }
-
-    /**
      * Render a representation of the relation on the GUI.
      *
      * @return string
      */
     public function render()
+    {
+
+        $output = '';
+        if ($this->isBackendMode()) {
+            $output = $this->renderForBackend();
+        }
+
+        return $output;
+    }
+
+    /**
+     * @return string
+     */
+    protected function renderForBackend()
     {
 
         $numberOfObjects = count($this->object[$this->fieldName]);
@@ -77,6 +78,16 @@ class RelationCountRenderer extends ColumnRendererAbstract
             htmlspecialchars(LocalizationUtility::translate($label, '')),
             $this->getIconFactory()->getIcon('extensions-vidi-go', Icon::SIZE_SMALL)
         );
+    }
+
+    /**
+     * Returns whether the current mode is Frontend
+     *
+     * @return bool
+     */
+    protected function isBackendMode()
+    {
+        return TYPO3_MODE === 'BE';
     }
 
 }
