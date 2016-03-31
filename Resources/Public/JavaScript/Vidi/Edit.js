@@ -337,6 +337,7 @@ define([
 			$.ajax({
 				url: $('#form-edit', Vidi.modal).attr('action'),
 				data: $('#form-edit', Vidi.modal).serialize(),
+				method: 'POST',
 				beforeSend: function(arr, $form, options) {
 
 					// Only submit if button is not disabled
