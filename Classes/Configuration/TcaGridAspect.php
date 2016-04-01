@@ -57,7 +57,7 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
             $GLOBALS['TCA'][$dataType]['grid'] = array();
         }
 
-        if (empty($GLOBALS['TCA'][$dataType]['grid']['facet'])) {
+        if (empty($GLOBALS['TCA'][$dataType]['grid']['facets'])) {
             $GLOBALS['TCA'][$dataType]['grid']['facets'] = [
                 'uid',
                 $labelField,
