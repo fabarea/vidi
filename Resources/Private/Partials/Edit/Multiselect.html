@@ -4,27 +4,25 @@
 
 	<f:section name="Multiselect">
 
-		<f:if condition="{numberOfObjects} > 1">
-			<div class="control-group hidden" style="margin-bottom: 20px">
-				<div>
-					<strong>
-						Saving behavior
-					</strong>
-				</div>
-				<label class="radio inline">
-					<f:form.radio id="savingBehaviorRemove" name="savingBehavior" value="remove"/>
-					<f:translate key="remove_relation"/>
-				</label>
-				<label class="radio inline">
-					<f:form.radio id="savingBehaviorAppend" name="savingBehavior" value="append"/>
-					<f:translate key="append_relation"/>
-				</label>
-				<label class="radio inline">
-					<f:form.radio id="savingBehaviorReplace" name="savingBehavior" value="replace" checked="true"/>
-					<f:translate key="replace_relation"/>
-				</label>
+		<div class="control-group hidden" style="margin-bottom: 20px">
+			<div>
+				<strong>
+					Saving behavior
+				</strong>
 			</div>
-		</f:if>
+			<label class="radio inline">
+				<f:form.radio id="savingBehaviorRemove" name="savingBehavior" value="remove"/>
+				<f:translate key="remove_relation"/>
+			</label>
+			<label class="radio inline">
+				<f:form.radio id="savingBehaviorAppend" name="savingBehavior" value="append"/>
+				<f:translate key="append_relation"/>
+			</label>
+			<label class="radio inline">
+				<f:form.radio id="savingBehaviorReplace" name="savingBehavior" value="replace" checked="true"/>
+				<f:translate key="replace_relation"/>
+			</label>
+		</div>
 
 		<div style="margin-bottom: 10px">
 			<strong>

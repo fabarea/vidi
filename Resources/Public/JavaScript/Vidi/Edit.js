@@ -283,7 +283,7 @@ define([
 					trigger: function() {
 
 						// Set "hidden" controller by JavaScript.
-						$('#savingBehaviorRemove').click();
+						$('#savingBehaviorRemove', Vidi.modal).click();
 						Vidi.Edit.submit();
 					}
 				});
@@ -295,11 +295,10 @@ define([
 					trigger: function() {
 
 						// Set "hidden" controller by JavaScript.
-						$('#savingBehaviorAppend').click();
+						$('#savingBehaviorAppend', Vidi.modal).click();
 						Vidi.Edit.submit();
 					}
 				});
-
 
 				// Push configuration for "relation" editing: "replace" relation case.
 				buttons.push({
@@ -308,7 +307,7 @@ define([
 					trigger: function() {
 
 						// Set "hidden" controller by JavaScript.
-						$('#savingBehaviorReplace').click();
+						$('#savingBehaviorReplace', Vidi.modal).click();
 						Vidi.Edit.submit();
 					}
 				});
