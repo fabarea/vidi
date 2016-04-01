@@ -6,5 +6,3 @@ default_pid = 1,fe_users:1,fe_groups:1
 
 # cat=other//; type=boolean; label=Autoload TypoScript: If enabled, Vidi will automatically load the TypoScript setup that is required. When un-checking make sure to include / load the TypoScript on your own as a Static TypoScript .
 autoload_typoscript = 1
-# cat=other//; type=boolean; label=Autoload TypoScript: If enabled, Vidi will automatically load the TypoScript setup that is required. When un-checking make sure to include / load the TypoScript on your own as a Static TypoScript .
-autoload_typoscript2 = 1
