@@ -86,7 +86,7 @@
 				<source>item</source>
 			</trans-unit>
 			<trans-unit id="items">
-				<source>item</source>
+				<source>items</source>
 			</trans-unit>
 			<trans-unit id="tstamp">
 				<source>Modification date</source>
