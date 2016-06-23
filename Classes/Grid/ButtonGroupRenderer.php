@@ -44,7 +44,7 @@ class ButtonGroupRenderer extends ColumnRendererAbstract
     {
         $components = $this->getModuleLoader()->getGridButtonsComponents();
 
-        $buttons = '';
+        $buttons = []
         foreach ($components as $component) {
 
             /** @var  $view */
