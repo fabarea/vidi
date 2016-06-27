@@ -18,7 +18,7 @@ return [
         ],
     ],
     'types' => [
-        '1' => ['showitem' => 'hidden;;1, type, name, data_type, query'],
+        '1' => ['showitem' => 'hidden,--palette--;;1, type, name, data_type, query'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],
@@ -37,6 +37,7 @@ return [
             'label' => 'LLL:EXT:vidi/Resources/Private/Language/tx_vidi_selection.xlf:visibility',
             'config' => [
                 'type' => 'select',
+                'renderType' => 'selectSingle',
                 'items' => [
                     ['LLL:EXT:vidi/Resources/Private/Language/tx_vidi_selection.xlf:visibility.everyone', 0],
                     ['LLL:EXT:vidi/Resources/Private/Language/tx_vidi_selection.xlf:visibility.private', 1],
