@@ -157,9 +157,12 @@ define([
 						// Store the parameters to be able to reconstruct the URL later on.
 						Vidi.Grid.storage.data = data;
 					},
-					error: function() {
-						var message = 'Oups! Something went wrong with the Ajax request... Investigate the problem in the Network Monitor. <br />';
-						Notification.error('Communication error', message);
+					error: function(response) {
+						// Avoid error display if request is interrupted before we can get a proper status code.
+						if (response.status > 0) {
+							var message = 'Oups! Something went wrong with the Ajax request... Investigate the problem in the Network Monitor.';
+							Notification.error('Communication error', message);
+						}
 					}
 				},
 				autoWidth:false,
