@@ -523,6 +523,15 @@ class ContentRepository implements RepositoryInterface
     }
 
     /**
+     * @return void
+     */
+    public function resetDefaultQuerySettings()
+    {
+        $this->defaultQuerySettings = null;
+    }
+
+
+    /**
      * @return array
      */
     public function getErrorMessages()
