@@ -65,6 +65,7 @@ define([
 				$.ajax(
 					{
 						url: $('#link-user-preferences').attr('href'),
+						method: 'post',
 						data: Vidi.Session.getParameters(key, value)
 					})
 					.error(function(data) {
