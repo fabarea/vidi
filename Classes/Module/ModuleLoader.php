@@ -301,7 +301,7 @@ class ModuleLoader
 
             ExtensionUtility::registerModule(
                 'Fab.vidi',
-                $this->mainModule,
+                $this->computeMainModule(),
                 $this->dataType . '_' . $this->moduleKey,
                 $this->position,
                 [
