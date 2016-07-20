@@ -93,53 +93,53 @@ class ModuleLoader
     /**
      * @var string[]
      */
-    protected $additionalJavaScriptFiles = array();
+    protected $additionalJavaScriptFiles = [];
 
     /**
      * @var string[]
      */
-    protected $additionalStyleSheetFiles = array();
+    protected $additionalStyleSheetFiles = [];
 
     /**
      * @var array
      */
-    protected $components = array(
-        ModulePosition::DOC_HEADER => array(
-            ModulePosition::TOP => array(
-                ModulePosition::LEFT => array(),
-                ModulePosition::RIGHT => array(
+    protected $components = [
+        ModulePosition::DOC_HEADER => [
+            ModulePosition::TOP => [
+                ModulePosition::LEFT => [],
+                ModulePosition::RIGHT => [
                     'Fab\Vidi\View\Button\ToolButton',
-                ),
-            ),
-            ModulePosition::BOTTOM => array(
-                ModulePosition::LEFT => array(
+                ],
+            ],
+            ModulePosition::BOTTOM => [
+                ModulePosition::LEFT => [
                     'Fab\Vidi\View\Button\NewButton',
                     'Fab\Vidi\ViewHelpers\Link\BackViewHelper',
-                ),
-                ModulePosition::RIGHT => array(),
-            ),
-        ),
-        ModulePosition::GRID => array(
-            ModulePosition::TOP => array(
+                ],
+                ModulePosition::RIGHT => [],
+            ],
+        ],
+        ModulePosition::GRID => [
+            ModulePosition::TOP => [
                 'Fab\Vidi\View\Check\PidCheck',
                 'Fab\Vidi\View\Check\RelationsCheck',
                 'Fab\Vidi\View\Tab\DataTypeTab',
-            ),
-            ModulePosition::BUTTONS => array(
+            ],
+            ModulePosition::BUTTONS => [
                 'Fab\Vidi\View\Button\EditButton',
                 'Fab\Vidi\View\Button\DeleteButton',
-            ),
-            ModulePosition::BOTTOM => array(),
-        ),
-        ModulePosition::MENU_MASS_ACTION => array(
+            ],
+            ModulePosition::BOTTOM => [],
+        ],
+        ModulePosition::MENU_MASS_ACTION => [
             'Fab\Vidi\View\MenuItem\ExportXlsMenuItem',
             'Fab\Vidi\View\MenuItem\ExportXmlMenuItem',
             'Fab\Vidi\View\MenuItem\ExportCsvMenuItem',
             'Fab\Vidi\View\MenuItem\DividerMenuItem',
             'Fab\Vidi\View\MenuItem\MassDeleteMenuItem',
             #'Fab\Vidi\View\MenuItem\MassEditMenuItem',
-        ),
-    );
+        ],
+    ];
 
     /**
      * @param string $dataType
@@ -165,6 +165,7 @@ class ModuleLoader
      * Register the module
      *
      * @return void
+     * @throws \InvalidArgumentException
      */
     public function register()
     {
@@ -172,7 +173,7 @@ class ModuleLoader
         $this->initializeDefaultValues();
         $internalModuleSignature = $this->getInternalModuleSignature();
 
-        $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature] = array();
+        $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature] = [];
         $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['dataType'] = $this->dataType;
         $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['mainModule'] = $this->mainModule;
         $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['defaultPid'] = $this->defaultPid;
@@ -182,12 +183,12 @@ class ModuleLoader
 
         // Register and displays module in the BE only if told, default is TRUE.
         if ($this->isShown) {
-            $moduleConfiguration = array(
+            $moduleConfiguration = [
                 #'routeTarget' => \Fab\Vidi\Controller\ContentController::class . '::mainAction', // what to do here?
                 'access' => $this->access,
                 'labels' => $this->moduleLanguageFile,
                 'inheritNavigationComponentFromMainModule' => TRUE
-            );
+            ];
 
             if (!empty($this->icon)) {
                 $moduleConfiguration['icon'] = $this->icon;
@@ -206,14 +207,14 @@ class ModuleLoader
                 $this->mainModule,
                 $this->dataType . '_' . $this->moduleKey,
                 $this->position,
-                array(
+                [
                     'Content' => 'index, list, delete, update, edit, copy, move, localize, sort, copyClipboard, moveClipboard',
                     'Tool' => 'welcome, work',
                     'Facet' => 'autoSuggest, autoSuggests',
                     'Selection' => 'edit, update, create, delete, list, show',
                     'UserPreferences' => 'save',
                     'Clipboard' => 'save, flush, show',
-                ),
+                ],
                 $moduleConfiguration
             );
         }
@@ -299,7 +300,7 @@ class ModuleLoader
      * @param bool $absoluteUrl
      * @return string
      */
-    public function getModuleUrl(array $additionalParameters = array(), $absoluteUrl = false)
+    public function getModuleUrl(array $additionalParameters = [], $absoluteUrl = false)
     {
         $moduleCode = $this->getSignature();
 
@@ -323,7 +324,7 @@ class ModuleLoader
      * @param array $additionalParameters
      * @return string
      */
-    public function getModuleAbsoluteUrl(array $additionalParameters = array())
+    public function getModuleAbsoluteUrl(array $additionalParameters = [])
     {
         return $this->getModuleUrl($additionalParameters, true);
     }
@@ -491,6 +492,7 @@ class ModuleLoader
 
     /**
      * @return string
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getDataType()
     {
@@ -505,7 +507,7 @@ class ModuleLoader
      */
     public function getDataTypes()
     {
-        $dataTypes = array();
+        $dataTypes = [];
         foreach ($GLOBALS['TBE_MODULES_EXT']['vidi'] as $module) {
             $dataTypes[] = $module['dataType'];
         }
@@ -589,7 +591,7 @@ class ModuleLoader
     public function addDocHeaderTopLeftComponents($components)
     {
         if (is_string($components)) {
-            $components = array($components);
+            $components = [$components];
         }
         $currentComponents = $this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::LEFT];
         $this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::LEFT] = array_merge($currentComponents, $components);
@@ -622,7 +624,7 @@ class ModuleLoader
     public function addDocHeaderTopRightComponents($components)
     {
         if (is_string($components)) {
-            $components = array($components);
+            $components = [$components];
         }
         $currentComponents = $this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::RIGHT];
         $this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::RIGHT] = array_merge($currentComponents, $components);
@@ -655,7 +657,7 @@ class ModuleLoader
     public function addDocHeaderBottomLeftComponents($components)
     {
         if (is_string($components)) {
-            $components = array($components);
+            $components = [$components];
         }
         $currentComponents = $this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::LEFT];
         $this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::LEFT] = array_merge($currentComponents, $components);
@@ -688,7 +690,7 @@ class ModuleLoader
     public function addDocHeaderBottomRightComponents($components)
     {
         if (is_string($components)) {
-            $components = array($components);
+            $components = [$components];
         }
         $currentComponents = $this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::RIGHT];
         $this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::RIGHT] = array_merge($currentComponents, $components);
@@ -721,7 +723,7 @@ class ModuleLoader
     public function addGridTopComponents($components)
     {
         if (is_string($components)) {
-            $components = array($components);
+            $components = [$components];
         }
         $currentComponents = $this->components[ModulePosition::GRID][ModulePosition::TOP];
         $this->components[ModulePosition::GRID][ModulePosition::TOP] = array_merge($currentComponents, $components);
@@ -754,7 +756,7 @@ class ModuleLoader
     public function addGridBottomComponents($components)
     {
         if (is_string($components)) {
-            $components = array($components);
+            $components = [$components];
         }
         $currentComponents = $this->components[ModulePosition::GRID][ModulePosition::BOTTOM];
         $this->components[ModulePosition::GRID][ModulePosition::BOTTOM] = array_merge($currentComponents, $components);
@@ -787,7 +789,7 @@ class ModuleLoader
     public function addGridButtonsComponents($components)
     {
         if (is_string($components)) {
-            $components = array($components);
+            $components = [$components];
         }
         $currentComponents = $this->components[ModulePosition::GRID][ModulePosition::BUTTONS];
         $this->components[ModulePosition::GRID][ModulePosition::BUTTONS] = array_merge($currentComponents, $components);
@@ -820,7 +822,7 @@ class ModuleLoader
     public function addMenuMassActionComponents($components)
     {
         if (is_string($components)) {
-            $components = array($components);
+            $components = [$components];
         }
         $currentComponents = $this->components[ModulePosition::MENU_MASS_ACTION];
         $this->components[ModulePosition::MENU_MASS_ACTION] = array_merge($currentComponents, $components);
