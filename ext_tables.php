@@ -6,7 +6,7 @@ if (!defined('TYPO3_MODE')) {
 
 // Check from Vidi configuration what default module should be loaded.
 // Make sure the class exists to avoid a Runtime Error
-if (TYPO3_MODE == 'BE') {
+if (TYPO3_MODE === 'BE') {
 
     // Add content main module before 'user'
     if (!isset($GLOBALS['TBE_MODULES']['content'])) {
@@ -14,7 +14,7 @@ if (TYPO3_MODE == 'BE') {
         // Position module "content" after module "user" manually. No API is available for that, it seems...
         $modules = [];
         foreach ($GLOBALS['TBE_MODULES'] as $key => $val) {
-            if ($key == 'user') {
+            if ($key === 'user') {
                 $modules['content'] = '';
             }
             $modules[$key] = $val;
