@@ -51,17 +51,17 @@ class ModuleLoader
     /**
      * @var bool
      */
-    protected $showPageTree;
+    protected $showPageTree = false;
 
     /**
      * @var bool
      */
-    protected $isShown = TRUE;
+    protected $isShown = true;
 
     /**
      * @var string
      */
-    protected $access = Access::USER;
+    protected $access;
 
     /**
      * @var string
@@ -76,12 +76,12 @@ class ModuleLoader
     /**
      * @var string
      */
-    protected $icon = '';
+    protected $icon;
 
     /**
      * @var string
      */
-    protected $moduleLanguageFile = 'LLL:EXT:vidi/Resources/Private/Language/locallang_module.xlf';
+    protected $moduleLanguageFile;
 
     /**
      * The module key such as m1, m2.
@@ -103,43 +103,7 @@ class ModuleLoader
     /**
      * @var array
      */
-    protected $components = [
-        ModulePosition::DOC_HEADER => [
-            ModulePosition::TOP => [
-                ModulePosition::LEFT => [],
-                ModulePosition::RIGHT => [
-                    'Fab\Vidi\View\Button\ToolButton',
-                ],
-            ],
-            ModulePosition::BOTTOM => [
-                ModulePosition::LEFT => [
-                    'Fab\Vidi\View\Button\NewButton',
-                    'Fab\Vidi\ViewHelpers\Link\BackViewHelper',
-                ],
-                ModulePosition::RIGHT => [],
-            ],
-        ],
-        ModulePosition::GRID => [
-            ModulePosition::TOP => [
-                'Fab\Vidi\View\Check\PidCheck',
-                'Fab\Vidi\View\Check\RelationsCheck',
-                'Fab\Vidi\View\Tab\DataTypeTab',
-            ],
-            ModulePosition::BUTTONS => [
-                'Fab\Vidi\View\Button\EditButton',
-                'Fab\Vidi\View\Button\DeleteButton',
-            ],
-            ModulePosition::BOTTOM => [],
-        ],
-        ModulePosition::MENU_MASS_ACTION => [
-            'Fab\Vidi\View\MenuItem\ExportXlsMenuItem',
-            'Fab\Vidi\View\MenuItem\ExportXmlMenuItem',
-            'Fab\Vidi\View\MenuItem\ExportCsvMenuItem',
-            'Fab\Vidi\View\MenuItem\DividerMenuItem',
-            'Fab\Vidi\View\MenuItem\MassDeleteMenuItem',
-            #'Fab\Vidi\View\MenuItem\MassEditMenuItem',
-        ],
-    ];
+    protected $components = [];
 
     /**
      * @param string $dataType
@@ -147,6 +111,45 @@ class ModuleLoader
     public function __construct($dataType = null)
     {
         $this->dataType = $dataType;
+
+        // Initialize components
+        $this->components = [
+            ModulePosition::DOC_HEADER => [
+                ModulePosition::TOP => [
+                    ModulePosition::LEFT => [],
+                    ModulePosition::RIGHT => [
+                        'Fab\Vidi\View\Button\ToolButton',
+                    ],
+                ],
+                ModulePosition::BOTTOM => [
+                    ModulePosition::LEFT => [
+                        'Fab\Vidi\View\Button\NewButton',
+                        'Fab\Vidi\ViewHelpers\Link\BackViewHelper',
+                    ],
+                    ModulePosition::RIGHT => [],
+                ],
+            ],
+            ModulePosition::GRID => [
+                ModulePosition::TOP => [
+                    'Fab\Vidi\View\Check\PidCheck',
+                    'Fab\Vidi\View\Check\RelationsCheck',
+                    'Fab\Vidi\View\Tab\DataTypeTab',
+                ],
+                ModulePosition::BUTTONS => [
+                    'Fab\Vidi\View\Button\EditButton',
+                    'Fab\Vidi\View\Button\DeleteButton',
+                ],
+                ModulePosition::BOTTOM => [],
+            ],
+            ModulePosition::MENU_MASS_ACTION => [
+                'Fab\Vidi\View\MenuItem\ExportXlsMenuItem',
+                'Fab\Vidi\View\MenuItem\ExportXmlMenuItem',
+                'Fab\Vidi\View\MenuItem\ExportCsvMenuItem',
+                'Fab\Vidi\View\MenuItem\DividerMenuItem',
+                'Fab\Vidi\View\MenuItem\MassDeleteMenuItem',
+                #'Fab\Vidi\View\MenuItem\MassEditMenuItem',
+            ],
+        ];
     }
 
     /**
@@ -162,44 +165,138 @@ class ModuleLoader
     }
 
     /**
-     * Register the module
+     * @return array
+     */
+    protected function getExistingInternalConfiguration()
+    {
+        $internalModuleSignature = $this->getInternalModuleSignature();
+        return is_array($GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature])
+            ? $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]
+            : [];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getExistingMainConfiguration()
+    {
+        $possibleConfiguration = $GLOBALS['TBE_MODULES']['_configuration']['Vidi_' . $this->getInternalModuleSignature()];
+        return is_array($possibleConfiguration) ? $possibleConfiguration : [];
+    }
+
+    /**
+     * @return string
+     */
+    protected function computeMainModule()
+    {
+        $existingConfiguration = $this->getExistingInternalConfiguration();
+
+        if ($this->mainModule !== null) {
+            $mainModule = $this->mainModule;
+        } elseif ($existingConfiguration['mainModule']) { // existing configuration may override.
+            $mainModule = $existingConfiguration['mainModule'];
+        } else {
+            $mainModule = self::DEFAULT_MAIN_MODULE; //default value.
+        }
+        return $mainModule;
+    }
+
+    /**
+     * @return string
+     */
+    protected function computeDefaultPid()
+    {
+        $existingConfiguration = $this->getExistingInternalConfiguration();
+
+        if ($this->defaultPid !== null) {
+            $defaultPid = $this->defaultPid;
+        } elseif ($existingConfiguration['defaultPid']) { // existing configuration may override.
+            $defaultPid = $existingConfiguration['defaultPid'];
+        } else {
+            $defaultPid = self::DEFAULT_PID; //default value.
+        }
+        return $defaultPid;
+    }
+
+    /**
+     * @return array
+     */
+    protected function computeAdditionalJavaScriptFiles()
+    {
+        $additionalJavaScriptFiles = $this->additionalJavaScriptFiles;
+
+        // Possible merge of existing javascript files.
+        $existingConfiguration = $this->getExistingInternalConfiguration();
+        if ($existingConfiguration['additionalJavaScriptFiles']) {
+            $additionalJavaScriptFiles = array_merge($additionalJavaScriptFiles, $existingConfiguration['additionalJavaScriptFiles']);
+        }
+
+        return $additionalJavaScriptFiles;
+    }
+
+    /**
+     * @return array
+     */
+    protected function computeAdditionalStyleSheetFiles()
+    {
+        $additionalStyleSheetFiles = $this->additionalStyleSheetFiles;
+
+        // Possible merge of existing style sheets.
+        $existingConfiguration = $this->getExistingInternalConfiguration();
+        if ($existingConfiguration['additionalStyleSheetFiles']) {
+            $additionalStyleSheetFiles = array_merge($additionalStyleSheetFiles, $existingConfiguration['additionalStyleSheetFiles']);
+        }
+
+        return $additionalStyleSheetFiles;
+    }
+
+    /**
+     * @return array
+     */
+    protected function computeComponents()
+    {
+        // We override the config in any case. See if we need more than that.
+        return $this->components;
+    }
+
+    /**
+     * Register the module in two places: core + vidi internal.
      *
      * @return void
      * @throws \InvalidArgumentException
      */
     public function register()
     {
+        // Internal Vidi module registration.
+        $configuration = [];
+        $configuration['dataType'] = $this->dataType;
+        $configuration['mainModule'] = $this->computeMainModule();
+        $configuration['defaultPid'] = $this->computeDefaultPid();
+        $configuration['additionalJavaScriptFiles'] = $this->computeAdditionalJavaScriptFiles();
+        $configuration['additionalStyleSheetFiles'] = $this->computeAdditionalStyleSheetFiles();
+        $configuration['components'] = $this->computeComponents();
 
-        $this->initializeDefaultValues();
         $internalModuleSignature = $this->getInternalModuleSignature();
+        $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature] = $configuration;
 
-        $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature] = [];
-        $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['dataType'] = $this->dataType;
-        $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['mainModule'] = $this->mainModule;
-        $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['defaultPid'] = $this->defaultPid;
-        $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['additionalJavaScriptFiles'] = $this->additionalJavaScriptFiles;
-        $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['additionalStyleSheetFiles'] = $this->additionalStyleSheetFiles;
-        $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]['components'] = $this->components;
-
-        // Register and displays module in the BE only if told, default is TRUE.
+        // Core module registration.
+        // Register and displays module in the BE only if told, default is "true".
         if ($this->isShown) {
-            $moduleConfiguration = [
-                #'routeTarget' => \Fab\Vidi\Controller\ContentController::class . '::mainAction', // what to do here?
-                'access' => $this->access,
-                'labels' => $this->moduleLanguageFile,
-                'inheritNavigationComponentFromMainModule' => TRUE
-            ];
 
-            if (!empty($this->icon)) {
-                $moduleConfiguration['icon'] = $this->icon;
+            $moduleConfiguration = [];
+            #$moduleConfiguration['routeTarget'] = \Fab\Vidi\Controller\ContentController::class . '::mainAction', // what to do here?
+            $moduleConfiguration['access'] = $this->getAccess();
+            $moduleConfiguration['labels'] = $this->getModuleLanguageFile();
+            $icon = $this->getIcon();
+            if ($icon) {
+                $moduleConfiguration['icon'] = $icon;
             }
 
-            if (!is_null($this->showPageTree)) {
-                if ($this->showPageTree) {
-                    $moduleConfiguration['navigationComponentId'] = 'typo3-pagetree';
-                } else {
-                    $moduleConfiguration['inheritNavigationComponentFromMainModule'] = FALSE;
-                }
+            if ($this->showPageTree) {
+                $moduleConfiguration['navigationComponentId'] = 'typo3-pagetree';
+                $moduleConfiguration['inheritNavigationComponentFromMainModule'] = false;
+            } else {
+                $moduleConfiguration['inheritNavigationComponentFromMainModule'] = true;
             }
 
             ExtensionUtility::registerModule(
@@ -384,9 +481,20 @@ class ModuleLoader
     /**
      * @return string
      */
-    public function getIcon()
+    protected function getIcon()
     {
-        return $this->icon;
+        $moduleConfiguration = $this->getExistingMainConfiguration();
+
+
+        if ($this->icon) {
+            $icon = $this->icon;
+        } elseif ($moduleConfiguration['icon']) { // existing configuration may override.
+            $icon = $moduleConfiguration['icon'];
+        } else {
+            $icon = ''; //default value.
+        }
+
+        return $icon;
     }
 
     /**
@@ -401,10 +509,11 @@ class ModuleLoader
 
     /**
      * @return string
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getMainModule()
     {
-        if (is_null($this->mainModule)) {
+        if ($this->mainModule === null) {
             $this->mainModule = $this->getModuleConfiguration('mainModule');
         }
         return $this->mainModule;
@@ -423,9 +532,18 @@ class ModuleLoader
     /**
      * @return string
      */
-    public function getModuleLanguageFile()
+    protected function getModuleLanguageFile()
     {
-        return $this->moduleLanguageFile;
+        $moduleConfiguration = $this->getExistingMainConfiguration();
+
+        if ($this->moduleLanguageFile !== null) {
+            $moduleLanguageFile = $this->moduleLanguageFile;
+        } elseif ($moduleConfiguration['moduleLanguageFile']) { // existing configuration may override.
+            $moduleLanguageFile = $moduleConfiguration['moduleLanguageFile'];
+        } else {
+            $moduleLanguageFile = 'LLL:EXT:vidi/Resources/Private/Language/locallang_module.xlf'; //default value.
+        }
+        return $moduleLanguageFile;
     }
 
     /**
@@ -526,6 +644,7 @@ class ModuleLoader
 
     /**
      * @return string
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getDefaultPid()
     {
@@ -567,6 +686,7 @@ class ModuleLoader
 
     /**
      * @return $array
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getDocHeaderTopLeftComponents()
     {
@@ -600,6 +720,7 @@ class ModuleLoader
 
     /**
      * @return $array
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getDocHeaderTopRightComponents()
     {
@@ -633,6 +754,7 @@ class ModuleLoader
 
     /**
      * @return $array
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getDocHeaderBottomLeftComponents()
     {
@@ -666,6 +788,7 @@ class ModuleLoader
 
     /**
      * @return $array
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getDocHeaderBottomRightComponents()
     {
@@ -699,6 +822,7 @@ class ModuleLoader
 
     /**
      * @return $array
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getGridTopComponents()
     {
@@ -732,6 +856,7 @@ class ModuleLoader
 
     /**
      * @return $array
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getGridBottomComponents()
     {
@@ -765,6 +890,7 @@ class ModuleLoader
 
     /**
      * @return $array
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getGridButtonsComponents()
     {
@@ -798,6 +924,7 @@ class ModuleLoader
 
     /**
      * @return $array
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getMenuMassActionComponents()
     {
@@ -832,9 +959,18 @@ class ModuleLoader
     /**
      * @return string
      */
-    public function getAccess()
+    protected function getAccess()
     {
-        return $this->access;
+        $moduleConfiguration = $this->getExistingMainConfiguration();
+
+        if ($this->access !== null) {
+            $access = $this->access;
+        } elseif ($moduleConfiguration['access']) { // existing configuration may override.
+            $access = $moduleConfiguration['access'];
+        } else {
+            $access = Access::USER; //default value.
+        }
+        return $access;
     }
 
     /**
@@ -849,6 +985,7 @@ class ModuleLoader
 
     /**
      * @return \string[]
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getAdditionalJavaScriptFiles()
     {
@@ -860,6 +997,7 @@ class ModuleLoader
 
     /**
      * @return \string[]
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getAdditionalStyleSheetFiles()
     {
@@ -896,32 +1034,16 @@ class ModuleLoader
     /**
      * Compute the internal module code
      *
-     * @param NULL|string $dataType
+     * @param null|string $dataType
      * @return string
      */
-    protected function getInternalModuleSignature($dataType = NULL)
+    protected function getInternalModuleSignature($dataType = null)
     {
-        if (is_null($dataType)) {
+        if ($dataType === null) {
             $dataType = $this->dataType;
         }
         $subModuleName = $dataType . '_' . $this->moduleKey;
         return 'Vidi' . GeneralUtility::underscoredToUpperCamelCase($subModuleName);
-    }
-
-    /**
-     * Make sure default values are correctly initialized for the module.
-     *
-     * @return void
-     */
-    protected function initializeDefaultValues()
-    {
-        if (is_null($this->mainModule)) {
-            $this->mainModule = self::DEFAULT_MAIN_MODULE;
-        }
-
-        if (is_null($this->defaultPid)) {
-            $this->defaultPid = self::DEFAULT_PID;
-        }
     }
 
 }
