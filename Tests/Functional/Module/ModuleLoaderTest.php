@@ -84,8 +84,7 @@ class ModuleLoaderTest extends AbstractFunctionalTestCase {
 		return array(
 			array('dataType', $this->dataType),
 			array('moduleKey', 'm1'),
-			array('icon', 'EXT:vidi/ext_icon.gif'),
-			array('moduleLanguageFile', 'LLL:EXT:vidi/Resources/Private/Language/locallang_module.xlf'),
+			array('icon', 'EXT:vidi/ext_icon.gif')
 		);
 	}
 

@@ -180,7 +180,7 @@ class ModuleLoader
      */
     protected function getExistingMainConfiguration()
     {
-        $possibleConfiguration = $GLOBALS['TBE_MODULES']['_configuration']['Vidi_' . $this->getInternalModuleSignature()];
+        $possibleConfiguration = $GLOBALS['TBE_MODULES']['_configuration'][$this->computeMainModule() . '_' . $this->getInternalModuleSignature()];
         return is_array($possibleConfiguration) ? $possibleConfiguration : [];
     }
 
@@ -536,13 +536,15 @@ class ModuleLoader
     {
         $moduleConfiguration = $this->getExistingMainConfiguration();
 
-        if ($this->moduleLanguageFile !== null) {
+        if ($this->moduleLanguageFile) {
             $moduleLanguageFile = $this->moduleLanguageFile;
-        } elseif ($moduleConfiguration['moduleLanguageFile']) { // existing configuration may override.
-            $moduleLanguageFile = $moduleConfiguration['moduleLanguageFile'];
-        } else {
-            $moduleLanguageFile = 'LLL:EXT:vidi/Resources/Private/Language/locallang_module.xlf'; //default value.
+        } elseif ($moduleConfiguration['labels']) { // existing configuration may override.
+            $moduleLanguageFile = $moduleConfiguration['labels'];
         }
+        else {
+            $moduleLanguageFile = ''; //default value.
+        }
+
         return $moduleLanguageFile;
     }
 

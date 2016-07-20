@@ -73,6 +73,7 @@ if (TYPO3_MODE === 'BE') {
                 $icon = 'EXT:core/Resources/Public/Icons/T3Icons/status/status-user-group-frontend.svg';
                 $icon = 'EXT:vidi/Resources/Public/Images/fe_groups.png';
             } else {
+                /** @var \Fab\Vidi\Backend\LanguageFileGenerator $languageService */
                 $languageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Fab\Vidi\Backend\LanguageFileGenerator::class);
                 $languageFile = $languageService->generate($dataType);
                 $icon = '';
