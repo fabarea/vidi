@@ -111,6 +111,7 @@ class GridService extends AbstractTca
      *
      * @param string $fieldNameAndPath
      * @return string
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getLabelKey($fieldNameAndPath)
     {
@@ -201,6 +202,7 @@ class GridService extends AbstractTca
      * Returns an array containing column names for the Grid.
      *
      * @return array
+     * @throws \Exception
      */
     public function getFields()
     {
@@ -211,9 +213,11 @@ class GridService extends AbstractTca
             $fields = $this->getAllFields();
 
             if ($this->isBackendMode()) {
+
                 // Then remove the not allowed.
-                $fields = $this->filterForBackendUser($fields);
-                $fields = $this->filterForConfiguration($fields);
+                $fields = $this->filterByIncludedFields($fields);
+                $fields = $this->filterByBackendUser($fields);
+                $fields = $this->filterByExcludedFields($fields);
             }
 
             $this->fields = $fields;
@@ -223,13 +227,35 @@ class GridService extends AbstractTca
     }
 
     /**
+     * Remove fields according to Grid configuration.
+     *
+     * @param $fields
+     * @return array
+     */
+    protected function filterByIncludedFields($fields)
+    {
+
+        $filteredFields = $fields;
+        $includedFields = $this->getIncludedFields();
+        if (count($includedFields) > 0) {
+            $filteredFields = [];
+            foreach ($fields as $fieldNameAndPath => $configuration) {
+                if (in_array($fieldNameAndPath, $includedFields, true) || !Tca::table($this->tableName)->hasField($fieldNameAndPath)) {
+                    $filteredFields[$fieldNameAndPath] = $configuration;
+                }
+            }
+        }
+        return $filteredFields;
+    }
+
+    /**
      * Remove fields according to BE User permission.
      *
      * @param $fields
      * @return array
      * @throws \Exception
      */
-    protected function filterForBackendUser($fields)
+    protected function filterByBackendUser($fields)
     {
         if (!$this->getBackendUser()->isAdmin()) {
             foreach ($fields as $fieldName => $field) {
@@ -247,7 +273,7 @@ class GridService extends AbstractTca
      * @param $fields
      * @return array
      */
-    protected function filterForConfiguration($fields)
+    protected function filterByExcludedFields($fields)
     {
 
         // Unset excluded fields.
@@ -574,6 +600,14 @@ class GridService extends AbstractTca
     public function getTca()
     {
         return $this->tca;
+    }
+
+    /**
+     * @return array
+     */
+    public function getIncludedFields()
+    {
+        return empty($this->tca['included_fields']) ? [] : GeneralUtility::trimExplode(',', $this->tca['included_fields'], true);
     }
 
     /**

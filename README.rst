@@ -243,11 +243,20 @@ TCA "grid"
 .. container:: table-row
 
 Key
+	**included_fields**
+
+Description
+	Strictly include this CSV list of fields
+
+.. container:: table-row
+
+Key
 	**excluded_fields**
 
 
 Description
-	Whenever there are fields to be excluded from the Grid
+	Whenever some fields should be excluded from the Grid
+
 
 .. container:: table-row
 
