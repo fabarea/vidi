@@ -76,6 +76,7 @@ class NewButton extends AbstractComponentView
      * Render a create URI given a data type.
      *
      * @return string
+     * @throws \InvalidArgumentException
      */
     protected function getUriWizardNew()
     {
@@ -99,6 +100,8 @@ class NewButton extends AbstractComponentView
      * Render a create URI given a data type.
      *
      * @return string
+     * @throws \InvalidArgumentException
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     protected function getNewUri()
     {
@@ -114,6 +117,8 @@ class NewButton extends AbstractComponentView
 
     /**
      * @return string
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
+     * @throws \InvalidArgumentException
      */
     protected function getNewParameterName()
     {
@@ -128,6 +133,8 @@ class NewButton extends AbstractComponentView
      * Return the default configured pid.
      *
      * @return int
+     * @throws \InvalidArgumentException
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     protected function getStoragePid()
     {
@@ -136,13 +143,13 @@ class NewButton extends AbstractComponentView
         } elseif ((int)Tca::table()->get('rootLevel') === 1) {
             $pid = 0;
         } else {
-            // Get configuration from User TSconfig if any
+            // Get configuration from User TSConfig if any
             $tsConfigPath = sprintf('tx_vidi.dataType.%s.storagePid', $this->getModuleLoader()->getDataType());
-            $result = $this->getBackendUser()->getTSConfig($tsConfigPath);
-            $pid = $result['value'];
+            $tsConfig = $this->getBackendUser()->getTSConfig($tsConfigPath);
+            $pid = $tsConfig['value'];
 
             // Get pid from Module Loader
-            if (NULL === $pid) {
+            if (null === $pid) {
                 $pid = $this->getModuleLoader()->getDefaultPid();
             }
         }
