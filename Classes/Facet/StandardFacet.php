@@ -47,7 +47,12 @@ class StandardFacet implements FacetInterface
     /**
      * @var bool
      */
-    protected $canModifyMatcher = FALSE;
+    protected $canModifyMatcher = false;
+
+    /**
+     * @var bool
+     */
+    protected $forceKeyValueObject = false;
 
     /**
      * Constructor of a Generic Facet in Vidi.
@@ -55,8 +60,9 @@ class StandardFacet implements FacetInterface
      * @param string $name
      * @param string $label
      * @param array $suggestions
+     * @param bool $forceKeyValueObject
      */
-    public function __construct($name, $label = '', array $suggestions = array())
+    public function __construct($name, $label = '', array $suggestions = array(), $forceKeyValueObject = false)
     {
         $this->name = $name;
         if (empty($label)) {
@@ -64,6 +70,7 @@ class StandardFacet implements FacetInterface
         }
         $this->label = $label;
         $this->suggestions = $suggestions;
+        $this->forceKeyValueObject = $forceKeyValueObject;
     }
 
     /**
@@ -99,20 +106,29 @@ class StandardFacet implements FacetInterface
 
         $values = array();
         foreach ($this->suggestions as $key => $label) {
-            $localizedLabel = LocalizationUtility::translate($label, '');
+            $localizedLabel = $this->getLanguageService()->sL($label);
             if (!empty($localizedLabel)) {
                 $label = $localizedLabel;
             }
 
-            // Hack to have object correctly json encoded.
-            if (is_numeric($key)) {
-                $key = 'key-' . $key;
-            }
+            if ($this->forceKeyValueObject) {
+                $values[] = [$key => $label];
+            } else {
 
-            $values[$key] = $label;
+                // Hack to have object correctly json encoded.
+                $values[$key] = $label;
+            }
         }
 
         return $values;
+    }
+
+    /**
+     * @return \TYPO3\CMS\Lang\LanguageService
+     */
+    protected function getLanguageService()
+    {
+        return $GLOBALS['LANG'];
     }
 
     /**

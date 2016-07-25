@@ -30,6 +30,7 @@ class FacetSuggestionService
      *
      * @param string $fieldNameAndPath
      * @return array
+     * @throws \Exception
      */
     public function getSuggestions($fieldNameAndPath)
     {
