@@ -51,10 +51,10 @@ User TSconfig
 -------------
 
 A pid (page id) is necessary to be defined when creating a new record for the need of TCEmain_.
-This is not true for all records as some of them can be on the root level and consequently have a pid 0.
+This is not the case for all records as some of them can be on the root level and consequently have a pid 0.
 However most require a pid value greater than 0. In a first place, a global pid can be configured in the Extension Manager
 which is taken as fallback value. Besides, User TSconfig can also be set which will configure a custom pid for each data type enabling to
-be fine grained::
+be fine grained. We can also define additional constraints which can be used to filter by default a Vidi module::
 
 	# Short syntax for data type "tx_domain_model_foo":
 	tx_vidi.dataType.tx_domain_model_foo.storagePid = 33
@@ -62,8 +62,20 @@ be fine grained::
 	# Extended syntax for data type "tx_domain_model_foo":
 	tx_vidi {
 		dataType {
-			fe_users {
+			tx_domain_model_foo {
+			    # Define the pid for a new record
 				storagePid = 33
+
+				# Default criterion to be used as default filter
+				constraints {
+
+				    # Records are found on pid "33"
+				    # Possible operators >= > < <= = like
+				    0 = pid = 33
+
+				    # Records belongs to category 1 OR 2
+				    1 = categories.uid in 1,2
+				}
 			}
 		}
 	}
