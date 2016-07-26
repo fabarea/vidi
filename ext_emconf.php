@@ -9,6 +9,10 @@ $EM_CONF[$_EXTKEY] = [
     'module' => '',
     'state' => 'stable',
     'version' => '2.3.0-dev',
+    'autoload' => 
+		[
+            		'psr-4' => ['Fab\\Vidi\\' => 'Classes']
+		],
     'constraints' =>
         [
             'depends' =>
