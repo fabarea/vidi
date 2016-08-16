@@ -15,6 +15,7 @@ namespace Fab\Vidi\Controller;
  */
 
 use Fab\Vidi\Domain\Model\Selection;
+use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
@@ -32,6 +33,7 @@ class SelectionController extends ActionController
 
     /**
      * @param Selection $selection
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function createAction(Selection $selection = NULL)
     {
@@ -45,6 +47,7 @@ class SelectionController extends ActionController
     /**
      * @param Selection $selection
      * @return string
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
      */
     public function deleteAction(Selection $selection)
     {
@@ -54,6 +57,9 @@ class SelectionController extends ActionController
 
     /**
      * @param Selection $selection
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      */
     public function updateAction(Selection $selection)
     {
@@ -92,11 +98,11 @@ class SelectionController extends ActionController
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader
+     * @return ModuleLoader
      */
     protected function getModuleLoader()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+        return GeneralUtility::makeInstance(ModuleLoader::class);
     }
 
     /**

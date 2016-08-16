@@ -50,6 +50,7 @@ class FacetController extends ActionController
      * Output a json list of key / values.
      *
      * @return string
+     * @throws \Exception
      */
     public function autoSuggestsAction()
     {
