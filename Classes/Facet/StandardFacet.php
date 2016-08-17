@@ -50,19 +50,13 @@ class StandardFacet implements FacetInterface
     protected $canModifyMatcher = false;
 
     /**
-     * @var bool
-     */
-    protected $forceKeyValueObject = false;
-
-    /**
      * Constructor of a Generic Facet in Vidi.
      *
      * @param string $name
      * @param string $label
      * @param array $suggestions
-     * @param bool $forceKeyValueObject
      */
-    public function __construct($name, $label = '', array $suggestions = array(), $forceKeyValueObject = false)
+    public function __construct($name, $label = '', array $suggestions = array())
     {
         $this->name = $name;
         if (empty($label)) {
@@ -70,7 +64,6 @@ class StandardFacet implements FacetInterface
         }
         $this->label = $label;
         $this->suggestions = $suggestions;
-        $this->forceKeyValueObject = $forceKeyValueObject;
     }
 
     /**
@@ -111,13 +104,7 @@ class StandardFacet implements FacetInterface
                 $label = $localizedLabel;
             }
 
-            if ($this->forceKeyValueObject) {
-                $values[] = [$key => $label];
-            } else {
-
-                // Hack to have object correctly json encoded.
-                $values[$key] = $label;
-            }
+            $values[] = [$key => $label];
         }
 
         return $values;
