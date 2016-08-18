@@ -58,12 +58,12 @@ class ToJsonViewHelper extends AbstractViewHelper
      * @param array $values
      * @return mixed
      */
-    protected function encodeItems(array $values) {
-        foreach($values as $key => $value) {
-            if(is_array($value)) {
+    protected function encodeItems(array $values)
+    {
+        foreach ($values as $key => $value) {
+            if (is_array($value)) {
                 $values[$key] = $this->encodeItems($value);
-            }
-            else {
+            } elseif (is_string($value)) {
                 $values[$key] = utf8_encode($value);
             }
         }
@@ -72,6 +72,7 @@ class ToJsonViewHelper extends AbstractViewHelper
 
     /**
      * @return void
+     * @throws \InvalidArgumentException
      */
     protected function setHttpHeaders()
     {
