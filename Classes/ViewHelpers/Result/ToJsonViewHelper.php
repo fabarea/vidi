@@ -37,7 +37,6 @@ class ToJsonViewHelper extends AbstractViewHelper
             'aaData' => $this->getRowsViewHelper()->render($objects, $columns),
         );
 
-        $output = $this->encodeItems($output);
         $this->setHttpHeaders();
         return json_encode($output);
     }
@@ -52,22 +51,6 @@ class ToJsonViewHelper extends AbstractViewHelper
             $transaction = (int)GeneralUtility::_GET('sEcho') + 1;
         }
         return $transaction;
-    }
-
-    /**
-     * @param array $values
-     * @return mixed
-     */
-    protected function encodeItems(array $values)
-    {
-        foreach ($values as $key => $value) {
-            if (is_array($value)) {
-                $values[$key] = $this->encodeItems($value);
-            } elseif (is_string($value)) {
-                $values[$key] = utf8_encode($value);
-            }
-        }
-        return $values;
     }
 
     /**
