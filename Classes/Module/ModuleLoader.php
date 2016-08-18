@@ -914,7 +914,7 @@ class ModuleLoader
             $components = [$components];
         }
         $currentComponents = $this->components[ModulePosition::GRID][ModulePosition::BUTTONS];
-        $this->components[ModulePosition::GRID][ModulePosition::BUTTONS] = array_merge($currentComponents, $components);
+        $this->components[ModulePosition::GRID][ModulePosition::BUTTONS] = array_merge($components, $currentComponents);
         return $this;
     }
 
@@ -948,7 +948,7 @@ class ModuleLoader
             $components = [$components];
         }
         $currentComponents = $this->components[ModulePosition::MENU_MASS_ACTION];
-        $this->components[ModulePosition::MENU_MASS_ACTION] = array_merge($currentComponents, $components);
+        $this->components[ModulePosition::MENU_MASS_ACTION] = array_merge($components, $currentComponents);
         return $this;
     }
 
