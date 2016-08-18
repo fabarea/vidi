@@ -93,6 +93,9 @@ define([
 					_.each(collections, function(values, fieldName) {
 						Vidi.VisualSearch.processValues(fieldName, values);
 					});
+
+					// Set facet suggestions as loaded.
+					Vidi.module.areFacetSuggestionsLoaded = true;
 				},
 				error: function() {
 					Vidi.VisualSearch.showError();

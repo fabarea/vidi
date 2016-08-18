@@ -133,12 +133,17 @@ define([
 
 						// Handle the search term parameter coming from the Visual Search bar.
 						if (data.search.value) {
-							// Save raw query to be used in Selection for instance.
-							data.search.value = Vidi.VisualSearch.convertExpression(data.search.value);
-							Vidi.Session.set('query', data.search.value);
 
-							var parameterPrefix = Vidi.module.parameterPrefix;
-							data[parameterPrefix + '[searchTerm]'] = data.search.value;
+							if (Vidi.module.areFacetSuggestionsLoaded) {
+								// Save raw query to be used in Vidi Backend.
+								data.search.value = Vidi.VisualSearch.convertExpression(data.search.value);
+								data[Vidi.module.parameterPrefix + '[searchTerm]'] = data.search.value;
+
+								Vidi.Session.set('query', data.search.value);
+							} else if (Vidi.Session.get('query')) { // retrieve a query from the session.
+								data.search.value = Vidi.Session.get('query');
+								data[Vidi.module.parameterPrefix + '[searchTerm]'] = Vidi.Session.get('query');
+							}
 						}
 
 						data = Vidi.Grid.addAjaxAdditionalParameters(data);
