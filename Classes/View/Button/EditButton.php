@@ -44,6 +44,7 @@ class EditButton extends AbstractComponentView
 
     /**
      * @return \Fab\Vidi\View\Uri\EditUri
+     * @throws \InvalidArgumentException
      */
     protected function getUriRenderer()
     {

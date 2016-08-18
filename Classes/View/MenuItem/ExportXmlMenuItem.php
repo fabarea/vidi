@@ -22,6 +22,7 @@ class ExportXmlMenuItem extends AbstractComponentView
      * Only the admin is allowed to export for now as security is not handled.
      *
      * @return string
+     * @throws \InvalidArgumentException
      */
     public function render()
     {
