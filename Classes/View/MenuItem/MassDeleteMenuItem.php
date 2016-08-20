@@ -21,6 +21,7 @@ class MassDeleteMenuItem extends AbstractComponentView
      * Renders a "mass delete" menu item to be placed in the grid menu.
      *
      * @return string
+     * @throws \InvalidArgumentException
      */
     public function render()
     {
@@ -33,6 +34,7 @@ class MassDeleteMenuItem extends AbstractComponentView
 
     /**
      * @return string
+     * @throws \InvalidArgumentException
      */
     protected function getMassDeleteUri()
     {

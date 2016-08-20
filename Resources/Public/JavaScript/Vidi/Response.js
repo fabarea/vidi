@@ -26,7 +26,7 @@ define([
 	var Response = {
 
 		/**
-		 * Display confirmation window for mass-delete and trigger Ajax request in case of User confirmation.
+		 * Display confirmation.
 		 *
 		 * @param {object} response
 		 * @param {string} action

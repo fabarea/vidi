@@ -28,6 +28,7 @@ class MatcherObjectFactory implements SingletonInterface
      * Gets a singleton instance of this class.
      *
      * @return $this
+     * @throws \InvalidArgumentException
      */
     static public function getInstance()
     {
