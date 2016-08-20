@@ -49,14 +49,14 @@ class MatcherObjectFactory implements SingletonInterface
     public function getMatcher(array $matches = array(), $dataType = '')
     {
 
-        if (empty($dataType)) {
+        if ($dataType === '') {
             $dataType = $this->getModuleLoader()->getDataType();
         }
 
         /** @var $matcher Matcher */
         $matcher = GeneralUtility::makeInstance(Matcher::class, array(), $dataType);
 
-        $matcher = $this->applyCriteriaFromDataTables($matcher, $dataType);
+        $matcher = $this->applyCriteriaFromDataTables($matcher);
         $matcher = $this->applyCriteriaFromMatchesArgument($matcher, $matches);
 
         if ($this->isBackendMode()) {
@@ -97,7 +97,7 @@ class MatcherObjectFactory implements SingletonInterface
      */
     protected function applyCriteriaFromTSConfig(Matcher $matcher)
     {
-        $dataType = $this->getModuleLoader()->getDataType();
+        $dataType = $matcher->getDataType();
         $tsConfigPath = sprintf('tx_vidi.dataType.%s.constraints', $dataType);
         $tsConfig = $this->getBackendUser()->getTSConfig($tsConfigPath);
 
@@ -149,11 +149,10 @@ class MatcherObjectFactory implements SingletonInterface
      * Apply criteria specific to jQuery plugin DataTable.
      *
      * @param Matcher $matcher
-     * @param string $dataType
      * @return Matcher $matcher
      * @throws \Exception
      */
-    protected function applyCriteriaFromDataTables(Matcher $matcher, $dataType)
+    protected function applyCriteriaFromDataTables(Matcher $matcher)
     {
 
         // Special case for Grid in the BE using jQuery DataTables plugin.
@@ -174,7 +173,7 @@ class MatcherObjectFactory implements SingletonInterface
             $queryParts = json_decode($query, true);
 
             if (is_array($queryParts)) {
-                $matcher = $this->parseQuery($queryParts, $matcher, $dataType);
+                $matcher = $this->parseQuery($queryParts, $matcher);
             } else {
                 $matcher->setSearchTerm($query);
             }
@@ -185,12 +184,12 @@ class MatcherObjectFactory implements SingletonInterface
     /**
      * @param array $queryParts
      * @param Matcher $matcher
-     * @param string $dataType
      * @return Matcher $matcher
      * @throws \InvalidArgumentException
      */
-    protected function parseQuery(array $queryParts, Matcher $matcher, $dataType)
+    protected function parseQuery(array $queryParts, Matcher $matcher)
     {
+        $dataType = $matcher->getDataType();
         foreach ($queryParts as $term) {
             $fieldNameAndPath = key($term);
 
