@@ -208,6 +208,9 @@
 			<trans-unit id="selections">
 				<source>Selections</source>
 			</trans-unit>
+			<trans-unit id="message.send">
+				<source>Send message</source>
+			</trans-unit>
 			<trans-unit id="selection.add">
 				<source>Add selection</source>
 			</trans-unit>
