@@ -34,13 +34,14 @@ class Property
 
     /**
      * @param string $propertyName
-     * @return \Fab\Vidi\Converter\Property
+     * @return $this
+     * @throws \InvalidArgumentException
      */
     static public function name($propertyName)
     {
         self::$currentProperty = $propertyName;
         self::$currentTable = ''; // reset the table name value.
-        return GeneralUtility::makeInstance('Fab\Vidi\Converter\Property');
+        return GeneralUtility::makeInstance(self::class);
     }
 
     /**
@@ -90,26 +91,26 @@ class Property
 
     /**
      * @return string
-     * @throws \Exception
+     * @throws \RuntimeException
      */
     protected function getPropertyName()
     {
         $propertyName = self::$currentProperty;
         if (empty($propertyName)) {
-            throw new \Exception('I could not find a field name value.', 1403203290);
+            throw new \RuntimeException('I could not find a field name value.', 1403203290);
         }
         return $propertyName;
     }
 
     /**
      * @return string
-     * @throws \Exception
+     * @throws \RuntimeException
      */
     protected function getTableName()
     {
         $tableName = self::$currentTable;
         if (empty($tableName)) {
-            throw new \Exception('I could not find a table name value.', 1403203291);
+            throw new \RuntimeException('I could not find a table name value.', 1403203291);
         }
         return $tableName;
     }

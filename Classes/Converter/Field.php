@@ -35,13 +35,14 @@ class Field implements SingletonInterface
 
     /**
      * @param string $fieldName
-     * @return \Fab\Vidi\Converter\Field
+     * @return $this
+     * @throws \InvalidArgumentException
      */
     static public function name($fieldName)
     {
         self::$currentField = $fieldName;
         self::$currentTable = ''; // reset the table name value.
-        return GeneralUtility::makeInstance('Fab\Vidi\Converter\Field');
+        return GeneralUtility::makeInstance(self::class);
     }
 
     /**
@@ -59,6 +60,7 @@ class Field implements SingletonInterface
 
     /**
      * @return string
+     * @throws \RuntimeException
      */
     public function toPropertyName()
     {
@@ -87,26 +89,25 @@ class Field implements SingletonInterface
 
     /**
      * @return string
-     * @throws \Exception
+     * @throws \RuntimeException
      */
     protected function getFieldName()
     {
         $fieldName = self::$currentField;
         if (empty($fieldName)) {
-            throw new \Exception('I could not find a field name value.', 1403203290);
+            throw new \RuntimeException('I could not find a field name value.', 1403203290);
         }
         return $fieldName;
     }
 
     /**
      * @return string
-     * @throws \Exception
      */
     protected function getTableName()
     {
         $tableName = self::$currentTable;
         if (empty($tableName)) {
-            throw new \Exception('I could not find a table name value.', 1403203291);
+            throw new \RuntimeException('I could not find a table name value.', 1403203291);
         }
         return $tableName;
     }
