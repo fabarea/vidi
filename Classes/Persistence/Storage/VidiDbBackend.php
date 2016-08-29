@@ -159,8 +159,8 @@ class VidiDbBackend
 
         $sql = $this->buildQuery($statementParts);
         $tableName = '';
-        if (is_array($statementParts) && !empty($statementParts['tables'][0])) {
-            $tableName = $statementParts['tables'][0];
+        if (is_array($statementParts) && !empty(reset($statementParts['tables']))) {
+            $tableName = reset($statementParts['tables']);
         }
         $this->replacePlaceholders($sql, $parameters, $tableName);
         #print $sql; exit(); // @debug
