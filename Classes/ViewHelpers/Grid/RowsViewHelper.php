@@ -24,13 +24,15 @@ class RowsViewHelper extends AbstractViewHelper
      * @param array $objects
      * @param array $columns
      * @return string
+     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function render(array $objects = array(), array $columns = array())
     {
-        $rows = array();
+        $rows = [];
 
         /** @var Row $row */
-        $row = GeneralUtility::makeInstance('Fab\Vidi\View\Grid\Row', $columns);
+        $row = GeneralUtility::makeInstance(Row::class, $columns);
         foreach ($objects as $index => $object) {
             $rows[] = $row->render($object, $index);
         }

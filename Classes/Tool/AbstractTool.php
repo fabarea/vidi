@@ -7,7 +7,10 @@ namespace Fab\Vidi\Tool;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * Abstract Tool
@@ -17,15 +20,16 @@ abstract class AbstractTool implements ToolInterface
 
     /**
      * @param string $templateNameAndPath
-     * @return \TYPO3\CMS\Fluid\View\StandaloneView
+     * @return StandaloneView
+     * @throws \InvalidArgumentException
      */
     protected function initializeStandaloneView($templateNameAndPath)
     {
 
         $templateNameAndPath = GeneralUtility::getFileAbsFileName($templateNameAndPath);
 
-        /** @var \TYPO3\CMS\Fluid\View\StandaloneView $view */
-        $view = $this->getObjectManager()->get('TYPO3\CMS\Fluid\View\StandaloneView');
+        /** @var StandaloneView $view */
+        $view = $this->getObjectManager()->get(StandaloneView::class);
 
         $view->setTemplatePathAndFilename($templateNameAndPath);
         return $view;
@@ -42,21 +46,23 @@ abstract class AbstractTool implements ToolInterface
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Object\ObjectManager
+     * @return ObjectManager
+     * @throws \InvalidArgumentException
      */
     protected function getObjectManager()
     {
-        return GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+        return GeneralUtility::makeInstance(ObjectManager::class);
     }
 
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader
+     * @return ModuleLoader
+     * @throws \InvalidArgumentException
      */
     protected function getModuleLoader()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+        return GeneralUtility::makeInstance(ModuleLoader::class);
     }
 
 }

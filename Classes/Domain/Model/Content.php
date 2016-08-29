@@ -39,6 +39,8 @@ class Content implements \ArrayAccess
      * @param string $dataType will basically correspond to a table name, e.g fe_users, tt_content, ...
      * @param array $contentData
      * @return \Fab\Vidi\Domain\Model\Content
+     * @throws \InvalidArgumentException
+     * @throws \Fab\Vidi\Exception\NotExistingClassException
      */
     public function __construct($dataType, array $contentData = array())
     {
@@ -100,7 +102,7 @@ class Content implements \ArrayAccess
 
             $value = $this->$propertyName;
 
-            // TRUE means it is a relation and it is not yet resolved.
+            // true means it is a relation and it is not yet resolved.
             if ($this->hasRelation($propertyName) && is_scalar($this->$propertyName)) {
                 $value = $this->resolveRelation($propertyName);
             } elseif ($field->getType() === FieldType::RADIO || $field->getType() === FieldType::SELECT) {
@@ -229,6 +231,8 @@ class Content implements \ArrayAccess
      * @link http://php.net/manual/en/arrayaccess.offsetexists.php
      * @param mixed $offset
      * @return boolean true on success or false on failure.
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      */
     public function offsetExists($offset)
     {
@@ -242,6 +246,8 @@ class Content implements \ArrayAccess
      * @link http://php.net/manual/en/arrayaccess.offsetget.php
      * @param mixed $offset
      * @return mixed Can return all value types.
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      */
     public function offsetGet($offset)
     {
@@ -257,6 +263,8 @@ class Content implements \ArrayAccess
      * @param mixed $offset
      * @param mixed $value
      * @return $this
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      */
     public function offsetSet($offset, $value)
     {
@@ -284,11 +292,12 @@ class Content implements \ArrayAccess
      * Convert this to array
      *
      * @return array
+     * @throws \InvalidArgumentException
      */
     public function toArray()
     {
         $result['uid'] = $this->uid;
-        $propertiesAndValues = json_decode(json_encode($this), TRUE);
+        $propertiesAndValues = json_decode(json_encode($this), true);
 
         foreach ($propertiesAndValues as $propertyName => $value) {
             $fieldName = Property::name($propertyName)->of($this)->toFieldName();
@@ -305,10 +314,10 @@ class Content implements \ArrayAccess
      * @return array
      * @throws \Exception
      */
-    public function toValues($resolveRelations = TRUE)
+    public function toValues($resolveRelations = true)
     {
         $result['uid'] = $this->uid;
-        $propertiesAndValues = json_decode(json_encode($this), TRUE);
+        $propertiesAndValues = json_decode(json_encode($this), true);
 
         foreach ($propertiesAndValues as $propertyName => $value) {
             $fieldName = Property::name($propertyName)->of($this)->toFieldName();
@@ -368,7 +377,7 @@ class Content implements \ArrayAccess
     public function toProperties()
     {
         $result[] = 'uid';
-        $propertiesAndValues = json_decode(json_encode($this), TRUE);
+        $propertiesAndValues = json_decode(json_encode($this), true);
 
         foreach ($propertiesAndValues as $propertyName => $value) {
             $result[] = $propertyName;
@@ -384,7 +393,7 @@ class Content implements \ArrayAccess
     public function toFields()
     {
         $result[] = 'uid';
-        $propertiesAndValues = json_decode(json_encode($this), TRUE);
+        $propertiesAndValues = json_decode(json_encode($this), true);
 
         foreach ($propertiesAndValues as $propertyName => $value) {
             $result[] = Property::name($propertyName)->of($this)->toFieldName();
@@ -457,7 +466,7 @@ class Content implements \ArrayAccess
      */
     protected function isBackendMode()
     {
-        return TYPO3_MODE == 'BE';
+        return TYPO3_MODE === 'BE';
     }
 
 }

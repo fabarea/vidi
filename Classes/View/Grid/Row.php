@@ -8,6 +8,8 @@ namespace Fab\Vidi\View\Grid;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use Fab\Vidi\Resolver\ContentObjectResolver;
+use Fab\Vidi\Resolver\FieldPathResolver;
 use Fab\Vidi\Tca\FieldType;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -26,19 +28,19 @@ class Row extends AbstractComponentView
     /**
      * @var array
      */
-    protected $columns = array();
+    protected $columns = [];
 
     /**
      * Registry for storing variable values and speed up the processing.
      *
      * @var array
      */
-    protected $variables = array();
+    protected $variables = [];
 
     /**
      * @param array $columns
      */
-    public function __construct($columns = array())
+    public function __construct(array $columns = [])
     {
         $this->columns = $columns;
     }
@@ -49,12 +51,13 @@ class Row extends AbstractComponentView
      * @param \Fab\Vidi\Domain\Model\Content $object
      * @param int $rowIndex
      * @return array
+     * @throws \Exception
      */
     public function render(Content $object = NULL, $rowIndex = 0)
     {
 
         // Initialize returned array
-        $output = array();
+        $output = [];
 
         foreach (Tca::grid()->getFields() as $fieldNameAndPath => $configuration) {
 
@@ -62,7 +65,7 @@ class Row extends AbstractComponentView
 
             $this->computeVariables($object, $fieldNameAndPath);
 
-            // Only compute the value if it is going to be shown in the Grid. Lost time otherwise!
+            // Only compute the value if it is going to be shown in the Grid. Lost of time otherwise!
             if (in_array($fieldNameAndPath, $this->columns)) {
 
                 // Fetch value
@@ -155,7 +158,7 @@ class Row extends AbstractComponentView
      */
     protected function computeVariables(Content $object, $fieldNameAndPath)
     {
-        $this->variables = array();
+        $this->variables = [];
         $this->variables['dataType'] = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
         $this->variables['fieldName'] = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
         $this->variables['fieldNameAndPath'] = $fieldNameAndPath;
@@ -171,12 +174,12 @@ class Row extends AbstractComponentView
     protected function initializeLocalizedStructure($value)
     {
 
-        $localizedStructure[] = array(
+        $localizedStructure[] = [
             'value' => empty($value) && $this->isEditable() ? $this->getEmptyValuePlaceholder() : $value,
             'status' => empty($value) ? LocalizationStatus::EMPTY_VALUE : LocalizationStatus::LOCALIZED,
             'language' => 0,
             'languageFlag' => $defaultLanguage = $this->getLanguageService()->getDefaultFlag(),
-        );
+        ];
 
         if ($this->isLocalized()) {
 
@@ -206,12 +209,12 @@ class Row extends AbstractComponentView
                     }
 
                     // Feed structure.
-                    $localizedStructure[] = array(
+                    $localizedStructure[] = [
                         'value' => $localizedValue,
                         'status' => $status,
                         'language' => (int)$language['uid'],
                         'languageFlag' => $language['flag'],
-                    );
+                    ];
                 }
             }
         }
@@ -248,7 +251,7 @@ class Row extends AbstractComponentView
     protected function willBeEnriched()
     {
 
-        $willBeEnriched = FALSE;
+        $willBeEnriched = false;
 
         if ($this->fieldExists()) {
             $willBeEnriched = $this->isEditable() || $this->hasIcon() || $this->isLocalized();
@@ -341,7 +344,7 @@ class Row extends AbstractComponentView
 
         foreach ($localizedStructure as $index => $structure) {
 
-            $recordData = array();
+            $recordData = [];
 
             $enablesMethods = array('Hidden', 'Deleted', 'StartTime', 'EndTime');
             foreach ($enablesMethods as $enableMethod) {
@@ -433,7 +436,7 @@ class Row extends AbstractComponentView
 
             $fieldNameOfForeignTable = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
 
-            // TRUE means the field name does not contains a path. "title" vs "metadata.title"
+            // true means the field name does not contains a path. "title" vs "metadata.title"
             // Fetch the default label
             if ($fieldNameOfForeignTable === $fieldName) {
                 $foreignTable = Tca::table($object->getDataType())->field($fieldName)->getForeignTable();
@@ -454,11 +457,11 @@ class Row extends AbstractComponentView
      */
     protected function hasHtml($string)
     {
-        $result = FALSE;
+        $result = false;
 
         // We compare the length of the string with html tags and without html tags.
         if (strlen($string) != strlen(strip_tags($string))) {
-            $result = TRUE;
+            $result = true;
         }
         return $result;
     }
@@ -473,7 +476,7 @@ class Row extends AbstractComponentView
     {
 
         // @todo implement me!
-        $result = TRUE;
+        $result = true;
         return $result;
     }
 
@@ -487,6 +490,7 @@ class Row extends AbstractComponentView
      * @param \Fab\Vidi\Domain\Model\Content $object
      * @param string $fieldNameAndPath
      * @return string
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     protected function processValue($value, Content $object, $fieldNameAndPath)
     {
@@ -518,6 +522,7 @@ class Row extends AbstractComponentView
      * @param string $value
      * @param array $configuration
      * @return string
+     * @throws \InvalidArgumentException
      */
     protected function formatValue($value, array $configuration)
     {
@@ -598,6 +603,7 @@ class Row extends AbstractComponentView
 
     /**
      * @return Content
+     * @throws \InvalidArgumentException
      */
     protected function getResolvedObject()
     {
@@ -610,19 +616,21 @@ class Row extends AbstractComponentView
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\FieldPathResolver
+     * @return FieldPathResolver
+     * @throws \InvalidArgumentException
      */
     protected function getFieldPathResolver()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
+        return GeneralUtility::makeInstance(FieldPathResolver::class);
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\ContentObjectResolver
+     * @return ContentObjectResolver
+     * @throws \InvalidArgumentException
      */
     protected function getContentObjectResolver()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Resolver\ContentObjectResolver');
+        return GeneralUtility::makeInstance(ContentObjectResolver::class);
     }
 
     /**
@@ -635,10 +643,11 @@ class Row extends AbstractComponentView
 
     /**
      * @return LanguageService
+     * @throws \InvalidArgumentException
      */
     protected function getLanguageService()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Language\LanguageService');
+        return GeneralUtility::makeInstance(LanguageService::class);
     }
 
 }

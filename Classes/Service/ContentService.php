@@ -19,7 +19,6 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * File References service.
- * Find a bunch of file references given by the property name.
  */
 class ContentService
 {
@@ -44,6 +43,8 @@ class ContentService
      *
      * @param string $dataType
      * @return ContentService
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
+     * @throws \InvalidArgumentException
      */
     public function __construct($dataType = '')
     {
@@ -61,8 +62,11 @@ class ContentService
      * @param int $limit
      * @param int $offset
      * @return $this
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     * @throws \InvalidArgumentException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      */
-    public function findBy(Matcher $matcher, Order $order = NULL, $limit = NULL, $offset = NULL)
+    public function findBy(Matcher $matcher, Order $order = null, $limit = null, $offset = null)
     {
 
         // Query the repository.
@@ -91,11 +95,12 @@ class ContentService
      * @param int $limit
      * @param int $offset
      * @return AfterFindContentObjectsSignalArguments
+     * @throws \InvalidArgumentException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @signal
      */
-    protected function emitAfterFindContentObjectsSignal($contentObjects, Matcher $matcher, Order $order = NULL, $limit = 0, $offset = 0)
+    protected function emitAfterFindContentObjectsSignal($contentObjects, Matcher $matcher, Order $order = null, $limit = 0, $offset = 0)
     {
 
         /** @var AfterFindContentObjectsSignalArguments $signalArguments */
@@ -106,7 +111,7 @@ class ContentService
             ->setOrder($order)
             ->setLimit($limit)
             ->setOffset($offset)
-            ->setHasBeenProcessed(FALSE);
+            ->setHasBeenProcessed(false);
 
         $signalResult = $this->getSignalSlotDispatcher()->dispatch(ContentService::class, 'afterFindContentObjects', array($signalArguments));
         return $signalResult[0];
@@ -116,6 +121,7 @@ class ContentService
      * Get the Vidi Module Loader.
      *
      * @return ModuleLoader
+     * @throws \InvalidArgumentException
      */
     protected function getModuleLoader()
     {
@@ -126,6 +132,7 @@ class ContentService
      * Get the SignalSlot dispatcher.
      *
      * @return Dispatcher
+     * @throws \InvalidArgumentException
      */
     protected function getSignalSlotDispatcher()
     {
@@ -149,4 +156,5 @@ class ContentService
     {
         return $this->numberOfObjects;
     }
+
 }

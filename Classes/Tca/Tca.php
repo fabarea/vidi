@@ -12,6 +12,8 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Exception\NotExistingClassException;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * A class to handle TCA ctrl.
@@ -58,10 +60,12 @@ class Tca implements SingletonInterface, TcaServiceInterface
      * @param string $dataType
      * @param string $serviceType of the TCA, TcaServiceInterface::TYPE_TABLE or TcaServiceInterface::TYPE_GRID
      * @return TcaServiceInterface
+     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
+     * @throws \InvalidArgumentException
      */
     static protected function getService($dataType = '', $serviceType)
     {
-        if (TYPO3_MODE == 'BE' && empty($dataType)) {
+        if (TYPO3_MODE === 'BE' && empty($dataType)) {
 
             /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
             $moduleLoader = GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
@@ -85,6 +89,7 @@ class Tca implements SingletonInterface, TcaServiceInterface
      *
      * @param string|Content $tableNameOrContentObject
      * @return \Fab\Vidi\Tca\GridService
+     * @throws \Fab\Vidi\Exception\NotExistingClassException
      */
     static public function grid($tableNameOrContentObject = '')
     {
@@ -97,6 +102,7 @@ class Tca implements SingletonInterface, TcaServiceInterface
      *
      * @param string|Content $tableNameOrContentObject
      * @return \Fab\Vidi\Tca\TableService
+     * @throws \Fab\Vidi\Exception\NotExistingClassException
      */
     static public function table($tableNameOrContentObject = '')
     {
@@ -128,21 +134,23 @@ class Tca implements SingletonInterface, TcaServiceInterface
      * @param string $serviceType
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     * @throws \InvalidArgumentException
      */
     static protected function emitPreProcessTcaSignal($dataType, $serviceType)
     {
-        self::getSignalSlotDispatcher()->dispatch('Fab\Vidi\Tca\Tca', 'preProcessTca', array($dataType, $serviceType));
+        self::getSignalSlotDispatcher()->dispatch(Tca::class, 'preProcessTca', array($dataType, $serviceType));
     }
 
     /**
      * Get the SignalSlot dispatcher
      *
-     * @return \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+     * @return Dispatcher
+     * @throws \InvalidArgumentException
      */
     static protected function getSignalSlotDispatcher()
     {
-        $objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
-        return $objectManager->get('TYPO3\CMS\Extbase\SignalSlot\Dispatcher');
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        return $objectManager->get(Dispatcher::class);
     }
 
 }
