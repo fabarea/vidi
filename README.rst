@@ -95,25 +95,61 @@ As example, let display a list of all Frontend Users belonging to User Group "1"
 
 	<strong>Number of people: {v:content.count(matches: {usergroup: 3}, type: 'fe_users')}</strong>
 
-	<f:if condition="{v:content.find(matches: {usergroup: 3}, orderings: {uid: 'ASC'}, type: 'fe_users')}">
-		<ul>
-			<f:for each="{v:content.find(matches: {usergroup: 3}, orderings: {uid: 'ASC'}, type: 'fe_users')}" as="person">
-				<li>
-					{person.uid}:{person.username}
+    <f:for each="{v:content.find(matches: {usergroup: 3}, orderings: {uid: 'ASC'}, type: 'fe_users')}" as="person">
+        <div>
+            {person.uid}:{person.username}
 
-					<!-- !!! Notice how you can fetch relation through their properties! -->
-					<f:if condition="{person.usergroup}}">
-						<ul>
-							<f:for each="{person.usergroup}" as="group">
-								<li>{group.title}</li>
-							</f:for>
-						</ul>
-					</f:if>
-				</li>
-			</f:for>
-		</ul>
-	</f:if>
+            <!-- !!! Notice how you can fetch relation through their properties! -->
+            <f:if condition="{person.usergroup}}">
+                <ul>
+                    <f:for each="{person.usergroup}" as="group">
+                        <li>{group.title}</li>
+                    </f:for>
+                </ul>
+            </f:if>
+        </div>
+    </f:for>
 	{namespace m=Fab\Vidi\ViewHelpers}
+
+We can do the same to retrieve **only one** record but this time with ViewHelper ``findOne``::
+
+    <v:content.findOne type="fe_users" identifier="123">
+        <div>
+            <strong>{object.username}</strong>
+        </div>
+    </v:content.findOne>
+
+
+Or given ``matches`` where multiple criteria can be cumulated. Value ``foo`` corresponds to a field name and bar to a value::
+
+    <v:content.findOne type="fe_users" matches="{foo: bar}">
+        <div>
+            <strong>{object.username}</strong>
+        </div>
+    </v:content.findOne>
+
+
+An object can be retrieved dynamically given an argument in the URL. We assume, the URL looks as follows
+http://domain.tld/detail/?tx_vidifrontend_pi1[uid]=164
+
+::
+
+    <v:content.findOne type="fe_users" argumentName="object"">
+        <div>
+            <strong>{object.username}</strong>
+        </div>
+    </v:content.findOne>
+
+If wanted, we can define a custom argument name with attribute ``argumentName`` and also give the object an alias with attribute ``as``.
+The URL would look like: http://domain.tld/detail/?user=164
+
+::
+
+    <v:content.findOne type="fe_users" argumentName="object" as="user">
+        <div>
+            <strong>{user.username}</strong>
+        </div>
+    </v:content.findOne>
 
 
 Vidi Content Repository (programming way)
