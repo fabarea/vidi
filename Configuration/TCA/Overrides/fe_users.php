@@ -21,7 +21,7 @@ $tca = [
     'grid' => [
         'excluded_fields' => 'lockToDomain, TSconfig, felogin_redirectPid, felogin_forgotHash, auth_token',
         'export' => [
-            'include_files' => FALSE,
+            'include_files' => false,
         ],
         'facets' => [
             'uid',
@@ -54,42 +54,42 @@ $tca = [
                 'renderer' => new Fab\Vidi\Grid\CheckBoxRenderer(),
             ],
             'uid' => [
-                'visible' => FALSE,
+                'visible' => false,
                 'label' => 'Id',
                 'width' => '5px',
             ],
             'username' => [
-                'visible' => TRUE,
+                'visible' => true,
                 'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:username',
-                'editable' => TRUE,
+                'editable' => true,
             ],
             'name' => [
-                'visible' => TRUE,
+                'visible' => true,
                 'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:name',
-                'editable' => TRUE,
+                'editable' => true,
             ],
             'email' => [
-                'visible' => TRUE,
+                'visible' => true,
                 'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:email',
-                'editable' => TRUE,
+                'editable' => true,
             ],
             'usergroup' => [
-                'visible' => TRUE,
+                'visible' => true,
                 'renderers' => [
                     'Fab\Vidi\Grid\RelationEditRenderer',
                     'Fab\Vidi\Grid\RelationRenderer',
                 ],
-                'editable' => TRUE,
-                'sortable' => FALSE,
+                'editable' => true,
+                'sortable' => false,
                 'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:usergroup',
             ],
             'tstamp' => [
-                'visible' => FALSE,
+                'visible' => false,
                 'format' => 'Fab\Vidi\Formatter\Date',
                 'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:tstamp',
             ],
             'crdate' => [
-                'visible' => FALSE,
+                'visible' => false,
                 'format' => 'Fab\Vidi\Formatter\Date',
                 'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:crdate',
             ],

@@ -44,7 +44,7 @@ if (TYPO3_MODE === 'BE') {
     $configurationUtility = $objectManager->get('TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility');
     $configuration = $configurationUtility->getCurrentConfiguration('vidi');
 
-    $pids = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['default_pid']['value'], TRUE);
+    $pids = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['default_pid']['value'], true);
     $defaultPid = array_shift($pids);
     $defaultPids = [];
     foreach ($pids as $dataTypeAndPid) {
@@ -57,7 +57,7 @@ if (TYPO3_MODE === 'BE') {
     // Loop around the data types and register them to be displayed within a BE module.
     if ($configuration['data_types']['value']) {
 
-        $dataTypes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['data_types']['value'], TRUE);
+        $dataTypes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['data_types']['value'], true);
         foreach ($dataTypes as $dataType) {
 
             /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
@@ -90,7 +90,7 @@ if (TYPO3_MODE === 'BE') {
     }
 
     // Possible Static TS loading
-    if (TRUE === isset($configuration['autoload_typoscript']['value']) && FALSE === (bool)$configuration['autoload_typoscript']['value']) {
+    if (true === isset($configuration['autoload_typoscript']['value']) && false === (bool)$configuration['autoload_typoscript']['value']) {
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('vidi', 'Configuration/TypoScript', 'Vidi: versatile and interactive display');
     }
 
@@ -144,7 +144,7 @@ if (TYPO3_MODE === 'BE') {
         'processContentData',
         'Fab\Vidi\Processor\ContentObjectProcessor',
         'processRelations',
-        TRUE
+        true
     );
 
     // Connect "processContentData" signal with the "MarkerProcessor".
@@ -153,7 +153,7 @@ if (TYPO3_MODE === 'BE') {
         'processContentData',
         'Fab\Vidi\Processor\MarkerProcessor',
         'processMarkers',
-        TRUE
+        true
     );
 
     // Register default Tools for Vidi.

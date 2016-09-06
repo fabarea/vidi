@@ -249,10 +249,10 @@ class Query implements QueryInterface
     /**
      * Executes the query against the database and returns the result
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|array The query result object or an array if $this->getQuerySettings()->getReturnRawQueryResult() is TRUE
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|array The query result object or an array if $this->getQuerySettings()->getReturnRawQueryResult() is true
      * @api
      */
-    public function execute($returnRawQueryResult = FALSE)
+    public function execute($returnRawQueryResult = false)
     {
         /** @var \Fab\Vidi\Persistence\Storage\VidiDbBackend $backend */
         $backend = $this->objectManager->get('Fab\Vidi\Persistence\Storage\VidiDbBackend', $this);
@@ -463,7 +463,7 @@ class Query implements QueryInterface
      * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\ComparisonInterface
      * @api
      */
-    public function equals($propertyName, $operand, $caseSensitive = TRUE)
+    public function equals($propertyName, $operand, $caseSensitive = true)
     {
         if (is_object($operand) || $caseSensitive) {
             $comparison = $this->qomFactory->comparison($this->qomFactory->propertyValue($propertyName, $this->getSelectorName()), QueryInterface::OPERATOR_EQUAL_TO, $operand);
@@ -482,7 +482,7 @@ class Query implements QueryInterface
      * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\ComparisonInterface
      * @api
      */
-    public function like($propertyName, $operand, $caseSensitive = TRUE)
+    public function like($propertyName, $operand, $caseSensitive = true)
     {
         return $this->qomFactory->comparison($this->qomFactory->propertyValue($propertyName, $this->getSelectorName()), QueryInterface::OPERATOR_LIKE, $operand);
     }

@@ -35,7 +35,7 @@ class TableViewHelper extends AbstractViewHelper
                 $result = $result[$key];
             } else {
                 // not found value
-                $result = FALSE;
+                $result = false;
                 break;
             }
         }

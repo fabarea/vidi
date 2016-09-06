@@ -93,7 +93,7 @@ class MarkerProcessor implements SingletonInterface
     protected function searchAndReplace($updateValue, $currentValue)
     {
 
-        if (strpos($updateValue, 's/') !== FALSE) {
+        if (strpos($updateValue, 's/') !== false) {
             $structure = explode('/', $updateValue);
             $search = $structure[1];
             $replace = $structure[2];

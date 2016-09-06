@@ -85,12 +85,12 @@ class ToolRegistry implements SingletonInterface
         if ($this->hasTools($dataType, $toolName)) {
 
             $toolPosition = array_search($toolName, $this->tools['*']);
-            if ($toolPosition !== FALSE) {
+            if ($toolPosition !== false) {
                 unset($this->tools['*'][$toolPosition]);
             }
 
             $toolPosition = array_search($toolName, $this->tools[$dataType]);
-            if ($toolPosition !== FALSE) {
+            if ($toolPosition !== false) {
                 unset($this->tools[$dataType][$toolPosition]);
             }
         }
@@ -131,7 +131,7 @@ class ToolRegistry implements SingletonInterface
      */
     public function isAllowed($dataType, $toolName)
     {
-        $isAllowed = FALSE;
+        $isAllowed = false;
 
         if ($this->hasTools($dataType, $toolName)) {
 

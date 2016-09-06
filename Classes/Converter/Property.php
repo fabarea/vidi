@@ -78,7 +78,7 @@ class Property
             // There is the chance to make some mapping
             if (!empty($GLOBALS['TCA'][$tableName]['vidi']['mappings'])) {
                 $key = array_search($propertyName, $GLOBALS['TCA'][$tableName]['vidi']['mappings']);
-                if ($key !== FALSE) {
+                if ($key !== false) {
                     $fieldName = $key;
                 }
             }

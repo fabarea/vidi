@@ -317,7 +317,7 @@ class GridService extends AbstractTca
                 // Feed up the grid fields with un configured elements
                 foreach ($additionalFields as $additionalField) {
                     $fields[$additionalField] = array(
-                        'visible' => FALSE
+                        'visible' => false
                     );
 
                     // Try to guess the format of the field.
@@ -410,7 +410,7 @@ class GridService extends AbstractTca
      */
     public function canBeHidden($fieldName)
     {
-        $defaultValue = TRUE;
+        $defaultValue = true;
         return $this->get($fieldName, 'canBeHidden', $defaultValue);
     }
 
@@ -434,7 +434,7 @@ class GridService extends AbstractTca
      */
     public function isVisible($fieldName)
     {
-        $defaultValue = TRUE;
+        $defaultValue = true;
         return $this->get($fieldName, 'visible', $defaultValue);
     }
 
@@ -446,7 +446,7 @@ class GridService extends AbstractTca
      */
     public function isEditable($columnName)
     {
-        $defaultValue = FALSE;
+        $defaultValue = false;
         return $this->get($columnName, 'editable', $defaultValue);
     }
 
@@ -458,7 +458,7 @@ class GridService extends AbstractTca
      */
     public function isLocalized($columnName)
     {
-        $defaultValue = TRUE;
+        $defaultValue = true;
         return $this->get($columnName, 'localized', $defaultValue);
     }
 
@@ -510,7 +510,7 @@ class GridService extends AbstractTca
     public function hasRenderers($fieldName)
     {
         $field = $this->getField($fieldName);
-        return empty($field['renderer']) && empty($field['renderers']) ? FALSE : TRUE;
+        return empty($field['renderer']) && empty($field['renderers']) ? false : true;
     }
 
     /**
@@ -573,14 +573,14 @@ class GridService extends AbstractTca
     {
         $field = $this->getField($fieldNameAndPath);
 
-        $hasLabel = empty($field['label']) ? FALSE : TRUE;
+        $hasLabel = empty($field['label']) ? false : true;
 
         if (!$hasLabel && $this->hasRenderers($fieldNameAndPath)) {
             $renderers = $this->getRenderers($fieldNameAndPath);
             /** @var $renderer ColumnRendererInterface */
             foreach ($renderers as $renderer) {
                 if (isset($renderer['label'])) {
-                    $hasLabel = TRUE;
+                    $hasLabel = true;
                     break;
                 }
             }
@@ -626,9 +626,9 @@ class GridService extends AbstractTca
     {
         $excludedFields = array();
         if (!empty($this->tca['excluded_fields'])) {
-            $excludedFields = GeneralUtility::trimExplode(',', $this->tca['excluded_fields'], TRUE);
+            $excludedFields = GeneralUtility::trimExplode(',', $this->tca['excluded_fields'], true);
         } elseif (!empty($this->tca['export']['excluded_fields'])) { // only for export for legacy reason.
-            $excludedFields = GeneralUtility::trimExplode(',', $this->tca['export']['excluded_fields'], TRUE);
+            $excludedFields = GeneralUtility::trimExplode(',', $this->tca['export']['excluded_fields'], true);
         }
         return $excludedFields;
 
@@ -650,7 +650,7 @@ class GridService extends AbstractTca
      */
     public function areFilesIncludedInExport()
     {
-        $isIncluded = TRUE;
+        $isIncluded = true;
 
         if (isset($this->tca['export']['include_files'])) {
             $isIncluded = $this->tca['export']['include_files'];

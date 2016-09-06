@@ -34,7 +34,7 @@ class VidiModulesAspect implements TableConfigurationPostProcessingHookInterface
 
                 // @todo some modules have TSConfig configuration for not being displayed. Should be respected!
                 $moduleLoader->setDataType($dataType)
-                    ->isShown(FALSE)
+                    ->isShown(false)
                     ->register();
             }
         }

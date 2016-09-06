@@ -96,8 +96,8 @@ class FieldServiceTest extends AbstractServiceTest {
 	 */
 	public function fieldProvider() {
 		return array(
-			array('username', FALSE, FALSE, FALSE, FALSE, FALSE),
-			#array('usergroup', TRUE, FALSE, TRUE),
+			array('username', false, false, false, false, false),
+			#array('usergroup', true, false, true),
 		);
 	}
 

@@ -65,11 +65,11 @@ class ConfigurationViewHelper extends AbstractViewHelper
         $dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
         $fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
 
-        $isAllowed = FALSE;
+        $isAllowed = false;
         if (Tca::grid()->hasRenderers($fieldNameAndPath)) {
-            $isAllowed = TRUE;
+            $isAllowed = true;
         } elseif (Tca::table()->field($fieldNameAndPath)->isSystem() || Tca::table($dataType)->hasField($fieldName)) {
-            $isAllowed = TRUE;
+            $isAllowed = true;
         }
 
         return $isAllowed;

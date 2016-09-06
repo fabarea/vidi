@@ -229,7 +229,7 @@ Assuming we want to allow the access to every BE Users for the "find duplicates"
 
 	\Fab\Vidi\Tool\ToolRegistry::getInstance()
 		->overridePermission('sys_file', 'Fab\Media\Tool\DuplicateFilesFinderTool', function() {
-		return TRUE;
+		return true;
 	});
 
 	# where:
@@ -249,24 +249,24 @@ columns should be rendered. Take inspiration of `this example`_ below for your o
 		'columns' => array(
 			'__checkbox' => array(
 				'width' => '5px',
-				'sortable' => FALSE,
+				'sortable' => false,
 				'html' => '<input type="checkbox" class="checkbox-row-top"/>',
 			),
 			'uid' => array(
-				'visible' => FALSE,
+				'visible' => false,
 				'label' => 'Id',
 				'width' => '5px',
 			),
 			'username' => array(
-				'visible' => TRUE,
+				'visible' => true,
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:username',
 			),
 			'usergroup' => array(
-				'visible' => TRUE,
+				'visible' => true,
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:usergroup',
 			),
 			'__buttons' => array(
-				'sortable' => FALSE,
+				'sortable' => false,
 				'width' => '70px',
 			),
 		),
@@ -342,7 +342,7 @@ Configuration of ``$GLOBALS['TCA']['tx_foo']['grid']['columns']['field_name']`` 
 	'grid' => array(
 		'columns' => array(
 			'username' => array(
-				'visible' => TRUE,
+				'visible' => true,
 				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:username',
 			),
 		),
@@ -365,7 +365,7 @@ Description
 	['ctrl']['sorby'] => 'sorting'
 
 Default
-	TRUE
+	true
 
 
 .. ...............................................................
@@ -382,7 +382,7 @@ Description
 	it can be displayed with the column picker (upper right button in the BE module)
 
 Default
-	TRUE
+	true
 
 .. ...............................................................
 .. container:: table-row
@@ -520,7 +520,7 @@ Description
 	Whether the column can be hidden or not.
 
 Default
-	TRUE
+	true
 
 
 .. ...............................................................
@@ -536,7 +536,7 @@ Description
 	If a field is configured to be localized in the TCA, there is the chance to force not to be localized in the Grid.
 
 Default
-	TRUE
+	true
 
 TCA "grid.facets"
 -----------------
@@ -562,7 +562,7 @@ Configuration of ``$GLOBALS['TCA']['tx_foo']['grid']['export']`` as example::
 
 	'grid' => array(
 		'export' => array(
-			'include_files' => FALSE,
+			'include_files' => false,
 		),
 	),
 
@@ -577,7 +577,7 @@ Description
 	Whether to zip files along with the CSV, XML, ... file
 
 Default
-	TRUE
+	true
 
 .. container:: table-row
 

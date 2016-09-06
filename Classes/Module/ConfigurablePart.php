@@ -25,7 +25,7 @@ class ConfigurablePart
      * @param boolean $include_default
      * @return array
      */
-    static public function getParts($include_default = FALSE)
+    static public function getParts($include_default = false)
     {
 
         return array(

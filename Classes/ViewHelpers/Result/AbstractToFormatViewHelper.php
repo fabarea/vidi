@@ -66,7 +66,7 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
 
         // Add the files into the zipball.
         foreach ($this->collectedFiles as $file) {
-            $zip->addFile($file->getForLocalProcessing(FALSE), $file->getIdentifier());
+            $zip->addFile($file->getForLocalProcessing(false), $file->getIdentifier());
         }
 
         $zip->close();

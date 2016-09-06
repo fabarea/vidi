@@ -37,8 +37,8 @@ class GridServiceTest extends AbstractServiceTest {
 		$mockModulePreferences->expects($this->once())->method('get')->will($this->returnValue(array()));
 		$this->fixture->expects($this->once())->method('getModulePreferences')->will($this->returnValue($mockModulePreferences));
 
-		$GLOBALS['BE_USER'] = $this->getMock('TYPO3\CMS\Core\Authentication\BackendUserAuthentication', array(), array(), '', FALSE);
-		$GLOBALS['BE_USER']->expects($this->any())->method('isAdmin')->will($this->returnValue(TRUE));
+		$GLOBALS['BE_USER'] = $this->getMock('TYPO3\CMS\Core\Authentication\BackendUserAuthentication', array(), array(), '', false);
+		$GLOBALS['BE_USER']->expects($this->any())->method('isAdmin')->will($this->returnValue(true));
 	}
 
 	public function tearDown() {
@@ -49,7 +49,7 @@ class GridServiceTest extends AbstractServiceTest {
 	 * @test
 	 */
 	public function getLabelReturnNameAsValue() {
-		$GLOBALS['LANG'] = $this->getMock('TYPO3\CMS\Lang\LanguageService', array(), array(), '', FALSE);
+		$GLOBALS['LANG'] = $this->getMock('TYPO3\CMS\Lang\LanguageService', array(), array(), '', false);
 		$GLOBALS['LANG']->expects($this->once())->method('sL')->will($this->returnValue('Name'));
 
 		$this->assertEquals('Name', $this->fixture->getLabel('name'));

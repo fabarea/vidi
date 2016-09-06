@@ -22,8 +22,8 @@ class ButtonGroupRenderer extends ColumnRendererAbstract
     public function __construct()
     {
         $configuration = array(
-            'sortable' => FALSE,
-            'canBeHidden' => FALSE,
+            'sortable' => false,
+            'canBeHidden' => false,
             'width' => '100px',
         );
         parent::__construct($configuration);

@@ -48,7 +48,7 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper
                 readfile($this->exportFileNameAndPath);
             }
 
-            GeneralUtility::rmdir($this->temporaryDirectory, TRUE);
+            GeneralUtility::rmdir($this->temporaryDirectory, true);
         }
     }
 

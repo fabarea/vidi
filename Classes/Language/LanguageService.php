@@ -141,7 +141,7 @@ class LanguageService implements SingletonInterface
             $tsConfig = BackendUtility::getModTSconfig(0, 'mod.SHARED');
 
             // Fallback non sprite-configuration
-            if (($pos = strrpos($tsConfig['properties']['defaultLanguageFlag'], '.')) !== FALSE) {
+            if (($pos = strrpos($tsConfig['properties']['defaultLanguageFlag'], '.')) !== false) {
                 $defaultFlag = substr($tsConfig['properties']['defaultLanguageFlag'], 0, $pos);
             }
 
@@ -172,10 +172,10 @@ class LanguageService implements SingletonInterface
     {
         $languages = $this->getLanguages();
 
-        $LanguageExists = FALSE;
+        $LanguageExists = false;
         foreach ($languages as $_language) {
             if ((int)$_language['uid'] === (int)$language) {
-                $LanguageExists = TRUE;
+                $LanguageExists = true;
                 break;
             }
         }

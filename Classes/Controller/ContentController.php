@@ -293,7 +293,7 @@ class ContentController extends ActionController
      * @param bool $hasRecursiveSelection
      * @throws \Exception
      */
-    public function editAction($fieldNameAndPath, array $matches = [], $hasRecursiveSelection = FALSE)
+    public function editAction($fieldNameAndPath, array $matches = [], $hasRecursiveSelection = false)
     {
 
         // Instantiate the Matcher object according different rules.

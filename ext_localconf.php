@@ -5,7 +5,7 @@ if (!defined('TYPO3_MODE')) {
 
 $configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['vidi']);
 
-if (FALSE === isset($configuration['autoload_typoscript']) || TRUE === (bool)$configuration['autoload_typoscript']) {
+if (false === isset($configuration['autoload_typoscript']) || true === (bool)$configuration['autoload_typoscript']) {
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript(
         'vidi',

@@ -462,7 +462,7 @@ class FieldService extends AbstractTca
      */
     public function hasLabel()
     {
-        return empty($this->tca['label']) ? FALSE : TRUE;
+        return empty($this->tca['label']) ? false : true;
     }
 
     /**
@@ -472,7 +472,7 @@ class FieldService extends AbstractTca
      */
     public function hasAccess()
     {
-        $hasAccess = TRUE;
+        $hasAccess = true;
         if ($this->isBackendMode()
             && Tca::table($this->tableName)->hasAccess()
             && isset($this->tca['exclude'])
@@ -491,7 +491,7 @@ class FieldService extends AbstractTca
     public function isNumerical()
     {
         $result = $this->isSystem();
-        if ($result === FALSE) {
+        if ($result === false) {
             $configuration = $this->getConfiguration();
             $parts = array();
             if (!empty($configuration['eval'])) {
@@ -560,11 +560,11 @@ class FieldService extends AbstractTca
      */
     public function isLocalized()
     {
-        $isLocalized = FALSE;
+        $isLocalized = false;
         if (isset($this->tca['l10n_mode'])) {
 
             if ($this->tca['l10n_mode'] == 'prefixLangTitle' || $this->tca['l10n_mode'] == 'mergeIfNotBlank') {
-                $isLocalized = TRUE;
+                $isLocalized = true;
             }
         }
         return $isLocalized;
@@ -579,12 +579,12 @@ class FieldService extends AbstractTca
     {
         $configuration = $this->getConfiguration();
 
-        $isRequired = FALSE;
+        $isRequired = false;
         if (isset($configuration['minitems'])) {
             // is required of a select?
-            $isRequired = $configuration['minitems'] == 1 ? TRUE : FALSE;
+            $isRequired = $configuration['minitems'] == 1 ? true : false;
         } elseif (isset($configuration['eval'])) {
-            $parts = GeneralUtility::trimExplode(',', $configuration['eval'], TRUE);
+            $parts = GeneralUtility::trimExplode(',', $configuration['eval'], true);
             $isRequired = in_array('required', $parts);
         }
         return $isRequired;
@@ -660,7 +660,7 @@ class FieldService extends AbstractTca
      */
     public function hasRelationManyToOne()
     {
-        $result = FALSE;
+        $result = false;
 
         $foreignField = $this->getForeignField();
         if (!empty($foreignField)) {
@@ -679,7 +679,7 @@ class FieldService extends AbstractTca
      */
     public function hasRelationOneToMany()
     {
-        $result = FALSE;
+        $result = false;
 
         $foreignField = $this->getForeignField();
         if (!empty($foreignField)) {
@@ -698,7 +698,7 @@ class FieldService extends AbstractTca
      */
     public function hasRelationOneToOne()
     {
-        $result = FALSE;
+        $result = false;
 
         $foreignField = $this->getForeignField();
         if (!empty($foreignField)) {

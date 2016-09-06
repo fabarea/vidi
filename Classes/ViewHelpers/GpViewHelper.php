@@ -25,7 +25,7 @@ class GpViewHelper extends AbstractViewHelper
      * @param bool $encode
      * @return boolean
      */
-    public function render($argument, $encode = TRUE)
+    public function render($argument, $encode = true)
     {
         $value = ''; // default value
 

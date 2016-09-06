@@ -56,7 +56,7 @@ class AdditionalAssetsViewHelper extends AbstractBackendViewHelper
     {
         $uri = GeneralUtility::getFileAbsFileName($uri);
         $uri = substr($uri, strlen(PATH_site));
-        if (TYPO3_MODE === 'BE' && $uri !== FALSE) {
+        if (TYPO3_MODE === 'BE' && $uri !== false) {
             $uri = '../' . $uri;
         }
         return $uri;

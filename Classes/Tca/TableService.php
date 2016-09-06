@@ -163,7 +163,7 @@ class TableService extends AbstractTca
      */
     public function isHidden()
     {
-        return isset($this->tca['hideTable']) ? $this->tca['hideTable'] : FALSE;
+        return isset($this->tca['hideTable']) ? $this->tca['hideTable'] : false;
     }
 
     /**
@@ -249,7 +249,7 @@ class TableService extends AbstractTca
 
         // first clean up the sql segment
         $defaultOrder = str_replace('ORDER BY', '', $this->getDefaultOrderSql());
-        $defaultOrderParts = GeneralUtility::trimExplode(',', $defaultOrder, TRUE);
+        $defaultOrderParts = GeneralUtility::trimExplode(',', $defaultOrder, true);
 
         $orderings = array();
         foreach ($defaultOrderParts as $defaultOrderPart) {
@@ -396,7 +396,7 @@ class TableService extends AbstractTca
      */
     public function hasAccess()
     {
-        $hasAccess = TRUE;
+        $hasAccess = true;
         if ($this->isBackendMode()) {
             $hasAccess = $this->getBackendUser()->check('tables_modify', $this->tableName);
         }
@@ -413,7 +413,7 @@ class TableService extends AbstractTca
 
         // In case field contains items.tx_table for field type "group"
         $compositeField = '';
-        if (strpos($fieldName, '.') !== FALSE) {
+        if (strpos($fieldName, '.') !== false) {
             $compositeField = $fieldName;
             $fieldParts = explode('.', $compositeField, 2);
             $fieldName = $fieldParts[0];

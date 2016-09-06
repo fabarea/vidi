@@ -56,7 +56,7 @@ class ClipboardController extends ActionController
         # Json header is not automatically sent in the BE...
         $this->response->setHeader('Content-Type', 'application/json');
         $this->response->sendHeaders();
-        return json_encode(TRUE);
+        return json_encode(true);
     }
 
     /**

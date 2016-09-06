@@ -101,7 +101,7 @@ EOF;
                 && isset($GLOBALS['TCA'][$contentType]['ctrl']['label'])
                 && (
                     !isset($GLOBALS['TCA'][$contentType]['ctrl']['hideTable'])
-                    || TRUE !== (bool)$GLOBALS['TCA'][$contentType]['ctrl']['hideTable']
+                    || true !== (bool)$GLOBALS['TCA'][$contentType]['ctrl']['hideTable']
                 )
             ) {
                 $dataTypes[] = $contentType;

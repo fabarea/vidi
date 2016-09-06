@@ -22,8 +22,8 @@ class CheckBoxComponent extends ColumnRendererAbstract
     {
         $configuration = array(
             'width' => '5px',
-            'sortable' => FALSE,
-            'canBeHidden' => FALSE,
+            'sortable' => false,
+            'canBeHidden' => false,
             'html' => '<input type="checkbox" class="checkbox-row-top"/>',
         );
         parent::__construct($configuration);

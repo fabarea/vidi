@@ -446,15 +446,15 @@ class VidiDbBackend
         $operand2 = $comparison->getOperand2();
         if ($operator === QueryInterface::OPERATOR_IN) {
             $items = array();
-            $hasValue = FALSE;
+            $hasValue = false;
             foreach ($operand2 as $value) {
                 $value = $this->getPlainValue($value);
                 if ($value !== null) {
                     $items[] = $value;
-                    $hasValue = TRUE;
+                    $hasValue = true;
                 }
             }
-            if ($hasValue === FALSE) {
+            if ($hasValue === false) {
                 $sql['where'][] = '1<>1';
             } else {
                 $this->parseDynamicOperand($operand1, $operator, $source, $sql, $parameters, null);
@@ -468,7 +468,7 @@ class VidiDbBackend
                 # @todo re-implement me if necessary.
                 #$tableName = $this->query->getType();
                 #$propertyName = $operand1->getPropertyName();
-                #while (strpos($propertyName, '.') !== FALSE) {
+                #while (strpos($propertyName, '.') !== false) {
                 #	$this->addUnionStatement($tableName, $propertyName, $sql);
                 #}
                 #$columnName = $propertyName;
@@ -531,7 +531,7 @@ class VidiDbBackend
                 throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException('An object of class "' . get_class($realInput) . '" could not be converted to a plain value.', 1274799934);
             }
         } elseif (is_bool($input)) {
-            return $input === TRUE ? 1 : 0;
+            return $input === true ? 1 : 0;
         } else {
             return $input;
         }
@@ -562,7 +562,7 @@ class VidiDbBackend
 
             if ($source instanceof SelectorInterface) {
                 $tableName = $this->query->getType();
-                while (strpos($propertyName, '.') !== FALSE) {
+                while (strpos($propertyName, '.') !== false) {
                     $this->addUnionStatement($tableName, $propertyName, $sql);
                 }
             } elseif ($source instanceof JoinInterface) {
@@ -780,7 +780,7 @@ class VidiDbBackend
         $offset = 0;
         foreach ($parameters as $parameter) {
             $markPosition = strpos($sqlString, '?', $offset);
-            if ($markPosition !== FALSE) {
+            if ($markPosition !== false) {
                 if ($parameter === null) {
                     $parameter = 'null';
                 } elseif (is_array($parameter) || $parameter instanceof \ArrayAccess || $parameter instanceof \Traversable) {
@@ -872,7 +872,7 @@ class VidiDbBackend
         } elseif (!$ignoreEnableFields && !$includeDeleted) {
             $statement .= $this->getPageRepository()->enableFields($tableName);
         } elseif (!$ignoreEnableFields && $includeDeleted) {
-            throw new Exception\InconsistentQuerySettingsException('Query setting "ignoreEnableFields=FALSE" can not be used together with "includeDeleted=TRUE" in frontend context.', 1327678173);
+            throw new Exception\InconsistentQuerySettingsException('Query setting "ignoreEnableFields=false" can not be used together with "includeDeleted=true" in frontend context.', 1327678173);
         }
         return $this->replaceTableNameByAlias($tableName, $tableNameOrAlias, $statement);
     }
@@ -970,7 +970,7 @@ class VidiDbBackend
 
         $tableName = $this->resolveTableNameAlias($tableNameOrAlias);
         $tableColumns = $this->tableColumnCache->get($tableName);
-        if ($tableColumns === FALSE) {
+        if ($tableColumns === false) {
             $tableColumns = $this->databaseHandle->admin_get_fields($tableName);
             $this->tableColumnCache->set($tableName, $tableColumns);
         }

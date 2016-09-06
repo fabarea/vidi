@@ -22,22 +22,22 @@ $tca = [
                 'renderer' => new \Fab\Vidi\Grid\CheckBoxRenderer(),
             ],
             'uid' => [
-                'visible' => FALSE,
+                'visible' => false,
                 'label' => 'Id',
                 'width' => '5px',
             ],
             'title' => [
-                'visible' => TRUE,
+                'visible' => true,
                 'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_groups.xlf:title',
-                'editable' => TRUE,
+                'editable' => true,
             ],
             'tstamp' => [
-                'visible' => FALSE,
+                'visible' => false,
                 'format' => 'Fab\Vidi\Formatter\Date',
                 'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:tstamp',
             ],
             'crdate' => [
-                'visible' => FALSE,
+                'visible' => false,
                 'format' => 'Fab\Vidi\Formatter\Date',
                 'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:crdate',
             ],

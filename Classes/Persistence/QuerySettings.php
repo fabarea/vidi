@@ -23,7 +23,7 @@ class QuerySettings extends Typo3QuerySettings
      *
      * @var boolean
      */
-    protected $respectStoragePage = FALSE;
+    protected $respectStoragePage = false;
 
     /**
      * As long as we use a feature flag ignoreAllEnableFieldsInBe to determine the default behavior, the

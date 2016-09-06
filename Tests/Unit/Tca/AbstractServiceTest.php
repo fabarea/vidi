@@ -147,23 +147,23 @@ abstract class AbstractServiceTest extends UnitTestCase {
 				'excluded_fields' => 'middle_name, alternative_name',
 				'columns' => array(
 					'username' => array(
-						'visible' => TRUE,
+						'visible' => true,
 						'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:username',
-						'editable' => TRUE,
+						'editable' => true,
 					),
 					'name' => array(
-						'visible' => TRUE,
+						'visible' => true,
 						'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:name',
-						'editable' => TRUE,
+						'editable' => true,
 					),
 					'usergroup' => array(
-						'visible' => TRUE,
+						'visible' => true,
 						'renderers' => array(
 							'Fab\Vidi\Grid\RelationEditRenderer',
 							'Fab\Vidi\Grid\RelationRenderer',
 						),
-						'editable' => TRUE,
-						'sortable' => FALSE,
+						'editable' => true,
+						'sortable' => false,
 						'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:usergroup',
 					),
 				),

@@ -18,21 +18,21 @@ $tca = [
                 'renderer' => new Fab\Vidi\Grid\CheckBoxRenderer(),
             ],
             'uid' => [
-                'visible' => FALSE,
+                'visible' => false,
                 'label' => 'Id',
                 'width' => '5px',
             ],
             'header' => [
-                'editable' => TRUE,
+                'editable' => true,
                 'label' => 'LLL:EXT:vidi/Resources/Private/Language/tt_content.xlf:header',
             ],
             'tstamp' => [
-                'visible' => FALSE,
+                'visible' => false,
                 'format' => 'Fab\Vidi\Formatter\Date',
                 'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:tstamp',
             ],
             'crdate' => [
-                'visible' => FALSE,
+                'visible' => false,
                 'format' => 'Fab\Vidi\Formatter\Date',
                 'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:crdate',
             ],

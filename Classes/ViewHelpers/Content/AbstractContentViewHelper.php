@@ -31,11 +31,11 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      */
     public function initializeArguments()
     {
-        $this->registerArgument('type', 'string', 'Corresponds to the type of data to be fetched. It will basically be a table name e.g. fe_users.', FALSE, '');
-        $this->registerArgument('matches', 'array', 'Key / value array to be used as filter. The key corresponds to a field name.', FALSE, array());
-        $this->registerArgument('selection', 'int', 'A possible selection defined in the BE and stored in the database.', FALSE, 0);
-        $this->registerArgument('ignoreEnableFields', 'bool', 'Whether to ignore enable fields or not (AKA hidden, deleted, starttime, ...).', FALSE, FALSE);
-        $this->registerArgument('aliases', 'array', 'Attribute "matches" does not support certain character such as "." in field name. Use this to create aliases.', FALSE, array());
+        $this->registerArgument('type', 'string', 'Corresponds to the type of data to be fetched. It will basically be a table name e.g. fe_users.', false, '');
+        $this->registerArgument('matches', 'array', 'Key / value array to be used as filter. The key corresponds to a field name.', false, array());
+        $this->registerArgument('selection', 'int', 'A possible selection defined in the BE and stored in the database.', false, 0);
+        $this->registerArgument('ignoreEnableFields', 'bool', 'Whether to ignore enable fields or not (AKA hidden, deleted, starttime, ...).', false, false);
+        $this->registerArgument('aliases', 'array', 'Attribute "matches" does not support certain character such as "." in field name. Use this to create aliases.', false, array());
     }
 
     /**
@@ -74,7 +74,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
         foreach ($matches as $fieldNameAndPath => $value) {
 
             // CSV values should be considered as "in" operator in Query, otherwise "equals".
-            $explodedValues = GeneralUtility::trimExplode(',', $value, TRUE);
+            $explodedValues = GeneralUtility::trimExplode(',', $value, true);
 
             // The matching value contains a "1,2" as example
             if (count($explodedValues) > 1) {

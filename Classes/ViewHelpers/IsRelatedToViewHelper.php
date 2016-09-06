@@ -28,7 +28,7 @@ class IsRelatedToViewHelper extends AbstractViewHelper
     public function render($relatedContent)
     {
 
-        $isChecked = FALSE;
+        $isChecked = false;
 
         // Only computes whether the object is checked if one row is beeing edited.
         $numberOfObjects = $this->templateVariableContainer->get('numberOfObjects');

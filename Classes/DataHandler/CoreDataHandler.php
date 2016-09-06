@@ -56,7 +56,7 @@ class CoreDataHandler extends AbstractDataHandler
         $dataHandler->process_datamap();
         $this->errorMessages = $dataHandler->errorLog;
 
-        // Returns TRUE is log does not contain errors.
+        // Returns true is log does not contain errors.
         return empty($dataHandler->errorLog);
     }
 
@@ -79,7 +79,7 @@ class CoreDataHandler extends AbstractDataHandler
         $dataHandler->process_cmdmap();
         $this->errorMessages = $dataHandler->errorLog;
 
-        // Returns TRUE is log does not contain errors.
+        // Returns true is log does not contain errors.
         return empty($dataHandler->errorLog);
     }
 
@@ -117,7 +117,7 @@ class CoreDataHandler extends AbstractDataHandler
         $dataHandler->process_cmdmap();
         $this->errorMessages = $dataHandler->errorLog;
 
-        // Returns TRUE is log does not contain errors.
+        // Returns true is log does not contain errors.
         return empty($dataHandler->errorLog);
     }
 
@@ -139,7 +139,7 @@ class CoreDataHandler extends AbstractDataHandler
         $dataHandler->process_cmdmap();
         $this->errorMessages = $dataHandler->errorLog;
 
-        // Returns TRUE is log does not contain errors.
+        // Returns true is log does not contain errors.
         return empty($dataHandler->errorLog);
     }
 

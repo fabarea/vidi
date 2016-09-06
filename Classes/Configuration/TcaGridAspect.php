@@ -32,7 +32,7 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
         $configurationUtility = $this->getObjectManager()->get(ConfigurationUtility::class);
         $configuration = $configurationUtility->getCurrentConfiguration('vidi');
 
-        $dataTypes = GeneralUtility::trimExplode(',', $configuration['data_types']['value'], TRUE);
+        $dataTypes = GeneralUtility::trimExplode(',', $configuration['data_types']['value'], true);
 
         foreach ($dataTypes as $dataType) {
             $this->ensureMinimumTcaForGrid($dataType);
@@ -64,12 +64,12 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
                     'renderer' => new CheckBoxRenderer(),
                 ],
                 'uid' => [
-                    'visible' => FALSE,
+                    'visible' => false,
                     'label' => 'Id',
                     'width' => '5px',
                 ],
                 $labelField => [
-                    'editable' => TRUE,
+                    'editable' => true,
                 ],
                 '__buttons' => [
                     'renderer' => new ButtonGroupRenderer(),

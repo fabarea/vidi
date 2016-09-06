@@ -58,7 +58,7 @@ class ContentObjectProcessor implements SingletonInterface
 
             if (Tca::table($resolvedObject)->field($fieldName)->hasMany()) {
 
-                // TRUE means CSV values must be converted to array.
+                // true means CSV values must be converted to array.
                 if (!is_array($values)) {
                     $values = GeneralUtility::trimExplode(',', $values);
                 }

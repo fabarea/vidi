@@ -285,7 +285,7 @@ class Matcher
      * @param bool $addWildCard
      * @return $this
      */
-    public function like($fieldNameAndPath, $operand, $addWildCard = TRUE)
+    public function like($fieldNameAndPath, $operand, $addWildCard = true)
     {
         $wildCardSymbol = $addWildCard ? '%' : '';
         $this->like[] = ['fieldNameAndPath' => $fieldNameAndPath, 'operand' => $wildCardSymbol . $operand . $wildCardSymbol];
