@@ -25,7 +25,7 @@ class DeleteButton extends AbstractComponentView
      * @param Content $object
      * @return string
      */
-    public function render(Content $object = NULL)
+    public function render(Content $object = null)
     {
         $labelField = Tca::table($object->getDataType())->getLabelField();
         $label = $object[$labelField] ? $object[$labelField] : $object->getUid();

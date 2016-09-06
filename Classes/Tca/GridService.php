@@ -476,14 +476,14 @@ class GridService extends AbstractTca
     }
 
     /**
-     * Fetch a possible from a Grid Renderer. If no value is found, returns NULL
+     * Fetch a possible from a Grid Renderer. If no value is found, returns null
      *
      * @param string $fieldName
      * @param string $key
      * @param mixed $defaultValue
-     * @return NULL|mixed
+     * @return null|mixed
      */
-    public function get($fieldName, $key, $defaultValue = NULL)
+    public function get($fieldName, $key, $defaultValue = null)
     {
         $value = $defaultValue;
 

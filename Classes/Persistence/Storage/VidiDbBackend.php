@@ -406,7 +406,7 @@ class VidiDbBackend
      * @param array &$parameters The parameters that will replace the markers
      * @return void
      */
-    protected function parseConstraint(\TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface $constraint = NULL, SourceInterface $source, array &$sql, array &$parameters)
+    protected function parseConstraint(\TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface $constraint = null, SourceInterface $source, array &$sql, array &$parameters)
     {
         if ($constraint instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\AndInterface) {
             $sql['where'][] = '(';
@@ -449,7 +449,7 @@ class VidiDbBackend
             $hasValue = FALSE;
             foreach ($operand2 as $value) {
                 $value = $this->getPlainValue($value);
-                if ($value !== NULL) {
+                if ($value !== null) {
                     $items[] = $value;
                     $hasValue = TRUE;
                 }
@@ -457,11 +457,11 @@ class VidiDbBackend
             if ($hasValue === FALSE) {
                 $sql['where'][] = '1<>1';
             } else {
-                $this->parseDynamicOperand($operand1, $operator, $source, $sql, $parameters, NULL);
+                $this->parseDynamicOperand($operand1, $operator, $source, $sql, $parameters, null);
                 $parameters[] = $items;
             }
         } elseif ($operator === QueryInterface::OPERATOR_CONTAINS) {
-            if ($operand2 === NULL) {
+            if ($operand2 === null) {
                 $sql['where'][] = '1<>1';
             } else {
                 throw new \Exception('Not implemented! Contact extension author.', 1412931227);
@@ -473,7 +473,7 @@ class VidiDbBackend
                 #}
                 #$columnName = $propertyName;
                 #$columnMap = $propertyName;
-                #$typeOfRelation = $columnMap instanceof ColumnMap ? $columnMap->getTypeOfRelation() : NULL;
+                #$typeOfRelation = $columnMap instanceof ColumnMap ? $columnMap->getTypeOfRelation() : null;
                 #if ($typeOfRelation === ColumnMap::RELATION_HAS_AND_BELONGS_TO_MANY) {
                 #	$relationTableName = $columnMap->getRelationTableName();
                 #	$sql['where'][] = $tableName . '.uid IN (SELECT ' . $columnMap->getParentKeyFieldName() . ' FROM ' . $relationTableName . ' WHERE ' . $columnMap->getChildKeyFieldName() . '=?)';
@@ -493,7 +493,7 @@ class VidiDbBackend
                 #}
             }
         } else {
-            if ($operand2 === NULL) {
+            if ($operand2 === null) {
                 if ($operator === QueryInterface::OPERATOR_EQUAL_TO) {
                     $operator = self::OPERATOR_EQUAL_TO_NULL;
                 } elseif ($operator === QueryInterface::OPERATOR_NOT_EQUAL_TO) {
@@ -548,7 +548,7 @@ class VidiDbBackend
      * @param string $valueFunction an optional SQL function to apply to the operand value
      * @return void
      */
-    protected function parseDynamicOperand(DynamicOperandInterface $operand, $operator, SourceInterface $source, array &$sql, array &$parameters, $valueFunction = NULL)
+    protected function parseDynamicOperand(DynamicOperandInterface $operand, $operator, SourceInterface $source, array &$sql, array &$parameters, $valueFunction = null)
     {
         if ($operand instanceof LowerCaseInterface) {
             $this->parseDynamicOperand($operand->getOperand(), $operator, $source, $sql, $parameters, 'LOWER');
@@ -572,7 +572,7 @@ class VidiDbBackend
             $columnName = $propertyName;
             $operator = $this->resolveOperator($operator);
             $constraintSQL = '';
-            if ($valueFunction === NULL) {
+            if ($valueFunction === null) {
                 $constraintSQL .= (!empty($tableName) ? $tableName . '.' : '') . $columnName . ' ' . $operator . ' ?';
             } else {
                 $constraintSQL .= $valueFunction . '(' . (!empty($tableName) ? $tableName . '.' : '') . $columnName . ') ' . $operator . ' ?';
@@ -613,14 +613,14 @@ class VidiDbBackend
         $parentKeyFieldName = $table->field($fieldName)->getForeignField();
         $childTableName = $table->field($fieldName)->getForeignTable();
 
-        if ($childTableName === NULL) {
+        if ($childTableName === null) {
             throw new Exception\InvalidRelationConfigurationException('The relation information for property "' . $fieldName . '" of class "' . $tableName . '" is missing.', 1353170925);
         }
 
         if ($table->field($fieldName)->hasOne()) { // includes relation "one-to-one" and "many-to-one"
             // sometimes the opposite relation is not defined. We don't want to force this config for backward compatibility reasons.
-            // $parentKeyFieldName === NULL does the trick somehow. Before condition was if (isset($parentKeyFieldName))
-            if ($table->field($fieldName)->hasRelationManyToOne() || $parentKeyFieldName === NULL) {
+            // $parentKeyFieldName === null does the trick somehow. Before condition was if (isset($parentKeyFieldName))
+            if ($table->field($fieldName)->hasRelationManyToOne() || $parentKeyFieldName === null) {
                 $sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.' . $fieldName . '=' . $childTableName . '.uid';
             } else {
                 $sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.uid=' . $childTableName . '.' . $parentKeyFieldName;
@@ -781,8 +781,8 @@ class VidiDbBackend
         foreach ($parameters as $parameter) {
             $markPosition = strpos($sqlString, '?', $offset);
             if ($markPosition !== FALSE) {
-                if ($parameter === NULL) {
-                    $parameter = 'NULL';
+                if ($parameter === null) {
+                    $parameter = 'null';
                 } elseif (is_array($parameter) || $parameter instanceof \ArrayAccess || $parameter instanceof \Traversable) {
                     $items = array();
                     foreach ($parameter as $item) {
@@ -853,7 +853,7 @@ class VidiDbBackend
      *
      * @param string $tableNameOrAlias
      * @param boolean $ignoreEnableFields A flag indicating whether the enable fields should be ignored
-     * @param array $enableFieldsToBeIgnored If $ignoreEnableFields is true, this array specifies enable fields to be ignored. If it is NULL or an empty array (default) all enable fields are ignored.
+     * @param array $enableFieldsToBeIgnored If $ignoreEnableFields is true, this array specifies enable fields to be ignored. If it is null or an empty array (default) all enable fields are ignored.
      * @param boolean $includeDeleted A flag indicating whether deleted records should be included
      * @return string
      * @throws Exception\InconsistentQuerySettingsException
@@ -1028,9 +1028,9 @@ class VidiDbBackend
      */
     protected function parseLimitAndOffset($limit, $offset, array &$sql)
     {
-        if ($limit !== NULL && $offset !== NULL) {
+        if ($limit !== null && $offset !== null) {
             $sql['limit'] = intval($offset) . ', ' . intval($limit);
-        } elseif ($limit !== NULL) {
+        } elseif ($limit !== null) {
             $sql['limit'] = intval($limit);
         }
     }

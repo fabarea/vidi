@@ -27,7 +27,7 @@ class ResultSetStorage implements SingletonInterface
      */
     public function get($querySignature)
     {
-        $resultSet = NULL;
+        $resultSet = null;
         if (isset($this->resultSets[$querySignature])) {
             $resultSet = $this->resultSets[$querySignature];
         }

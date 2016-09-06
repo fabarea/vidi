@@ -37,7 +37,7 @@ class JsonResult
     /**
      * @var array
      */
-    protected $row = NULL;
+    protected $row = null;
 
     /**
      * @return $this

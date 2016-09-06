@@ -46,7 +46,7 @@ class Content implements \ArrayAccess
     {
 
         $this->dataType = $dataType;
-        $this->uid = empty($contentData['uid']) ? NULL : (int)$contentData['uid'];
+        $this->uid = empty($contentData['uid']) ? null : (int)$contentData['uid'];
 
         /** @var \Fab\Vidi\Tca\TableService $table */
         $table = Tca::table($dataType);
@@ -93,7 +93,7 @@ class Content implements \ArrayAccess
      */
     public function __call($methodName, $arguments)
     {
-        $value = NULL;
+        $value = null;
         if (substr($methodName, 0, 3) === 'get' && strlen($methodName) > 4) {
             $propertyName = strtolower(substr(substr($methodName, 3), 0, 1)) . substr(substr($methodName, 3), 1);
 

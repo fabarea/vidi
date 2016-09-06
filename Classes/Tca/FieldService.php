@@ -85,7 +85,7 @@ class FieldService extends AbstractTca
 
     /**
      * Returns a key of the configuration.
-     * If the key can not to be found, returns NULL.
+     * If the key can not to be found, returns null.
      *
      * @param string $key
      * @return mixed
@@ -93,18 +93,18 @@ class FieldService extends AbstractTca
     public function get($key)
     {
         $configuration = $this->getConfiguration();
-        return empty($configuration[$key]) ? NULL : $configuration[$key];
+        return empty($configuration[$key]) ? null : $configuration[$key];
     }
 
     /**
      * Returns the foreign field of a given field (opposite relational field).
-     * If no relation exists, returns NULL.
+     * If no relation exists, returns null.
      *
-     * @return string|NULL
+     * @return string|null
      */
     public function getForeignField()
     {
-        $result = NULL;
+        $result = null;
         $configuration = $this->getConfiguration();
 
         if (!empty($configuration['foreign_field'])) {
@@ -130,13 +130,13 @@ class FieldService extends AbstractTca
 
     /**
      * Returns the foreign table of a given field (opposite relational table).
-     * If no relation exists, returns NULL.
+     * If no relation exists, returns null.
      *
-     * @return string|NULL
+     * @return string|null
      */
     public function getForeignTable()
     {
-        $result = NULL;
+        $result = null;
         $configuration = $this->getConfiguration();
 
         if (!empty($configuration['foreign_table'])) {
@@ -217,25 +217,25 @@ class FieldService extends AbstractTca
 
     /**
      * Returns the MM table of a field.
-     * If no relation exists, returns NULL.
+     * If no relation exists, returns null.
      *
-     * @return string|NULL
+     * @return string|null
      */
     public function getManyToManyTable()
     {
         $configuration = $this->getConfiguration();
-        return empty($configuration['MM']) ? NULL : $configuration['MM'];
+        return empty($configuration['MM']) ? null : $configuration['MM'];
     }
 
     /**
      * Returns a possible additional table name used in MM relations.
-     * If no table name exists, returns NULL.
+     * If no table name exists, returns null.
      *
-     * @return string|NULL
+     * @return string|null
      */
     public function getAdditionalTableNameCondition()
     {
-        $result = NULL;
+        $result = null;
         $configuration = $this->getConfiguration();
 
         if (!empty($configuration['MM_match_fields']['tablenames'])) {
@@ -344,7 +344,7 @@ class FieldService extends AbstractTca
     public function getDefaultValue()
     {
         $configuration = $this->getConfiguration();
-        return isset($configuration['default']) ? $configuration['default'] : NULL;
+        return isset($configuration['default']) ? $configuration['default'] : null;
     }
 
     /**
@@ -618,7 +618,7 @@ class FieldService extends AbstractTca
      */
     public function hasRelation()
     {
-        return NULL !== $this->getForeignTable();
+        return null !== $this->getForeignTable();
     }
 
     /**

@@ -24,7 +24,7 @@ class EditUri extends AbstractComponentView
      * @param Content $object
      * @return string
      */
-    public function render(Content $object = NULL)
+    public function render(Content $object = null)
     {
         $uri = BackendUtility::getModuleUrl(
             'record_edit',

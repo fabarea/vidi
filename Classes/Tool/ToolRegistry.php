@@ -180,11 +180,11 @@ class ToolRegistry implements SingletonInterface
      *
      * @param string $dataType corresponds to the table name or can be "*" for all data types.
      * @param string $toolName class name which must implement "ToolInterface".
-     * @return NULL|Closure
+     * @return null|Closure
      */
     protected function getOverriddenPermission($dataType, $toolName)
     {
-        $permission = NULL;
+        $permission = null;
         if (isset($this->overriddenPermissions[$dataType][$toolName])) {
             $permission = $this->overriddenPermissions[$dataType][$toolName];
         } elseif (isset($this->overriddenPermissions['*'][$toolName])) {

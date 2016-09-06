@@ -240,7 +240,7 @@ class Query implements QueryInterface
      */
     public function getSource()
     {
-        if ($this->source === NULL) {
+        if ($this->source === null) {
             $this->source = $this->qomFactory->selector($this->getType());
         }
         return $this->source;
@@ -406,7 +406,7 @@ class Query implements QueryInterface
             $constraints = func_get_args();
             $resultingConstraint = array_shift($constraints);
         }
-        if ($resultingConstraint === NULL) {
+        if ($resultingConstraint === null) {
             throw new InvalidNumberOfConstraintsException('There must be at least one constraint or a non-empty array of constraints given.', 1401289500);
         }
         foreach ($constraints as $constraint) {
@@ -432,7 +432,7 @@ class Query implements QueryInterface
             $constraints = func_get_args();
             $resultingConstraint = array_shift($constraints);
         }
-        if ($resultingConstraint === NULL) {
+        if ($resultingConstraint === null) {
             throw new InvalidNumberOfConstraintsException('There must be at least one constraint or a non-empty array of constraints given.', 1401289501);
         }
         foreach ($constraints as $constraint) {
@@ -586,7 +586,7 @@ class Query implements QueryInterface
 
     /**
      * Returns an "isEmpty" criterion used for matching objects against a query.
-     * It matches if the multivalued property contains no values or is NULL.
+     * It matches if the multivalued property contains no values or is null.
      *
      * @param string $propertyName The name of the multivalued property to compare against
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException

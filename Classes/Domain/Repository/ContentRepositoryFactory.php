@@ -30,7 +30,7 @@ class ContentRepositoryFactory implements SingletonInterface
      * @param string $sourceFieldName
      * @return \Fab\Vidi\Domain\Repository\ContentRepository
      */
-    static public function getInstance($dataType = NULL, $sourceFieldName = '')
+    static public function getInstance($dataType = null, $sourceFieldName = '')
     {
 
         /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */

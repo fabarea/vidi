@@ -25,7 +25,7 @@ class CheckboxSystem extends AbstractComponentView
      * @param  int $offset
      * @return string
      */
-    public function render(Content $object = NULL, $offset = 0)
+    public function render(Content $object = null, $offset = 0)
     {
         return '';
     }

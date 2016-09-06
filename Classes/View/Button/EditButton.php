@@ -26,7 +26,7 @@ class EditButton extends AbstractComponentView
      * @param Content $object
      * @return string
      */
-    public function render(Content $object = NULL)
+    public function render(Content $object = null)
     {
         $editUri = $this->getUriRenderer()->render($object);
 

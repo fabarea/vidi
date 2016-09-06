@@ -43,7 +43,7 @@ class ModulePreferences implements SingletonInterface
             $this->load($dataType);
         }
 
-        $value = empty($this->preferences[$dataType][$key]) ? NULL : $this->preferences[$dataType][$key];
+        $value = empty($this->preferences[$dataType][$key]) ? null : $this->preferences[$dataType][$key];
         return $value;
     }
 

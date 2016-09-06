@@ -29,7 +29,7 @@ class SelectionController extends ActionController
      * @param Selection $selection
      * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
-    public function createAction(Selection $selection = NULL)
+    public function createAction(Selection $selection = null)
     {
         $selection->setDataType($this->getModuleLoader()->getDataType());
 

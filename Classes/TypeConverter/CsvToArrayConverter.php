@@ -45,7 +45,7 @@ class CsvToArrayConverter extends AbstractTypeConverter
      * @throws \TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException
      * @api
      */
-    public function convertFrom($source, $targetType, array $convertedChildProperties = array(), PropertyMappingConfigurationInterface $configuration = NULL)
+    public function convertFrom($source, $targetType, array $convertedChildProperties = array(), PropertyMappingConfigurationInterface $configuration = null)
     {
         return GeneralUtility::trimExplode(',', $source, true);
     }

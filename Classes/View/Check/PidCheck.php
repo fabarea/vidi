@@ -39,7 +39,7 @@ class PidCheck extends AbstractComponentView
      *
      * @var array
      */
-    protected $page = NULL;
+    protected $page = null;
 
     /**
      * A collection of speaking error messages why the pid is invalid.
@@ -233,7 +233,7 @@ EOF;
      */
     public function getPage()
     {
-        if ($this->page !== NULL) {
+        if ($this->page !== null) {
             return $this->page;
         } else {
             return $this->getDatabaseConnection()->exec_SELECTgetSingleRow('doktype', 'pages', 'deleted = 0 AND uid = ' . $this->configuredPid);

@@ -52,7 +52,7 @@ class ModuleService implements SingletonInterface
      * @param int $pid
      * @return array
      */
-    public function getModulesForPid($pid = NULL)
+    public function getModulesForPid($pid = null)
     {
         if (!isset($this->storage[$pid])) {
 

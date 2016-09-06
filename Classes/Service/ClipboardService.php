@@ -67,7 +67,7 @@ class ClipboardService implements SingletonInterface
      */
     public function flush()
     {
-        $this->getBackendUser()->pushModuleData($this->getDataKey(), NULL);
+        $this->getBackendUser()->pushModuleData($this->getDataKey(), null);
     }
 
     /**

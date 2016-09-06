@@ -112,11 +112,11 @@ class TableService extends AbstractTca
      * Return the "disabled" field.
      *
      * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
-     * @return string|NULL
+     * @return string|null
      */
     public function getHiddenField()
     {
-        $hiddenField = NULL;
+        $hiddenField = null;
         $enableColumns = $this->get('enablecolumns');
         if (is_array($enableColumns) && !empty($enableColumns['disabled'])) {
             $hiddenField = $enableColumns['disabled'];
@@ -128,11 +128,11 @@ class TableService extends AbstractTca
      * Return the "starttime" field.
      *
      * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
-     * @return string|NULL
+     * @return string|null
      */
     public function getStartTimeField()
     {
-        $startTimeField = NULL;
+        $startTimeField = null;
         $enableColumns = $this->get('enablecolumns');
         if (is_array($enableColumns) && !empty($enableColumns['starttime'])) {
             $startTimeField = $enableColumns['starttime'];
@@ -144,11 +144,11 @@ class TableService extends AbstractTca
      * Return the "endtime" field.
      *
      * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
-     * @return string|NULL
+     * @return string|null
      */
     public function getEndTimeField()
     {
-        $endTimeField = NULL;
+        $endTimeField = null;
         $enableColumns = $this->get('enablecolumns');
         if (is_array($enableColumns) && !empty($enableColumns['endtime'])) {
             $endTimeField = $enableColumns['endtime'];
@@ -179,7 +179,7 @@ class TableService extends AbstractTca
     /**
      * Get the "deleted" field for the table.
      *
-     * @return string|NULL
+     * @return string|null
      */
     public function getDeletedField()
     {
@@ -189,7 +189,7 @@ class TableService extends AbstractTca
     /**
      * Get the modification time stamp field.
      *
-     * @return string|NULL
+     * @return string|null
      */
     public function getTimeModificationField()
     {
@@ -199,7 +199,7 @@ class TableService extends AbstractTca
     /**
      * Get the creation time stamp field.
      *
-     * @return string|NULL
+     * @return string|null
      */
     public function getTimeCreationField()
     {
@@ -209,7 +209,7 @@ class TableService extends AbstractTca
     /**
      * Get the language field for the table.
      *
-     * @return string|NULL
+     * @return string|null
      */
     public function getLanguageField()
     {
@@ -219,7 +219,7 @@ class TableService extends AbstractTca
     /**
      * Get the field which points to the parent.
      *
-     * @return string|NULL
+     * @return string|null
      */
     public function getLanguageParentField()
     {
@@ -229,7 +229,7 @@ class TableService extends AbstractTca
     /**
      * Returns the default order in the form of a SQL segment.
      *
-     * @return string|NULL
+     * @return string|null
      */
     public function getDefaultOrderSql()
     {
@@ -266,7 +266,7 @@ class TableService extends AbstractTca
     /**
      * Returns the searchable fields.
      *
-     * @return string|NULL
+     * @return string|null
      */
     public function getSearchFields()
     {
@@ -374,11 +374,11 @@ class TableService extends AbstractTca
      * Return configuration value given a key.
      *
      * @param string $key
-     * @return string|NULL
+     * @return string|null
      */
     public function get($key)
     {
-        return $this->has($key) ? $this->tca[$key] : NULL;
+        return $this->has($key) ? $this->tca[$key] : null;
     }
 
     /**

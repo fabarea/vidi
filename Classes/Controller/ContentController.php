@@ -237,7 +237,7 @@ class ContentController extends ActionController
      * @param int $previousIdentifier
      * @return string
      */
-    public function sortAction(array $matches = [], $previousIdentifier = NULL)
+    public function sortAction(array $matches = [], $previousIdentifier = null)
     {
 
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
@@ -353,7 +353,7 @@ class ContentController extends ActionController
                 foreach ($relatedContents as $node) {
                     $flatTree[$node->getUid()] = array(
                         'item' => $node,
-                        'parent' => $node[$parentField] ? $node[$parentField]['uid'] : NULL,
+                        'parent' => $node[$parentField] ? $node[$parentField]['uid'] : null,
                     );
                 }
 
@@ -362,12 +362,12 @@ class ContentController extends ActionController
                 // If leaves are selected without its parents selected, those are shown as parent
                 foreach ($flatTree as $id => &$flatNode) {
                     if (!isset($flatTree[$flatNode['parent']])) {
-                        $flatNode['parent'] = NULL;
+                        $flatNode['parent'] = null;
                     }
                 }
 
                 foreach ($flatTree as $id => &$node) {
-                    if ($node['parent'] === NULL) {
+                    if ($node['parent'] === null) {
                         $tree[$id] = &$node;
                     } else {
                         $flatTree[$node['parent']]['children'][$id] = &$node;
@@ -383,7 +383,7 @@ class ContentController extends ActionController
             $this->view->assign('relatedContentTitle', Tca::table($relatedDataType)->getTitle());
             $this->view->assign(
                 'renderMode',
-                Tca::table($dataType)->field($fieldName)->isRenderModeTree() ? FieldType::TREE : NULL
+                Tca::table($dataType)->field($fieldName)->isRenderModeTree() ? FieldType::TREE : null
             );
         }
     }
