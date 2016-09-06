@@ -251,7 +251,7 @@ class TableService extends AbstractTca
         $defaultOrder = str_replace('ORDER BY', '', $this->getDefaultOrderSql());
         $defaultOrderParts = GeneralUtility::trimExplode(',', $defaultOrder, true);
 
-        $orderings = array();
+        $orderings = [];
         foreach ($defaultOrderParts as $defaultOrderPart) {
             $parts = GeneralUtility::trimExplode(' ', $defaultOrderPart);
             if (empty($parts[1])) {
@@ -428,7 +428,7 @@ class TableService extends AbstractTca
 
         // True for system fields such as uid, pid that don't necessarily have a TCA.
         if (empty($this->columnTca[$fieldName]) && in_array($fieldName, Tca::getSystemFields())) {
-            $this->columnTca[$fieldName] = array();
+            $this->columnTca[$fieldName] = [];
         } elseif (empty($this->columnTca[$fieldName])) {
             $message = sprintf(
                 'Does the field really exist? No TCA entry found for field "%s" for table "%s"',

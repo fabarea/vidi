@@ -86,7 +86,7 @@ class Query implements QueryInterface
     /**
      * @var int
      */
-    protected $orderings = array();
+    protected $orderings = [];
 
     /**
      * @var int

@@ -26,7 +26,7 @@ class FacetsViewHelper extends AbstractViewHelper
     public function render()
     {
 
-        $facets = array();
+        $facets = [];
         foreach (Tca::grid()->getFacets() as $facet) {
             /** @var FacetInterface $facet */
             $name = $facet->getName();

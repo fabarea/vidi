@@ -60,7 +60,7 @@ class ContentRepository implements RepositoryInterface
     /**
      * @var array
      */
-    protected $errorMessages = array();
+    protected $errorMessages = [];
 
     /**
      * @var QuerySettingsInterface
@@ -586,7 +586,7 @@ class ContentRepository implements RepositoryInterface
 
         $constraints = null;
 
-        $collectedConstraints = array();
+        $collectedConstraints = [];
 
         // Search term
         $constraint = $this->computeSearchTermConstraint($query, $matcher);
@@ -633,7 +633,7 @@ class ContentRepository implements RepositoryInterface
 
             $fields = GeneralUtility::trimExplode(',', Tca::table($this->dataType)->getSearchFields(), true);
 
-            $constraints = array();
+            $constraints = [];
             $likeClause = sprintf('%%%s%%', $matcher->getSearchTerm());
             foreach ($fields as $fieldNameAndPath) {
                 if ($this->isSuitableForLike($fieldNameAndPath, $matcher->getSearchTerm())) {
@@ -700,7 +700,7 @@ class ContentRepository implements RepositoryInterface
         $criteria = $matcher->$getCriteria();
 
         if (!empty($criteria)) {
-            $constraints = array();
+            $constraints = [];
 
             foreach ($criteria as $criterion) {
 
@@ -765,7 +765,7 @@ class ContentRepository implements RepositoryInterface
         $fieldName = Property::name($propertyName)->of($this->dataType)->toFieldName();
 
         /** @var $matcher Matcher */
-        $matcher = GeneralUtility::makeInstance(Matcher::class, array(), $this->getDataType());
+        $matcher = GeneralUtility::makeInstance(Matcher::class, [], $this->getDataType());
 
         $table = Tca::table($this->dataType);
         if ($table->field($fieldName)->isGroup()) {

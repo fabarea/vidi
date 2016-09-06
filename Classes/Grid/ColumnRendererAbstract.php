@@ -39,17 +39,17 @@ abstract class ColumnRendererAbstract implements ColumnRendererInterface
     /**
      * @var array
      */
-    protected $fieldConfiguration = array();
+    protected $fieldConfiguration = [];
 
     /**
      * @var array
      */
-    protected $gridRendererConfiguration = array();
+    protected $gridRendererConfiguration = [];
 
     /**
      * @var array
      */
-    protected $configuration = array();
+    protected $configuration = [];
 
     /**
      * Constructor of a Generic component in Vidi.
@@ -57,7 +57,7 @@ abstract class ColumnRendererAbstract implements ColumnRendererInterface
      * @param array $configuration
      * @param array $legacyParameterConfiguration
      */
-    public function __construct($configuration = array(), $legacyParameterConfiguration = array())
+    public function __construct($configuration = [], $legacyParameterConfiguration = array())
     {
         if (is_string($configuration)) {
             $configuration = $legacyParameterConfiguration;

@@ -24,11 +24,11 @@ class ToolController extends ActionController
      */
     public function welcomeAction()
     {
-        $items = array();
+        $items = [];
         $tools = ToolRegistry::getInstance()->getTools($this->getModuleLoader()->getDataType());
 
         foreach ($tools as $index => $tool) {
-            $item = array();
+            $item = [];
             $item['title'] = $tool->getTitle();
             $item['description'] = $tool->getDescription();
 

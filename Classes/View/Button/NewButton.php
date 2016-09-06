@@ -45,7 +45,7 @@ class NewButton extends AbstractComponentView
                 ->setIcon(
                     $this->getIconFactory()->getIconForRecord(
                         $this->getModuleLoader()->getDataType(),
-                        array(),
+                        [],
                         Icon::SIZE_SMALL
                     )
                 )

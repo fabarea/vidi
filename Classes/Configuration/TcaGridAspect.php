@@ -48,7 +48,7 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
     {
         $labelField = $this->getLabelField($dataType);
         if (empty($GLOBALS['TCA'][$dataType]['grid'])) {
-            $GLOBALS['TCA'][$dataType]['grid'] = array();
+            $GLOBALS['TCA'][$dataType]['grid'] = [];
         }
 
         if (empty($GLOBALS['TCA'][$dataType]['grid']['facets'])) {

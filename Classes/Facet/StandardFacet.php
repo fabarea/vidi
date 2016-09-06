@@ -31,7 +31,7 @@ class StandardFacet implements FacetInterface
     /**
      * @var array
      */
-    protected $suggestions = array();
+    protected $suggestions = [];
 
     /**
      * @var string
@@ -91,7 +91,7 @@ class StandardFacet implements FacetInterface
     public function getSuggestions()
     {
 
-        $values = array();
+        $values = [];
         foreach ($this->suggestions as $key => $label) {
             $localizedLabel = $this->getLanguageService()->sL($label);
             if (!empty($localizedLabel)) {

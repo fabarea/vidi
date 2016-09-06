@@ -94,7 +94,7 @@ class ModulePreferencesTool extends AbstractTool
     protected function getExcludedFieldsFromTca()
     {
         $tca = Tca::grid()->getTca();
-        $excludedFields = array();
+        $excludedFields = [];
         if (!empty($tca['excluded_fields'])) {
             $excludedFields = GeneralUtility::trimExplode(',', $tca['excluded_fields'], true);
         } elseif (!empty($tca['export']['excluded_fields'])) { // only for export for legacy reason.

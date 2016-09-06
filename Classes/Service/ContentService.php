@@ -31,7 +31,7 @@ class ContentService
     /**
      * @var \Fab\Vidi\Domain\Model\Content[]
      */
-    protected $objects = array();
+    protected $objects = [];
 
     /**
      * @var int

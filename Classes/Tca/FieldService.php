@@ -80,7 +80,7 @@ class FieldService extends AbstractTca
      */
     public function getConfiguration()
     {
-        return empty($this->tca['config']) ? array() : $this->tca['config'];
+        return empty($this->tca['config']) ? [] : $this->tca['config'];
     }
 
     /**
@@ -257,7 +257,7 @@ class FieldService extends AbstractTca
      */
     public function getAdditionalMMCondition()
     {
-        $additionalMMConditions = array();
+        $additionalMMConditions = [];
         $configuration = $this->getConfiguration();
 
         if (!empty($configuration['MM_match_fields'])) {
@@ -413,7 +413,7 @@ class FieldService extends AbstractTca
      */
     protected function fetchItemsFromUserFunction()
     {
-        $values = array();
+        $values = [];
 
         $configuration = $this->getConfiguration();
         if (!empty($configuration['itemsProcFunc'])) {
@@ -422,7 +422,7 @@ class FieldService extends AbstractTca
 
                 list($class, $method) = explode('->', $parts[1]);
 
-                $parameters['items'] = array();
+                $parameters['items'] = [];
                 $object = GeneralUtility::makeInstance($class);
                 $object->$method($parameters);
 
@@ -493,7 +493,7 @@ class FieldService extends AbstractTca
         $result = $this->isSystem();
         if ($result === false) {
             $configuration = $this->getConfiguration();
-            $parts = array();
+            $parts = [];
             if (!empty($configuration['eval'])) {
                 $parts = GeneralUtility::trimExplode(',', $configuration['eval']);
             }

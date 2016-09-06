@@ -54,7 +54,7 @@ class VidiDbBackend
      *
      * @var array
      */
-    protected $pageTSConfigCache = array();
+    protected $pageTSConfigCache = [];
 
     /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
@@ -96,8 +96,8 @@ class VidiDbBackend
      * @var array
      */
     protected $tableNameAliases = array(
-        'aliases' => array(),
-        'aliasIncrement' => array(),
+        'aliases' => [],
+        'aliasIncrement' => [],
     );
 
     /**
@@ -140,7 +140,7 @@ class VidiDbBackend
     protected function parseIdentifier(array $identifier)
     {
         $fieldNames = array_keys($identifier);
-        $suffixedFieldNames = array();
+        $suffixedFieldNames = [];
         foreach ($fieldNames as $fieldName) {
             $suffixedFieldNames[] = $fieldName . '=?';
         }
@@ -153,7 +153,7 @@ class VidiDbBackend
     public function fetchResult()
     {
 
-        $parameters = array();
+        $parameters = [];
         $statementParts = $this->parseQuery($this->query, $parameters);
         $statementParts = $this->processStatementStructureForRecursiveMMRelation($statementParts); // Mmm... check if that is the right way of doing that.
 
@@ -182,7 +182,7 @@ class VidiDbBackend
     public function countResult()
     {
 
-        $parameters = array();
+        $parameters = [];
         $statementParts = $this->parseQuery($this->query, $parameters);
         $statementParts = $this->processStatementStructureForRecursiveMMRelation($statementParts); // Mmm... check if that is the right way of doing that.
         // Reset $statementParts for valid table return
@@ -199,7 +199,7 @@ class VidiDbBackend
         } else {
             $statementParts['fields'] = array('COUNT(*)');
             // having orderings without grouping is not compatible with non-MySQL DBMS
-            $statementParts['orderings'] = array();
+            $statementParts['orderings'] = [];
             if (isset($statementParts['keywords']['distinct'])) {
                 unset($statementParts['keywords']['distinct']);
                 $distinctField = $this->query->getDistinct() ? $this->query->getDistinct() : 'uid';
@@ -231,15 +231,15 @@ class VidiDbBackend
      */
     public function parseQuery(QueryInterface $query, array &$parameters)
     {
-        $statementParts = array();
-        $statementParts['keywords'] = array();
-        $statementParts['tables'] = array();
-        $statementParts['unions'] = array();
-        $statementParts['fields'] = array();
-        $statementParts['where'] = array();
-        $statementParts['additionalWhereClause'] = array();
-        $statementParts['orderings'] = array();
-        $statementParts['limit'] = array();
+        $statementParts = [];
+        $statementParts['keywords'] = [];
+        $statementParts['tables'] = [];
+        $statementParts['unions'] = [];
+        $statementParts['fields'] = [];
+        $statementParts['where'] = [];
+        $statementParts['additionalWhereClause'] = [];
+        $statementParts['orderings'] = [];
+        $statementParts['limit'] = [];
         $source = $query->getSource();
         $this->parseSource($source, $statementParts);
         $this->parseConstraint($query->getConstraint(), $source, $statementParts, $parameters);
@@ -271,21 +271,21 @@ class VidiDbBackend
 
             // In order the MM query to work for a recursive MM query, we must invert some values.
             // tx_domain_model_foo0 (the alias) <--> tx_domain_model_foo (the origin table name)
-            $values = array();
+            $values = [];
             foreach ($statementParts['fields'] as $key => $value) {
                 $values[$key] = str_replace($tableName, $tableName . '0', $value);
             }
             $statementParts['fields'] = $values;
 
             // Same comment as above.
-            $values = array();
+            $values = [];
             foreach ($statementParts['where'] as $key => $value) {
                 $values[$key] = str_replace($tableName . '0', $tableName, $value);
             }
             $statementParts['where'] = $values;
 
             // We must be more restrictive by transforming the "left" union by "inner"
-            $values = array();
+            $values = [];
             foreach ($statementParts['unions'] as $key => $value) {
                 $values[$key] = str_replace('LEFT JOIN', 'INNER JOIN', $value);
             }
@@ -445,7 +445,7 @@ class VidiDbBackend
         $operator = $comparison->getOperator();
         $operand2 = $comparison->getOperand2();
         if ($operator === QueryInterface::OPERATOR_IN) {
-            $items = array();
+            $items = [];
             $hasValue = false;
             foreach ($operand2 as $value) {
                 $value = $this->getPlainValue($value);
@@ -784,7 +784,7 @@ class VidiDbBackend
                 if ($parameter === null) {
                     $parameter = 'null';
                 } elseif (is_array($parameter) || $parameter instanceof \ArrayAccess || $parameter instanceof \Traversable) {
-                    $items = array();
+                    $items = [];
                     foreach ($parameter as $item) {
                         $items[] = $this->databaseHandle->fullQuoteStr($item, $tableName);
                     }
@@ -858,7 +858,7 @@ class VidiDbBackend
      * @return string
      * @throws Exception\InconsistentQuerySettingsException
      */
-    protected function getFrontendConstraintStatement($tableNameOrAlias, $ignoreEnableFields, $enableFieldsToBeIgnored = array(), $includeDeleted)
+    protected function getFrontendConstraintStatement($tableNameOrAlias, $ignoreEnableFields, $enableFieldsToBeIgnored = [], $includeDeleted)
     {
         $statement = '';
         $tableName = $this->resolveTableNameAlias($tableNameOrAlias);
@@ -1043,7 +1043,7 @@ class VidiDbBackend
      */
     protected function getRowsFromResult($result)
     {
-        $rows = array();
+        $rows = [];
         while ($row = $this->databaseHandle->sql_fetch_assoc($result)) {
             if (is_array($row)) {
 

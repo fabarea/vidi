@@ -19,7 +19,7 @@ class ResultSetStorage implements SingletonInterface
     /**
      * @var array
      */
-    protected $resultSets = array();
+    protected $resultSets = [];
 
     /**
      * @param string $querySignature

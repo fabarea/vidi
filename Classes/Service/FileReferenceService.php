@@ -26,7 +26,7 @@ class FileReferenceService implements SingletonInterface
     /**
      * @var array
      */
-    static protected $instances = array();
+    static protected $instances = [];
 
     /**
      * Returns a class instance
@@ -50,7 +50,7 @@ class FileReferenceService implements SingletonInterface
 
             // Initialize instances value
             if (!isset(self::$instances[$object->getUid()])) {
-                self::$instances[$object->getUid()] = array();
+                self::$instances[$object->getUid()] = [];
             }
 
             $fieldName = GeneralUtility::camelCaseToLowerCaseUnderscored($propertyName);
@@ -88,7 +88,7 @@ class FileReferenceService implements SingletonInterface
         $rows = $this->getDatabaseConnection()->exec_SELECTgetRows($fileField, $tableName, $clause);
 
         // Build array of Files
-        $files = array();
+        $files = [];
         foreach ($rows as $row) {
             $files[] = ResourceFactory::getInstance()->getFileObject($row[$fileField]);
         }

@@ -49,7 +49,7 @@ class FacetController extends ActionController
     public function autoSuggestsAction()
     {
 
-        $suggestions = array();
+        $suggestions = [];
         foreach (Tca::grid()->getFacets() as $facet) {
             /** @var FacetInterface $facet */
             $name = $facet->getName();

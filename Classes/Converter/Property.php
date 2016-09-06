@@ -30,7 +30,7 @@ class Property
     /**
      * @var array
      */
-    protected $storage = array();
+    protected $storage = [];
 
     /**
      * @param string $propertyName
@@ -68,7 +68,7 @@ class Property
 
         if (empty($this->storage[$tableName][$propertyName])) {
             if ($this->storage[$tableName]) {
-                $this->storage[$tableName] = array();
+                $this->storage[$tableName] = [];
             }
 
             // Default case

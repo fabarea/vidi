@@ -25,7 +25,7 @@ class GridAnalyserService
     public function checkRelationForTable($tableName)
     {
 
-        $relations = array();
+        $relations = [];
         $table = Tca::table($tableName);
 
         $missingOppositionRelationMessage = <<<EOF
@@ -80,7 +80,7 @@ EOF;
     protected function checkRelationManyToMany($tableName, $fieldName)
     {
 
-        $output = array();
+        $output = [];
 
         $table = Tca::table($tableName);
         $output[] = sprintf('* field: "%s", relation: many-to-many', $fieldName);
@@ -114,7 +114,7 @@ EOF;
     protected function checkRelationOf($tableName, $fieldName, $relationType)
     {
 
-        $output = array();
+        $output = [];
 
         $table = Tca::table($tableName);
         $output[] = sprintf('* field: "%s", relation: %s', $fieldName, $relationType);

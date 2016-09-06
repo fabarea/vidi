@@ -23,7 +23,7 @@ class GenericColumn implements ColumnInterface
     /**
      * @var array
      */
-    protected $configuration = array();
+    protected $configuration = [];
 
     /**
      * Constructor of a Generic component in Vidi.

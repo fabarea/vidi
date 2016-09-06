@@ -31,7 +31,7 @@ class Field implements SingletonInterface
     /**
      * @var array
      */
-    protected $storage = array();
+    protected $storage = [];
 
     /**
      * @param string $fieldName
@@ -70,7 +70,7 @@ class Field implements SingletonInterface
 
         if (empty($this->storage[$tableName][$fieldName])) {
             if ($this->storage[$tableName]) {
-                $this->storage[$tableName] = array();
+                $this->storage[$tableName] = [];
             }
 
             // Special case when the field name does not follow the conventions "field_name" => "fieldName".

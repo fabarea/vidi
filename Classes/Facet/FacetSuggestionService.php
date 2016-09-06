@@ -29,7 +29,7 @@ class FacetSuggestionService
     public function getSuggestions($fieldNameAndPath)
     {
 
-        $values = array();
+        $values = [];
 
         $dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
         $fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
@@ -46,7 +46,7 @@ class FacetSuggestionService
                 $table = Tca::table($foreignTable);
 
                 // Initialize the matcher object.
-                $matcher = MatcherObjectFactory::getInstance()->getMatcher(array(), $foreignTable);
+                $matcher = MatcherObjectFactory::getInstance()->getMatcher([], $foreignTable);
 
                 $numberOfValues = $contentRepository->countBy($matcher);
                 if ($numberOfValues <= $this->getLimit()) {
@@ -64,7 +64,7 @@ class FacetSuggestionService
                 $contentRepository = ContentRepositoryFactory::getInstance($dataType);
 
                 // Initialize some objects related to the query
-                $matcher = MatcherObjectFactory::getInstance()->getMatcher(array(), $dataType);
+                $matcher = MatcherObjectFactory::getInstance()->getMatcher([], $dataType);
 
                 // Count the number of objects.
                 $numberOfValues = $contentRepository->countDistinctValues($fieldName, $matcher);

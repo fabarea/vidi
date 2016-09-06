@@ -30,10 +30,10 @@ class UserPreferencesController extends ActionController
         $dataType = $this->getModuleLoader()->getDataType();
 
         $key = $dataType . '_' . $this->getBackendUserIdentifier() . '_' . $key;
-        $this->getCacheInstance()->set($key, $value, array(), 0);
+        $this->getCacheInstance()->set($key, $value, [], 0);
 
         $key = $dataType . '_' . $this->getBackendUserIdentifier() . '_signature';
-        $this->getCacheInstance()->set($key, $preferenceSignature, array(), 0);
+        $this->getCacheInstance()->set($key, $preferenceSignature, [], 0);
 
         return 'OK';
     }

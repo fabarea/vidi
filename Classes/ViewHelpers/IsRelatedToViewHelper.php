@@ -39,7 +39,7 @@ class IsRelatedToViewHelper extends AbstractViewHelper
             $fieldName = $this->templateVariableContainer->get('fieldName');
 
             // Build an array of user group uids
-            $relatedContentsIdentifiers = array();
+            $relatedContentsIdentifiers = [];
 
             /** @var \Fab\Vidi\Domain\Model\Content $contentObject */
             foreach ($content[$fieldName] as $contentObject) {

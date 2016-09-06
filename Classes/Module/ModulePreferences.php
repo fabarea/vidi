@@ -116,7 +116,7 @@ class ModulePreferences implements SingletonInterface
         $clause = sprintf('data_type = "%s"', $dataType);
         $this->getDatabaseConnection()->exec_DELETEquery($this->tableName, $clause);
 
-        $sanitizedPreferences = array();
+        $sanitizedPreferences = [];
         foreach ($preferences as $key => $value) {
             if (in_array($key, $configurableParts)) {
                 $sanitizedPreferences[$key] = $value;
@@ -136,7 +136,7 @@ class ModulePreferences implements SingletonInterface
      */
     public function fetchPreferencesFromDatabase($dataType)
     {
-        $preferences = array();
+        $preferences = [];
 
         $clause = sprintf('data_type = "%s"', $dataType);
         $record = $this->getDatabaseConnection()->exec_SELECTgetSingleRow('*', $this->tableName, $clause);
@@ -158,7 +158,7 @@ class ModulePreferences implements SingletonInterface
         $settings = $this->getSettings();
 
         $configurableParts = ConfigurablePart::getParts();
-        $preferences = array();
+        $preferences = [];
         foreach ($settings as $key => $value) {
             if (in_array($key, $configurableParts)) {
                 $preferences[$key] = $value;
@@ -178,7 +178,7 @@ class ModulePreferences implements SingletonInterface
     {
         $generalSettings = $this->getSettings();
 
-        $preferences = array();
+        $preferences = [];
         if (isset($generalSettings[$dataType . '.'])) {
             $settings = $generalSettings[$dataType . '.'];
 

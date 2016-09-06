@@ -27,12 +27,12 @@ class JsonResult
     /**
      * @var array
      */
-    protected $errorMessages = array();
+    protected $errorMessages = [];
 
     /**
      * @var array
      */
-    protected $processedObject = array();
+    protected $processedObject = [];
 
     /**
      * @var array

@@ -61,13 +61,13 @@ class DataTypeTab extends AbstractComponentView
      */
     protected function assembleTab(array $moduleCodes)
     {
-        $tabs = array();
+        $tabs = [];
         foreach ($moduleCodes as $moduleCode => $title) {
             $dataType = $this->getDataTypeForModuleCode($moduleCode);
             $tabs[] = sprintf('<li %s><a href="%s">%s %s</a></li>',
                 $this->getModuleLoader()->getVidiModuleCode() === $moduleCode ? 'class="active"' : '',
                 $this->getModuleLoader()->getModuleUrl(array(Parameter::SUBMODULE => $moduleCode)),
-                $this->getIconFactory()->getIconForRecord($dataType, array(), Icon::SIZE_SMALL),
+                $this->getIconFactory()->getIconForRecord($dataType, [], Icon::SIZE_SMALL),
                 $title
             );
         }

@@ -20,7 +20,7 @@ class RelationsCheck extends AbstractComponentView
     /**
      * @var array
      */
-    protected $invalidFields = array();
+    protected $invalidFields = [];
 
     /**
      * Renders a button for uploading assets.

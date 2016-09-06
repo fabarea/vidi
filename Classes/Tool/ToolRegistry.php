@@ -21,12 +21,12 @@ class ToolRegistry implements SingletonInterface
     /**
      * @var array
      */
-    protected $tools = array();
+    protected $tools = [];
 
     /**
      * @var array
      */
-    protected $overriddenPermissions = array();
+    protected $overriddenPermissions = [];
 
     /**
      * Returns a class instance.
@@ -48,7 +48,7 @@ class ToolRegistry implements SingletonInterface
     public function register($dataType, $toolName)
     {
         if (!isset($this->tools[$dataType])) {
-            $this->tools[$dataType] = array();
+            $this->tools[$dataType] = [];
         }
 
         $this->tools[$dataType][] = $toolName;
@@ -66,7 +66,7 @@ class ToolRegistry implements SingletonInterface
     public function overridePermission($dataType, $toolName, Closure $permission)
     {
         if (empty($this->overriddenPermissions[$dataType])) {
-            $this->overriddenPermissions[$dataType] = array();
+            $this->overriddenPermissions[$dataType] = [];
         }
 
         $this->overriddenPermissions[$dataType][$toolName] = $permission;
@@ -156,7 +156,7 @@ class ToolRegistry implements SingletonInterface
      */
     public function getTools($dataType)
     {
-        $tools = array();
+        $tools = [];
 
         foreach (array($dataType, '*') as $toolSource) {
 

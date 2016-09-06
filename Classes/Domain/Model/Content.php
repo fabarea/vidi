@@ -332,7 +332,7 @@ class Content implements \ArrayAccess
                     if ($field->hasMany()) {
                         $files = FileReferenceService::getInstance()->findReferencedBy($propertyName, $this);
 
-                        $resolvedValue = array();
+                        $resolvedValue = [];
                         foreach ($files as $file) {
                             $resolvedValue[] = $file->getIdentifier();
                         }
@@ -349,7 +349,7 @@ class Content implements \ArrayAccess
                 } elseif (Tca::table($this->dataType)->field($fieldName)->hasRelation()) {
                     $objects = $this[$fieldName];
                     if (is_array($objects)) {
-                        $resolvedValue = array();
+                        $resolvedValue = [];
                         foreach ($objects as $object) {
                             /** @var $object Content */
                             $labelField = Tca::table($object->getDataType())->getLabelField();

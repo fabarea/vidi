@@ -27,7 +27,7 @@ class RowsViewHelper extends AbstractViewHelper
      * @throws \Exception
      * @throws \InvalidArgumentException
      */
-    public function render(array $objects = array(), array $columns = array())
+    public function render(array $objects = [], array $columns = array())
     {
         $rows = [];
 

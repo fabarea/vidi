@@ -291,7 +291,7 @@ class GridService extends AbstractTca
         // Cache this operation since it can take some time.
         if (is_null($this->allFields)) {
 
-            $fields = is_array($this->tca['columns']) ? $this->tca['columns'] : array();
+            $fields = is_array($this->tca['columns']) ? $this->tca['columns'] : [];
             $gridFieldNames = array_keys($fields);
 
             // Fetch all fields of the TCA and merge it back to the fields configured for Grid.
@@ -369,7 +369,7 @@ class GridService extends AbstractTca
     public function getFacets()
     {
         if (is_null($this->facets)) {
-            $this->facets = array();
+            $this->facets = [];
 
             if (is_array($this->tca['facets'])) {
                 foreach ($this->tca['facets'] as $facetNameOrObject) {
@@ -522,7 +522,7 @@ class GridService extends AbstractTca
     public function getRenderers($fieldName)
     {
         $field = $this->getField($fieldName);
-        $renderers = array();
+        $renderers = [];
         if (!empty($field['renderer'])) {
             $renderers = $this->convertRendererToArray($field['renderer']);
         } elseif (!empty($field['renderers']) && is_array($field['renderers'])) {
@@ -541,9 +541,9 @@ class GridService extends AbstractTca
      */
     public function convertRendererToArray($renderer)
     {
-        $result = array();
+        $result = [];
         if (is_string($renderer)) {
-            $result[$renderer] = array();
+            $result[$renderer] = [];
         } elseif ($renderer instanceof ColumnInterface || $renderer instanceof ColumnRendererInterface) {
             /** @var GenericColumn $renderer */
             $result[get_class($renderer)] = $renderer->getConfiguration();
@@ -624,7 +624,7 @@ class GridService extends AbstractTca
      */
     protected function getExcludedFieldsFromConfiguration()
     {
-        $excludedFields = array();
+        $excludedFields = [];
         if (!empty($this->tca['excluded_fields'])) {
             $excludedFields = GeneralUtility::trimExplode(',', $this->tca['excluded_fields'], true);
         } elseif (!empty($this->tca['export']['excluded_fields'])) { // only for export for legacy reason.
@@ -642,7 +642,7 @@ class GridService extends AbstractTca
     protected function getExcludedFieldsFromPreferences()
     {
         $excludedFields = $this->getModulePreferences()->get(ConfigurablePart::EXCLUDED_FIELDS, $this->tableName);
-        return is_array($excludedFields) ? $excludedFields : array();
+        return is_array($excludedFields) ? $excludedFields : [];
     }
 
     /**

@@ -27,12 +27,12 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
      *
      * @var array
      */
-    protected $fileTypeProperties = array();
+    protected $fileTypeProperties = [];
 
     /**
      * @var File[]
      */
-    protected $collectedFiles = array();
+    protected $collectedFiles = [];
 
     /**
      * @var string

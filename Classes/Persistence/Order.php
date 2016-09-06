@@ -19,7 +19,7 @@ class Order
      *
      * @var array
      */
-    protected $orderings = array();
+    protected $orderings = [];
 
     /**
      * Constructs a new Order

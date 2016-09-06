@@ -22,7 +22,7 @@ class ModuleService implements SingletonInterface
     /**
      * @var array
      */
-    protected $storage = array();
+    protected $storage = [];
 
     /**
      * Returns a class instance
@@ -56,7 +56,7 @@ class ModuleService implements SingletonInterface
     {
         if (!isset($this->storage[$pid])) {
 
-            $modules = array();
+            $modules = [];
             foreach ($GLOBALS['TCA'] as $dataType => $configuration) {
                 if (Tca::table($dataType)->isNotHidden()) {
                     $clause = 'pid = ' . $pid;

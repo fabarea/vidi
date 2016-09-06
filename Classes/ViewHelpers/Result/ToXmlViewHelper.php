@@ -66,7 +66,7 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper
         $object = reset($objects);
         $this->checkWhetherObjectMayIncludeFiles($object);
 
-        $items = array();
+        $items = [];
         foreach ($objects as $object) {
             if ($this->hasFileFields()) {
                 $this->collectFiles($object);

@@ -78,7 +78,7 @@ class ToXlsViewHelper extends AbstractToFormatViewHelper
             }
 
             // Make sure we have a flat array of values for the CSV purpose.
-            $flattenValues = array();
+            $flattenValues = [];
             foreach ($object->toValues() as $fieldName => $value) {
                 if (is_array($value)) {
                     $flattenValues[$fieldName] = implode(', ', $value);

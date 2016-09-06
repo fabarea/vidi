@@ -36,8 +36,8 @@ class ContentTest extends AbstractFunctionalTestCase {
 	public function setUp() {
 		parent::setUp();
 		$GLOBALS['TCA'][$this->dataType]['columns'] = array(
-			'foo' => array(),
-			'foo_bar' => array(),
+			'foo' => [],
+			'foo_bar' => [],
 		);
 		$this->fixture = new \Fab\Vidi\Domain\Model\Content($this->dataType);
 	}

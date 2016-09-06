@@ -46,7 +46,7 @@ class PidCheck extends AbstractComponentView
      *
      * @var array
      */
-    protected $errors = array();
+    protected $errors = [];
 
     /**
      * Pseudo-Constructor, which ensures all dependencies are injected when called.

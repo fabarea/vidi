@@ -46,7 +46,7 @@ class MatcherObjectFactory implements SingletonInterface
      * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      * @throws \InvalidArgumentException
      */
-    public function getMatcher(array $matches = array(), $dataType = '')
+    public function getMatcher(array $matches = [], $dataType = '')
     {
 
         if ($dataType === '') {
@@ -54,7 +54,7 @@ class MatcherObjectFactory implements SingletonInterface
         }
 
         /** @var $matcher Matcher */
-        $matcher = GeneralUtility::makeInstance(Matcher::class, array(), $dataType);
+        $matcher = GeneralUtility::makeInstance(Matcher::class, [], $dataType);
 
         $matcher = $this->applyCriteriaFromDataTables($matcher);
         $matcher = $this->applyCriteriaFromMatchesArgument($matcher, $matches);

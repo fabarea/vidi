@@ -68,7 +68,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
     {
 
         /** @var $matcher Matcher */
-        $matcher = GeneralUtility::makeInstance(Matcher::class, array(), $dataType);
+        $matcher = GeneralUtility::makeInstance(Matcher::class, [], $dataType);
 
         // @todo implement advanced selection parsing {or: {usergroup.title: {like: foo}}, {tstamp: {greaterThan: 1234}}}
         foreach ($matches as $fieldNameAndPath => $value) {

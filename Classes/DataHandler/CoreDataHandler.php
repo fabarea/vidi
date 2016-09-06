@@ -33,7 +33,7 @@ class CoreDataHandler extends AbstractDataHandler
     public function processUpdate(Content $content)
     {
 
-        $values = array();
+        $values = [];
 
         // Check the field to be updated exists
         foreach ($content->toArray() as $fieldName => $value) {
@@ -74,7 +74,7 @@ class CoreDataHandler extends AbstractDataHandler
 
         /** @var $dataHandler \TYPO3\CMS\Core\DataHandling\DataHandler */
         $dataHandler = $this->getDataHandler();
-        $dataHandler->start(array(), $cmd);
+        $dataHandler->start([], $cmd);
         $dataHandler->process_datamap();
         $dataHandler->process_cmdmap();
         $this->errorMessages = $dataHandler->errorLog;
@@ -112,7 +112,7 @@ class CoreDataHandler extends AbstractDataHandler
 
         /** @var $dataHandler \TYPO3\CMS\Core\DataHandling\DataHandler */
         $dataHandler = $this->getDataHandler();
-        $dataHandler->start(array(), $cmd);
+        $dataHandler->start([], $cmd);
         $dataHandler->process_datamap();
         $dataHandler->process_cmdmap();
         $this->errorMessages = $dataHandler->errorLog;
@@ -134,7 +134,7 @@ class CoreDataHandler extends AbstractDataHandler
         $command[$content->getDataType()][$content->getUid()]['localize'] = $language;
 
         $dataHandler = $this->getDataHandler();
-        $dataHandler->start(array(), $command);
+        $dataHandler->start([], $command);
         $dataHandler->process_datamap();
         $dataHandler->process_cmdmap();
         $this->errorMessages = $dataHandler->errorLog;

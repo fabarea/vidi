@@ -25,7 +25,7 @@ class ConfigurationUtility implements SingletonInterface
     /**
      * @var array
      */
-    protected $configuration = array();
+    protected $configuration = [];
 
     /**
      * Returns a class instance.

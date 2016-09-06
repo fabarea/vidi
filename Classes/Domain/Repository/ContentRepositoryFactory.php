@@ -20,7 +20,7 @@ class ContentRepositoryFactory implements SingletonInterface
     /**
      * @var array
      */
-    static protected $instances = array();
+    static protected $instances = [];
 
     /**
      * Returns a class instance of a repository.

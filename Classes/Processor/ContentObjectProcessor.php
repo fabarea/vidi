@@ -111,7 +111,7 @@ class ContentObjectProcessor implements SingletonInterface
     protected function getRelatedValues(Content $object, $fieldNameAndPath, $fieldName)
     {
 
-        $values = array();
+        $values = [];
         $relatedContentObjects = $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, $fieldName);
 
         if (is_array($relatedContentObjects)) {
