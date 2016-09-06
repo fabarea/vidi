@@ -10,6 +10,7 @@ namespace Fab\Vidi\Configuration;
 
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * A class for handling configuration of the extension
@@ -30,26 +31,27 @@ class ConfigurationUtility implements SingletonInterface
     /**
      * Returns a class instance.
      *
-     * @return \Fab\Vidi\Configuration\ConfigurationUtility
+     * @return ConfigurationUtility
+     * @throws \InvalidArgumentException
      */
     static public function getInstance()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Configuration\ConfigurationUtility');
+        return GeneralUtility::makeInstance(self::class);
     }
 
     /**
      * Constructor
      *
-     * @return \Fab\Vidi\Configuration\ConfigurationUtility
+     * @return ConfigurationUtility
      */
     public function __construct()
     {
 
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+        /** @var ObjectManager $objectManager */
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
         /** @var \TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility $configurationUtility */
-        $configurationUtility = $objectManager->get('TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility');
+        $configurationUtility = $objectManager->get(\TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility::class);
         $configuration = $configurationUtility->getCurrentConfiguration($this->extensionKey);
 
         // Fill up configuration array with relevant values.

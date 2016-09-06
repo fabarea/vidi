@@ -21,6 +21,7 @@ class MassEditMenuItem extends AbstractComponentView
      * Renders a "mass edit" menu item to be placed in the grid menu.
      *
      * @return string
+     * @throws \InvalidArgumentException
      */
     public function render()
     {

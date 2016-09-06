@@ -20,6 +20,7 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper
      * Render a CSV export request.
      *
      * @return boolean
+     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception\InvalidVariableException
      */
     public function render()
     {
@@ -57,6 +58,7 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper
      *
      * @param array $objects
      * @return void
+     * @throws \Exception
      */
     protected function writeCsvFile(array $objects)
     {
@@ -94,6 +96,8 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper
 
     /**
      * @return void
+     * @throws \InvalidArgumentException
+     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception\InvalidVariableException
      */
     protected function sendCsvHttpHeaders()
     {

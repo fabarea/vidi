@@ -55,6 +55,7 @@ class ToJsonViewHelper extends AbstractViewHelper
 
     /**
      * @return void
+     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception\InvalidVariableException
      * @throws \InvalidArgumentException
      */
     protected function setHttpHeaders()

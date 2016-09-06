@@ -9,6 +9,7 @@ namespace Fab\Vidi\ViewHelpers\Result;
  */
 
 use Fab\Vidi\Tca\FieldType;
+use Fab\Vidi\ViewHelpers\Grid\RowsViewHelper;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
@@ -54,6 +55,7 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
      * Write the zip file to a temporary location.
      *
      * @return void
+     * @throws \RuntimeException
      */
     protected function writeZipFile()
     {
@@ -136,6 +138,7 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
      *
      * @param Content $object
      * @return void
+     * @throws \Fab\Vidi\Exception\NotExistingClassException
      */
     protected function checkWhetherObjectMayIncludeFiles(Content $object)
     {
@@ -152,6 +155,8 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
 
     /**
      * @return void
+     * @throws \InvalidArgumentException
+     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception\InvalidVariableException
      */
     protected function sendZipHttpHeaders()
     {
@@ -171,11 +176,11 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
     }
 
     /**
-     * @return \Fab\Vidi\ViewHelpers\Grid\RowsViewHelper
+     * @return RowsViewHelper
      */
     protected function getRowsViewHelper()
     {
-        return $this->objectManager->get('Fab\Vidi\ViewHelpers\Grid\RowsViewHelper');
+        return $this->objectManager->get(RowsViewHelper::class);
     }
 
     /**
