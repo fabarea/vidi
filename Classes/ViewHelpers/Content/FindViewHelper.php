@@ -10,6 +10,7 @@ namespace Fab\Vidi\ViewHelpers\Content;
 
 use Fab\Vidi\Domain\Model\Selection;
 use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
+use Fab\Vidi\Domain\Repository\SelectionRepository;
 
 /**
  * View helper which returns a list of records.
@@ -19,33 +20,35 @@ class FindViewHelper extends AbstractContentViewHelper
 
     /**
      * @return void
+     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception
      */
     public function initializeArguments()
     {
         parent::initializeArguments();
 
-        $this->registerArgument('orderings', 'array', 'Key / value array to be used for ordering. The key corresponds to a field name. The value can be "DESC" or "ASC".', FALSE, array());
-        $this->registerArgument('limit', 'int', 'Limit the number of records being fetched.', FALSE, 0);
-        $this->registerArgument('offset', 'int', 'Where to start the list of records.', FALSE, 0);
+        $this->registerArgument('orderings', 'array', 'Key / value array to be used for ordering. The key corresponds to a field name. The value can be "DESC" or "ASC".', false, array());
+        $this->registerArgument('limit', 'int', 'Limit the number of records being fetched.', false, 0);
+        $this->registerArgument('offset', 'int', 'Where to start the list of records.', false, 0);
     }
 
     /**
      * Fetch and returns a list of content objects.
      *
      * @return array
+     * @throws \BadMethodCallException
      */
     public function render()
     {
-        $selection = (int)$this->arguments['selection'];
+        $selectionIdentifier = (int)$this->arguments['selection'];
 
-        if ($selection > 0) {
+        if ($selectionIdentifier > 0) {
 
-            /** @var \Fab\Vidi\Domain\Repository\SelectionRepository $selectionRepository */
-            $selectionRepository = $this->objectManager->get('Fab\Vidi\Domain\Repository\SelectionRepository');
+            /** @var SelectionRepository $selectionRepository */
+            $selectionRepository = $this->objectManager->get(SelectionRepository::class);
 
             /** @var Selection $selection */
-            $selection = $selectionRepository->findByUid($selection);
-            $matches = json_decode($selection->getMatches(), TRUE);
+            $selection = $selectionRepository->findByUid($selectionIdentifier);
+            $matches = json_decode($selection->getQuery(), true);
             $dataType = $selection->getDataType();
         } else {
             $dataType = $this->arguments['type'];

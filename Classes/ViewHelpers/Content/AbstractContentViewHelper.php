@@ -27,6 +27,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
 
     /**
      * @return void
+     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception
      */
     public function initializeArguments()
     {
@@ -60,12 +61,14 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      * @param string $dataType
      * @param array $matches
      * @return Matcher
+     * @throws \Fab\Vidi\Exception\NotExistingClassException
+     * @throws \InvalidArgumentException
      */
     protected function getMatcher($dataType, $matches = array())
     {
 
         /** @var $matcher Matcher */
-        $matcher = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Matcher', array(), $dataType);
+        $matcher = GeneralUtility::makeInstance(Matcher::class, array(), $dataType);
 
         // @todo implement advanced selection parsing {or: {usergroup.title: {like: foo}}, {tstamp: {greaterThan: 1234}}}
         foreach ($matches as $fieldNameAndPath => $value) {
