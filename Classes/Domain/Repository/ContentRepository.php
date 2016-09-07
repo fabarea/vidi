@@ -29,6 +29,7 @@ use Fab\Vidi\Persistence\Order;
 use Fab\Vidi\Persistence\Query;
 use Fab\Vidi\Tca\Tca;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Repository for accessing Content
@@ -67,6 +68,11 @@ class ContentRepository implements RepositoryInterface
      * @var QuerySettingsInterface
      */
     protected $defaultQuerySettings;
+
+    /**
+     * @var DataHandler
+     */
+    protected $dataHandler;
 
     /**
      * Constructor
@@ -801,7 +807,7 @@ class ContentRepository implements RepositoryInterface
      */
     protected function isBackendMode()
     {
-        return TYPO3_MODE == 'BE';
+        return TYPO3_MODE === 'BE';
     }
 
     /**
