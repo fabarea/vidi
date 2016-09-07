@@ -11,6 +11,7 @@ namespace Fab\Vidi\Domain\Repository;
 use Fab\Vidi\DataHandler\DataHandlerFactory;
 use Fab\Vidi\Domain\Validator\ContentValidator;
 use Fab\Vidi\Domain\Validator\LanguageValidator;
+use Fab\Vidi\Persistence\ConstraintContainer;
 use Fab\Vidi\Persistence\QuerySettings;
 use Fab\Vidi\Resolver\FieldPathResolver;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -841,28 +842,42 @@ class ContentRepository implements RepositoryInterface
      * @param Query $query
      * @param ConstraintInterface|null $constraints
      * @return ConstraintInterface|null $constraints
+     * @throws \InvalidArgumentException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @signal
      */
     protected function emitPostProcessConstraintsSignal(Query $query, $constraints)
     {
+        /** @var ConstraintContainer $constraintContainer */
+        $constraintContainer = GeneralUtility::makeInstance(ConstraintContainer::class);
         $result = $this->getSignalSlotDispatcher()->dispatch(
             self::class,
             'postProcessConstraintsObject',
-            array(
+            [
                 $query,
-                $constraints
-            )
+                $constraints,
+                $constraintContainer
+            ]
         );
 
-        return $result[1];
+        // Backward compatibility.
+        $processedConstraints = $result[1];
+
+        // New way to transmit the constraints.
+        if ($constraintContainer->getConstraint()) {
+            $processedConstraints = $constraintContainer->getConstraint();
+        }
+        return $processedConstraints;
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+     * @return Dispatcher
+     * @throws \InvalidArgumentException
      */
     protected function getSignalSlotDispatcher()
     {
-        return $this->getObjectManager()->get(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
+        return $this->getObjectManager()->get(Dispatcher::class);
     }
 
 }
