@@ -2,20 +2,20 @@
 if (!defined('TYPO3_MODE')) die ('Access denied.');
 
 $tca = [
+    'vidi' => [
+        // Special case when the field name does not follow the conventions.
+        // Vidi needs a bit of help to find the equivalence fieldName <-> propertyName.
+        'mappings' => [
+            'lockToDomain' => 'lockToDomain',
+            'TSconfig' => 'tsConfig',
+            'felogin_redirectPid' => 'feLoginRedirectPid',
+        ],
+    ],
     'grid' => [
         'facets' => [
             'uid',
             'title',
             'description',
-        ],
-        'vidi' => [
-            // Special case when the field name does not follow the conventions.
-            // Vidi needs a bit of help to find the equivalence fieldName <-> propertyName.
-            'mappings' => [
-                'lockToDomain' => 'lockToDomain',
-                'TSconfig' => 'tsConfig',
-                'felogin_redirectPid' => 'feLoginRedirectPid',
-            ],
         ],
         'columns' => [
             '__checkbox' => [
