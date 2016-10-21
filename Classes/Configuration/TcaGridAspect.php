@@ -11,6 +11,7 @@ namespace Fab\Vidi\Configuration;
 use Fab\Vidi\Grid\ButtonGroupRenderer;
 use Fab\Vidi\Grid\CheckBoxRenderer;
 use TYPO3\CMS\Core\Database\TableConfigurationPostProcessingHookInterface;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility;
 
@@ -33,6 +34,13 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
         $configuration = $configurationUtility->getCurrentConfiguration('vidi');
 
         $dataTypes = GeneralUtility::trimExplode(',', $configuration['data_types']['value'], true);
+
+        if (ExtensionManagementUtility::isLoaded('vidi_frontend')) {
+            $extendedConfiguration = $configurationUtility->getCurrentConfiguration('vidi_frontend');
+            $vidiFrontendContentTypes = GeneralUtility::trimExplode(',', $extendedConfiguration['content_types']['value'], true);
+            $extendedDataTypes = array_merge($dataTypes, $vidiFrontendContentTypes);
+            $dataTypes = array_unique($extendedDataTypes);
+        }
 
         foreach ($dataTypes as $dataType) {
             $this->ensureMinimumTcaForGrid($dataType);
