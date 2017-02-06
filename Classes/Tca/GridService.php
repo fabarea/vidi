@@ -344,7 +344,7 @@ class GridService extends AbstractTca {
 				}
 			}
 		}
-		return $this->facets;
+		return is_array($this->facets) ? $this->facets : [];
 	}
 
 	/**
