@@ -162,10 +162,18 @@ if (TYPO3_MODE === 'BE') {
 }
 
 // Add new sprite icon.
-\TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons(
-    [
-        'go' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('vidi') . 'Resources/Public/Images/bullet_go.png',
-        'query' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('vidi') . 'Resources/Public/Images/drive_disk.png',
-    ],
-    'vidi'
-);
+$icons = [
+    'go' => 'EXT:' . $_EXTKEY . '/Resources/Public/Images/bullet_go.png',
+    'query' => 'EXT:' . $_EXTKEY . '/Resources/Public/Images/drive_disk.png',
+];
+/** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
+$iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
+foreach ($icons as $key => $icon) {
+    $iconRegistry->registerIcon('extensions-' . $_EXTKEY . '-' . $key,
+        \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+        [
+            'source' => $icon
+        ]
+    );
+}
+unset($iconRegistry);
