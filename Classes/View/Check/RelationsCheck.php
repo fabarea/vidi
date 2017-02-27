@@ -48,12 +48,14 @@ class RelationsCheck extends AbstractComponentView
     protected function formatMessageTcaIsNotValid()
     {
 
+        // TODO: after dropping typo3 7.6 support, remove class: typo3-message message-warning message-header message-body
+
         $result = <<< EOF
-			<div class="typo3-message message-warning">
-				<div class="message-header">
+			<div class="typo3-message message-warning alert alert-warning">
+				<div class="message-header alert-title">
 					Grid may have trouble to render because of wrong / missing TCA.
 				</div>
-				<div class="message-body">
+				<div class="message-body alert-message">
 					TCA which describes the relations within "{$this->getModuleLoader()->getDataType()}" is incorrect.
 					When dealing with MM relations, Vidi requires to have a TCA in both direction to work properly.
 

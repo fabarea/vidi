@@ -21,7 +21,6 @@ class ToJsonViewHelper extends AbstractViewHelper
     /**
      * Render a Json response
      *
-     * @return boolean
      * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception\InvalidVariableException
      */
     public function render()
@@ -38,7 +37,7 @@ class ToJsonViewHelper extends AbstractViewHelper
         );
 
         $this->setHttpHeaders();
-        return json_encode($output);
+        print json_encode($output);
     }
 
     /**

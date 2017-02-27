@@ -19,7 +19,6 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper
     /**
      * Render an XML export.
      *
-     * @return boolean
      * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception\InvalidVariableException
      */
     public function render()

@@ -130,7 +130,7 @@ class VidiDbBackend
      */
     public function initializeObject()
     {
-        $this->tableColumnCache = $this->cacheManager->getCache('extbase_typo3dbbackend_tablecolumns');
+//        $this->tableColumnCache = $this->cacheManager->getCache('extbase_typo3dbbackend_tablecolumns');
     }
 
     /**
@@ -969,12 +969,14 @@ class VidiDbBackend
     {
 
         $tableName = $this->resolveTableNameAlias($tableNameOrAlias);
-        $tableColumns = $this->tableColumnCache->get($tableName);
-        if ($tableColumns === false) {
-            $tableColumns = $this->databaseHandle->admin_get_fields($tableName);
-            $this->tableColumnCache->set($tableName, $tableColumns);
-        }
-        if (is_array($GLOBALS['TCA'][$tableName]['ctrl']) && array_key_exists('pid', $tableColumns)) {
+        // TODO: improve me here
+//        $tableColumns = $this->tableColumnCache->get($tableName);
+//        if ($tableColumns === false) {
+//            $tableColumns = $this->databaseHandle->admin_get_fields($tableName);
+//            $this->tableColumnCache->set($tableName, $tableColumns);
+//        }
+        #if (is_array($GLOBALS['TCA'][$tableName]['ctrl']) && array_key_exists('pid', $tableColumns)) {
+        if (is_array($GLOBALS['TCA'][$tableName]['ctrl'])) {
             $rootLevel = (int)$GLOBALS['TCA'][$tableName]['ctrl']['rootLevel'];
             if ($rootLevel) {
                 if ($rootLevel === 1) {

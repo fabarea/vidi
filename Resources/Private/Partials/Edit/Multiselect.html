@@ -26,8 +26,10 @@
 
 		<div style="margin-bottom: 10px">
 			<strong>
-				<v:sprite name="{v:tca.table(key: \"typeicon_classes|default\", dataType: \"{relatedDataType}\")}"/>
-				{relatedContentTitle}
+				<f:format.raw>
+					<v:sprite name="{v:tca.table(key: \"typeicon_classes|default\", dataType: \"{relatedDataType}\")}"/>
+					{relatedContentTitle}
+				</f:format.raw>
 			</strong>
 		</div>
 

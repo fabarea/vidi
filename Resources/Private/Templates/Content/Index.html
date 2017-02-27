@@ -6,24 +6,26 @@
 <f:section name="main">
 
 	<div id="navbar-main" class="module-docheader t3js-module-docheader">
-		<div class="module-docheader-bar module-docheader-bar-navigation t3js-module-docheader-bar t3js-module-docheader-bar-navigation">
+		<div class="module-docheader-bar module-docheader-bar-navigation t3js-module-docheader-bar t3js-module-docheader-bar-navigation" style="height: 16px">
 			<div class="module-docheader-bar-column-left">
-				{v:render.components(part: 'docHeaderTopLeft')}
+				{v:render.components(part: 'docHeaderTopLeft') -> f:format.raw()}
 			</div>
 			<div class="module-docheader-bar-column-right">
-				{v:render.components(part: 'docHeaderTopRight')}
+				{v:render.components(part: 'docHeaderTopRight') -> f:format.raw()}
 			</div>
 		</div>
-		<div class="module-docheader-bar module-docheader-bar-buttons t3js-module-docheader-bar t3js-module-docheader-bar-buttons">
-			<div class="module-docheader-bar-column-left">
-				{v:render.components(part: 'docHeaderBottomLeft')}
+		<div class="module-docheader-bar module-docheader-bar-buttons t3js-module-docheader-bar t3js-module-docheader-bar-buttons" style="height: 16px">
+			<div class="module-docheader-bar-column-left" >
+				{v:render.components(part: 'docHeaderBottomLeft') -> f:format.raw()}
 			</div>
 			<div class="module-docheader-bar-column-right">
 
 				<div class="btn-toolbar " role="toolbar" aria-label="">
 
 					<a href="#" class="btn btn-default btn-sm btn-reload" title="{f:translate(key:'reload_data')}">
-						<v:sprite name="actions-refresh"/>
+						<f:format.raw>
+							<v:sprite name="actions-refresh"/>
+						</f:format.raw>
 					</a>
 
 					<div class="dropdown dropdown-fields pull-right" title="{f:translate(key:'show_hide_columns')}">
@@ -46,7 +48,9 @@
 													       value="{iterator.index}"/>
 												</f:else>
 											</f:if>
-											<v:grid.column.title/>
+											<f:format.raw>
+												<v:grid.column.title/>
+											</f:format.raw>
 										</label>
 									</f:if>
 								</li>
@@ -55,7 +59,7 @@
 					</div>
 				</div>
 
-				{v:render.components(part: 'docHeaderBottomRight')}
+				{v:render.components(part: 'docHeaderBottomRight') -> f:format.raw()}
 			</div>
 		</div>
 	</div>
@@ -67,7 +71,7 @@
 	<div class="module-body t3js-module-body">
 
 		<div id="container-main-top">
-		     {v:render.components(part: 'gridTop')}
+		     {v:render.components(part: 'gridTop') -> f:format.raw()}
 
 			<div style="display: none">
 
@@ -115,13 +119,17 @@
 									<f:format.raw>{v:grid.column.header(name: '{columnName}')}</f:format.raw>
 								</f:then>
 								<f:else>
-									<v:grid.column.title/>
+									<f:format.raw>
+										<v:grid.column.title/>
+									</f:format.raw>
 									<f:if condition="{v:grid.column.isEditable(name: '{columnName}')}">
 										<f:link.action action="edit"
 										               class="mass-edit {f:if(condition: '{v:grid.column.hasRelation()}', then: 'mass-edit-relation', else: 'mass-edit-scalar')}"
 										               arguments="{fieldNameAndPath: '{v:grid.column.fieldName()}'}"
 										               style="opacity: 0">
-											<v:sprite name="actions-document-open"/>
+											<f:format.raw>
+												<v:sprite name="actions-document-open"/>
+											</f:format.raw>
 										</f:link.action>
 									</f:if>
 								</f:else>
@@ -144,14 +152,14 @@
 								[mass action label]
 							</a>
 							<ul class="dropdown-menu mass-action-items">
-								{v:render.components(part: 'menuMassAction')}
+								{v:render.components(part: 'menuMassAction') -> f:format.raw()}
 							</ul>
 						</div>
 					</th>
 				</tr>
 				</tfoot>
 			</table>
-			{v:render.components(part: 'gridBottom')}
+			{v:render.components(part: 'gridBottom') -> f:format.raw()}
 		</div>
 		<div id="container-main-sub" class="ajax-response-body" style="display: none">
 			<div class="container" style="text-align: center">

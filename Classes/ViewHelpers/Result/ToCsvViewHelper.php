@@ -19,7 +19,6 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper
     /**
      * Render a CSV export request.
      *
-     * @return boolean
      * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception\InvalidVariableException
      */
     public function render()

@@ -85,13 +85,15 @@ class PidCheck extends AbstractComponentView
     protected function formatMessagePidIsNotValid()
     {
 
+        // TODO: after dropping typo3 7.6 support, remove class: typo3-message message-warning message-header message-body
+
         $error = implode('<br />', $this->errors);
         $result = <<< EOF
-			<div class="typo3-message message-warning">
-				<div class="message-header">
+			<div class="typo3-message message-warning alert alert-warning">
+				<div class="message-header alert-title">
 					Page id "{$this->configuredPid}" has found to be a wrong configuration for "{$this->dataType}"
 				</div>
-				<div class="message-body">
+				<div class="message-body alert-message">
 					<p>{$error}</p>
 					New records cannot be created with this page id. The configuration can be changed at different levels:
 					<ul>

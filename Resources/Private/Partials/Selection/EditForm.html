@@ -34,7 +34,9 @@
 								action="update"
 								style="visibility: hidden"
 								arguments="{dataType: '{v:moduleLoader(key: \'dataType\')}'}">
-							<v:sprite name="actions-document-save"/>
+							<f:format.raw>
+								<v:sprite name="actions-document-save"/>
+							</f:format.raw>
 						</f:link.action>
 
 						<f:link.action
@@ -44,7 +46,9 @@
 								action="delete"
 								additionalAttributes="{data-selection-title : '{selection.name}'}"
 								arguments="{selection: '{selection.uid}'}">
-							<v:sprite name="actions-edit-delete"/>
+							<f:format.raw>
+								<v:sprite name="actions-edit-delete"/>
+							</f:format.raw>
 						</f:link.action>
 
 						<f:link.action
@@ -53,7 +57,9 @@
 								controller="Selection"
 								action="update"
 								arguments="{selection: '{selection.uid}'}">
-							<v:sprite name="extensions-vidi-query"/>
+							<f:format.raw>
+								<v:sprite name="extensions-vidi-query"/>
+							</f:format.raw>
 						</f:link.action>
 					</div>
 				</div>

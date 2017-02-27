@@ -66,10 +66,10 @@ define([
 					{
 						url: $('#link-user-preferences').attr('href'),
 						method: 'post',
-						data: Vidi.Session.getParameters(key, value)
-					})
-					.error(function(data) {
-						Notification.error('Communication error', 'I could not save your preferences, something went wrong in the Ajax request!');
+						data: Vidi.Session.getParameters(key, value),
+						error: function(data) {
+							Notification.error('Communication error', 'I could not save your preferences, something went wrong in the Ajax request!');
+						}
 					});
 			} else {
 				var compositeKey = this.getKey(key);

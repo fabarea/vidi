@@ -29,7 +29,7 @@ class BackViewHelper extends AbstractViewHelper
 
         $result = '';
         if (GeneralUtility::_GET('returnUrl')) {
-            $result = sprintf('<a href="%s" class="btn btn-default btn-return-top">%s</a>',
+            $result = sprintf('<a href="%s" class="btn btn-default btn-sm btn-return-top">%s</a>',
                 GeneralUtility::_GP('returnUrl'),
                 $this->getIconFactory()->getIcon('actions-document-close', Icon::SIZE_SMALL)
             );

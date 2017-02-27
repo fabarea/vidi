@@ -67,11 +67,11 @@ if (TYPO3_MODE === 'BE') {
             if ($dataType === 'fe_users') {
                 $languageFile = 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf';
                 $icon = 'EXT:core/Resources/Public/Icons/T3Icons/status/status-user-frontend.svg';
-                $icon = 'EXT:vidi/Resources/Public/Images/fe_users.png';
+                $icon = 'EXT:vidi/Resources/Public/Images/fe_users.svg';
             } elseif ($dataType === 'fe_groups') {
                 $languageFile = 'LLL:EXT:vidi/Resources/Private/Language/fe_groups.xlf';
                 $icon = 'EXT:core/Resources/Public/Icons/T3Icons/status/status-user-group-frontend.svg';
-                $icon = 'EXT:vidi/Resources/Public/Images/fe_groups.png';
+                $icon = 'EXT:vidi/Resources/Public/Images/fe_groups.svg';
             } else {
                 /** @var \Fab\Vidi\Backend\LanguageFileGenerator $languageService */
                 $languageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Fab\Vidi\Backend\LanguageFileGenerator::class);

@@ -18,9 +18,8 @@ class ToXlsViewHelper extends AbstractToFormatViewHelper
 {
 
     /**
-     * Render a CSV export request.
+     * Render a XLS export request.
      *
-     * @return boolean
      * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception\InvalidVariableException
      */
     public function render()
