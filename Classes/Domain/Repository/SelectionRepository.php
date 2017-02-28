@@ -20,16 +20,6 @@ class SelectionRepository extends Repository
 {
 
     /**
-     * Initialize Repository
-     */
-    public function initializeObject()
-    {
-        $querySettings = $this->objectManager->get('TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings');
-        $querySettings->setRespectStoragePage(false);
-        $this->setDefaultQuerySettings($querySettings);
-    }
-
-    /**
      * @param string $dataType
      * @return QueryResult
      */

@@ -10,6 +10,10 @@ namespace Fab\Vidi\Persistence;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 
 /**
+ * This class was used to set "respectStoragePage" before TYPO3 CMS 8 migration.
+ * Feature was simply removed and permantely set to "false".
+ * Class could be removed at one point
+ *
  * Query settings. This class is NOT part of the FLOW3 API.
  * It reflects the settings unique to TYPO3 4.x.
  *
@@ -18,19 +22,4 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 class QuerySettings extends Typo3QuerySettings
 {
 
-    /**
-     * Flag if the storage page should be respected for the query.
-     *
-     * @var boolean
-     */
-    protected $respectStoragePage = false;
-
-    /**
-     * As long as we use a feature flag ignoreAllEnableFieldsInBe to determine the default behavior, the
-     * initializeObject is responsible for handling that.
-     */
-    public function initializeObject()
-    {
-        parent::initializeObject();
-    }
 }

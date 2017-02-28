@@ -75,11 +75,6 @@ class VidiDbBackend
     protected $cacheManager;
 
     /**
-     * @var \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend
-     */
-    protected $tableColumnCache;
-
-    /**
      * @var \TYPO3\CMS\Extbase\Service\EnvironmentService
      * @inject
      */
@@ -121,16 +116,6 @@ class VidiDbBackend
     {
         $this->query = $query;
         $this->databaseHandle = $GLOBALS['TYPO3_DB'];
-    }
-
-    /**
-     * Lifecycle method
-     *
-     * @return void
-     */
-    public function initializeObject()
-    {
-//        $this->tableColumnCache = $this->cacheManager->getCache('extbase_typo3dbbackend_tablecolumns');
     }
 
     /**
@@ -812,9 +797,6 @@ class VidiDbBackend
         if ($querySettings->getRespectSysLanguage()) {
             $this->addSysLanguageStatement($tableNameOrAlias, $statementParts, $querySettings);
         }
-        if ($querySettings->getRespectStoragePage()) {
-            $this->addPageIdStatement($tableNameOrAlias, $statementParts, $querySettings->getStoragePageIds());
-        }
     }
 
     /**
@@ -952,41 +934,6 @@ class VidiDbBackend
                     $additionalWhereClause .= '))';
                 }
                 $statementParts['additionalWhereClause'][$tableNameOrAlias][] = '(' . $additionalWhereClause . ')';
-            }
-        }
-    }
-
-    /**
-     * Builds the page ID checking statement
-     *
-     * @param string $tableNameOrAlias The database table name
-     * @param array &$statementParts The query parts
-     * @param array $storagePageIds list of storage page ids
-     * @throws Exception\InconsistentQuerySettingsException
-     * @return void
-     */
-    protected function addPageIdStatement($tableNameOrAlias, array &$statementParts, array $storagePageIds)
-    {
-
-        $tableName = $this->resolveTableNameAlias($tableNameOrAlias);
-        // TODO: improve me here
-//        $tableColumns = $this->tableColumnCache->get($tableName);
-//        if ($tableColumns === false) {
-//            $tableColumns = $this->databaseHandle->admin_get_fields($tableName);
-//            $this->tableColumnCache->set($tableName, $tableColumns);
-//        }
-        #if (is_array($GLOBALS['TCA'][$tableName]['ctrl']) && array_key_exists('pid', $tableColumns)) {
-        if (is_array($GLOBALS['TCA'][$tableName]['ctrl'])) {
-            $rootLevel = (int)$GLOBALS['TCA'][$tableName]['ctrl']['rootLevel'];
-            if ($rootLevel) {
-                if ($rootLevel === 1) {
-                    $statementParts['additionalWhereClause'][$tableNameOrAlias][] = $tableNameOrAlias . '.pid = 0';
-                }
-            } else {
-                if (empty($storagePageIds)) {
-                    throw new Exception\InconsistentQuerySettingsException('Missing storage page ids.', 1365779762);
-                }
-                $statementParts['additionalWhereClause'][$tableNameOrAlias][] = $tableNameOrAlias . '.pid IN (' . implode(', ', $storagePageIds) . ')';
             }
         }
     }
