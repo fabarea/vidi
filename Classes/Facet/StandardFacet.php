@@ -11,6 +11,7 @@ namespace Fab\Vidi\Facet;
 use Fab\Vidi\Persistence\Matcher;
 use Fab\Vidi\Tca\Tca;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class for configuring a custom Facet item.
@@ -109,7 +110,15 @@ class StandardFacet implements FacetInterface
      */
     protected function getLanguageService()
     {
-        return $GLOBALS['LANG'];
+
+        /** @var \TYPO3\CMS\Lang\LanguageService $langService */
+        $langService = $GLOBALS['LANG'];
+        if (!$langService) {
+            $langService = GeneralUtility::makeInstance(\TYPO3\CMS\Lang\LanguageService::class);
+            $langService->init('en');
+        }
+
+        return $langService;
     }
 
     /**
