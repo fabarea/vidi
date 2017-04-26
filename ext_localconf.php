@@ -24,10 +24,10 @@ if (false === isset($configuration['autoload_typoscript']) || true === (bool)$co
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = 'Fab\Vidi\Command\VidiCommandController';
 
 // Initialize generic Vidi modules after the TCA is loaded.
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing'][] = 'EXT:vidi/Classes/Configuration/VidiModulesAspect.php:Fab\Vidi\Configuration\VidiModulesAspect';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing'][] = 'Fab\Vidi\Configuration\VidiModulesAspect';
 
 // Initialize generic grid TCA for all data types
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing'][] = 'EXT:vidi/Classes/Configuration/TcaGridAspect.php:Fab\Vidi\Configuration\TcaGridAspect';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing'][] = 'Fab\Vidi\Configuration\TcaGridAspect';
 
 $TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['vidi'] = array(
     'frontend' => 'TYPO3\CMS\Core\Cache\Frontend\VariableFrontend',
