@@ -29,10 +29,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProc
 // Initialize generic grid TCA for all data types
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing'][] = 'Fab\Vidi\Configuration\TcaGridAspect';
 
-$TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['vidi'] = array(
-    'frontend' => 'TYPO3\CMS\Core\Cache\Frontend\VariableFrontend',
-    'options' => array(
-        'defaultLifetime' => 2592000, // => 1 month
-    ),
-    'groups' => array('all', 'vidi')
-);
+// cache configuration, see https://docs.typo3.org/typo3cms/CoreApiReference/ApiOverview/CachingFramework/Configuration/Index.html#cache-configurations
+$TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['vidi']['frontend'] = \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class;
+$TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['vidi']['groups'] = array('all', 'vidi');
+$TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['vidi']['options']['defaultLifetime'] = 2592000;
+
