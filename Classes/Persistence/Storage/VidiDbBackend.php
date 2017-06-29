@@ -1054,7 +1054,11 @@ class VidiDbBackend
         }
 
         // Retrieve the original uid; Used for Workspaces!
-        $pageRepository->versionOL($tableName, $row, true, true);
+        if (TYPO3_MODE !== 'BE') {
+            $pageRepository->versionOL($tableName, $row, true, true);
+        } else {
+            BackendUtility::workspaceOL($tableName, $row);
+        }
         if ($pageRepository->versioningPreview && isset($row['_ORIG_uid'])) {
             $row['uid'] = $row['_ORIG_uid'];
         }
