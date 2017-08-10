@@ -354,15 +354,17 @@ class FieldService extends AbstractTca
      */
     public function getLabel()
     {
-        $result = '';
+        $label = '';
         if ($this->hasLabel()) {
-            $result = LocalizationUtility::translate($this->tca['label'], '');
-
-            if (empty($result)) {
-                $result = $this->tca['label'];
+            try {
+                $label = LocalizationUtility::translate($this->tca['label'], '');
+            } catch (\InvalidArgumentException $e) {
+            }
+            if (empty($label)) {
+                $label = $this->tca['label'];
             }
         }
-        return $result;
+        return $label;
     }
 
     /**
@@ -385,7 +387,10 @@ class FieldService extends AbstractTca
         if (!empty($configuration['items']) && is_array($configuration['items'])) {
             foreach ($configuration['items'] as $item) {
                 if ($item[1] == $itemValue) {
-                    $label = LocalizationUtility::translate($item[0], '');
+                    try {
+                        $label = LocalizationUtility::translate($item[0], '');
+                    } catch (\InvalidArgumentException $e) {
+                    }
                     if (empty($label)) {
                         $label = $item[0];
                     }

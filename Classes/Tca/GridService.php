@@ -143,8 +143,11 @@ class GridService extends AbstractTca
         $label = '';
         if ($this->hasLabel($fieldNameAndPath)) {
             $labelKey = $this->getLabelKey($fieldNameAndPath);
-            $label = LocalizationUtility::translate($labelKey, '');
-            if (is_null($label)) {
+            try {
+                $label = LocalizationUtility::translate($labelKey, '');
+            } catch (\InvalidArgumentException $e) {
+            }
+            if (empty($label)) {
                 $label = $labelKey;
             }
         } else {
