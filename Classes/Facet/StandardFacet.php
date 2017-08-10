@@ -77,7 +77,10 @@ class StandardFacet implements FacetInterface
         if ($this->label === $this->name) {
             $label = Tca::table($this->dataType)->field($this->getName())->getLabel();
         } else {
-            $label = LocalizationUtility::translate($this->label, '');
+            try {
+                $label = LocalizationUtility::translate($this->label, '');
+            } catch (\InvalidArgumentException $e) {
+            }
             if (empty($label)) {
                 $label = $this->label;
             }

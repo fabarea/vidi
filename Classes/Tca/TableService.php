@@ -87,11 +87,15 @@ class TableService extends AbstractTca
      */
     public function getLabel()
     {
-        $result = LocalizationUtility::translate($this->getLabelField(), '');
-        if (!$result) {
-            $result = $this->getLabelField();
+        $label = '';
+        try {
+            $label = LocalizationUtility::translate($this->getLabelField(), '');
+        } catch (\InvalidArgumentException $e) {
         }
-        return $result;
+        if (empty($label)) {
+            $label = $this->getLabelField();
+        }
+        return $label;
     }
 
     /**
@@ -101,11 +105,15 @@ class TableService extends AbstractTca
      */
     public function getTitle()
     {
-        $result = LocalizationUtility::translate($this->get('title'), '');
-        if (!$result) {
-            $result = $this->get('title');
+        $title = '';
+        try {
+            $title = LocalizationUtility::translate($this->get('title'), '');
+        } catch (\InvalidArgumentException $e) {
         }
-        return $result;
+        if (empty($title)) {
+            $title = $this->get('title');
+        }
+        return $title;
     }
 
     /**
