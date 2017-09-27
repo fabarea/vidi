@@ -19,7 +19,7 @@ $tca = [
         ],
         'columns' => [
             '__checkbox' => [
-                'renderer' => new \Fab\Vidi\Grid\CheckBoxRenderer(),
+                'renderer' => \Fab\Vidi\Grid\CheckBoxRenderer::class,
             ],
             'uid' => [
                 'visible' => false,
@@ -47,7 +47,7 @@ $tca = [
                 'width' => '3%',
             ],
             '__buttons' => [
-                'renderer' => new \Fab\Vidi\Grid\ButtonGroupRenderer(),
+                'renderer' => \Fab\Vidi\Grid\ButtonGroupRenderer::class,
             ],
         ]
     ]

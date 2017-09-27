@@ -69,7 +69,7 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
         if (empty($GLOBALS['TCA'][$dataType]['grid']['columns'])) {
             $GLOBALS['TCA'][$dataType]['grid']['columns'] = [
                 '__checkbox' => [
-                    'renderer' => new CheckBoxRenderer(),
+                    'renderer' => CheckBoxRenderer::class,
                 ],
                 'uid' => [
                     'visible' => false,
@@ -80,7 +80,7 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
                     'editable' => true,
                 ],
                 '__buttons' => [
-                    'renderer' => new ButtonGroupRenderer(),
+                    'renderer' => ButtonGroupRenderer::class,
                 ],
             ];
         }

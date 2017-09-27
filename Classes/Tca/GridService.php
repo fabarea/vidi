@@ -525,10 +525,10 @@ class GridService extends AbstractTca
         $field = $this->getField($fieldName);
         $renderers = [];
         if (!empty($field['renderer'])) {
-            $renderers = $this->convertRendererToArray($field['renderer']);
+            $renderers = $this->convertRendererToArray($field['renderer'], $field);
         } elseif (!empty($field['renderers']) && is_array($field['renderers'])) {
             foreach ($field['renderers'] as $renderer) {
-                $rendererNameAndConfiguration = $this->convertRendererToArray($renderer);
+                $rendererNameAndConfiguration = $this->convertRendererToArray($renderer, $field);
                 $renderers = array_merge($renderers, $rendererNameAndConfiguration);
             }
         }
@@ -537,14 +537,16 @@ class GridService extends AbstractTca
     }
 
     /**
-     * @param string|ColumnRendererInterface $renderer
+     * @param string $renderer
      * @return array
      */
-    public function convertRendererToArray($renderer)
+    protected function convertRendererToArray($renderer, array $field)
     {
         $result = [];
         if (is_string($renderer)) {
-            $result[$renderer] = [];
+            $result[$renderer] = empty($field['rendererConfiguration'])
+                ? []
+                : $field['rendererConfiguration'];
             // TODO: throw alert message because this is not compatible anymore as of TYPO3 8.7.7
         } elseif ($renderer instanceof ColumnRendererInterface) {
             /** @var ColumnRendererInterface $renderer */

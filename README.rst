@@ -634,7 +634,7 @@ Basic Grid Renderer::
 	# "foo" is the name of a field and is assumed to have a complex rendering
 	'foo' => array(
 		'label' => 'LLL:EXT:lang/locallang_tca.xlf:tx_bar_domain_model.foo', // Label is required
-		'renderer' => 'Fab\Vidi\Grid\RelationRenderer',
+		'renderer' => \Fab\Vidi\Grid\RelationRenderer::class,
 	),
 
 Grid Renderer with options::
@@ -642,17 +642,20 @@ Grid Renderer with options::
 	# "foo" is the name of a field and is assumed to have a complex rendering
 	'foo' => array(
 		'label' => 'LLL:EXT:lang/locallang_tca.xlf:tx_bar_domain_model.foo', // Label is required
-		'renderer' => new Fab\Vidi\Grid\GenericColumn('Fab\Vidi\Grid\RelationRenderer', array('foo' => 'bar')),
+		'renderer' => \Fab\Vidi\Grid\GenericColumn:class,
+		'rendererConfiguration' => [
+		    'foo' => 'bar'
+		]
 	),
 
 Multiple Grid Renderers with options::
 
 	'foo' => array(
 		'label' => 'LLL:EXT:lang/locallang_tca.xlf:tx_bar_domain_model.foo', // Label is required
-		'renderers' => array(
-			new Fab\Vidi\Grid\GenericColumn('Fab\Vidi\Grid\RelationRenderer', array('foo' => 'bar')),
-			... // more possible renderers to come
-		),
+		'renderers' => [
+		    \Fab\Vidi\Grid\RelationRenderer:class,
+		    ... // more possible renderers
+		],
 	),
 
 
