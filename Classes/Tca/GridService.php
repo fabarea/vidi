@@ -8,9 +8,7 @@ namespace Fab\Vidi\Tca;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use Fab\Vidi\Grid\ColumnInterface;
 use Fab\Vidi\Grid\ColumnRendererInterface;
-use Fab\Vidi\Grid\GenericColumn;
 use Fab\Vidi\Module\ConfigurablePart;
 use Fab\Vidi\Module\ModulePreferences;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -539,7 +537,7 @@ class GridService extends AbstractTca
     }
 
     /**
-     * @param string|GenericColumn $renderer
+     * @param string|ColumnRendererInterface $renderer
      * @return array
      */
     public function convertRendererToArray($renderer)
@@ -547,8 +545,9 @@ class GridService extends AbstractTca
         $result = [];
         if (is_string($renderer)) {
             $result[$renderer] = [];
-        } elseif ($renderer instanceof ColumnInterface || $renderer instanceof ColumnRendererInterface) {
-            /** @var GenericColumn $renderer */
+            // TODO: throw alert message because this is not compatible anymore as of TYPO3 8.7.7
+        } elseif ($renderer instanceof ColumnRendererInterface) {
+            /** @var ColumnRendererInterface $renderer */
             $result[get_class($renderer)] = $renderer->getConfiguration();
         }
         return $result;
