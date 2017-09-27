@@ -77,7 +77,7 @@ define([
 					// Mark or un-mark checkbox corresponding to column visibility.
 					if (state) {
 						$('.check-visible-toggle').each(function(index) {
-							if (state.stateColumns[index + 1].visible) {
+							if (state.stateColumns[index + 1] && state.stateColumns[index + 1].visible) {
 								$(this).attr('checked', 'checked');
 							} else {
 								$(this).removeAttr('checked');
