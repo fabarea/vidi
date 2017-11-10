@@ -283,6 +283,12 @@
 			<trans-unit id="expression.example">
 				<source>text appended</source>
 			</trans-unit>
+			<trans-unit id="expression.example">
+				<source>text appended</source>
+			</trans-unit>
+			<trans-unit id="facet.pid">
+				<source>Page</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Facet;
 
 /*
@@ -8,8 +9,9 @@ namespace Fab\Vidi\Facet;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use Fab\Vidi\Module\ModuleLoader;
 use Fab\Vidi\Persistence\Matcher;
-use Fab\Vidi\Tca\Tca;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Lang\LanguageService;
@@ -17,7 +19,7 @@ use TYPO3\CMS\Lang\LanguageService;
 /**
  * Class for configuring a custom Facet item.
  */
-class StandardFacet implements FacetInterface
+class PageFacet implements FacetInterface
 {
 
     /**
@@ -31,16 +33,6 @@ class StandardFacet implements FacetInterface
     protected $label;
 
     /**
-     * @var array
-     */
-    protected $suggestions = [];
-
-    /**
-     * @var string
-     */
-    protected $dataType;
-
-    /**
      * @var bool
      */
     protected $canModifyMatcher = false;
@@ -48,18 +40,12 @@ class StandardFacet implements FacetInterface
     /**
      * Constructor of a Generic Facet in Vidi.
      *
-     * @param string $name
      * @param string $label
-     * @param array $suggestions
      */
-    public function __construct($name, $label = '', array $suggestions = array())
+    public function __construct($label = '')
     {
-        $this->name = $name;
-        if (empty($label)) {
-            $label = $this->name;
-        }
+        $this->name = 'pid';
         $this->label = $label;
-        $this->suggestions = $suggestions;
     }
 
     /**
@@ -75,16 +61,10 @@ class StandardFacet implements FacetInterface
      */
     public function getLabel()
     {
-        if ($this->label === $this->name) {
-            $label = Tca::table($this->dataType)->field($this->getName())->getLabel();
-        } else {
-            try {
-                $label = LocalizationUtility::translate($this->label, '');
-            } catch (\InvalidArgumentException $e) {
-            }
-            if (empty($label)) {
-                $label = $this->label;
-            }
+        $label = '';
+        try {
+            $label = LocalizationUtility::translate($this->label, '');
+        } catch (\InvalidArgumentException $e) {
         }
 
         return $label;
@@ -95,18 +75,43 @@ class StandardFacet implements FacetInterface
      */
     public function getSuggestions()
     {
-
         $values = [];
-        foreach ($this->suggestions as $key => $label) {
-            $localizedLabel = $this->getLanguageService()->sL($label);
-            if (!empty($localizedLabel)) {
-                $label = $localizedLabel;
-            }
-
-            $values[] = [$key => $label];
+        foreach ($this->getStoragePages() as $page) {
+            $values[] = [
+                $page['uid'] => sprintf('%s (%s)', $page['title'], $page['uid'])
+            ];
         }
-
         return $values;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getStoragePages()
+    {
+        $tableName = 'pages';
+        $clause = sprintf(
+            'uid IN (SELECT DISTINCT(pid) FROM %s WHERE 1=1 %s)',
+            $this->getModuleLoader()->getDataType(),
+            BackendUtility::deleteClause($this->getModuleLoader()->getDataType())
+        );
+        $clause .= BackendUtility::deleteClause('pages');
+
+        $pages = $this->getDatabaseConnection()->exec_SELECTgetRows('*', $tableName, $clause);
+
+        return is_array($pages)
+            ? $pages
+            : [];
+    }
+
+    /**
+     * Returns a pointer to the database.
+     *
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
     }
 
     /**
@@ -130,7 +135,7 @@ class StandardFacet implements FacetInterface
      */
     public function hasSuggestions()
     {
-        return !empty($this->suggestions);
+        return true;
     }
 
     /**
@@ -162,14 +167,25 @@ class StandardFacet implements FacetInterface
     }
 
     /**
+     * Get the Vidi Module Loader.
+     *
+     * @return ModuleLoader|object
+     * @throws \InvalidArgumentException
+     */
+    protected function getModuleLoader()
+    {
+        return GeneralUtility::makeInstance(ModuleLoader::class);
+    }
+
+    /**
      * Magic method implementation for retrieving state.
      *
      * @param array $states
-     * @return StandardFacet
+     * @return PageFacet
      */
     static public function __set_state($states)
     {
-        return new StandardFacet($states['name'], $states['label'], $states['suggestions']);
+        return new self($states['name']);
     }
 
 }

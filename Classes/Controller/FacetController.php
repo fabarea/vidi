@@ -9,6 +9,7 @@ namespace Fab\Vidi\Controller;
  */
 
 use Fab\Vidi\Facet\FacetInterface;
+use Fab\Vidi\Facet\FacetSuggestionService;
 use Fab\Vidi\Tca\Tca;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -63,11 +64,11 @@ class FacetController extends ActionController
     }
 
     /**
-     * @return \Fab\Vidi\Facet\FacetSuggestionService
+     * @return FacetSuggestionService|object
      */
     protected function getFacetSuggestionService()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Facet\FacetSuggestionService');
+        return GeneralUtility::makeInstance(FacetSuggestionService::class);
     }
 
 }

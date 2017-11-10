@@ -48,6 +48,9 @@ $tca = [
                     '1' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:active.1'
                 ]
             ),
+            new \Fab\Vidi\Facet\PageFacet(
+                'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:facet.pid'
+            ),
         ],
         'columns' => [
             '__checkbox' => [
