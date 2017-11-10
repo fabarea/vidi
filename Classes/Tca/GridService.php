@@ -544,9 +544,14 @@ class GridService extends AbstractTca
     {
         $result = [];
         if (is_string($renderer)) {
-            $result[$renderer] = empty($field['rendererConfiguration'])
+            $configuration = empty($field['rendererConfiguration'])
                 ? []
                 : $field['rendererConfiguration'];
+
+            /** @var ColumnRendererInterface $rendererObject */
+            $rendererObject = GeneralUtility::makeInstance($renderer);
+
+            $result[$renderer] = array_merge($rendererObject->getConfiguration(), $configuration);
             // TODO: throw alert message because this is not compatible anymore as of TYPO3 8.7.7
         } elseif ($renderer instanceof ColumnRendererInterface) {
             /** @var ColumnRendererInterface $renderer */
