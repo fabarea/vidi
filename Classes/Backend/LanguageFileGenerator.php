@@ -50,7 +50,7 @@ class LanguageFileGenerator implements SingletonInterface
         // Generate language file.
         $languageFile = $this->getLanguageFile($dataType);
         $content = str_replace('{module_name}', $label, $this->template);
-        file_put_contents($languageFile, $content);
+        GeneralUtility::writeFileToTypo3tempDir($languageFile, $content);
 
         return 'LLL:' . $languageFile;
     }
