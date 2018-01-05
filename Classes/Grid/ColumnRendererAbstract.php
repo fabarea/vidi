@@ -165,9 +165,25 @@ abstract class ColumnRendererAbstract implements ColumnRendererInterface
     }
 
     /**
+     * Escapes special characters with their escaped counterparts as needed using PHPs htmlentities() function.
+     *
+     * @param string $value string to format
+     * @param bool $keepQuotes if TRUE, single and double quotes won't be replaced (sets ENT_NOQUOTES flag)
+     * @param string $encoding
+     * @return string
+     * @see http://www.php.net/manual/function.htmlentities.php
+     * @api
+     */
+    protected function secure($value , $keepQuotes = false, $encoding = 'UTF-8')
+    {
+        $flags = $keepQuotes ? ENT_NOQUOTES : ENT_COMPAT;
+        return htmlspecialchars($value, $flags, $encoding);
+    }
+
+    /**
      * Get the Vidi Module Loader.
      *
-     * @return ModuleLoader
+     * @return object|ModuleLoader
      */
     protected function getModuleLoader()
     {
@@ -175,7 +191,7 @@ abstract class ColumnRendererAbstract implements ColumnRendererInterface
     }
 
     /**
-     * @return IconFactory
+     * @return object|IconFactory
      */
     protected function getIconFactory()
     {
@@ -183,7 +199,7 @@ abstract class ColumnRendererAbstract implements ColumnRendererInterface
     }
 
     /**
-     * @return LanguageService
+     * @return object|LanguageService
      */
     protected function getLanguageService()
     {
