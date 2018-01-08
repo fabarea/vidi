@@ -516,6 +516,15 @@ class FieldService extends AbstractTca
     {
         return $this->getType() === FieldType::TEXTAREA;
     }
+    /**
+     * Returns whether the field is of type text area.
+     *
+     * @return bool
+     */
+    public function isText()
+    {
+        return $this->getType() === FieldType::TEXT;
+    }
 
     /**
      * Returns whether the field is displayed as a tree.
