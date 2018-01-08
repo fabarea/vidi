@@ -100,9 +100,11 @@ class ContentRepository implements RepositoryInterface
      *
      * @param string $propertyName
      * @param Matcher $matcher
+     * @param Order|null $order
      * @return Content[]
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidNumberOfConstraintsException
      */
-    public function findDistinctValues($propertyName, Matcher $matcher = null)
+    public function findDistinctValues($propertyName, Matcher $matcher = null, Order $order = null)
     {
         $query = $this->createQuery();
         $query->setDistinct($propertyName);
@@ -122,6 +124,10 @@ class ContentRepository implements RepositoryInterface
             $query->matching($query->logicalAnd($matcherConstraint, $constraint));
         } else {
             $query->matching($constraint);
+        }
+
+        if ($order) {
+            $query->setOrderings($order->getOrderings());
         }
 
         return $query->execute();
