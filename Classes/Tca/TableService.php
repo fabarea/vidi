@@ -304,7 +304,7 @@ class TableService extends AbstractTca
     /**
      * Tell whether we have a field "sorting".
      *
-     * @return array
+     * @return bool
      */
     public function hasSortableField()
     {
@@ -315,7 +315,7 @@ class TableService extends AbstractTca
      * Tell whether the field exists or not.
      *
      * @param string $fieldName
-     * @return array
+     * @return bool
      */
     public function hasField($fieldName)
     {
