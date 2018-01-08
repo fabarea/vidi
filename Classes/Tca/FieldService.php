@@ -552,6 +552,16 @@ class FieldService extends AbstractTca
      *
      * @return bool
      */
+    public function isMultipleSelect()
+    {
+        return $this->getType() === FieldType::MULTISELECT;
+    }
+
+    /**
+     * Returns whether the field is of type select.
+     *
+     * @return bool
+     */
     public function isCheckBox()
     {
         return $this->getType() === FieldType::CHECKBOX;
