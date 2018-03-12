@@ -609,8 +609,8 @@ class VidiDbBackend
 
         // Field of type "group" are special because property path must contain the table name
         // to determine the relation type. Example for sys_category, property path will look like "items.sys_file"
-        if ($table->field($fieldName)->isGroup()) {
-            $parts = explode('.', $propertyPath, 3);
+        $parts = explode('.', $propertyPath, 3);
+        if ($table->field($fieldName)->isGroup() && count($parts) > 2) {
             $explodedPropertyPath[0] = $parts[0] . '.' . $parts[1];
             $explodedPropertyPath[1] = $parts[2];
             $fieldName = $explodedPropertyPath[0];
