@@ -325,7 +325,7 @@ class TableService extends AbstractTca
             $hasField = $this->columnTca[$strippedFieldName] && isset($GLOBALS['TCA'][$tableName]);
 
             // Continue checking that the $strippedFieldName is of type "group"
-            if (isset($GLOBALS['TCA'][$this->tableName]['columns'][$strippedFieldName])) {
+            if (isset($GLOBALS['TCA'][$this->tableName]['columns'][$strippedFieldName]) && count($parts) > 2) {
                 $hasField = Tca::table($this->tableName)->field($strippedFieldName)->isGroup(); // Group
             }
         } else {
