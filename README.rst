@@ -245,32 +245,29 @@ TCA Grid
 The Grid is the heart of the List component in Vidi. The TCA was extended to describe how a grid and its
 columns should be rendered. Take inspiration of `this example`_ below for your own data type::
 
-	'grid' => array(
-		'columns' => array(
-			'__checkbox' => array(
-				'width' => '5px',
-				'sortable' => false,
-				'html' => '<input type="checkbox" class="checkbox-row-top"/>',
-			),
-			'uid' => array(
-				'visible' => false,
-				'label' => 'Id',
-				'width' => '5px',
-			),
-			'username' => array(
-				'visible' => true,
-				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:username',
-			),
-			'usergroup' => array(
-				'visible' => true,
-				'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:usergroup',
-			),
-			'__buttons' => array(
-				'sortable' => false,
-				'width' => '70px',
-			),
-		),
-	),
+  'grid' => [
+    'columns' => [
+      '__checkbox' => [
+        'renderer' => \Fab\Vidi\Grid\CheckBoxRenderer::class,
+      ],
+      'uid' => [
+        'visible' => false,
+        'label' => 'Id',
+        'width' => '5px',
+      ],
+      'username' => [
+        'visible' => true,
+        'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:username',
+      ],
+      'usergroup' => [
+        'visible' => true,
+        'label' => 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf:usergroup',
+      ],
+      '__buttons' => [
+        'renderer' => \Fab\Vidi\Grid\ButtonGroupRenderer::class,
+      ],
+    ],
+  ],
 
 
 .. _this example: https://github.com/fabarea/vidi/blob/master/Configuration/TCA/Overrides/fe_users.php#L21
