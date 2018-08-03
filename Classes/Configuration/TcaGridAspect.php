@@ -73,7 +73,7 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
                 ],
                 'uid' => [
                     'visible' => false,
-                    'label' => 'Id',
+                    'label' => '',
                     'width' => '5px',
                 ],
                 $labelField => [
