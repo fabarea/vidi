@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Tca;
 
 /*
@@ -321,17 +322,17 @@ class TableService extends AbstractTca
     {
         if ($this->isComposite($fieldName)) {
             $parts = explode('.', $fieldName);
-            $strippedFieldName = $parts[0];
-            $tableName = $parts[1];
-
-            $hasField = $this->columnTca[$strippedFieldName] && isset($GLOBALS['TCA'][$tableName]);
+            list ($strippedFieldPath, $possibleTableName) = $parts;
+            $hasField = isset($this->columnTca[$strippedFieldPath], $GLOBALS['TCA'][$possibleTableName]);
 
             // Continue checking that the $strippedFieldName is of type "group"
-            if (isset($GLOBALS['TCA'][$this->tableName]['columns'][$strippedFieldName]) && count($parts) > 2) {
-                $hasField = Tca::table($this->tableName)->field($strippedFieldName)->isGroup(); // Group
+            if (isset($GLOBALS['TCA'][$this->tableName]['columns'][$strippedFieldPath]) && count($parts) > 2) {
+                $hasField = Tca::table($this->tableName)->field($strippedFieldPath)->isGroup(); // Group
+            } elseif (isset($this->columnTca[$strippedFieldPath]['config']['readOnly']) && (bool)$this->columnTca[$strippedFieldPath]['config']['readOnly']) {
+                $hasField = false; // handle case metadata.fe_groups where "fe_groups" is a tableName.
             }
         } else {
-            $hasField = isset($this->columnTca[$fieldName]) || in_array($fieldName, Tca::getSystemFields());
+            $hasField = isset($this->columnTca[$fieldName]) || in_array($fieldName, Tca::getSystemFields(), true);
         }
         return $hasField;
     }
