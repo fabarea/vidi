@@ -216,7 +216,7 @@ define(['jquery', 'jquery-ui/core', 'jquery-ui/sortable'], function($) {
 						sSelector = "tbody tr[" + properties.sDataGroupAttribute + " ='" + sGroup + "']";
 					}
 
-					var oState = fnGetState($dataTable, sSelector, ui.item.context.id);
+					var oState = fnGetState($dataTable, sSelector, ui.item[0].id);
 					if (oState.iNewPosition == -1) {
 						fnCancelSorting($dataTable, tbody, properties, 2);
 						return;
@@ -225,7 +225,7 @@ define(['jquery', 'jquery-ui/core', 'jquery-ui/sortable'], function($) {
 					if (properties.sURL != null) {
 						properties.fnStartProcessingMode($dataTable);
 						var data = {};
-						data[Vidi.module.parameterPrefix + '[matches][uid]'] = ui.item.context.id.replace('row-', '') - 0;
+						data[Vidi.module.parameterPrefix + '[matches][uid]'] = ui.item[0].id.replace('row-', '') - 0;
 
 						// the first row has no predecessor.
 						if (parseInt(oState.iNewPosition) !== 0) {
@@ -242,7 +242,7 @@ define(['jquery', 'jquery-ui/core', 'jquery-ui/sortable'], function($) {
 							data: data,
 							success: function(data) {
 								properties.fnSuccess(data);
-								fnMoveRows($dataTable, sSelector, oState.iCurrentPosition, oState.iNewPosition, oState.sDirection, ui.item.context.id, sGroup);
+								fnMoveRows($dataTable, sSelector, oState.iCurrentPosition, oState.iNewPosition, oState.sDirection, ui.item[0].id, sGroup);
 								properties.fnEndProcessingMode($dataTable);
 							},
 							error: function(jqXHR) {
@@ -252,7 +252,7 @@ define(['jquery', 'jquery-ui/core', 'jquery-ui/sortable'], function($) {
 						properties.fnUpdateAjaxRequest(ajaxRequest, properties, $dataTable);
 						$.ajax(ajaxRequest);
 					} else {
-						fnMoveRows($dataTable, sSelector, oState.iCurrentPosition, oState.iNewPosition, oState.sDirection, ui.item.context.id, sGroup);
+						fnMoveRows($dataTable, sSelector, oState.iCurrentPosition, oState.iNewPosition, oState.sDirection, ui.item[0].id, sGroup);
 					}
 				}
 			});
