@@ -1,5 +1,3 @@
-<INCLUDE_TYPOSCRIPT: source="FILE:EXT:vidi/Configuration/TypoScript/setup.txt">
-
 config.tx_extbase {
 	persistence{
 		classes {
