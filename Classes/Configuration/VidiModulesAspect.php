@@ -26,7 +26,7 @@ class VidiModulesAspect implements TableConfigurationPostProcessingHookInterface
     {
 
         /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
-        $moduleLoader = GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+        $moduleLoader = GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
 
         // Each data data can be displayed in a Vidi module
         foreach ($GLOBALS['TCA'] as $dataType => $configuration) {

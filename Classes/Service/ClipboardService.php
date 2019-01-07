@@ -28,7 +28,7 @@ class ClipboardService implements SingletonInterface
         $matcher = $this->getBackendUser()->getModuleData($this->getDataKey());
         if (!$matcher) {
             /** @var $matcher Matcher */
-            $matcher = GeneralUtility::makeInstance('Fab\Vidi\Persistence\Matcher');
+            $matcher = GeneralUtility::makeInstance(\Fab\Vidi\Persistence\Matcher::class);
         }
         return $matcher;
     }
@@ -81,11 +81,11 @@ class ClipboardService implements SingletonInterface
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader
+     * @return \Fab\Vidi\Module\ModuleLoader|object
      */
     protected function getModuleLoader()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
     }
 
     /**

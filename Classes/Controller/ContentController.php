@@ -219,7 +219,7 @@ class ContentController extends ActionController
 
                 if (!empty($columns)) {
                     /** @var Row $row */
-                    $row = GeneralUtility::makeInstance('Fab\Vidi\View\Grid\Row', $columns);
+                    $row = GeneralUtility::makeInstance(\Fab\Vidi\View\Grid\Row::class, $columns);
                     $result->setRow($row->render($updatedObject));
                 }
             }

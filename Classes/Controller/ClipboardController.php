@@ -80,19 +80,19 @@ class ClipboardController extends ActionController
     }
 
     /**
-     * @return \Fab\Vidi\Service\ClipboardService
+     * @return \Fab\Vidi\Service\ClipboardService|object
      */
     protected function getClipboardService()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Service\ClipboardService');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Service\ClipboardService::class);
     }
 
     /**
-     * @return \Fab\Vidi\Service\ContentService
+     * @return \Fab\Vidi\Service\ContentService|object
      */
     protected function getContentService()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Service\ContentService');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Service\ContentService::class);
     }
 
 }

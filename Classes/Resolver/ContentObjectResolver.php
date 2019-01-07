@@ -89,18 +89,18 @@ class ContentObjectResolver implements SingletonInterface
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\FieldPathResolver
+     * @return \Fab\Vidi\Resolver\FieldPathResolver|object
      */
     protected function getFieldPathResolver()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Resolver\FieldPathResolver::class);
     }
 
     /**
-     * @return \Fab\Vidi\Language\LanguageService
+     * @return \Fab\Vidi\Language\LanguageService|object
      */
     protected function getLanguageService()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Language\LanguageService');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Language\LanguageService::class);
     }
 }

@@ -149,7 +149,7 @@ class CoreDataHandler extends AbstractDataHandler
     protected function getDataHandler()
     {
         if (!$this->dataHandler) {
-            $this->dataHandler = GeneralUtility::makeInstance('TYPO3\CMS\Core\DataHandling\DataHandler');
+            $this->dataHandler = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
         }
         return $this->dataHandler;
     }

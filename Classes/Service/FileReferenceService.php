@@ -31,11 +31,11 @@ class FileReferenceService implements SingletonInterface
     /**
      * Returns a class instance
      *
-     * @return \Fab\Vidi\Service\FileReferenceService
+     * @return \Fab\Vidi\Service\FileReferenceService|object
      */
     static public function getInstance()
     {
-        return GeneralUtility::makeInstance('\Fab\Vidi\Service\FileReferenceService');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Service\FileReferenceService::class);
     }
 
     /**
@@ -140,7 +140,7 @@ class FileReferenceService implements SingletonInterface
     /**
      * Returns a pointer to the database.
      *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @return \Fab\Vidi\Database\DatabaseConnection
      */
     protected function getDatabaseConnection()
     {

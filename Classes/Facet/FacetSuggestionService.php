@@ -107,11 +107,11 @@ class FacetSuggestionService
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\FieldPathResolver
+     * @return \Fab\Vidi\Resolver\FieldPathResolver|object
      */
     protected function getFieldPathResolver()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Resolver\FieldPathResolver::class);
     }
 
     /**
@@ -122,7 +122,7 @@ class FacetSuggestionService
     protected function getSettings()
     {
         /** @var \TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager $backendConfigurationManager */
-        $objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+        $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
         $backendConfigurationManager = $objectManager->get('TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager');
         $configuration = $backendConfigurationManager->getTypoScriptSetup();
         return $configuration['module.']['tx_vidi.']['settings.'];

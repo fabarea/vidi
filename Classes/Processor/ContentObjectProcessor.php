@@ -125,18 +125,18 @@ class ContentObjectProcessor implements SingletonInterface
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\ContentObjectResolver
+     * @return \Fab\Vidi\Resolver\ContentObjectResolver|object
      */
     protected function getContentObjectResolver()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Resolver\ContentObjectResolver');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Resolver\ContentObjectResolver::class);
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\FieldPathResolver
+     * @return \Fab\Vidi\Resolver\FieldPathResolver|object
      */
     protected function getFieldPathResolver()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Resolver\FieldPathResolver::class);
     }
 }

@@ -31,11 +31,11 @@ class ToolRegistry implements SingletonInterface
     /**
      * Returns a class instance.
      *
-     * @return \Fab\Vidi\Tool\ToolRegistry
+     * @return \Fab\Vidi\Tool\ToolRegistry|object
      */
     static public function getInstance()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Tool\ToolRegistry');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Tool\ToolRegistry::class);
     }
 
     /**

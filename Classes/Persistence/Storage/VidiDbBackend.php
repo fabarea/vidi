@@ -38,7 +38,7 @@ class VidiDbBackend
     /**
      * The TYPO3 database object
      *
-     * @var \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @var \Fab\Vidi\Database\DatabaseConnection
      */
     protected $databaseHandle;
 
@@ -1152,7 +1152,7 @@ class VidiDbBackend
     }
 
     /**
-     * @return PageRepository
+     * @return PageRepository|object
      */
     protected function getPageRepository()
     {
@@ -1160,7 +1160,7 @@ class VidiDbBackend
             if ($this->environmentService->isEnvironmentInFrontendMode() && is_object($GLOBALS['TSFE'])) {
                 $this->pageRepository = $GLOBALS['TSFE']->sys_page;
             } else {
-                $this->pageRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+                $this->pageRepository = GeneralUtility::makeInstance(PageRepository::class);
             }
         }
 
@@ -1168,11 +1168,11 @@ class VidiDbBackend
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\FieldPathResolver
+     * @return \Fab\Vidi\Resolver\FieldPathResolver|object
      */
     protected function getFieldPathResolver()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Resolver\FieldPathResolver::class);
     }
 
     /**

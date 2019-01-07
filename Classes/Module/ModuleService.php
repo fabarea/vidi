@@ -27,11 +27,11 @@ class ModuleService implements SingletonInterface
     /**
      * Returns a class instance
      *
-     * @return \Fab\Vidi\Module\ModuleService
+     * @return \Fab\Vidi\Module\ModuleService|object
      */
     static public function getInstance()
     {
-        return GeneralUtility::makeInstance('\Fab\Vidi\Module\ModuleService');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleService::class);
     }
 
     /**
@@ -105,7 +105,7 @@ class ModuleService implements SingletonInterface
     /**
      * Returns a pointer to the database.
      *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @return \Fab\Vidi\Database\DatabaseConnection
      */
     protected function getDatabaseConnection()
     {
@@ -115,10 +115,10 @@ class ModuleService implements SingletonInterface
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader
+     * @return \Fab\Vidi\Module\ModuleLoader|object
      */
     protected function getModuleLoader()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
     }
 }

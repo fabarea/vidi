@@ -81,6 +81,6 @@ class UserPreferencesController extends ActionController
      */
     protected function getCacheManager()
     {
-        return GeneralUtility::makeInstance('TYPO3\CMS\Core\Cache\CacheManager');
+        return GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class);
     }
 }

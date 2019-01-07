@@ -116,29 +116,29 @@ class ModulePreferencesTool extends AbstractTool
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader
+     * @return \Fab\Vidi\Module\ModuleLoader|object
      */
     protected function getModuleLoader()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
     }
 
     /**
-     * @return ModulePreferences
+     * @return ModulePreferences|object
      */
     protected function getModulePreferences()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModulePreferences');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Module\ModulePreferences::class);
     }
 
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Grid\GridAnalyserService
+     * @return \Fab\Vidi\Grid\GridAnalyserService|object
      */
     protected function getGridAnalyserService()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Grid\GridAnalyserService');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Grid\GridAnalyserService::class);
     }
 }
 

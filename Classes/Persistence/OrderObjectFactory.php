@@ -21,18 +21,18 @@ class OrderObjectFactory implements SingletonInterface
     /**
      * Gets a singleton instance of this class.
      *
-     * @return \Fab\Vidi\Persistence\OrderObjectFactory
+     * @return \Fab\Vidi\Persistence\OrderObjectFactory|object
      */
     static public function getInstance()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Persistence\OrderObjectFactory');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Persistence\OrderObjectFactory::class);
     }
 
     /**
      * Returns an order object.
      *
      * @param string $dataType
-     * @return \Fab\Vidi\Persistence\Order
+     * @return \Fab\Vidi\Persistence\Order|object
      */
     public function getOrder($dataType = '')
     {
@@ -55,6 +55,6 @@ class OrderObjectFactory implements SingletonInterface
                 );
             }
         }
-        return GeneralUtility::makeInstance('Fab\Vidi\Persistence\Order', $order);
+        return GeneralUtility::makeInstance(\Fab\Vidi\Persistence\Order::class, $order);
     }
 }

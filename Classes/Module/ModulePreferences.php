@@ -201,8 +201,8 @@ class ModulePreferences implements SingletonInterface
     protected function getSettings()
     {
         /** @var \TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager $backendConfigurationManager */
-        $objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
-        $backendConfigurationManager = $objectManager->get('TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager');
+        $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
+        $backendConfigurationManager = $objectManager->get(\TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager::class);
         $configuration = $backendConfigurationManager->getTypoScriptSetup();
         return $configuration['module.']['tx_vidi.']['settings.'];
     }
@@ -210,7 +210,7 @@ class ModulePreferences implements SingletonInterface
     /**
      * Returns a pointer to the database.
      *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @return \Fab\Vidi\Database\DatabaseConnection
      */
     protected function getDatabaseConnection()
     {
@@ -220,11 +220,11 @@ class ModulePreferences implements SingletonInterface
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader
+     * @return \Fab\Vidi\Module\ModuleLoader|object
      */
     protected function getModuleLoader()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
     }
 
 }

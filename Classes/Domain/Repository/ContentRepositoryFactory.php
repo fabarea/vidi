@@ -37,7 +37,7 @@ class ContentRepositoryFactory implements SingletonInterface
         if (is_null($dataType)) {
 
             // Try to get the data type from the module loader.
-            $moduleLoader = GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+            $moduleLoader = GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
             $dataType = $moduleLoader->getDataType();
         }
 

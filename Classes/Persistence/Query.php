@@ -468,7 +468,7 @@ class Query implements QueryInterface
         if (is_object($operand) || $caseSensitive) {
             $comparison = $this->qomFactory->comparison($this->qomFactory->propertyValue($propertyName, $this->getSelectorName()), QueryInterface::OPERATOR_EQUAL_TO, $operand);
         } else {
-            $comparison = $this->qomFactory->comparison($this->qomFactory->lowerCase($this->qomFactory->propertyValue($propertyName, $this->getSelectorName())), QueryInterface::OPERATOR_EQUAL_TO, \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter')->conv_case(\TYPO3\CMS\Extbase\Persistence\Generic\Query::CHARSET, $operand, 'toLower'));
+            $comparison = $this->qomFactory->comparison($this->qomFactory->lowerCase($this->qomFactory->propertyValue($propertyName, $this->getSelectorName())), QueryInterface::OPERATOR_EQUAL_TO, \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class)->conv_case(\TYPO3\CMS\Extbase\Persistence\Generic\Query::CHARSET, $operand, 'toLower'));
         }
         return $comparison;
     }

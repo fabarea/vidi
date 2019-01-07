@@ -88,7 +88,7 @@ class LanguageService implements SingletonInterface
             $localizedRecord = $this->getDatabaseConnection()->exec_SELECTgetSingleRow('*', $object->getDataType(), $clause);
 
             if ($localizedRecord) {
-                $localizedContent = GeneralUtility::makeInstance('Fab\Vidi\Domain\Model\Content', $object->getDataType(), $localizedRecord);
+                $localizedContent = GeneralUtility::makeInstance(\Fab\Vidi\Domain\Model\Content::class, $object->getDataType(), $localizedRecord);
                 $this->localizedRecordStorage[$objectHash][$language] = $localizedContent;
             } else {
                 $this->localizedRecordStorage[$objectHash][$language] = []; // We want an array at least, even if empty.
@@ -186,7 +186,7 @@ class LanguageService implements SingletonInterface
     /**
      * Returns a pointer to the database.
      *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @return \Fab\Vidi\Database\DatabaseConnection
      */
     protected function getDatabaseConnection()
     {

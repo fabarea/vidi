@@ -59,11 +59,11 @@ class ClipboardButton extends AbstractComponentView
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Service\ClipboardService
+     * @return \Fab\Vidi\Service\ClipboardService|object
      */
     protected function getClipboardService()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Service\ClipboardService');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Service\ClipboardService::class);
     }
 
 }

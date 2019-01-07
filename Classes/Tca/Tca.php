@@ -68,7 +68,7 @@ class Tca implements SingletonInterface, TcaServiceInterface
         if (TYPO3_MODE === 'BE' && empty($dataType)) {
 
             /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
-            $moduleLoader = GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+            $moduleLoader = GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
             $dataType = $moduleLoader->getDataType();
         }
 

@@ -19,11 +19,11 @@ class BackendUserPreferenceService
     /**
      * Returns a class instance
      *
-     * @return \Fab\Vidi\Service\BackendUserPreferenceService
+     * @return \Fab\Vidi\Service\BackendUserPreferenceService|object
      */
     static public function getInstance()
     {
-        return GeneralUtility::makeInstance('\Fab\Vidi\Service\BackendUserPreferenceService');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Service\BackendUserPreferenceService::class);
     }
 
     /**

@@ -32,11 +32,11 @@ class LanguageValidator
     }
 
     /**
-     * @return \Fab\Vidi\Language\LanguageService
+     * @return \Fab\Vidi\Language\LanguageService|object
      */
     protected function getLanguageService()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Language\LanguageService');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Language\LanguageService::class);
     }
 
 }

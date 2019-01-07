@@ -678,7 +678,7 @@ class GridService extends AbstractTca
         $label = $this->getLabel($facetName);
 
         /** @var StandardFacet $facetName */
-        $facet = GeneralUtility::makeInstance('Fab\Vidi\Facet\StandardFacet', $facetName, $label);
+        $facet = GeneralUtility::makeInstance(\Fab\Vidi\Facet\StandardFacet::class, $facetName, $label);
 
         if (!$facet instanceof StandardFacet) {
             throw new \RuntimeException('I could not instantiate a facet for facet name "' . (string)$facet . '""', 1445856345);
@@ -699,19 +699,19 @@ class GridService extends AbstractTca
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\FieldPathResolver
+     * @return \Fab\Vidi\Resolver\FieldPathResolver|object
      */
     protected function getFieldPathResolver()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Resolver\FieldPathResolver');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Resolver\FieldPathResolver::class);
     }
 
     /**
-     * @return ModulePreferences
+     * @return ModulePreferences|object
      */
     protected function getModulePreferences()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModulePreferences');
+        return GeneralUtility::makeInstance(ModulePreferences::class);
     }
 
 }
