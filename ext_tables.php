@@ -37,14 +37,11 @@ if (TYPO3_MODE === 'BE') {
         );
     }
 
-    /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-    $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+    $configuration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+        \TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class
+    )->get('vidi');
 
-    /** @var \TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility $configurationUtility */
-    $configurationUtility = $objectManager->get('TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility');
-    $configuration = $configurationUtility->getCurrentConfiguration('vidi');
-
-    $pids = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['default_pid']['value'], true);
+    $pids = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['default_pid'], true);
     $defaultPid = array_shift($pids);
     $defaultPids = [];
     foreach ($pids as $dataTypeAndPid) {
@@ -55,9 +52,9 @@ if (TYPO3_MODE === 'BE') {
     }
 
     // Loop around the data types and register them to be displayed within a BE module.
-    if ($configuration['data_types']['value']) {
+    if ($configuration['data_types']) {
 
-        $dataTypes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['data_types']['value'], true);
+        $dataTypes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['data_types'], true);
         foreach ($dataTypes as $dataType) {
 
             /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
@@ -90,16 +87,16 @@ if (TYPO3_MODE === 'BE') {
     }
 
     // Possible Static TS loading
-    if (true === isset($configuration['autoload_typoscript']['value']) && false === (bool)$configuration['autoload_typoscript']['value']) {
+    if (true === isset($configuration['autoload_typoscript']) && false === (bool)$configuration['autoload_typoscript']) {
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('vidi', 'Configuration/TypoScript', 'Vidi: versatile and interactive display');
     }
 
     // Register List2 only if beta feature is enabled.
     // @todo let see what we do with that
-    #if ($configuration['activate_beta_features']['value']) {
+    #if ($configuration['activate_beta_features']) {
     #	$labelFile = 'LLL:EXT:vidi/Resources/Private/Language/locallang_module.xlf';
     #
-    #	if (!$configuration['hide_module_list']['value']) {
+    #	if (!$configuration['hide_module_list']) {
     #		$labelFile = 'LLL:EXT:vidi/Resources/Private/Language/locallang_module_transitional.xlf';
     #	}
     #
@@ -122,7 +119,7 @@ if (TYPO3_MODE === 'BE') {
     #		)
     #	);
     #}
-    #if ($configuration['hide_module_list']['value']) {
+    #if ($configuration['hide_module_list']) {
     #
     #	// Default User TSConfig to be added in any case.
     #	TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('
@@ -133,7 +130,7 @@ if (TYPO3_MODE === 'BE') {
     #}
 
     /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-    $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+    $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
 
     /** @var $signalSlotDispatcher \TYPO3\CMS\Extbase\SignalSlot\Dispatcher */
     $signalSlotDispatcher = $objectManager->get('TYPO3\CMS\Extbase\SignalSlot\Dispatcher');

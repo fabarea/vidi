@@ -10,10 +10,10 @@ namespace Fab\Vidi\Configuration;
 
 use Fab\Vidi\Grid\ButtonGroupRenderer;
 use Fab\Vidi\Grid\CheckBoxRenderer;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\TableConfigurationPostProcessingHookInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility;
 
 /**
  * Add a Grid TCA to each "data type" enabling to display a Vidi module in the BE.
@@ -28,16 +28,14 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
      */
     public function processData()
     {
+        $configuration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('vidi');
 
-        /** @var ConfigurationUtility $configurationUtility */
-        $configurationUtility = $this->getObjectManager()->get(ConfigurationUtility::class);
-        $configuration = $configurationUtility->getCurrentConfiguration('vidi');
-
-        $dataTypes = GeneralUtility::trimExplode(',', $configuration['data_types']['value'], true);
+        $dataTypes = GeneralUtility::trimExplode(',', $configuration['data_types'], true);
 
         if (ExtensionManagementUtility::isLoaded('vidi_frontend')) {
-            $extendedConfiguration = $configurationUtility->getCurrentConfiguration('vidi_frontend');
-            $vidiFrontendContentTypes = GeneralUtility::trimExplode(',', $extendedConfiguration['content_types']['value'], true);
+
+            $extendedConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('vidi_frontend');
+            $vidiFrontendContentTypes = GeneralUtility::trimExplode(',', $extendedConfiguration['content_types'], true);
             $extendedDataTypes = array_merge($dataTypes, $vidiFrontendContentTypes);
             $dataTypes = array_unique($extendedDataTypes);
         }

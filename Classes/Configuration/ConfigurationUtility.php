@@ -8,9 +8,9 @@ namespace Fab\Vidi\Configuration;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * A class for handling configuration of the extension
@@ -31,7 +31,7 @@ class ConfigurationUtility implements SingletonInterface
     /**
      * Returns a class instance.
      *
-     * @return ConfigurationUtility
+     * @return ConfigurationUtility|object
      * @throws \InvalidArgumentException
      */
     static public function getInstance()
@@ -41,22 +41,14 @@ class ConfigurationUtility implements SingletonInterface
 
     /**
      * Constructor
-     *
-     * @return ConfigurationUtility
      */
     public function __construct()
     {
-
-        /** @var ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
-        /** @var \TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility $configurationUtility */
-        $configurationUtility = $objectManager->get(\TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility::class);
-        $configuration = $configurationUtility->getCurrentConfiguration($this->extensionKey);
+        $configuration = $configuration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get($this->extensionKey);
 
         // Fill up configuration array with relevant values.
-        foreach ($configuration as $key => $data) {
-            $this->configuration[$key] = $data['value'];
+        foreach ($configuration as $key => $value) {
+            $this->configuration[$key] = $value;
         }
     }
 
