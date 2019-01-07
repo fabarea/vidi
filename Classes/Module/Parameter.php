@@ -20,5 +20,5 @@ class Parameter extends Enumeration
 
     const SUBMODULE = 'vidiModuleCode';
 
-    const MODULE = 'M';
+    const MODULE = 'route';
 }

@@ -318,7 +318,9 @@ class ModuleLoader
      */
     public function getSignature()
     {
-        return GeneralUtility::_GP(Parameter::MODULE);
+        $signature = GeneralUtility::_GP(Parameter::MODULE);
+        $trimmedSignature = trim($signature, '/');
+        return str_replace('/', '_', $trimmedSignature);
     }
 
     /**
