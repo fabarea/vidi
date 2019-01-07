@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Command;
 
 /*
@@ -8,28 +9,46 @@ namespace Fab\Vidi\Command;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
+use Symfony\Component\Console\Command\Command;
 use Fab\Vidi\Tca\Tca;
 
 /**
  * Command Controller which handles actions related to Vidi.
  */
-class VidiCommandController extends CommandController
+class VidiCommandController extends Command
 {
 
     /**
-     * Check TCA configuration for relations used in grid.
-     *
-     * @param string $table the table name. If not defined check for every table.
-     * @return void
+     * Configure the command by defining the name, options and arguments
      */
-    public function analyseRelationsCommand($table = '')
+    protected function configure()
     {
+        $this->setDescription('Check TCA configuration for relations used in grid.')
+        ->addOption(
+        'table',
+        'c',
+        InputOption::VALUE_NONE,
+        'The table name. If not defined check for every table.'
+    );
+    }
 
+    /**
+     * Executes the command for removing the lock file
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $io = new SymfonyStyle($input, $output);
         foreach ($GLOBALS['TCA'] as $tableName => $TCA) {
-
-            if ($table != '' && $table !== $tableName) {
+            $table = $input->getOption('table');
+            if ($table !== '' && $table !== $tableName) {
                 continue;
             }
 
@@ -39,12 +58,12 @@ class VidiCommandController extends CommandController
                 $relations = $this->getGridAnalyserService()->checkRelationForTable($tableName);
                 if (!empty($relations)) {
 
-                    $this->outputLine();
-                    $this->outputLine('--------------------------------------------------------------------');
-                    $this->outputLine();
-                    $this->outputLine(sprintf('Relations for "%s"', $tableName));
-                    $this->outputLine();
-                    $this->outputLine(implode("\n", $relations));
+                    $io->text('');
+                    $io->text('--------------------------------------------------------------------');
+                    $io->text('');
+                    $io->text(sprintf('Relations for "%s"', $tableName));
+                    $io->text('');
+                    $io->text(implode("\n", $relations));
                 }
             }
         }
@@ -53,10 +72,10 @@ class VidiCommandController extends CommandController
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Grid\GridAnalyserService
+     * @return \Fab\Vidi\Grid\GridAnalyserService|object
      */
     protected function getGridAnalyserService()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Grid\GridAnalyserService');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Grid\GridAnalyserService::class);
     }
 }
