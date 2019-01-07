@@ -11,6 +11,8 @@ namespace Fab\Vidi\ViewHelpers\Content;
 use Fab\Vidi\Domain\Model\Selection;
 use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
 use Fab\Vidi\Domain\Repository\SelectionRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * View helper which returns a list of records.
@@ -44,7 +46,8 @@ class FindViewHelper extends AbstractContentViewHelper
         if ($selectionIdentifier > 0) {
 
             /** @var SelectionRepository $selectionRepository */
-            $selectionRepository = $this->objectManager->get(SelectionRepository::class);
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+            $selectionRepository = $objectManager->get(SelectionRepository::class);
 
             /** @var Selection $selection */
             $selection = $selectionRepository->findByUid($selectionIdentifier);

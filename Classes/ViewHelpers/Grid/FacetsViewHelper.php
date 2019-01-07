@@ -9,7 +9,7 @@ namespace Fab\Vidi\ViewHelpers\Grid;
  */
 
 use Fab\Vidi\Facet\FacetInterface;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Tca\Tca;
 
 /**
@@ -21,11 +21,10 @@ class FacetsViewHelper extends AbstractViewHelper
     /**
      * Returns the json serialization of the search fields.
      *
-     * @return boolean
+     * @return string
      */
     public function render()
     {
-
         $facets = [];
         foreach (Tca::grid()->getFacets() as $facet) {
             /** @var FacetInterface $facet */

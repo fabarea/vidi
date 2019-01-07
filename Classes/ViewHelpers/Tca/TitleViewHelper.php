@@ -8,7 +8,7 @@ namespace Fab\Vidi\ViewHelpers\Tca;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Tca\Tca;
 

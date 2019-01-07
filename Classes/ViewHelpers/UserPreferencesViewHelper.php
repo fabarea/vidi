@@ -8,8 +8,10 @@ namespace Fab\Vidi\ViewHelpers;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use Fab\Vidi\Module\ModuleLoader;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper which connects with the BE user data.
@@ -23,15 +25,22 @@ class UserPreferencesViewHelper extends AbstractViewHelper
     protected $cacheInstance;
 
     /**
+     * @return void
+     */
+    public function initializeArguments()
+    {
+        $this->registerArgument('key', 'string', '', true);
+    }
+
+    /**
      * Interface with the BE user data.
      *
-     * @param string $key
      * @return string
      */
-    public function render($key)
+    public function render()
     {
         $this->initializeCache();
-        $key = $this->getModuleLoader()->getDataType() . '_' . $this->getBackendUserIdentifier() . '_' . $key;
+        $key = $this->getModuleLoader()->getDataType() . '_' . $this->getBackendUserIdentifier() . '_' . $this->arguments['key'];
 
         $value = $this->cacheInstance->get($key);
         if ($value) {
@@ -63,11 +72,11 @@ class UserPreferencesViewHelper extends AbstractViewHelper
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader
+     * @return ModuleLoader|object
      */
     protected function getModuleLoader()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+        return GeneralUtility::makeInstance(ModuleLoader::class);
     }
 
     /**
@@ -83,11 +92,11 @@ class UserPreferencesViewHelper extends AbstractViewHelper
     /**
      * Return the Cache Manager
      *
-     * @return \TYPO3\CMS\Core\Cache\CacheManager
+     * @return CacheManager|object
      */
     protected function getCacheManager()
     {
-        return GeneralUtility::makeInstance('TYPO3\CMS\Core\Cache\CacheManager');
+        return GeneralUtility::makeInstance(CacheManager::class);
     }
 
 }

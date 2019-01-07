@@ -14,7 +14,7 @@ use Fab\Vidi\Resolver\FieldPathResolver;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Persistence\Matcher;
 use Fab\Vidi\Persistence\Order;
 use Fab\Vidi\Tca\Tca;

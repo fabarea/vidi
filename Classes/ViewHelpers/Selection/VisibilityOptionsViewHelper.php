@@ -10,7 +10,7 @@ namespace Fab\Vidi\ViewHelpers\Selection;
 
 use Fab\Vidi\Domain\Model\Selection;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper which returns the options for the visibility field of a Selection.

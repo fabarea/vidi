@@ -8,7 +8,7 @@ namespace Fab\Vidi\ViewHelpers\Grid\Column;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * Computes the final field name in the context of the Grid.

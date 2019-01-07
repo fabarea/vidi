@@ -9,33 +9,62 @@ namespace Fab\Vidi\ViewHelpers\Render;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Module\ModuleLoader;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper for rendering components
  */
 class ComponentsViewHelper extends AbstractViewHelper
 {
+    /**
+     * @return void
+     */
+    public function initializeArguments()
+    {
+        $this->registerArgument('part', 'string', 'Template part', true);
+    }
 
     /**
-     * Renders the position number of an content object.
+     * Escapes special characters with their escaped counterparts as needed using PHPs strip_tags() function.
      *
-     * @param  string $part
+     * @return mixed
+     */
+    public function render()
+    {
+        return static::renderStatic(
+            $this->arguments,
+            $this->buildRenderChildrenClosure(),
+            $this->renderingContext
+        );
+    }
+
+    /**
+     * Applies strip_tags() on the specified value.
+     *
+     * @param array $arguments
+     * @param \Closure $renderChildrenClosure
+     * @param \TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface $renderingContext
      * @return string
      */
-    public function render($part)
+    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
-
         /** @var ModuleLoader $moduleLoader */
         $moduleLoader = GeneralUtility::makeInstance(ModuleLoader::class);
+
+        $part = $arguments['part'];
 
         $getComponents = 'get' . ucfirst($part) . 'Components';
         $components = $moduleLoader->$getComponents();
 
+
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+
         $result = '';
         foreach ($components as $component) {
-            $viewHelper = $this->objectManager->get($component);
+            $viewHelper = $objectManager->get($component);
 
             // Get possible arguments but remove first one.
             $arguments = func_get_args();
@@ -45,4 +74,5 @@ class ComponentsViewHelper extends AbstractViewHelper
 
         return $result;
     }
+
 }

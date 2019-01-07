@@ -10,7 +10,7 @@ namespace Fab\Vidi\ViewHelpers;
 
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper which tells whether an argument exists.
@@ -19,13 +19,20 @@ class GpViewHelper extends AbstractViewHelper
 {
 
     /**
+     * @return void
+     */
+    public function initializeArguments()
+    {
+        $this->registerArgument('argument', 'string', 'The argument name', true);
+        $this->registerArgument('encode', 'bool', 'Whether to encode the URL.', false, true);
+    }
+
+    /**
      * Tells whether the argument exists or not.
      *
-     * @param string $argument
-     * @param bool $encode
      * @return boolean
      */
-    public function render($argument, $encode = true)
+    public function render()
     {
         $value = ''; // default value
 
@@ -35,7 +42,7 @@ class GpViewHelper extends AbstractViewHelper
         ArrayUtility::mergeRecursiveWithOverrule($parameters, $post);
 
         // Traverse argument parts and retrieve value.
-        $argumentParts = GeneralUtility::trimExplode('|', $argument);
+        $argumentParts = GeneralUtility::trimExplode('|', $this->arguments['argument']);
         foreach ($argumentParts as $argumentPart) {
             if (isset($parameters[$argumentPart])) {
                 $value = $parameters[$argumentPart];
@@ -44,7 +51,7 @@ class GpViewHelper extends AbstractViewHelper
         }
 
         // Possible url encode.
-        if ($encode) {
+        if ($this->arguments['encode']) {
             $value = urlencode($value);
         }
         return $value;

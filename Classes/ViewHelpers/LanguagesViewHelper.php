@@ -9,7 +9,7 @@ namespace Fab\Vidi\ViewHelpers;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper which returns an array of available languages.
@@ -35,10 +35,10 @@ class LanguagesViewHelper extends AbstractViewHelper
     }
 
     /**
-     * @return \Fab\Vidi\Language\LanguageService
+     * @return \Fab\Vidi\Language\LanguageService|object
      */
     protected function getLanguageService()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Language\LanguageService');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Language\LanguageService::class);
     }
 }

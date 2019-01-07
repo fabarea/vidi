@@ -10,7 +10,7 @@ namespace Fab\Vidi\ViewHelpers\Grid;
 
 use Fab\Vidi\Module\ModulePreferences;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper which returns Grid preferences.
@@ -19,22 +19,29 @@ class PreferencesViewHelper extends AbstractViewHelper
 {
 
     /**
-     * Returns Grid preferences for the given key.
-     *
-     * @param string $key
-     * @return mixed
+     * @return void
      */
-    public function render($key)
+    public function initializeArguments()
     {
-        return $this->getModulePreferences()->get($key);
+        $this->registerArgument('key', 'string', '', true);
     }
 
     /**
-     * @return ModulePreferences
+     * Returns Grid preferences for the given key.
+     *
+     * @return mixed
+     */
+    public function render()
+    {
+        return $this->getModulePreferences()->get($this->arguments['key']);
+    }
+
+    /**
+     * @return ModulePreferences|object
      */
     protected function getModulePreferences()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModulePreferences');
+        return GeneralUtility::makeInstance(ModulePreferences::class);
     }
 
 }

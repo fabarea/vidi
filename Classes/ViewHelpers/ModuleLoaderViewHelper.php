@@ -8,7 +8,9 @@ namespace Fab\Vidi\ViewHelpers;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use Fab\Vidi\Module\ModuleLoader;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper which connects the Module Loader object.
@@ -17,17 +19,24 @@ class ModuleLoaderViewHelper extends AbstractViewHelper
 {
 
     /**
+     * @return void
+     */
+    public function initializeArguments()
+    {
+        $this->registerArgument('key', 'string', 'The module key', true);
+    }
+
+    /**
      * Interface with the Module Loader.
      *
-     * @param string $key
      * @return string
      */
-    public function render($key)
+    public function render()
     {
-        $getter = 'get' . ucfirst($key);
+        $getter = 'get' . ucfirst($this->arguments['key']);
 
-        /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
-        $moduleLoader = $this->objectManager->get('Fab\Vidi\Module\ModuleLoader');
+        /** @var ModuleLoader $moduleLoader */
+        $moduleLoader = GeneralUtility::makeInstance(ModuleLoader::class);
         return $moduleLoader->$getter();
     }
 

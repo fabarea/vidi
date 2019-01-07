@@ -8,7 +8,7 @@ namespace Fab\Vidi\ViewHelpers\Tca;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Tca\Tca;
 
 /**
@@ -18,14 +18,23 @@ class LabelViewHelper extends AbstractViewHelper
 {
 
     /**
+     * @return void
+     */
+    public function initializeArguments()
+    {
+        $this->registerArgument('dataType', 'string', '', true);
+        $this->registerArgument('fieldName', 'string', '', true);
+    }
+
+    /**
      * Returns the label of a field
      *
-     * @param string $dataType
-     * @param string $fieldName
      * @return string
      */
-    public function render($dataType, $fieldName)
+    public function render()
     {
+        $dataType = $this->arguments['dataType'];
+        $fieldName = $this->arguments['fieldName'];
         return Tca::table($dataType)->field($fieldName)->getLabel();
     }
 

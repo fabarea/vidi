@@ -8,9 +8,9 @@ namespace Fab\Vidi\ViewHelpers\Result;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use Fab\Vidi\ViewHelpers\Grid\RowsViewHelper;
+use Fab\Vidi\View\Grid\Rows;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper for rendering a JSON response.
@@ -33,7 +33,7 @@ class ToJsonViewHelper extends AbstractViewHelper
             'iTotalRecords' => $this->templateVariableContainer->get('numberOfObjects'),
             'iTotalDisplayRecords' => $this->templateVariableContainer->get('numberOfObjects'),
             'iNumberOfRecords' => count($objects),
-            'aaData' => $this->getRowsViewHelper()->render($objects, $columns),
+            'aaData' => $this->getRowsView()->render($objects, $columns),
         );
 
         $this->setHttpHeaders();
@@ -66,10 +66,10 @@ class ToJsonViewHelper extends AbstractViewHelper
     }
 
     /**
-     * @return RowsViewHelper
+     * @return Rows|object
      */
-    protected function getRowsViewHelper()
+    protected function getRowsView()
     {
-        return $this->objectManager->get(RowsViewHelper::class);
+        return GeneralUtility::makeInstance(Rows::class);
     }
 }

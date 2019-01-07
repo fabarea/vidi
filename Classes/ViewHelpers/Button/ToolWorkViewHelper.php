@@ -9,7 +9,7 @@ namespace Fab\Vidi\ViewHelpers\Button;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper which renders a button "work" for a Tool.
@@ -18,15 +18,25 @@ class ToolWorkViewHelper extends AbstractViewHelper
 {
 
     /**
+     * @return void
+     */
+    public function initializeArguments()
+    {
+        $this->registerArgument('tool', 'string', '', true);
+        $this->registerArgument('label', 'string', '', true);
+        $this->registerArgument('arguments', 'array', '', false, []);
+    }
+
+    /**
      * Renders a button for "work" for a Tool.
      *
-     * @param string $tool
-     * @param string $label
-     * @param array $arguments
      * @return string
      */
-    public function render($tool, $label, $arguments = array())
+    public function render()
     {
+        $tool = $this->arguments['tool'];
+        $label = $this->arguments['label'];
+        $arguments = $this->arguments['arguments'];
 
         $parameterPrefix = $this->getModuleLoader()->getParameterPrefix();
 
@@ -55,10 +65,10 @@ class ToolWorkViewHelper extends AbstractViewHelper
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader
+     * @return \Fab\Vidi\Module\ModuleLoader|object
      */
     protected function getModuleLoader()
     {
-        return GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader');
+        return GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
     }
 }

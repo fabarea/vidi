@@ -11,7 +11,7 @@ namespace Fab\Vidi\ViewHelpers;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper which render an icon using sprites
@@ -20,18 +20,25 @@ class SpriteViewHelper extends AbstractViewHelper
 {
 
     /**
-     * Returns an icon using sprites
-     *
-     * @param string $name the file to include
-     * @return string
+     * @return void
      */
-    public function render($name)
+    public function initializeArguments()
     {
-        return $this->getIconFactory()->getIcon($name, Icon::SIZE_SMALL);
+        $this->registerArgument('name', 'string', 'the file to include', true);
     }
 
     /**
-     * @return IconFactory
+     * Returns an icon using sprites
+     *
+     * @return string
+     */
+    public function render()
+    {
+        return $this->getIconFactory()->getIcon($this->arguments['name'], Icon::SIZE_SMALL);
+    }
+
+    /**
+     * @return IconFactory|object
      */
     protected function getIconFactory()
     {

@@ -8,6 +8,7 @@ namespace Fab\Vidi\ViewHelpers\Be;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper;
 
@@ -31,9 +32,8 @@ class AdditionalAssetsViewHelper extends AbstractBackendViewHelper
      */
     public function render()
     {
-
-        /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
-        $moduleLoader = $this->objectManager->get('Fab\Vidi\Module\ModuleLoader');
+        /** @var ModuleLoader $moduleLoader */
+        $moduleLoader = GeneralUtility::makeInstance(ModuleLoader::class);
 
         foreach ($moduleLoader->getAdditionalStyleSheetFiles() as $addCssFile) {
             $fileNameAndPath = $this->resolvePath($addCssFile);

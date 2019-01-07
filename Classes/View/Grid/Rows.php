@@ -9,7 +9,7 @@ namespace Fab\Vidi\ViewHelpers\Grid;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\View\Grid\Row;
 
 /**

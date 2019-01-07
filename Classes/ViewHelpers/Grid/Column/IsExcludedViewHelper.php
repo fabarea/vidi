@@ -8,7 +8,7 @@ namespace Fab\Vidi\ViewHelpers\Grid\Column;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Tca\Tca;
 
 /**
@@ -18,15 +18,22 @@ class IsExcludedViewHelper extends AbstractViewHelper
 {
 
     /**
+     * @return void
+     */
+    public function initializeArguments()
+    {
+        $this->registerArgument('name', 'string', 'The column name', true);
+    }
+
+    /**
      * Returns whether the column is excluded from the Grid.
      *
-     * @param string $name the column Name
      * @return bool
      */
-    public function render($name)
+    public function render()
     {
         $excludedFields = Tca::grid()->getExcludedFields();
-        return !in_array($name, $excludedFields);
+        return !in_array($this->arguments['name'], $excludedFields, true);
     }
 
 }

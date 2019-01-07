@@ -9,13 +9,13 @@ namespace Fab\Vidi\ViewHelpers\Result;
  */
 
 use Fab\Vidi\Tca\FieldType;
-use Fab\Vidi\ViewHelpers\Grid\RowsViewHelper;
+use Fab\Vidi\View\Grid\Rows;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Service\FileReferenceService;
 use Fab\Vidi\Tca\Tca;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * Abstract View helper for rendering an Export request.
@@ -160,7 +160,6 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
      */
     protected function sendZipHttpHeaders()
     {
-
         /** @var \TYPO3\CMS\Extbase\Mvc\Web\Response $response */
         $response = $this->templateVariableContainer->get('response');
         $response->setHeader('Pragma', 'public');
@@ -176,17 +175,17 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
     }
 
     /**
-     * @return RowsViewHelper
+     * @return Rows|object
      */
-    protected function getRowsViewHelper()
+    protected function getRowsView()
     {
-        return $this->objectManager->get(RowsViewHelper::class);
+        return GeneralUtility::makeInstance(Rows::class);
     }
 
     /**
      * Returns a pointer to the database.
      *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @return \Fab\Vidi\Database\DatabaseConnection
      */
     protected function getDatabaseConnection()
     {

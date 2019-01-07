@@ -8,7 +8,7 @@ namespace Fab\Vidi\ViewHelpers\Tca;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Tca\Tca;
 
 /**
@@ -18,14 +18,24 @@ class TableViewHelper extends AbstractViewHelper
 {
 
     /**
+     * @return void
+     */
+    public function initializeArguments()
+    {
+        $this->registerArgument('key', 'string', '', true);
+        $this->registerArgument('dataType', 'string', '', false, '');
+    }
+
+    /**
      * Returns a value from the TCA Table service according to a key.
      *
-     * @param string $key
-     * @param string $dataType
      * @return string
      */
-    public function render($key, $dataType = '')
+    public function render()
     {
+        $key = $this->arguments['key'];
+        $dataType = $this->arguments['dataType'];
+
         $result = Tca::table($dataType)->getTca();
 
         // Explode segment and loop around.

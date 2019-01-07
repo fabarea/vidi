@@ -8,24 +8,30 @@ namespace Fab\Vidi\ViewHelpers\Grid\Column;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Tca\Tca;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * Tells whether the column can be hidden or not.
  */
 class CanBeHiddenViewHelper extends AbstractViewHelper
 {
+    /**
+     * @return void
+     */
+    public function initializeArguments()
+    {
+        $this->registerArgument('name', 'string', 'The column name', true);
+    }
 
     /**
      * Returns whether the column can be hidden or not.
      *
-     * @param string $name the column Name
      * @return boolean
      */
-    public function render($name)
+    public function render()
     {
-        return Tca::grid()->canBeHidden($name);
+        return Tca::grid()->canBeHidden($this->arguments['name']);
     }
 
 }

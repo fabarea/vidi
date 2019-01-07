@@ -8,7 +8,7 @@ namespace Fab\Vidi\ViewHelpers\Grid\Column;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Tca\Tca;
 
 /**
@@ -18,14 +18,21 @@ class HeaderViewHelper extends AbstractViewHelper
 {
 
     /**
+     * @return void
+     */
+    public function initializeArguments()
+    {
+        $this->registerArgument('name', 'string', 'The column name', true);
+    }
+
+    /**
      * Returns a possible column header.
      *
-     * @param string $name the column Name
      * @return boolean
      */
-    public function render($name)
+    public function render()
     {
-        return Tca::grid()->getHeader($name);
+        return Tca::grid()->getHeader($this->arguments['name']);
     }
 
 }

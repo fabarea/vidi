@@ -8,7 +8,8 @@ namespace Fab\Vidi\ViewHelpers;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use Fab\Vidi\Domain\Model\Content;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper for telling whether a Content is related to another Content.
@@ -18,15 +19,24 @@ class IsRelatedToViewHelper extends AbstractViewHelper
 {
 
     /**
+     * @return void
+     */
+    public function initializeArguments()
+    {
+        $this->registerArgument('relatedContent', Content::class, 'The related content', true);
+    }
+
+    /**
      * Tells whether a Content is related to another content.
      * The $fieldName corresponds to the relational field name
      * between the first content object and the second.
      *
-     * @param \Fab\Vidi\Domain\Model\Content $relatedContent
      * @return boolean
      */
-    public function render($relatedContent)
+    public function render()
     {
+        /** @var Content $relatedContent */
+        $relatedContent = $this->arguments['relatedContent'];
 
         $isChecked = false;
 
@@ -34,19 +44,19 @@ class IsRelatedToViewHelper extends AbstractViewHelper
         $numberOfObjects = $this->templateVariableContainer->get('numberOfObjects');
         if ($numberOfObjects === 1) {
 
-            /** @var \Fab\Vidi\Domain\Model\Content $content */
+            /** @var Content $content */
             $content = $this->templateVariableContainer->get('content');
             $fieldName = $this->templateVariableContainer->get('fieldName');
 
             // Build an array of user group uids
             $relatedContentsIdentifiers = [];
 
-            /** @var \Fab\Vidi\Domain\Model\Content $contentObject */
+            /** @var Content $contentObject */
             foreach ($content[$fieldName] as $contentObject) {
                 $relatedContentsIdentifiers[] = $contentObject->getUid();
             }
 
-            $isChecked = in_array($relatedContent->getUid(), $relatedContentsIdentifiers);
+            $isChecked = in_array($relatedContent->getUid(), $relatedContentsIdentifiers, true);
         }
 
         return $isChecked;
