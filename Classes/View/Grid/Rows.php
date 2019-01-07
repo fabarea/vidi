@@ -1,5 +1,5 @@
 <?php
-namespace Fab\Vidi\ViewHelpers\Grid;
+namespace Fab\Vidi\View\Grid;
 
 /*
  * This file is part of the Fab/Vidi project under GPLv2 or later.
@@ -9,13 +9,11 @@ namespace Fab\Vidi\ViewHelpers\Grid;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use Fab\Vidi\View\Grid\Row;
 
 /**
  * View helper for rendering multiple rows.
  */
-class RowsViewHelper extends AbstractViewHelper
+class Rows
 {
 
     /**
@@ -23,7 +21,7 @@ class RowsViewHelper extends AbstractViewHelper
      *
      * @param array $objects
      * @param array $columns
-     * @return string
+     * @return array
      * @throws \Exception
      * @throws \InvalidArgumentException
      */

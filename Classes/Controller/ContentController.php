@@ -729,7 +729,7 @@ class ContentController extends ActionController
     }
 
     /**
-     * @return JsonResult
+     * @return JsonResult|object
      */
     protected function getJsonResult()
     {
@@ -746,7 +746,6 @@ class ContentController extends ActionController
      * @param $savingBehavior
      * @param $language
      * @return ProcessContentDataSignalArguments
-     * @signal
      */
     protected function emitProcessContentDataSignal(Content $contentObject, $fieldNameAndPath, $contentData, $counter, $savingBehavior, $language)
     {

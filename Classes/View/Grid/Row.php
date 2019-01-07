@@ -132,7 +132,7 @@ class Row extends AbstractComponentView
      * Flatten the localized structure to render the final value
      *
      * @param array $localizedStructure
-     * @return array
+     * @return string
      */
     protected function flattenStructure(array $localizedStructure)
     {
@@ -153,7 +153,7 @@ class Row extends AbstractComponentView
      *
      * @param \Fab\Vidi\Domain\Model\Content $object
      * @param string $fieldNameAndPath
-     * @return array
+     * @return void
      */
     protected function computeVariables(Content $object, $fieldNameAndPath)
     {
@@ -459,7 +459,7 @@ class Row extends AbstractComponentView
         $result = false;
 
         // We compare the length of the string with html tags and without html tags.
-        if (strlen($string) != strlen(strip_tags($string))) {
+        if (strlen($string) !== strlen(strip_tags($string))) {
             $result = true;
         }
         return $result;
@@ -560,7 +560,7 @@ class Row extends AbstractComponentView
      */
     protected function fieldExists()
     {
-        if (is_null($this->variables['hasField'])) {
+        if ($this->variables['hasField'] === null) {
             $dataType = $this->getDataType();
             $fieldName = $this->getFieldName();
             $this->variables['hasField'] = Tca::table($dataType)->hasField($fieldName);
@@ -615,7 +615,7 @@ class Row extends AbstractComponentView
     }
 
     /**
-     * @return FieldPathResolver
+     * @return FieldPathResolver|object
      * @throws \InvalidArgumentException
      */
     protected function getFieldPathResolver()
@@ -624,7 +624,7 @@ class Row extends AbstractComponentView
     }
 
     /**
-     * @return ContentObjectResolver
+     * @return ContentObjectResolver|object
      * @throws \InvalidArgumentException
      */
     protected function getContentObjectResolver()
@@ -641,7 +641,7 @@ class Row extends AbstractComponentView
     }
 
     /**
-     * @return LanguageService
+     * @return LanguageService|object
      * @throws \InvalidArgumentException
      */
     protected function getLanguageService()
