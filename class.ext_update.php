@@ -23,7 +23,7 @@ class ext_update {
 	 * @return bool
 	 */
 	public function access() {
-		return true;
+		return false;
 	}
 
 	/**
