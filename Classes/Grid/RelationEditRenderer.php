@@ -55,7 +55,7 @@ class RelationEditRenderer extends ColumnRendererAbstract
             '<div style="text-align: right" class="pull-right invisible"><a href="%s" class="btn-edit-relation" data-field-label="%s">%s</a></div>',
             $this->getModuleLoader()->getModuleUrl($urlParameters),
             $fieldLabel,
-            $this->getIconFactory()->getIcon('actions-edit-add', Icon::SIZE_SMALL)
+            $this->getIconFactory()->getIcon('actions-add', Icon::SIZE_SMALL)
         );
     }
 

@@ -31,7 +31,7 @@ class BackViewHelper extends AbstractViewHelper
         if (GeneralUtility::_GET('returnUrl')) {
             $result = sprintf('<a href="%s" class="btn btn-default btn-sm btn-return-top">%s</a>',
                 GeneralUtility::_GP('returnUrl'),
-                $this->getIconFactory()->getIcon('actions-document-close', Icon::SIZE_SMALL)
+                $this->getIconFactory()->getIcon('actions-close', Icon::SIZE_SMALL)
             );
         }
 
@@ -39,7 +39,7 @@ class BackViewHelper extends AbstractViewHelper
     }
 
     /**
-     * @return IconFactory
+     * @return IconFactory|object
      */
     protected function getIconFactory()
     {
