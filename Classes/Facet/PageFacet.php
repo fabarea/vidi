@@ -40,9 +40,10 @@ class PageFacet implements FacetInterface
     /**
      * Constructor of a Generic Facet in Vidi.
      *
+     * @param string $name
      * @param string $label
      */
-    public function __construct($label = '')
+    public function __construct($name, $label = '')
     {
         $this->name = 'pid';
         $this->label = $label;

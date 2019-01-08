@@ -12,7 +12,6 @@ use Fab\Vidi\Grid\ColumnRendererInterface;
 use Fab\Vidi\Module\ConfigurablePart;
 use Fab\Vidi\Module\ModulePreferences;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Fab\Vidi\Exception\InvalidKeyInArrayException;
 use Fab\Vidi\Facet\StandardFacet;
 use Fab\Vidi\Facet\FacetInterface;
@@ -62,7 +61,6 @@ class GridService extends AbstractTca
      *
      * @throws InvalidKeyInArrayException
      * @param string $tableName
-     * @return \Fab\Vidi\Tca\GridService
      */
     public function __construct($tableName)
     {
@@ -142,7 +140,7 @@ class GridService extends AbstractTca
         if ($this->hasLabel($fieldNameAndPath)) {
             $labelKey = $this->getLabelKey($fieldNameAndPath);
             try {
-                $label = LocalizationUtility::translate($labelKey, '');
+                $label = $this->getLanguageService()->sL($labelKey);
             } catch (\InvalidArgumentException $e) {
             }
             if (empty($label)) {
@@ -369,15 +367,28 @@ class GridService extends AbstractTca
      */
     public function getFacets()
     {
-        if (is_null($this->facets)) {
+        if ($this->facets === null) {
             $this->facets = [];
 
             if (is_array($this->tca['facets'])) {
-                foreach ($this->tca['facets'] as $facetNameOrObject) {
-                    if ($facetNameOrObject instanceof FacetInterface) {
-                        $this->facets[$facetNameOrObject->getName()] = $facetNameOrObject;
+                foreach ($this->tca['facets'] as $key => $facetNameOrArray) {
+                    if (is_array($facetNameOrArray)) {
+
+                        $name = isset($facetNameOrArray['name'])
+                            ? $facetNameOrArray['name']
+                            : '';
+                        $label = isset($facetNameOrArray['label'])
+                            ? $this->getLanguageService()->sL($facetNameOrArray['label'])
+                            : '';
+
+                        $suggestions = isset($facetNameOrArray['suggestions'])
+                            ? $facetNameOrArray['suggestions']
+                            : [];
+
+                        /** @var StandardFacet $facetName */
+                        $this->facets[$key] = GeneralUtility::makeInstance($key, $name, $label, $suggestions);
                     } else {
-                        $this->facets[$facetNameOrObject] = $this->instantiateStandardFacet($facetNameOrObject);
+                        $this->facets[$facetNameOrArray] = $this->instantiateStandardFacet($facetNameOrArray);
                     }
                 }
             }
@@ -678,7 +689,7 @@ class GridService extends AbstractTca
         $label = $this->getLabel($facetName);
 
         /** @var StandardFacet $facetName */
-        $facet = GeneralUtility::makeInstance(\Fab\Vidi\Facet\StandardFacet::class, $facetName, $label);
+        $facet = GeneralUtility::makeInstance(StandardFacet::class, $facetName, $label);
 
         if (!$facet instanceof StandardFacet) {
             throw new \RuntimeException('I could not instantiate a facet for facet name "' . (string)$facet . '""', 1445856345);
@@ -712,6 +723,15 @@ class GridService extends AbstractTca
     protected function getModulePreferences()
     {
         return GeneralUtility::makeInstance(ModulePreferences::class);
+    }
+
+    /**
+     * @return \TYPO3\CMS\Lang\LanguageService|object
+     * @throws \InvalidArgumentException
+     */
+    protected function getLanguageService()
+    {
+        return GeneralUtility::makeInstance(\TYPO3\CMS\Lang\LanguageService::class);
     }
 
 }

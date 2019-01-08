@@ -19,7 +19,7 @@ $tca = [
         ],
     ],
     'grid' => [
-        'excluded_fields' => 'lockToDomain, TSconfig, felogin_redirectPid, felogin_forgotHash, auth_token',
+        'excluded_fields' => 'lockToDomain, TSconfig, felogin_redirectPid, felogin_forgotHash, auth_token, image',
         'export' => [
             'include_files' => false,
         ],
@@ -40,17 +40,17 @@ $tca = [
             'country',
             'company',
             'usergroup',
-            new \Fab\Vidi\Facet\StandardFacet(
-                'disable',
-                'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:active',
-                [
+            \Fab\Vidi\Facet\StandardFacet::class => [
+                'name' => 'disable',
+                'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:active',
+                'suggestions' => [
                     '0' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:active.0',
                     '1' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:active.1'
                 ]
-            ),
-            new \Fab\Vidi\Facet\PageFacet(
-                'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:facet.pid'
-            ),
+            ],
+            \Fab\Vidi\Facet\PageFacet::class => [
+                'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:facet.pid'
+            ]
         ],
         'columns' => [
             '__checkbox' => [

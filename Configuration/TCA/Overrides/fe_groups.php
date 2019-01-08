@@ -16,9 +16,9 @@ $tca = [
             'uid',
             'title',
             'description',
-            new \Fab\Vidi\Facet\PageFacet(
-                'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:facet.pid'
-            ),
+            \Fab\Vidi\Facet\PageFacet::class => [
+                'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:facet.pid'
+            ]
         ],
         'columns' => [
             '__checkbox' => [
