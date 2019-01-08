@@ -38,7 +38,11 @@ Flash news about latest development are also announced on http://twitter.com/fud
 Installation and requirement
 ============================
 
-The extension **requires TYPO3 6.2**. Install the extension as normal in the Extension Manager or download the Git version.
+Install the extension as normal in the Extension Manager or download it via composer.
+
+```
+composer require fab/vidi
+```
 
 .. _TER: typo3.org/extensions/repository/
 
