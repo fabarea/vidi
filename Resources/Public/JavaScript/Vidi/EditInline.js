@@ -27,7 +27,7 @@ define([
 		/**
 		 * Loading indicator
 		 */
-		indicator: '<img src="' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" width="16" alt="" />',
+		indicator: '<img src="/' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" width="16" alt="" />',
 
 		/**
 		 * @returns void

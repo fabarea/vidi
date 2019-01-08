@@ -1,6 +1,3 @@
-$ = jQuery = TYPO3.jQuery.noConflict(true);
-
-
 window.Vidi = window.Vidi || {};
 
 /**

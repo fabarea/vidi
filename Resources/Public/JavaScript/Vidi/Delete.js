@@ -19,8 +19,7 @@
 define([
 	'jquery',
 	'TYPO3/CMS/Backend/Modal',
-	'Fab/Vidi/Vidi/Util',
-	'TYPO3/CMS/Lang/Lang'
+	'Fab/Vidi/Vidi/Util'
 ], function($, Modal, Util) {
 	'use strict';
 
