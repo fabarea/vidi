@@ -28,7 +28,6 @@ class FacetSuggestionService
      */
     public function getSuggestions($fieldNameAndPath)
     {
-
         $values = [];
 
         $dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);

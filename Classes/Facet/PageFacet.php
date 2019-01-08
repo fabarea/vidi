@@ -62,13 +62,7 @@ class PageFacet implements FacetInterface
      */
     public function getLabel()
     {
-        $label = '';
-        try {
-            $label = LocalizationUtility::translate($this->label, '');
-        } catch (\InvalidArgumentException $e) {
-        }
-
-        return $label;
+        return $this->label;
     }
 
     /**

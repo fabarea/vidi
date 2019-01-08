@@ -385,8 +385,9 @@ class GridService extends AbstractTca
                             ? $facetNameOrArray['suggestions']
                             : [];
 
-                        /** @var StandardFacet $facetName */
-                        $this->facets[$key] = GeneralUtility::makeInstance($key, $name, $label, $suggestions);
+                        /** @var FacetInterface $facetObject */
+                        $facetObject = GeneralUtility::makeInstance($key, $name, $label, $suggestions);
+                        $this->facets[$facetObject->getName()] = $facetObject;
                     } else {
                         $this->facets[$facetNameOrArray] = $this->instantiateStandardFacet($facetNameOrArray);
                     }
