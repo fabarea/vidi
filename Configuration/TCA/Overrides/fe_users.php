@@ -50,7 +50,7 @@ $tca = [
             ],
             \Fab\Vidi\Facet\PageFacet::class => [
                 'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:facet.pid'
-            ]
+            ],
         ],
         'columns' => [
             '__checkbox' => [

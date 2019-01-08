@@ -1,8 +1,6 @@
 <?php
 
-if (!defined('TYPO3_MODE')) {
-    die ('Access denied.');
-}
+defined('TYPO3_MODE') or die();
 
 // Check from Vidi configuration what default module should be loaded.
 // Make sure the class exists to avoid a Runtime Error
@@ -57,8 +55,9 @@ if (TYPO3_MODE === 'BE') {
         $dataTypes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['data_types'], true);
         foreach ($dataTypes as $dataType) {
 
+
             /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
-            $moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Fab\Vidi\Module\ModuleLoader', $dataType);
+            $moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class, $dataType);
 
             // Special case already defined in Vidi.
             if ($dataType === 'fe_users') {
