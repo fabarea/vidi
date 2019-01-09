@@ -71,7 +71,7 @@ define([
 			/* Get the DataTables object again - this is not a recreation, just a get of the object */
 			var oTable = $('#content-list').dataTable();
 
-			var loadingMessage = '<img src="' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" width="16" height="" alt="" />';
+			var loadingMessage = '<img src="/' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" width="16" height="" alt="" />';
 			var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
 			oTable.fnSetColumnVis(iCol, bVis ? false : true);
 			if (!bVis) {

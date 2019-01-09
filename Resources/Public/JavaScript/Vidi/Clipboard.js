@@ -158,47 +158,47 @@ define([
 		 */
 		showWindow: function(url) {
 
-			Vidi.modal = Modal.loadUrl(
-				TYPO3.l10n.localize('clipboard.copy_or_move'),
-				top.TYPO3.Severity.notice,
-				this.getButtons(),
-				url,
-				function() {
+            Vidi.modal = Modal.advanced({
+                type: Modal.types.ajax,
+                title: TYPO3.l10n.localize('clipboard.copy_or_move'),
+                severity: top.TYPO3.Severity.notice,
+                buttons: this.getButtons(),
+                content: url,
+                ajaxCallback: function(currentModal) {
 
-					// bind submit handler to form.
-					$('#form-clipboard-copy-or-move', Vidi.modal).on('submit', function(e) {
+                    // bind submit handler to form.
+                    $('#form-clipboard-copy-or-move', Vidi.modal).on('submit', function(e) {
 
-						// Prevent native submit.
-						e.preventDefault();
+                        // Prevent native submit.
+                        e.preventDefault();
 
-						// Ajax request
-						$.ajax({
-							url: $(this).attr('action'),
-							data: $(this).serialize(),
-							beforeSend: function(arr, $form, options) {
+                        // Ajax request
+                        $.ajax({
+                            url: $(this).attr('action'),
+                            data: $(this).serialize(),
+                            beforeSend: function(arr, $form, options) {
 
-								// Avoid double click on this button.
-								$('.btn-clipboard', Vidi.modal).addClass('disabled');
-							},
+                                // Avoid double click on this button.
+                                $('.btn-clipboard', Vidi.modal).addClass('disabled');
+                            },
 
-							/**
-							 * On success call back
-							 *
-							 * @param response
-							 */
-							success: function(response) {
+                            /**
+                             * On success call back
+                             *
+                             * @param response
+                             */
+                            success: function(response) {
 
-								// Hide the modal window
-								Modal.dismiss();
+                                // Hide the modal window
+                                Modal.dismiss();
 
-								// Reload the grid.
-								Vidi.grid.fnDraw();
-							}
-						});
-					});
-				}
-			);
-
+                                // Reload the grid.
+                                Vidi.grid.fnDraw();
+                            }
+                        });
+                    });
+                }
+            });
 		},
 
 		/**

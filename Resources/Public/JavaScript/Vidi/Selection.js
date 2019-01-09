@@ -120,156 +120,159 @@ define([
 		 */
 		showWindow: function() {
 
-			Vidi.modal = Modal.loadUrl(
-				TYPO3.l10n.localize('selections'),
-				top.TYPO3.Severity.notice,
-				this.getButtons(),
-				$('#link-selection-edit').attr('href'),
-				function() {
+            Vidi.modal = Modal.advanced({
+                type: Modal.types.ajax,
+                title: TYPO3.l10n.localize('selections'),
+                severity: top.TYPO3.Severity.notice,
+                buttons: this.getButtons(),
+                content: $('#link-selection-edit').attr('href'),
+                ajaxCallback: function() {
 
-					/**
-					 * Delete a selection in the form just opened in the popup.
-					 */
-					$(Vidi.modal).on('click', '.btn-selection-delete', function(e) {
+                    /**
+                     * Delete a selection in the form just opened in the popup.
+                     */
+                    $(Vidi.modal).on('click', '.btn-selection-delete', function(e) {
 
-						// Stop default behaviour.
-						e.preventDefault();
+                        // Stop default behaviour.
+                        e.preventDefault();
 
-						// Ask for confirmation
-						var message = TYPO3.l10n.localize('confirm-delete', {0: $(this).data('selection-title')});
-						var result = window.confirm(message);
+                        // Ask for confirmation
+                        var message = TYPO3.l10n.localize('confirm-delete', {0: $(this).data('selection-title')});
+                        var result = window.confirm(message);
 
-						if (result) {
-							var me = this;
+                        if (result) {
+                            var me = this;
 
-							Vidi.Selection.updateGuiSubmittingState(true);
+                            Vidi.Selection.updateGuiSubmittingState(true);
 
-							var $form = $(this).closest('form');
+                            var $form = $(this).closest('form');
 
-							// Ajax request
-							$.ajax({
-								url: $(this).attr('href'),
-								data: $form.serialize(),
+                            // Ajax request
+                            $.ajax({
+                                url: $(this).attr('href'),
+                                data: $form.serialize(),
 
-								/**
-								 * On success call back
-								 *
-								 * @param response
-								 */
-								success: function(response) {
-									$(me).closest('form').remove();
-									Vidi.Selection.updateGuiSubmittingState(false);
+                                /**
+                                 * On success call back
+                                 *
+                                 * @param response
+                                 */
+                                success: function(response) {
+                                    $(me).closest('form').remove();
+                                    Vidi.Selection.updateGuiSubmittingState(false);
 
-									// Update the list of selections.
-									Vidi.Selection.updateList();
-								}
-							});
-						}
-					});
+                                    // Update the list of selections.
+                                    Vidi.Selection.updateList();
+                                }
+                            });
+                        }
+                    });
 
-					/**
-					 * Create a new selection in the form just opened in the popup.
-					 */
-					$(Vidi.modal).on('click', '.btn-selection-create', function(e) {
+                    /**
+                     * Create a new selection in the form just opened in the popup.
+                     */
+                    $(Vidi.modal).on('click', '.btn-selection-create', function(e) {
 
-						// Prevent native behaviour.
-						e.preventDefault();
+                        // Prevent native behaviour.
+                        e.preventDefault();
 
-						// Save selection
-						Vidi.Selection.updateGuiSubmittingState(true);
+                        // Save selection
+                        Vidi.Selection.updateGuiSubmittingState(true);
 
-						var $form = $(this).closest('form');
+                        var $form = $(this).closest('form');
 
-						$('.selection-query', $form).val(Vidi.Session.get('query'));
-						$('.selection-speakingQuery', $form).val(Vidi.Session.get('visualSearchQuery'));
+                        $('.selection-query', $form).val(Vidi.Session.get('query'));
+                        $('.selection-speakingQuery', $form).val(Vidi.Session.get('visualSearchQuery'));
 
-						// Ajax request
-						$.ajax({
-							url: $form.attr('action'),
-							data: $form.serialize(),
+                        // Ajax request
+                        $.ajax({
+                            url: $form.attr('action'),
+                            data: $form.serialize(),
 
-							/**
-							 * On success call back
-							 *
-							 * @param response
-							 */
-							success: function(response) {
+                            /**
+                             * On success call back
+                             *
+                             * @param response
+                             */
+                            success: function(response) {
 
-								$('.modal-body', Vidi.modal).html(response);
+                                $('.modal-body', Vidi.modal).html(response);
 
-								// Update the list of selections.
-								Vidi.Selection.updateList();
-							}
-						});
+                                // Update the list of selections.
+                                Vidi.Selection.updateList();
+                            }
+                        });
 
-					});
+                    });
 
+                    /**
+                     * In case the User hit "enter", submit the form.
+                     */
+                    $(Vidi.modal).on('keydown', '.form-control-selection', function(e) {
+                        console.log(123);
+                        e.preventDefault();
+                        var $form = $(this).closest('form');
+                        $('.btn-selection-update', $form).css('visibility', '');
 
-					/**
-					 * In case the User hit "enter", submit the form.
-					 */
-					$(Vidi.modal).on('keydown', '.form-control-selection', function(e) {
-						var $form = $(this).closest('form');
-						$('.btn-selection-update', $form).css('visibility', '');
+                        if (e.keyCode === 13) {
+                            // One case or another, it doesn't matter.
+                            $('.btn-selection-update', $form).click();
+                            $('.btn-selection-create', $form).click();
+                            e.preventDefault();
+                        }
+                    });
 
-						if (e.keyCode === 13) {
-							// One case or another, it doesn't matter.
-							$('.btn-selection-update', $form).click();
-							$('.btn-selection-create', $form).click();
-							e.preventDefault();
-						}
-					});
+                    /**
+                     * Update or delete a selection in the form just opened in the popup.
+                     */
+                    $(Vidi.modal).on('click', '.btn-selection-update', function(e) {
+                        e.preventDefault();
+                        var me = this;
 
-					/**
-					 * Update or delete a selection in the form just opened in the popup.
-					 */
-					$(Vidi.modal).on('click', '.btn-selection-update', function(e) {
-						e.preventDefault();
-						var me = this;
+                        Vidi.Selection.updateGuiSubmittingState(true);
 
-						Vidi.Selection.updateGuiSubmittingState(true);
+                        var $form = $(this).closest('form');
 
-						var $form = $(this).closest('form');
+                        // Ajax request
+                        $.ajax({
+                            url: $form.attr('action'),
+                            data: $form.serialize(),
 
-						// Ajax request
-						$.ajax({
-							url: $form.attr('action'),
-							data: $form.serialize(),
+                            /**
+                             * On success call back
+                             *
+                             * @param response
+                             */
+                            success: function(response) {
 
-							/**
-							 * On success call back
-							 *
-							 * @param response
-							 */
-							success: function(response) {
+                                $(me).closest('form').replaceWith(response);
+                                Vidi.Selection.updateGuiSubmittingState(false);
 
-								$(me).closest('form').replaceWith(response);
-								Vidi.Selection.updateGuiSubmittingState(false);
+                                // Update the list of selections.
+                                Vidi.Selection.updateList();
+                            }
+                        });
+                    });
 
-								// Update the list of selections.
-								Vidi.Selection.updateList();
-							}
-						});
-					});
+                    /**
+                     * Update the selection with the current query.
+                     */
+                    $(Vidi.modal).on('click', '.btn-selection-speakingQuery', function(e) {
+                        e.preventDefault();
+                        var $form = $(this).closest('form');
 
-					/**
-					 * Update the selection with the current query.
-					 */
-					$(Vidi.modal).on('click', '.btn-selection-speakingQuery', function(e) {
-						e.preventDefault();
-						var $form = $(this).closest('form');
+                        $('.selection-query', $form).val(Vidi.Session.get('query'));
 
-						$('.selection-query', $form).val(Vidi.Session.get('query'));
+                        var speakingQuery = Vidi.Session.get('visualSearchQuery');
+                        if (Vidi.Session.get('query') === '[]') {
+                            speakingQuery = ''; // Mm... there is a problem somewhere else.
+                        }
+                        $('.selection-speakingQuery', $form).val(speakingQuery);
+                        $('.btn-selection-update', $form).click();
+                    });
+                }
 
-						var speakingQuery = Vidi.Session.get('visualSearchQuery');
-						if (Vidi.Session.get('query') === '[]') {
-							speakingQuery = ''; // Mm... there is a problem somewhere else.
-						}
-						$('.selection-speakingQuery', $form).val(speakingQuery);
-						$('.btn-selection-update', $form).click();
-					});
-				}
-			);
+            });
 		}
 
 	};

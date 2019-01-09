@@ -230,7 +230,7 @@ define([
 			}
 
 			// Fix a bug in URI object. URL should looks like index.php?xyz and not index.php/?xyz
-			return uri.toString().replace('.php/?', '.php?');
+			return decodeURIComponent(uri.toString().replace('.php/?', '.php?'));
 		},
 
 		/**
@@ -330,7 +330,7 @@ define([
 		submit: function() {
 
 			// Show to the User the grid is being refreshed.
-			Vidi.Edit.editedCells.html('<div style="padding-left: 20px"><img src="' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" width="16" alt="" /></div>');
+			Vidi.Edit.editedCells.html('<div style="padding-left: 20px"><img src="/' + Vidi.module.publicPath + 'Resources/Public/Images/loading.gif" width="16" alt="" /></div>');
 
 			// Ajax request
 			$.ajax({
@@ -369,26 +369,26 @@ define([
 		 */
 		showWindow: function() {
 
-			Vidi.modal = Modal.loadUrl(
-				TYPO3.l10n.localize('action.edit') + ' ' + this.getFieldLabel(),
-				top.TYPO3.Severity.warning,
-				this.getButtons(),
-				this.url,
-				function() { // callback
+            Vidi.modal = Modal.advanced({
+                type: Modal.types.ajax,
+                title: TYPO3.l10n.localize('action.edit') + ' ' + this.getFieldLabel(),
+                severity: top.TYPO3.Severity.warning,
+                buttons: this.getButtons(),
+                content: this.url,
+                ajaxCallback: function(currentModal) {
 
-					// Update modal title
-					var numberOfObjects = $('#numberOfObjects', Vidi.modal).html();
+                    // Update modal title
+                    var numberOfObjects = $('#numberOfObjects', Vidi.modal).html();
 
-					var modalTitle = $('.modal-title', Vidi.modal).html() + ' - ' + numberOfObjects + ' ';
-					if (numberOfObjects > 1) {
-						modalTitle += TYPO3.l10n.localize('records');
-					} else {
-						modalTitle += TYPO3.l10n.localize('record');
-					}
-					//console.log(modalTitle);
-					$('.modal-title', Vidi.modal).html(modalTitle);
-				}
-			);
+                    var modalTitle = $('.modal-title', Vidi.modal).html() + ' - ' + numberOfObjects + ' ';
+                    if (numberOfObjects > 1) {
+                        modalTitle += TYPO3.l10n.localize('records');
+                    } else {
+                        modalTitle += TYPO3.l10n.localize('record');
+                    }
+                    $('.modal-title', Vidi.modal).html(modalTitle);
+                }
+            });
 		},
 
 		/**
