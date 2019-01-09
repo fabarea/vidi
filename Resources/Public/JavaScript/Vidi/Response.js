@@ -53,8 +53,8 @@ define([
 					message = TYPO3.l10n.localize(label, {0: response.numberOfProcessedObjects, 1: response.numberOfObjects});
 				}
 
-				Notification.success(title, message, 3);
-			}
+				//top.Notification.success(title, message, 3);
+            }
 
 			// GUI: un-check the top checkbox.
 			$('.checkbox-row-top').removeAttr('checked');

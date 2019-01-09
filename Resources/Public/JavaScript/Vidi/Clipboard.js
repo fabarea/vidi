@@ -51,7 +51,7 @@ define([
 
 						var fadeOut = true;
 						if (data >= 0) {
-							Notification.success('', TYPO3.l10n.localize('clipboard.items_saved', {0: data}));
+							//Notification.success('', TYPO3.l10n.localize('clipboard.items_saved', {0: data}));
 							if (data > 0) {
 								$('.btn-clipboard-copy-or-move').show(); // display clipboard button.
 							}
