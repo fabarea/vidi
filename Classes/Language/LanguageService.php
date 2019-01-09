@@ -7,7 +7,7 @@ namespace Fab\Vidi\Language;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use Fab\Vidi\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Model\Content;
@@ -44,7 +44,7 @@ class LanguageService implements SingletonInterface
      */
     public function getLanguages()
     {
-        if (is_null($this->languages)) {
+        if ($this->languages === null) {
 
             $tableName = 'sys_language';
 
@@ -134,11 +134,11 @@ class LanguageService implements SingletonInterface
     public function getDefaultFlag()
     {
 
-        if (is_null($this->defaultIcon)) {
+        if ($this->defaultIcon === null) {
 
             $defaultFlag = ''; // default value
 
-            $tsConfig = BackendUtility::getModTSconfig(0, 'mod.SHARED');
+            $tsConfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getPagesTSconfig(0, 'mod.SHARED');
 
             // Fallback non sprite-configuration
             if (($pos = strrpos($tsConfig['properties']['defaultLanguageFlag'], '.')) !== false) {

@@ -8,7 +8,7 @@ namespace Fab\Vidi\Module;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use Fab\Vidi\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 use Fab\Vidi\Exception\InvalidKeyInArrayException;
@@ -390,10 +390,9 @@ class ModuleLoader
      * Return the module URL.
      *
      * @param array $additionalParameters
-     * @param bool $absoluteUrl
      * @return string
      */
-    public function getModuleUrl(array $additionalParameters = [], $absoluteUrl = false)
+    public function getModuleUrl(array $additionalParameters = [])
     {
         $moduleCode = $this->getSignature();
 
@@ -407,19 +406,7 @@ class ModuleLoader
             $additionalParameters[Parameter::PID] = GeneralUtility::_GET(Parameter::PID);
         }
 
-        $moduleUrl = BackendUtility::getModuleUrl($moduleCode, $additionalParameters, false, $absoluteUrl);
-        return $moduleUrl;
-    }
-
-    /**
-     * Return the module absolute URL.
-     *
-     * @param array $additionalParameters
-     * @return string
-     */
-    public function getModuleAbsoluteUrl(array $additionalParameters = [])
-    {
-        return $this->getModuleUrl($additionalParameters, true);
+        return BackendUtility::getModuleUrl($moduleCode, $additionalParameters);
     }
 
     /**

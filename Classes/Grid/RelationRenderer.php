@@ -8,7 +8,7 @@ namespace Fab\Vidi\Grid;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use Fab\Vidi\Utility\BackendUtility;
 use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Tca\Tca;
 use TYPO3\CMS\Core\Imaging\Icon;

@@ -10,7 +10,7 @@ namespace Fab\Vidi\View\Uri;
 
 use Fab\Vidi\View\AbstractComponentView;
 use Fab\Vidi\Domain\Model\Content;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use Fab\Vidi\Utility\BackendUtility;
 
 /**
  * View which renders a "edit" button to be placed in the grid.

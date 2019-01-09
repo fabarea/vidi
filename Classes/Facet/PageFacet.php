@@ -11,8 +11,7 @@ namespace Fab\Vidi\Facet;
 
 use Fab\Vidi\Module\ModuleLoader;
 use Fab\Vidi\Persistence\Matcher;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use Fab\Vidi\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Lang\LanguageService;
 

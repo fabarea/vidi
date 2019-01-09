@@ -8,11 +8,10 @@ namespace Fab\Vidi\Persistence\Storage;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use Fab\Vidi\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Versioning\VersionState;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception;
-use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\ColumnMap;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ComparisonInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\DynamicOperandInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface;
@@ -1057,7 +1056,7 @@ class VidiDbBackend
         if (TYPO3_MODE !== 'BE') {
             $pageRepository->versionOL($tableName, $row, true, true);
         } else {
-            BackendUtility::workspaceOL($tableName, $row);
+            \TYPO3\CMS\Backend\Utility\BackendUtility::workspaceOL($tableName, $row);
         }
         if ($pageRepository->versioningPreview && isset($row['_ORIG_uid'])) {
             $row['uid'] = $row['_ORIG_uid'];
