@@ -19,13 +19,22 @@ class TitleViewHelper extends AbstractViewHelper
 {
 
     /**
+     * @return void
+     */
+    public function initializeArguments()
+    {
+        $this->registerArgument('content', Content::class, '', true);
+    }
+
+    /**
      * Returns the title of a content object.
      *
-     * @param Content $content
      * @return string
      */
-    public function render(Content $content)
+    public function render()
     {
+        /** @var Content $content */
+        $content = $this->arguments['content'];
         $table = Tca::table($content->getDataType());
         return $content[$table->getLabelField()];
     }
