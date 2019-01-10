@@ -21,9 +21,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\StringUtility;
 
 /**
- * @deprecated  ------------- THE WHOLE CLASS WILL BE REMOVED IN TYPO3 v9 ----------------------------------------------
- * DatabaseConnection a.k.a. TYPO3_DB has been superseded by Doctrine DBAL in TYPO3 v8, and will be removed in TYPO3 v9
- * ---------------------------------------------------------------------------------------------------------------------
  * Contains the class "DatabaseConnection" containing functions for building SQL queries
  * and mysqli wrappers, thus providing a foundational API to all database
  * interaction.
