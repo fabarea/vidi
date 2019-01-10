@@ -8,7 +8,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'fabien@ecodev.ch',
     'module' => '',
     'state' => 'stable',
-    'version' => '2.8.0-dev',
+    'version' => '3.0.0',
     'autoload' => [
         'psr-4' => ['Fab\\Vidi\\' => 'Classes']
     ],
