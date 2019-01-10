@@ -3,7 +3,9 @@ defined('TYPO3_MODE') or die();
 
 call_user_func(function () {
 
-    $configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['vidi']);
+    $configuration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+        \TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class
+    )->get('vidi');
 
     if (false === isset($configuration['autoload_typoscript']) || true === (bool)$configuration['autoload_typoscript']) {
 
@@ -29,7 +31,7 @@ call_user_func(function () {
     // Initialize generic grid TCA for all data types
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing'][] = 'Fab\Vidi\Configuration\TcaGridAspect';
 
-// cache configuration, see https://docs.typo3.org/typo3cms/CoreApiReference/ApiOverview/CachingFramework/Configuration/Index.html#cache-configurations
+    // cache configuration, see https://docs.typo3.org/typo3cms/CoreApiReference/ApiOverview/CachingFramework/Configuration/Index.html#cache-configurations
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['vidi']['frontend'] = \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class;
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['vidi']['groups'] = array('all', 'vidi');
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['vidi']['options']['defaultLifetime'] = 2592000;
