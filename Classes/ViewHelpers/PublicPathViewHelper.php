@@ -23,6 +23,6 @@ class PublicPathViewHelper extends AbstractViewHelper
      */
     public function render()
     {
-        return \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath('vidi');
+        return \Fab\Vidi\Utility\ExtensionManagementUtility::siteRelPath('vidi');
     }
 }
