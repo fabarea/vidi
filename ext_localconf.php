@@ -22,9 +22,6 @@ call_user_func(function () {
         );
     }
 
-    // Configure commands that can be run from the cli_dispatch.phpsh script.
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = 'Fab\Vidi\Command\VidiCommandController';
-
     // Initialize generic Vidi modules after the TCA is loaded.
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing'][] = 'Fab\Vidi\Configuration\VidiModulesAspect';
 

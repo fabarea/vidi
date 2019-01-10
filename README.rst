@@ -714,16 +714,6 @@ The API is meant to be generic and can be re-use for every data type within TYPO
 
 	...
 
-Command line
-============
-
-To check whether TCA is well configured, Vidi provides a Command that will scan the configuration and report potential problem. This feature is still experimental::
-
-	# Check relations used in the grid.
-	./typo3/cli_dispatch.phpsh extbase vidi:analyseRelations
-	./typo3/cli_dispatch.phpsh extbase vidi:analyseRelations --table tx_domain_model_foo
-
-
 Property Mapping
 ================
 
