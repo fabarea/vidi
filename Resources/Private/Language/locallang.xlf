@@ -35,7 +35,7 @@
 				<source>Transaction did not succeed</source>
 			</trans-unit>
 			<trans-unit id="save">
-				<source>Save</source>
+				<source>Save to clipboard</source>
 			</trans-unit>
 			<trans-unit id="record">
 				<source>record</source>

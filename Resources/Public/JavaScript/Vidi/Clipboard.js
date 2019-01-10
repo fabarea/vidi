@@ -229,7 +229,7 @@ define([
 			// Fix a bug in URI object. URL should looks like index.php?xyz and not index.php/?xyz
 			url = uri.toString().replace('.php/?', '.php?');
 			url = Vidi.Clipboard.setAjaxAdditionalParameters(url);
-			return url;
+			return decodeURIComponent(url);
 		}
 	};
 

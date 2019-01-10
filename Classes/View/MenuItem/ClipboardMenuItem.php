@@ -23,7 +23,6 @@ class ClipboardMenuItem extends AbstractComponentView
      * Renders a "mass delete" menu item to be placed in the grid menu.
      *
      * @return string
-     * @throws \InvalidArgumentException
      */
     public function render()
     {
@@ -40,7 +39,6 @@ class ClipboardMenuItem extends AbstractComponentView
 
     /**
      * @return string
-     * @throws \InvalidArgumentException
      */
     protected function getSaveInClipboardUri()
     {
@@ -55,8 +53,7 @@ class ClipboardMenuItem extends AbstractComponentView
     }
 
     /**
-     * @return MediaModule
-     * @throws \InvalidArgumentException
+     * @return MediaModule|object
      */
     protected function getMediaModule()
     {
