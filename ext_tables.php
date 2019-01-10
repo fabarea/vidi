@@ -160,13 +160,13 @@ call_user_func(function () {
 
     // Add new sprite icon.
     $icons = [
-        'go' => 'EXT:' . $_EXTKEY . '/Resources/Public/Images/bullet_go.png',
-        'query' => 'EXT:' . $_EXTKEY . '/Resources/Public/Images/drive_disk.png',
+        'go' => 'EXT:vidi/Resources/Public/Images/bullet_go.png',
+        'query' => 'EXT:vidi/Resources/Public/Images/drive_disk.png',
     ];
     /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
     $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
     foreach ($icons as $key => $icon) {
-        $iconRegistry->registerIcon('extensions-' . $_EXTKEY . '-' . $key,
+        $iconRegistry->registerIcon('extensions-vidi-' . $key,
             \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
             [
                 'source' => $icon
