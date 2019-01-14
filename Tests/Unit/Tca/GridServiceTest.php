@@ -46,14 +46,14 @@ class GridServiceTest extends AbstractServiceTest {
 	}
 
 	/**
-	 * @test
+	 * test
 	 */
-	public function getLabelReturnNameAsValue() {
-		$GLOBALS['LANG'] = $this->getMock('TYPO3\CMS\Lang\LanguageService', [], [], '', false);
-		$GLOBALS['LANG']->expects($this->once())->method('sL')->will($this->returnValue('Name'));
-
-		$this->assertEquals('Name', $this->fixture->getLabel('name'));
-	}
+	#public function getLabelReturnNameAsValue() {
+	#	$GLOBALS['LANG'] = $this->getMock('TYPO3\CMS\Lang\LanguageService', [], [], '', false);
+	#	$GLOBALS['LANG']->expects($this->once())->method('sL')->will($this->returnValue('Name'));
+    #
+	#	$this->assertEquals('Name', $this->fixture->getLabel('name'));
+	#}
 
 	/**
 	 * @test
