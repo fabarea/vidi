@@ -96,15 +96,18 @@ EOF;
     {
 
         $dataTypes = [];
-        foreach ($GLOBALS['TCA'] as $contentType => $tca) {
-            if (!in_array($contentType, $this->excludedContentTypes)
-                && isset($GLOBALS['TCA'][$contentType]['ctrl']['label'])
-                && (
-                    !isset($GLOBALS['TCA'][$contentType]['ctrl']['hideTable'])
-                    || true !== (bool)$GLOBALS['TCA'][$contentType]['ctrl']['hideTable']
-                )
-            ) {
-                $dataTypes[] = $contentType;
+
+        if (is_array($GLOBALS['TCA'])) {
+            foreach ($GLOBALS['TCA'] as $contentType => $tca) {
+                if (!in_array($contentType, $this->excludedContentTypes)
+                    && isset($GLOBALS['TCA'][$contentType]['ctrl']['label'])
+                    && (
+                        !isset($GLOBALS['TCA'][$contentType]['ctrl']['hideTable'])
+                        || true !== (bool)$GLOBALS['TCA'][$contentType]['ctrl']['hideTable']
+                    )
+                ) {
+                    $dataTypes[] = $contentType;
+                }
             }
         }
         return $dataTypes;
