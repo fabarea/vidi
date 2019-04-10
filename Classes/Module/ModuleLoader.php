@@ -112,36 +112,36 @@ class ModuleLoader
                 ModulePosition::TOP => [
                     ModulePosition::LEFT => [],
                     ModulePosition::RIGHT => [
-                        'Fab\Vidi\View\Button\ToolButton',
+                        \Fab\Vidi\View\Button\ToolButton::class,
                     ],
                 ],
                 ModulePosition::BOTTOM => [
                     ModulePosition::LEFT => [
-                        'Fab\Vidi\View\Button\NewButton',
-                        'Fab\Vidi\ViewHelpers\Link\BackViewHelper',
+                        \Fab\Vidi\View\Button\NewButton::class,
+                        \Fab\Vidi\ViewHelpers\Link\BackViewHelper::class,
                     ],
                     ModulePosition::RIGHT => [],
                 ],
             ],
             ModulePosition::GRID => [
                 ModulePosition::TOP => [
-                    'Fab\Vidi\View\Check\PidCheck',
-                    'Fab\Vidi\View\Check\RelationsCheck',
-                    'Fab\Vidi\View\Tab\DataTypeTab',
+                    \Fab\Vidi\View\Check\PidCheck::class,
+                    \Fab\Vidi\View\Check\RelationsCheck::class,
+                    #\Fab\Vidi\View\Tab\DataTypeTab::class,
                 ],
                 ModulePosition::BUTTONS => [
-                    'Fab\Vidi\View\Button\EditButton',
-                    'Fab\Vidi\View\Button\DeleteButton',
+                    \Fab\Vidi\View\Button\EditButton::class,
+                    \Fab\Vidi\View\Button\DeleteButton::class,
                 ],
                 ModulePosition::BOTTOM => [],
             ],
             ModulePosition::MENU_MASS_ACTION => [
-                'Fab\Vidi\View\MenuItem\ExportXlsMenuItem',
-                'Fab\Vidi\View\MenuItem\ExportXmlMenuItem',
-                'Fab\Vidi\View\MenuItem\ExportCsvMenuItem',
-                'Fab\Vidi\View\MenuItem\DividerMenuItem',
-                'Fab\Vidi\View\MenuItem\MassDeleteMenuItem',
-                #'Fab\Vidi\View\MenuItem\MassEditMenuItem',
+                \Fab\Vidi\View\MenuItem\ExportXlsMenuItem::class,
+                \Fab\Vidi\View\MenuItem\ExportXmlMenuItem::class,
+                \Fab\Vidi\View\MenuItem\ExportCsvMenuItem::class,
+                \Fab\Vidi\View\MenuItem\DividerMenuItem::class,
+                \Fab\Vidi\View\MenuItem\MassDeleteMenuItem::class,
+                #\Fab\Vidi\View\MenuItem\MassEditMenuItem::class,
             ],
         ];
     }
@@ -152,7 +152,7 @@ class ModuleLoader
      * @param string $dataType
      * @return bool
      */
-    public function isRegistered($dataType)
+    public function isRegistered($dataType): bool
     {
         $internalModuleSignature = $this->getInternalModuleSignature($dataType);
         return !empty($GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]);
@@ -161,7 +161,7 @@ class ModuleLoader
     /**
      * @return array
      */
-    protected function getExistingInternalConfiguration()
+    protected function getExistingInternalConfiguration(): array
     {
         $internalModuleSignature = $this->getInternalModuleSignature();
         return is_array($GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature])
@@ -172,7 +172,7 @@ class ModuleLoader
     /**
      * @return array
      */
-    protected function getExistingMainConfiguration()
+    protected function getExistingMainConfiguration(): array
     {
         $possibleConfiguration = $GLOBALS['TBE_MODULES']['_configuration'][$this->computeMainModule() . '_' . $this->getInternalModuleSignature()];
         return is_array($possibleConfiguration) ? $possibleConfiguration : [];
@@ -181,7 +181,7 @@ class ModuleLoader
     /**
      * @return string
      */
-    protected function computeMainModule()
+    protected function computeMainModule(): string
     {
         $existingConfiguration = $this->getExistingInternalConfiguration();
 
@@ -198,7 +198,7 @@ class ModuleLoader
     /**
      * @return string
      */
-    protected function computeDefaultPid()
+    protected function computeDefaultPid(): string
     {
         $existingConfiguration = $this->getExistingInternalConfiguration();
 
@@ -215,7 +215,7 @@ class ModuleLoader
     /**
      * @return array
      */
-    protected function computeAdditionalJavaScriptFiles()
+    protected function computeAdditionalJavaScriptFiles(): array
     {
         $additionalJavaScriptFiles = $this->additionalJavaScriptFiles;
 
@@ -231,7 +231,7 @@ class ModuleLoader
     /**
      * @return array
      */
-    protected function computeAdditionalStyleSheetFiles()
+    protected function computeAdditionalStyleSheetFiles(): array
     {
         $additionalStyleSheetFiles = $this->additionalStyleSheetFiles;
 
@@ -247,7 +247,7 @@ class ModuleLoader
     /**
      * @return array
      */
-    protected function computeComponents()
+    protected function computeComponents(): array
     {
         // We override the config in any case. See if we need more than that.
         return $this->components;
@@ -259,7 +259,7 @@ class ModuleLoader
      * @return void
      * @throws \InvalidArgumentException
      */
-    public function register()
+    public function register(): void
     {
         // Internal Vidi module registration.
         $configuration = [];
@@ -287,8 +287,8 @@ class ModuleLoader
             }
 
             if ($this->showPageTree) {
-                $moduleConfiguration['navigationComponentId'] = 'typo3-pagetree';
-                $moduleConfiguration['inheritNavigationComponentFromMainModule'] = false;
+                $moduleConfiguration['navigationComponentId'] = 'TYPO3/CMS/Backend/PageTree/PageTreeElement';
+                $moduleConfiguration['inheritNavigationComponentFromMainModule'] = true;
             } else {
                 $moduleConfiguration['inheritNavigationComponentFromMainModule'] = true;
             }
@@ -356,7 +356,7 @@ class ModuleLoader
      *
      * @return string
      */
-    public function getParameterPrefix()
+    public function getParameterPrefix(): string
     {
         return 'tx_vidi_' . strtolower($this->getSignature());
     }
@@ -371,7 +371,7 @@ class ModuleLoader
     public function getModuleConfiguration($key = '')
     {
 
-        $vidiModuleCode = $this->getVidiModuleCode();
+        $vidiModuleCode = $this->getSignature();
 
         // Module code must exist
         if (empty($GLOBALS['TBE_MODULES_EXT']['vidi'][$vidiModuleCode])) {
@@ -397,7 +397,7 @@ class ModuleLoader
      * @param string $icon
      * @return $this
      */
-    public function setIcon($icon)
+    public function setIcon($icon): self
     {
         $this->icon = $icon;
         return $this;
@@ -406,7 +406,7 @@ class ModuleLoader
     /**
      * @return string
      */
-    protected function getIcon()
+    protected function getIcon(): string
     {
         $moduleConfiguration = $this->getExistingMainConfiguration();
 
@@ -426,7 +426,7 @@ class ModuleLoader
      * @param string $mainModule
      * @return $this
      */
-    public function setMainModule($mainModule)
+    public function setMainModule($mainModule): self
     {
         $this->mainModule = $mainModule;
         return $this;
@@ -436,7 +436,7 @@ class ModuleLoader
      * @return string
      * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
-    public function getMainModule()
+    public function getMainModule(): string
     {
         if ($this->mainModule === null) {
             $this->mainModule = $this->getModuleConfiguration('mainModule');
@@ -448,16 +448,54 @@ class ModuleLoader
      * @param string $moduleLanguageFile
      * @return $this
      */
-    public function setModuleLanguageFile($moduleLanguageFile)
+    public function setModuleLanguageFile($moduleLanguageFile): self
     {
         $this->moduleLanguageFile = $moduleLanguageFile;
         return $this;
     }
 
     /**
+     * @param string $component
+     * @return $this
+     */
+    public function removeComponentFromDocHeader(string $component): self
+    {
+        foreach ($this->components[ModulePosition::DOC_HEADER] as $verticalPosition => $docHeaders) {
+            foreach ($docHeaders as $horizontalPosition => $docHeader) {
+
+                $index = array_search($component, $docHeader, true);
+                if ($index !== false) {
+                    // $verticalPosition: top or bottom
+                    // $horizontalPosition: left or right
+                    unset($this->components[ModulePosition::DOC_HEADER][$verticalPosition][$horizontalPosition][$index]);
+                }
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @param string $component
+     * @return bool
+     */
+    public function hasComponentInDocHeader(string $component): bool
+    {
+        foreach ($this->getModuleConfiguration('components')[ModulePosition::DOC_HEADER] as $verticalPosition => $docHeaders) {
+            foreach ($docHeaders as $horizontalPosition => $docHeader) {
+
+                $index = array_search($component, $docHeader, true);
+                if ($index !== false) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * @return string
      */
-    protected function getModuleLanguageFile()
+    protected function getModuleLanguageFile(): string
     {
         $moduleConfiguration = $this->getExistingMainConfiguration();
 
@@ -477,7 +515,7 @@ class ModuleLoader
      * @param string $position
      * @return $this
      */
-    public function setPosition($position)
+    public function setPosition($position): self
     {
         $this->position = $position;
         return $this;
@@ -486,7 +524,7 @@ class ModuleLoader
     /**
      * @return string
      */
-    public function getPosition()
+    public function getPosition(): string
     {
         return $this->position;
     }
@@ -495,7 +533,7 @@ class ModuleLoader
      * @param array $files
      * @return $this
      */
-    public function addJavaScriptFiles(array $files)
+    public function addJavaScriptFiles(array $files): self
     {
         foreach ($files as $file) {
             $this->additionalJavaScriptFiles[] = $file;
@@ -507,7 +545,7 @@ class ModuleLoader
      * @param string $fileNameAndPath
      * @return $this
      */
-    public function addJavaScriptFile($fileNameAndPath)
+    public function addJavaScriptFile($fileNameAndPath): self
     {
         $this->additionalJavaScriptFiles[] = $fileNameAndPath;
         return $this;
@@ -517,7 +555,7 @@ class ModuleLoader
      * @param array $files
      * @return $this
      */
-    public function addStyleSheetFiles(array $files)
+    public function addStyleSheetFiles(array $files): self
     {
         foreach ($files as $file) {
             $this->additionalStyleSheetFiles[] = $file;
@@ -529,7 +567,7 @@ class ModuleLoader
      * @param string $fileNameAndPath
      * @return $this
      */
-    public function addStyleSheetFile($fileNameAndPath)
+    public function addStyleSheetFile($fileNameAndPath): self
     {
         $this->additionalStyleSheetFiles[] = $fileNameAndPath;
         return $this;
@@ -539,9 +577,9 @@ class ModuleLoader
      * @return string
      * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
-    public function getDataType()
+    public function getDataType(): string
     {
-        if (is_null($this->dataType)) {
+        if ($this->dataType === null) {
             $this->dataType = $this->getModuleConfiguration('dataType');
         }
         return $this->dataType;
@@ -550,7 +588,7 @@ class ModuleLoader
     /**
      * @return array
      */
-    public function getDataTypes()
+    public function getDataTypes(): array
     {
         $dataTypes = [];
         foreach ($GLOBALS['TBE_MODULES_EXT']['vidi'] as $module) {
@@ -563,7 +601,7 @@ class ModuleLoader
      * @param string $dataType
      * @return $this
      */
-    public function setDataType($dataType)
+    public function setDataType($dataType): self
     {
         $this->dataType = $dataType;
         return $this;
@@ -573,7 +611,7 @@ class ModuleLoader
      * @return string
      * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
-    public function getDefaultPid()
+    public function getDefaultPid(): string
     {
         if (empty($this->defaultPid)) {
             $this->defaultPid = $this->getModuleConfiguration('defaultPid');
@@ -585,7 +623,7 @@ class ModuleLoader
      * @param string $defaultPid
      * @return $this
      */
-    public function setDefaultPid($defaultPid)
+    public function setDefaultPid($defaultPid): self
     {
         $this->defaultPid = $defaultPid;
         return $this;
@@ -595,7 +633,7 @@ class ModuleLoader
      * @param bool $isPageTreeShown
      * @return $this
      */
-    public function showPageTree($isPageTreeShown)
+    public function showPageTree($isPageTreeShown): self
     {
         $this->showPageTree = $isPageTreeShown;
         return $this;
@@ -605,7 +643,7 @@ class ModuleLoader
      * @param string $isShown
      * @return $this
      */
-    public function isShown($isShown)
+    public function isShown($isShown): self
     {
         $this->isShown = $isShown;
         return $this;
@@ -625,7 +663,7 @@ class ModuleLoader
      * @param array $components
      * @return $this
      */
-    public function setDocHeaderTopLeftComponents(array $components)
+    public function setDocHeaderTopLeftComponents(array $components): self
     {
         $this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::LEFT] = $components;
         return $this;
@@ -635,7 +673,7 @@ class ModuleLoader
      * @param string|array $components
      * @return $this
      */
-    public function addDocHeaderTopLeftComponents($components)
+    public function addDocHeaderTopLeftComponents($components): self
     {
         if (is_string($components)) {
             $components = [$components];
@@ -659,7 +697,7 @@ class ModuleLoader
      * @param array $components
      * @return $this
      */
-    public function setDocHeaderTopRightComponents(array $components)
+    public function setDocHeaderTopRightComponents(array $components): self
     {
         $this->components[ModulePosition::DOC_HEADER][ModulePosition::TOP][ModulePosition::RIGHT] = $components;
         return $this;
@@ -669,7 +707,7 @@ class ModuleLoader
      * @param string|array $components
      * @return $this
      */
-    public function addDocHeaderTopRightComponents($components)
+    public function addDocHeaderTopRightComponents($components): self
     {
         if (is_string($components)) {
             $components = [$components];
@@ -693,7 +731,7 @@ class ModuleLoader
      * @param array $components
      * @return $this
      */
-    public function setDocHeaderBottomLeftComponents(array $components)
+    public function setDocHeaderBottomLeftComponents(array $components): self
     {
         $this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::LEFT] = $components;
         return $this;
@@ -703,7 +741,7 @@ class ModuleLoader
      * @param string|array $components
      * @return $this
      */
-    public function addDocHeaderBottomLeftComponents($components)
+    public function addDocHeaderBottomLeftComponents($components): self
     {
         if (is_string($components)) {
             $components = [$components];
@@ -727,7 +765,7 @@ class ModuleLoader
      * @param array $components
      * @return $this
      */
-    public function setDocHeaderBottomRightComponents(array $components)
+    public function setDocHeaderBottomRightComponents(array $components): self
     {
         $this->components[ModulePosition::DOC_HEADER][ModulePosition::BOTTOM][ModulePosition::RIGHT] = $components;
         return $this;
@@ -737,7 +775,7 @@ class ModuleLoader
      * @param string|array $components
      * @return $this
      */
-    public function addDocHeaderBottomRightComponents($components)
+    public function addDocHeaderBottomRightComponents($components): self
     {
         if (is_string($components)) {
             $components = [$components];
@@ -761,7 +799,7 @@ class ModuleLoader
      * @param array $components
      * @return $this
      */
-    public function setGridTopComponents(array $components)
+    public function setGridTopComponents(array $components): self
     {
         $this->components[ModulePosition::GRID][ModulePosition::TOP] = $components;
         return $this;
@@ -771,7 +809,7 @@ class ModuleLoader
      * @param string|array $components
      * @return $this
      */
-    public function addGridTopComponents($components)
+    public function addGridTopComponents($components): self
     {
         if (is_string($components)) {
             $components = [$components];
@@ -795,7 +833,7 @@ class ModuleLoader
      * @param array $components
      * @return $this
      */
-    public function setGridBottomComponents(array $components)
+    public function setGridBottomComponents(array $components): self
     {
         $this->components[ModulePosition::GRID][ModulePosition::BOTTOM] = $components;
         return $this;
@@ -805,7 +843,7 @@ class ModuleLoader
      * @param string|array $components
      * @return $this
      */
-    public function addGridBottomComponents($components)
+    public function addGridBottomComponents($components): self
     {
         if (is_string($components)) {
             $components = [$components];
@@ -829,7 +867,7 @@ class ModuleLoader
      * @param array $components
      * @return $this
      */
-    public function setGridButtonsComponents(array $components)
+    public function setGridButtonsComponents(array $components): self
     {
         $this->components[ModulePosition::GRID][ModulePosition::BUTTONS] = $components;
         return $this;
@@ -839,7 +877,7 @@ class ModuleLoader
      * @param string|array $components
      * @return $this
      */
-    public function addGridButtonsComponents($components)
+    public function addGridButtonsComponents($components): self
     {
         if (is_string($components)) {
             $components = [$components];
@@ -863,7 +901,7 @@ class ModuleLoader
      * @param array $components
      * @return $this
      */
-    public function setMenuMassActionComponents(array $components)
+    public function setMenuMassActionComponents(array $components): self
     {
         $this->components[ModulePosition::MENU_MASS_ACTION] = $components;
         return $this;
@@ -873,7 +911,7 @@ class ModuleLoader
      * @param string|array $components
      * @return $this
      */
-    public function addMenuMassActionComponents($components)
+    public function addMenuMassActionComponents($components): self
     {
         if (is_string($components)) {
             $components = [$components];
@@ -886,7 +924,7 @@ class ModuleLoader
     /**
      * @return string
      */
-    protected function getAccess()
+    protected function getAccess(): string
     {
         $moduleConfiguration = $this->getExistingMainConfiguration();
 
@@ -904,7 +942,7 @@ class ModuleLoader
      * @param string $access
      * @return $this
      */
-    public function setAccess($access)
+    public function setAccess($access): self
     {
         $this->access = $access;
         return $this;
@@ -914,7 +952,7 @@ class ModuleLoader
      * @return \string[]
      * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
-    public function getAdditionalJavaScriptFiles()
+    public function getAdditionalJavaScriptFiles(): array
     {
         if (empty($this->additionalJavaScriptFiles)) {
             $this->additionalJavaScriptFiles = $this->getModuleConfiguration('additionalJavaScriptFiles');
@@ -926,7 +964,7 @@ class ModuleLoader
      * @return \string[]
      * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
-    public function getAdditionalStyleSheetFiles()
+    public function getAdditionalStyleSheetFiles(): array
     {
         if (empty($this->additionalStyleSheetFiles)) {
             $this->additionalStyleSheetFiles = $this->getModuleConfiguration('additionalStyleSheetFiles');
@@ -937,7 +975,7 @@ class ModuleLoader
     /**
      * @return array
      */
-    public function getComponents()
+    public function getComponents(): array
     {
         return $this->components;
     }
@@ -946,7 +984,7 @@ class ModuleLoader
      * @param string $pluginName
      * @return bool
      */
-    public function hasPlugin($pluginName = '')
+    public function hasPlugin($pluginName = ''): bool
     {
         $parameterPrefix = $this->getParameterPrefix();
         $parameters = GeneralUtility::_GET($parameterPrefix);
@@ -964,13 +1002,16 @@ class ModuleLoader
      * @param null|string $dataType
      * @return string
      */
-    protected function getInternalModuleSignature($dataType = null)
+    protected function getInternalModuleSignature($dataType = null): string
     {
+        // Else we forge the module signature
         if ($dataType === null) {
             $dataType = $this->dataType;
         }
         $subModuleName = $dataType . '_' . $this->moduleKey;
-        return 'Vidi' . GeneralUtility::underscoredToUpperCamelCase($subModuleName);
+
+        $mainModule = $this->mainModule ? : self::DEFAULT_MAIN_MODULE;
+        return $mainModule . '_Vidi' . GeneralUtility::underscoredToUpperCamelCase($subModuleName);
     }
 
 }
