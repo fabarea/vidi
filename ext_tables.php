@@ -63,11 +63,9 @@ call_user_func(function () {
                 // Special case already defined in Vidi.
                 if ($dataType === 'fe_users') {
                     $languageFile = 'LLL:EXT:vidi/Resources/Private/Language/fe_users.xlf';
-                    $icon = 'EXT:core/Resources/Public/Icons/T3Icons/status/status-user-frontend.svg';
                     $icon = 'EXT:vidi/Resources/Public/Images/fe_users.svg';
                 } elseif ($dataType === 'fe_groups') {
                     $languageFile = 'LLL:EXT:vidi/Resources/Private/Language/fe_groups.xlf';
-                    $icon = 'EXT:core/Resources/Public/Icons/T3Icons/status/status-user-group-frontend.svg';
                     $icon = 'EXT:vidi/Resources/Public/Images/fe_groups.svg';
                 } else {
                     /** @var \Fab\Vidi\Backend\LanguageFileGenerator $languageService */
@@ -76,7 +74,7 @@ call_user_func(function () {
                     $icon = '';
                 }
 
-                $pid = isset($defaultPids[$dataType]) ? $defaultPids[$dataType] : $defaultPid;
+                $pid = $defaultPids[$dataType] ?? $defaultPid;
 
                 /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
                 $moduleLoader->setIcon($icon)
