@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Persistence;
 
 /*
@@ -28,9 +29,8 @@ class MatcherObjectFactory implements SingletonInterface
      * Gets a singleton instance of this class.
      *
      * @return $this
-     * @throws \InvalidArgumentException
      */
-    static public function getInstance()
+    static public function getInstance(): self
     {
         return GeneralUtility::makeInstance(self::class);
     }
@@ -41,14 +41,9 @@ class MatcherObjectFactory implements SingletonInterface
      * @param array $matches
      * @param string $dataType
      * @return Matcher
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
-     * @throws \InvalidArgumentException
      */
-    public function getMatcher(array $matches = [], $dataType = '')
+    public function getMatcher(array $matches = [], $dataType = ''): Matcher
     {
-
         if ($dataType === '') {
             $dataType = $this->getModuleLoader()->getDataType();
         }
@@ -77,12 +72,12 @@ class MatcherObjectFactory implements SingletonInterface
      *
      * @param Matcher $matcher
      * @return Matcher $matcher
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
-    protected function applyCriteriaFromUrl(Matcher $matcher)
+    protected function applyCriteriaFromUrl(Matcher $matcher): Matcher
     {
-
-        if (GeneralUtility::_GP('id') && $this->getModuleLoader()->getMainModule() !== ModuleName::FILE) {
+        if (GeneralUtility::_GP('id')
+            && !$this->getModuleLoader()->isPidIgnored()
+            && $this->getModuleLoader()->getMainModule() !== ModuleName::FILE) {
             $matcher->equals('pid', GeneralUtility::_GP('id'));
         }
 
@@ -92,10 +87,8 @@ class MatcherObjectFactory implements SingletonInterface
     /**
      * @param Matcher $matcher
      * @return Matcher $matcher
-     * @throws \InvalidArgumentException
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
-    protected function applyCriteriaFromTSConfig(Matcher $matcher)
+    protected function applyCriteriaFromTSConfig(Matcher $matcher): Matcher
     {
         $dataType = $matcher->getDataType();
         $tsConfigPath = sprintf('tx_vidi.dataType.%s.constraints', $dataType);
@@ -130,7 +123,7 @@ class MatcherObjectFactory implements SingletonInterface
      * @param array $matches
      * @return Matcher $matcher
      */
-    protected function applyCriteriaFromMatchesArgument(Matcher $matcher, $matches)
+    protected function applyCriteriaFromMatchesArgument(Matcher $matcher, $matches): Matcher
     {
         foreach ($matches as $fieldNameAndPath => $value) {
             // CSV values should be considered as "in" operator in the query, otherwise "equals".
@@ -150,9 +143,8 @@ class MatcherObjectFactory implements SingletonInterface
      *
      * @param Matcher $matcher
      * @return Matcher $matcher
-     * @throws \Exception
      */
-    protected function applyCriteriaFromDataTables(Matcher $matcher)
+    protected function applyCriteriaFromDataTables(Matcher $matcher): Matcher
     {
 
         // Special case for Grid in the BE using jQuery DataTables plugin.
@@ -185,9 +177,8 @@ class MatcherObjectFactory implements SingletonInterface
      * @param array $queryParts
      * @param Matcher $matcher
      * @return Matcher $matcher
-     * @throws \InvalidArgumentException
      */
-    protected function parseQuery(array $queryParts, Matcher $matcher)
+    protected function parseQuery(array $queryParts, Matcher $matcher): Matcher
     {
         $dataType = $matcher->getDataType();
         foreach ($queryParts as $term) {
@@ -225,12 +216,11 @@ class MatcherObjectFactory implements SingletonInterface
      * @param string $dataType
      * @param string $value
      * @return bool
-     * @throws \Exception
      */
-    protected function isOperatorEquals($fieldName, $dataType, $value)
+    protected function isOperatorEquals($fieldName, $dataType, $value): bool
     {
         return (Tca::table($dataType)->field($fieldName)->hasRelation() && MathUtility::canBeInterpretedAsInteger($value))
-        || Tca::table($dataType)->field($fieldName)->isNumerical();
+            || Tca::table($dataType)->field($fieldName)->isNumerical();
     }
 
     /**
@@ -238,11 +228,8 @@ class MatcherObjectFactory implements SingletonInterface
      *
      * @param Matcher $matcher
      * @signal
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
-    protected function emitPostProcessMatcherObjectSignal(Matcher $matcher)
+    protected function emitPostProcessMatcherObjectSignal(Matcher $matcher): void
     {
 
         if (strlen($matcher->getDataType()) <= 0) {
@@ -258,7 +245,7 @@ class MatcherObjectFactory implements SingletonInterface
     /**
      * Get the SignalSlot dispatcher
      *
-     * @return Dispatcher
+     * @return Dispatcher|object
      */
     protected function getSignalSlotDispatcher()
     {
@@ -266,8 +253,7 @@ class MatcherObjectFactory implements SingletonInterface
     }
 
     /**
-     * @return ObjectManager
-     * @throws \InvalidArgumentException
+     * @return ObjectManager|object
      */
     protected function getObjectManager()
     {
@@ -277,8 +263,7 @@ class MatcherObjectFactory implements SingletonInterface
     /**
      * Get the Vidi Module Loader.
      *
-     * @return ModuleLoader
-     * @throws \InvalidArgumentException
+     * @return ModuleLoader|object
      */
     protected function getModuleLoader()
     {
@@ -286,8 +271,7 @@ class MatcherObjectFactory implements SingletonInterface
     }
 
     /**
-     * @return FieldPathResolver
-     * @throws \InvalidArgumentException
+     * @return FieldPathResolver|object
      */
     protected function getFieldPathResolver()
     {
@@ -299,7 +283,7 @@ class MatcherObjectFactory implements SingletonInterface
      *
      * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
      */
-    protected function getBackendUser()
+    protected function getBackendUser(): \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
     {
         return $GLOBALS['BE_USER'];
     }
@@ -309,7 +293,7 @@ class MatcherObjectFactory implements SingletonInterface
      *
      * @return bool
      */
-    protected function isBackendMode()
+    protected function isBackendMode(): bool
     {
         return TYPO3_MODE === 'BE';
     }

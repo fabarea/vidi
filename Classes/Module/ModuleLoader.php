@@ -45,6 +45,11 @@ class ModuleLoader
     /**
      * @var bool
      */
+    protected $isPidIgnored = false;
+
+    /**
+     * @var bool
+     */
     protected $showPageTree = false;
 
     /**
@@ -257,7 +262,6 @@ class ModuleLoader
      * Register the module in two places: core + vidi internal.
      *
      * @return void
-     * @throws \InvalidArgumentException
      */
     public function register(): void
     {
@@ -269,6 +273,7 @@ class ModuleLoader
         $configuration['additionalJavaScriptFiles'] = $this->computeAdditionalJavaScriptFiles();
         $configuration['additionalStyleSheetFiles'] = $this->computeAdditionalStyleSheetFiles();
         $configuration['components'] = $this->computeComponents();
+        $configuration['isPidIgnored'] = $this->isPidIgnored;
 
         $internalModuleSignature = $this->getInternalModuleSignature();
         $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature] = $configuration;
@@ -365,7 +370,6 @@ class ModuleLoader
      * Return a configuration key or the entire module configuration array if not key is given.
      *
      * @param string $key
-     * @throws InvalidKeyInArrayException
      * @return mixed
      */
     public function getModuleConfiguration($key = '')
@@ -434,7 +438,6 @@ class ModuleLoader
 
     /**
      * @return string
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getMainModule(): string
     {
@@ -472,6 +475,24 @@ class ModuleLoader
             }
         }
         return $this;
+    }
+
+    /**
+     * @param bool $isPidIgnored
+     * @return $this
+     */
+    public function ignorePid(bool $isPidIgnored): self
+    {
+        $this->isPidIgnored = $isPidIgnored;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPidIgnored(): bool
+    {
+        return $this->getModuleConfiguration('isPidIgnored');
     }
 
     /**
@@ -575,7 +596,6 @@ class ModuleLoader
 
     /**
      * @return string
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getDataType(): string
     {
@@ -609,7 +629,6 @@ class ModuleLoader
 
     /**
      * @return string
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getDefaultPid(): string
     {
@@ -651,7 +670,6 @@ class ModuleLoader
 
     /**
      * @return $array
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getDocHeaderTopLeftComponents()
     {
@@ -685,7 +703,6 @@ class ModuleLoader
 
     /**
      * @return $array
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getDocHeaderTopRightComponents()
     {
@@ -719,7 +736,6 @@ class ModuleLoader
 
     /**
      * @return $array
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getDocHeaderBottomLeftComponents()
     {
@@ -753,7 +769,6 @@ class ModuleLoader
 
     /**
      * @return $array
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getDocHeaderBottomRightComponents()
     {
@@ -787,7 +802,6 @@ class ModuleLoader
 
     /**
      * @return $array
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getGridTopComponents()
     {
@@ -820,8 +834,7 @@ class ModuleLoader
     }
 
     /**
-     * @return $array
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
+     * @return mixed $array
      */
     public function getGridBottomComponents()
     {
@@ -855,7 +868,6 @@ class ModuleLoader
 
     /**
      * @return $array
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getGridButtonsComponents()
     {
@@ -889,7 +901,6 @@ class ModuleLoader
 
     /**
      * @return $array
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getMenuMassActionComponents()
     {
@@ -950,7 +961,6 @@ class ModuleLoader
 
     /**
      * @return \string[]
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getAdditionalJavaScriptFiles(): array
     {
@@ -962,7 +972,6 @@ class ModuleLoader
 
     /**
      * @return \string[]
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function getAdditionalStyleSheetFiles(): array
     {
