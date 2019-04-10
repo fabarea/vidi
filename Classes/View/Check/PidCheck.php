@@ -51,7 +51,7 @@ class PidCheck extends AbstractComponentView
     /**
      * Pseudo-Constructor, which ensures all dependencies are injected when called.
      */
-    public function initializeObject()
+    public function initializeObject(): void
     {
         $this->dataType = $this->getModuleLoader()->getDataType();
         $this->configuredPid = $this->getConfiguredPid();
@@ -82,18 +82,15 @@ class PidCheck extends AbstractComponentView
      *
      * @return string
      */
-    protected function formatMessagePidIsNotValid()
+    protected function formatMessagePidIsNotValid(): string
     {
-
-        // TODO: after dropping typo3 7.6 support, remove class: typo3-message message-warning message-header message-body
-
         $error = implode('<br />', $this->errors);
         $result = <<< EOF
-			<div class="typo3-message message-warning alert alert-warning">
-				<div class="message-header alert-title">
+			<div class="alert alert-warning">
+				<div class="alert-title">
 					Page id "{$this->configuredPid}" has found to be a wrong configuration for "{$this->dataType}"
 				</div>
-				<div class="message-body alert-message">
+				<div class="alert-message">
 					<p>{$error}</p>
 					New records cannot be created with this page id. The configuration can be changed at different levels:
 					<ul>
@@ -124,7 +121,7 @@ EOF;
      *
      * @return void
      */
-    protected function validateRootLevel()
+    protected function validateRootLevel(): void
     {
         if ($this->configuredPid > 0) {
             return;
@@ -144,7 +141,7 @@ EOF;
      *
      * @return void
      */
-    protected function validatePageExist()
+    protected function validatePageExist(): void
     {
         if ($this->configuredPid === 0) {
             return;
@@ -164,14 +161,17 @@ EOF;
      *
      * @return void
      */
-    protected function validateDoktype()
+    protected function validateDoktype(): void
     {
         if ($this->configuredPid === 0) {
             return;
         }
 
         $page = $this->getPage();
-        if (!empty($page) && $page['doktype'] != PageRepository::DOKTYPE_SYSFOLDER && !$this->isTableAllowedOnStandardPages()) {
+        if (!empty($page)
+            && (int)$page['doktype'] !== PageRepository::DOKTYPE_SYSFOLDER
+            && !$this->isTableAllowedOnStandardPages()
+            && $this->getModuleLoader()->hasComponentInDocHeader(\Fab\Vidi\View\Button\NewButton::class)) {
             $this->errors[] = sprintf(
                 'The page with the id "%s" either has to be of the type "folder" (doktype=254) or the table "%s" has to be allowed on standard pages.',
                 $this->configuredPid,
@@ -186,12 +186,10 @@ EOF;
      * @see \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages()
      * @return bool
      */
-    protected function isTableAllowedOnStandardPages()
+    protected function isTableAllowedOnStandardPages(): bool
     {
         $allowedTables = explode(',', $GLOBALS['PAGES_TYPES']['default']['allowedTables']);
-        $result = in_array($this->dataType, $allowedTables);
-
-        return $result;
+        return in_array($this->dataType, $allowedTables, true);
     }
 
     /**
@@ -199,7 +197,7 @@ EOF;
      *
      * @return int
      */
-    protected function getConfiguredPid()
+    protected function getConfiguredPid(): int
     {
 
         if (GeneralUtility::_GP(Parameter::PID)) {
@@ -223,7 +221,7 @@ EOF;
      *
      * @return \Fab\Vidi\Database\DatabaseConnection
      */
-    protected function getDatabaseConnection()
+    protected function getDatabaseConnection(): \Fab\Vidi\Database\DatabaseConnection
     {
         return $GLOBALS['TYPO3_DB'];
     }
@@ -233,7 +231,7 @@ EOF;
      *
      * @return array
      */
-    public function getPage()
+    public function getPage(): ?array
     {
         if ($this->page !== null) {
             return $this->page;
