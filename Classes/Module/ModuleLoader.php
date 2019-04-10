@@ -316,7 +316,7 @@ class ModuleLoader
      *
      * @return string
      */
-    public function getSignature()
+    public function getSignature(): string
     {
         $signature = GeneralUtility::_GP(Parameter::MODULE);
         $trimmedSignature = trim($signature, '/');
@@ -324,66 +324,13 @@ class ModuleLoader
     }
 
     /**
-     * Tell whether the current module is the list one.
-     *
-     * @return bool
-     */
-    public function copeWithPageTree()
-    {
-        return GeneralUtility::_GP(Parameter::MODULE) === 'web_VidiM1';
-    }
-
-    /**
      * Returns the current pid.
      *
      * @return bool
      */
-    public function getCurrentPid()
+    public function getCurrentPid(): bool
     {
         return GeneralUtility::_GET(Parameter::PID) > 0 ? (int)GeneralUtility::_GET(Parameter::PID) : 0;
-    }
-
-    /**
-     * Return the Vidi module code which is stored in TBE_MODULES_EXT
-     *
-     * @return string
-     */
-    public function getVidiModuleCode()
-    {
-
-        if ($this->copeWithPageTree()) {
-            $userPreferenceKey = sprintf('Vidi_pid_%s', $this->getCurrentPid());
-
-            if (GeneralUtility::_GP(Parameter::SUBMODULE)) {
-                $subModuleCode = GeneralUtility::_GP(Parameter::SUBMODULE);
-                BackendUserPreferenceService::getInstance()->set($userPreferenceKey, $subModuleCode);
-            } else {
-
-                $defaultModuleCode = BackendUserPreferenceService::getInstance()->get($userPreferenceKey);
-                if (empty($defaultModuleCode)) {
-                    $defaultModuleCode = 'VidiTtContentM1'; // hard-coded submodule
-                    BackendUserPreferenceService::getInstance()->set($userPreferenceKey, $defaultModuleCode);
-                }
-
-                $vidiModules = ModuleService::getInstance()->getModulesForCurrentPid();
-
-                if (empty($vidiModules)) {
-                    $subModuleCode = $defaultModuleCode;
-                } elseif (isset($vidiModules[$defaultModuleCode])) {
-                    $subModuleCode = $defaultModuleCode;
-                } else {
-                    $subModuleCode = ModuleService::getInstance()->getFirstModuleForPid($this->getCurrentPid());
-                }
-            }
-        } else {
-            $moduleCode = $this->getSignature();
-
-            // Remove first part which is separated "_"
-            $delimiter = strpos($moduleCode, '_') + 1;
-            $subModuleCode = substr($moduleCode, $delimiter);
-        }
-
-        return $subModuleCode;
     }
 
     /**
@@ -392,14 +339,9 @@ class ModuleLoader
      * @param array $additionalParameters
      * @return string
      */
-    public function getModuleUrl(array $additionalParameters = [])
+    public function getModuleUrl(array $additionalParameters = []): string
     {
         $moduleCode = $this->getSignature();
-
-        // Add possible submodule if current module has page tree.
-        if ($this->copeWithPageTree() && !isset($additionalParameters[Parameter::SUBMODULE])) {
-            $additionalParameters[Parameter::SUBMODULE] = $this->getVidiModuleCode();
-        }
 
         // And don't forget the pid!
         if (GeneralUtility::_GET(Parameter::PID)) {

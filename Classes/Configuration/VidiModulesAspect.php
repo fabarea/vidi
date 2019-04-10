@@ -28,13 +28,15 @@ class VidiModulesAspect implements TableConfigurationPostProcessingHookInterface
         /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
         $moduleLoader = GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
 
-        // Each data data can be displayed in a Vidi module
-        foreach ($GLOBALS['TCA'] as $dataType => $configuration) {
-            if (!$moduleLoader->isRegistered($dataType)) {
 
-                // @todo some modules have TSConfig configuration for not being displayed. Should be respected!
+        $configuration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class
+        )->get('vidi');
+
+        foreach (GeneralUtility::trimExplode(',', $configuration['data_types']) as $dataType) {
+            if (!$moduleLoader->isRegistered($dataType)) {
                 $moduleLoader->setDataType($dataType)
-                    ->isShown(false)
+                    #->isShown(false)
                     ->register();
             }
         }

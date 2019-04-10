@@ -28,42 +28,11 @@ class NewButton extends AbstractComponentView
      */
     public function render()
     {
-
-        // General New button
-        if ($this->getModuleLoader()->copeWithPageTree()) {
-
-            // Wizard "new"
-            $buttons[] = $this->makeLinkButton()
-                ->setHref($this->getNewUri())
-                ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:newRecordGeneral'))
-                ->setIcon($this->getIconFactory()->getIcon('actions-document-new', Icon::SIZE_SMALL))
-                ->render();
-
-            $buttons[] = $this->makeLinkButton()
-                ->setHref($this->getNewUri())
-                ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:newRecordGeneral'))
-                ->setIcon(
-                    $this->getIconFactory()->getIconForRecord(
-                        $this->getModuleLoader()->getDataType(),
-                        [],
-                        Icon::SIZE_SMALL
-                    )
-                )
-                ->render();
-
-            $output = '<div class="btn-toolbar" role="toolbar" aria-label="">' . implode("\n", $buttons) . '</div>';
-
-        } else {
-
-            // New button only for the current data type.
-            $output = $this->makeLinkButton()->setHref($this->getNewUri())
-                ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:newRecordGeneral'))
-                ->setIcon($this->getIconFactory()->getIcon('actions-document-new', Icon::SIZE_SMALL))
-                ->render();
-        }
-
-
-        return $output;
+        // New button only for the current data type.
+        return $this->makeLinkButton()->setHref($this->getNewUri())
+            ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:newRecordGeneral'))
+            ->setIcon($this->getIconFactory()->getIcon('actions-document-new', Icon::SIZE_SMALL))
+            ->render();
     }
 
     /**
