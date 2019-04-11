@@ -331,9 +331,9 @@ class ModuleLoader
     /**
      * Returns the current pid.
      *
-     * @return bool
+     * @return int
      */
-    public function getCurrentPid(): bool
+    public function getCurrentPid(): int
     {
         return GeneralUtility::_GET(Parameter::PID) > 0 ? (int)GeneralUtility::_GET(Parameter::PID) : 0;
     }
