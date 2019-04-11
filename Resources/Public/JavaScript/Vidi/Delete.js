@@ -139,7 +139,7 @@ define([
 		massRemove: function(message, url) {
 
 			Vidi.modal = Modal.show(
-				top.TYPO3.l10n.localize('delete'),
+				TYPO3.l10n.localize('delete'),
 				message,
 				top.TYPO3.Severity.warning,
 				[
