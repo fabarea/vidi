@@ -261,9 +261,9 @@ class ModuleLoader
     /**
      * Register the module in two places: core + vidi internal.
      *
-     * @return void
+     * @return $this
      */
-    public function register(): void
+    public function register(): self
     {
         // Internal Vidi module registration.
         $configuration = [];
@@ -314,6 +314,7 @@ class ModuleLoader
                 $moduleConfiguration
             );
         }
+        return $this;
     }
 
     /**
