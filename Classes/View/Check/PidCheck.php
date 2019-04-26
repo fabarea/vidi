@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\View\Check;
 
 /*
@@ -8,6 +9,8 @@ namespace Fab\Vidi\View\Check;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\View\AbstractComponentView;
 use TYPO3\CMS\Frontend\Page\PageRepository;
@@ -183,8 +186,8 @@ EOF;
     /**
      * Check if given table is allowed on standard pages
      *
-     * @see \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages()
      * @return bool
+     * @see \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages()
      */
     protected function isTableAllowedOnStandardPages(): bool
     {
@@ -235,8 +238,32 @@ EOF;
     {
         if ($this->page !== null) {
             return $this->page;
-        } else {
-            return $this->getDatabaseConnection()->exec_SELECTgetSingleRow('doktype', 'pages', 'deleted = 0 AND uid = ' . $this->configuredPid);
         }
+
+        $query = $this->getQueryBuilder('pages');
+        $query->getRestrictions()->removeAll(); // we are in BE context.
+
+        $page = $query->select('doktype')
+            ->from('pages')
+            ->where('deleted = 0',
+                'uid = ' . $this->configuredPid)
+            ->execute()
+            ->fetch();
+
+        return is_array($page)
+            ? $page
+            : [];
     }
+
+    /**
+     * @param string $tableName
+     * @return object|QueryBuilder
+     */
+    protected function getQueryBuilder($tableName): QueryBuilder
+    {
+        /** @var ConnectionPool $connectionPool */
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        return $connectionPool->getQueryBuilderForTable($tableName);
+    }
+
 }
