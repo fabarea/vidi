@@ -42,9 +42,6 @@ class ContentService
      * Constructor
      *
      * @param string $dataType
-     * @return ContentService
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
-     * @throws \InvalidArgumentException
      */
     public function __construct($dataType = '')
     {
@@ -62,9 +59,6 @@ class ContentService
      * @param int $limit
      * @param int $offset
      * @return $this
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     * @throws \InvalidArgumentException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      */
     public function findBy(Matcher $matcher, Order $order = null, $limit = null, $offset = null)
     {
@@ -95,9 +89,6 @@ class ContentService
      * @param int $limit
      * @param int $offset
      * @return AfterFindContentObjectsSignalArguments
-     * @throws \InvalidArgumentException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      * @signal
      */
     protected function emitAfterFindContentObjectsSignal($contentObjects, Matcher $matcher, Order $order = null, $limit = 0, $offset = 0)
@@ -120,8 +111,7 @@ class ContentService
     /**
      * Get the Vidi Module Loader.
      *
-     * @return ModuleLoader
-     * @throws \InvalidArgumentException
+     * @return ModuleLoader|object
      */
     protected function getModuleLoader()
     {
@@ -131,8 +121,7 @@ class ContentService
     /**
      * Get the SignalSlot dispatcher.
      *
-     * @return Dispatcher
-     * @throws \InvalidArgumentException
+     * @return Dispatcher|object
      */
     protected function getSignalSlotDispatcher()
     {
