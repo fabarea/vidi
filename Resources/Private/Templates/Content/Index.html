@@ -4,7 +4,19 @@
 <f:layout name="Default"/>
 
 <f:section name="main">
+	<style>
+		.dropdown-menu {
+			background-color: #EDEDED;
 
+		}
+		.dropdown-menu > li > a:hover {
+			background-color: #FAFAFA;
+
+		}
+		.dropdown-menu > li > a {
+			color: #000 !important;
+		}
+	</style>
 	<div id="navbar-main" class="module-docheader t3js-module-docheader">
 		<div class="module-docheader-bar module-docheader-bar-navigation t3js-module-docheader-bar t3js-module-docheader-bar-navigation" style="height: 16px">
 			<div class="module-docheader-bar-column-left">
@@ -151,7 +163,7 @@
 							   aria-expanded="false">
 								[mass action label]
 							</a>
-							<ul class="dropdown-menu mass-action-items">
+							<ul class="dropdown-menu mass-action-items" style="">
 								{v:render.components(part: 'menuMassAction') -> f:format.raw()}
 							</ul>
 						</div>
