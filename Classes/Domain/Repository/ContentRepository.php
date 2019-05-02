@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Domain\Repository;
 
 /*
@@ -738,11 +739,19 @@ class ContentRepository implements RepositoryInterface
                     }
                 }
 
-                $constraints[] = $query->$operator($fieldNameAndPath, $criterion['operand']);
+                if (strpos($operator, 'not') === 0) {
+                    $strippedOperator = strtolower(substr($operator, 3));
+                    $constraints[] = $query->logicalNot($query->$strippedOperator($fieldNameAndPath, $criterion['operand']));
+                } else {
+                    $constraints[] = $query->$operator($fieldNameAndPath, $criterion['operand']);
+                }
             }
 
             $getLogicalSeparator = sprintf('getLogicalSeparatorFor%s', $operatorName);
-            $logical = $matcher->$getLogicalSeparator();
+            $logical = method_exists($matcher, $getLogicalSeparator)
+                ? $matcher->$getLogicalSeparator()
+                : $matcher->getDefaultLogicalSeparator();
+
             $result = $query->$logical($constraints);
         }
 

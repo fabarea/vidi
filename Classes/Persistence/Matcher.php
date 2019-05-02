@@ -38,18 +38,24 @@ class Matcher
      */
     protected $supportedOperators = [
         '=' => 'equals',
+        '!=' => 'notEquals',
         'in' => 'in',
         'like' => 'like',
         '>' => 'greaterThan',
         '>=' => 'greaterThanOrEqual',
         '<' => 'lessThan',
-        '<=' => 'lessThanOrEqual'
+        '<=' => 'lessThanOrEqual',
     ];
 
     /**
      * @var array
      */
     protected $equals = [];
+
+    /**
+     * @var array
+     */
+    protected $notEquals = [];
 
     /**
      * @var array
@@ -80,6 +86,11 @@ class Matcher
      * @var array
      */
     protected $like = [];
+
+    /**
+     * @var array
+     */
+    protected $matches = [];
 
     /**
      * @var string
@@ -131,7 +142,6 @@ class Matcher
      *
      * @param array $matches associative [$field => $value]
      * @param string $dataType which corresponds to an entry of the TCA (table name).
-     * @return \Fab\Vidi\Persistence\Matcher
      */
     public function __construct($matches = [], $dataType = '')
     {
@@ -179,7 +189,26 @@ class Matcher
     /**
      * @return array
      */
-    public function getGreaterThan()
+    public function getNotEquals(): array
+    {
+        return $this->notEquals;
+    }
+
+    /**
+     * @param $fieldNameAndPath
+     * @param $operand
+     * @return $this
+     */
+    public function notEquals($fieldNameAndPath, $operand): self
+    {
+        $this->notEquals[] = ['fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand];
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGreaterThan(): array
     {
         return $this->greaterThan;
     }
