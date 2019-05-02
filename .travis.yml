@@ -1,18 +1,18 @@
 language: php
 
 php:
-  - 5.6
+  - 7.2
 
 env:
-  - TYPO3_BRANCH=7.6.9
+  - TYPO3_BRANCH=v9.5.5
 #  - TYPO3_BRANCH=master
 
 matrix:
   include:
-    - php: 5.6
-      env: TYPO3_BRANCH=7.6.9
-#  allow_failures:
-#    - env: TYPO3_BRANCH=TYPO3_7-1-0
+    - php: 7.2
+#      env: TYPO3_BRANCH=v9.5.5
+  allow_failures:
+    - env: TYPO3_BRANCH=v9.5.5
 #    - env: TYPO3_BRANCH=master
   fast_finish: true
 
