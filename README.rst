@@ -204,6 +204,20 @@ Facets
 
 Facets are visible in the Visual Search and enable the search by criteria. Facets are generally mapped to a field but it is not mandatory ; it can be arbitrary values. To provide a custom Facet, the interface `\Fab\Vidi\Facet\FacetInterface` must be implemented. Best is to take inspiration of the `\Fab\Vidi\Facet\StandardFacet`.
 
+```
+# Example for table fe_users
+$GLOBALS['TCA']['fe_users']['grid']['facets'][\Fab\Vidi\Facet\CompositeFacet::class] =
+    [
+        'name' => 'uid',
+        'label' => 'LLL:EXT:my_example/Resources/Private/Language/locallang.xlf:foo',
+        'configuration' => [
+            'disable' => 0,
+            'email' => '*',
+            'pid' => 123,
+        ]
+    ],
+```
+
 Add tools in a Vidi module
 ==========================
 
