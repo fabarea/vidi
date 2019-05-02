@@ -34,10 +34,10 @@ class BackendUtility
      * on those fields as well in the backend you can use ->BEenableFields() though.
      *
      * @param string $table Table name present in $GLOBALS['TCA']
-     * @param string $tableAlias Table alias if any
+     * @param string $withLogicalSeparator Table alias if any
      * @return string WHERE clause for filtering out deleted records, eg " AND tablename.deleted=0
      */
-    public static function deleteClause($table, $tableAlias = '')
+    public static function deleteClause($table, $withLogicalSeparator = ' AND')
     {
         if (empty($GLOBALS['TCA'][$table]['ctrl']['delete'])) {
             return '';
@@ -45,8 +45,8 @@ class BackendUtility
         $expressionBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable($table)
             ->expr();
-        return ' AND ' . $expressionBuilder->eq(
-                ($tableAlias ?: $table) . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'],
+        return $withLogicalSeparator . ' ' . $expressionBuilder->eq(
+                $table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'],
                 0
             );
     }
