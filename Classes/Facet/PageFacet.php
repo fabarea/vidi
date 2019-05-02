@@ -12,6 +12,8 @@ namespace Fab\Vidi\Facet;
 use Fab\Vidi\Module\ModuleLoader;
 use Fab\Vidi\Persistence\Matcher;
 use Fab\Vidi\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Lang\LanguageService;
 
@@ -86,21 +88,35 @@ class PageFacet implements FacetInterface
     /**
      * @return array
      */
-    protected function getStoragePages()
+    protected function getStoragePages(): array
     {
-        $tableName = 'pages';
-        $clause = sprintf(
-            'uid IN (SELECT DISTINCT(pid) FROM %s WHERE 1=1 %s)',
-            $this->getModuleLoader()->getDataType(),
-            BackendUtility::deleteClause($this->getModuleLoader()->getDataType())
-        );
-        $clause .= BackendUtility::deleteClause('pages');
+        /** @var QueryBuilder $query */
+        $query = $this->getQueryBuilder('pages');
+        $query->getRestrictions()->removeAll();
+        return $query->select('*')
+            ->from('pages')
+            ->where(
+                sprintf(
+                    'uid IN (SELECT DISTINCT(pid) FROM %s WHERE 1=1 %s)',
+                    $this->getModuleLoader()->getDataType(),
+                    BackendUtility::deleteClause($this->getModuleLoader()->getDataType()
+                    )
+                ),
+                BackendUtility::deleteClause('pages', '')
+            )
+            ->execute()
+            ->fetchAll();
+    }
 
-        $pages = $this->getDatabaseConnection()->exec_SELECTgetRows('*', $tableName, $clause);
-
-        return is_array($pages)
-            ? $pages
-            : [];
+    /**
+     * @param string $tableName
+     * @return object|QueryBuilder
+     */
+    protected function getQueryBuilder($tableName): QueryBuilder
+    {
+        /** @var ConnectionPool $connectionPool */
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        return $connectionPool->getQueryBuilderForTable($tableName);
     }
 
     /**
