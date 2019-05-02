@@ -775,9 +775,9 @@ class ContentRepository implements RepositoryInterface
      * @param string $propertyName
      * @param string $value
      * @param string $flag
-     * @return array
+     * @return mixed
      */
-    protected function processMagicCall($propertyName, $value, $flag = ''): array
+    protected function processMagicCall($propertyName, $value, $flag = '')
     {
 
         $fieldName = Property::name($propertyName)->of($this->dataType)->toFieldName();

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Tca;
 
 /*
@@ -81,7 +82,7 @@ class GridService extends AbstractTca
     public function getFieldNames(): array
     {
         $fields = $this->getFields();
-        return array_keys($fields);
+        return array_keys($fields) ?: [];
     }
 
     /**
@@ -184,7 +185,7 @@ class GridService extends AbstractTca
     public function getField($fieldName): array
     {
         $fields = $this->getFields();
-        return $fields[$fieldName];
+        return $fields[$fieldName] ?: [];
     }
 
     /**
