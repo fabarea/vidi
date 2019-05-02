@@ -102,9 +102,8 @@ class ContentRepository implements RepositoryInterface
      * @param Matcher $matcher
      * @param Order|null $order
      * @return Content[]
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidNumberOfConstraintsException
      */
-    public function findDistinctValues($propertyName, Matcher $matcher = null, Order $order = null)
+    public function findDistinctValues($propertyName, Matcher $matcher = null, Order $order = null): array
     {
         $query = $this->createQuery();
         $query->setDistinct($propertyName);
@@ -114,7 +113,7 @@ class ContentRepository implements RepositoryInterface
 
         // Add some additional constraints from the Matcher object.
         $matcherConstraint = null;
-        if (!is_null($matcher)) {
+        if ($matcher !== null) {
             $matcherConstraint = $this->computeConstraints($query, $matcher);
         }
 
@@ -140,7 +139,7 @@ class ContentRepository implements RepositoryInterface
      * @param Matcher $matcher
      * @return int
      */
-    public function countDistinctValues($propertyName, Matcher $matcher = null)
+    public function countDistinctValues($propertyName, Matcher $matcher = null): int
     {
         $query = $this->createQuery();
         $query->setDistinct($propertyName);
@@ -184,7 +183,7 @@ class ContentRepository implements RepositoryInterface
      * @param array $values
      * @return Content[]
      */
-    public function findIn($propertyName, array $values)
+    public function findIn($propertyName, array $values): array
     {
         $query = $this->createQuery();
         $query->matching($query->in($propertyName, $values));
@@ -200,7 +199,7 @@ class ContentRepository implements RepositoryInterface
      * @param int $offset
      * @return Content[]
      */
-    public function findBy(Matcher $matcher, Order $order = null, $limit = null, $offset = null)
+    public function findBy(Matcher $matcher, Order $order = null, $limit = null, $offset = null): array
     {
 
         $query = $this->createQuery();
@@ -242,7 +241,7 @@ class ContentRepository implements RepositoryInterface
      * @param Matcher $matcher
      * @return Content
      */
-    public function findOneBy(Matcher $matcher)
+    public function findOneBy(Matcher $matcher): Content
     {
 
         $query = $this->createQuery();
@@ -268,7 +267,7 @@ class ContentRepository implements RepositoryInterface
      * @param Matcher $matcher
      * @return int
      */
-    public function countBy(Matcher $matcher)
+    public function countBy(Matcher $matcher): int
     {
 
         $query = $this->createQuery();
@@ -289,7 +288,7 @@ class ContentRepository implements RepositoryInterface
      * @param $language
      * @return bool
      */
-    public function localize($content, $language)
+    public function localize($content, $language): bool
     {
 
         // Security check
@@ -349,7 +348,7 @@ class ContentRepository implements RepositoryInterface
      * @param string $target
      * @return bool
      */
-    public function move($content, $target)
+    public function move($content, $target): bool
     {
 
         // Security check.
@@ -369,7 +368,7 @@ class ContentRepository implements RepositoryInterface
      * @param Content $content
      * @return bool
      */
-    public function copy($content, $target)
+    public function copy($content, $target): bool
     {
 
         // Security check.
@@ -387,7 +386,6 @@ class ContentRepository implements RepositoryInterface
      * Adds an object to this repository.
      *
      * @param object $object The object to add
-     * @throws \BadMethodCallException
      * @return void
      * @api
      */
@@ -431,7 +429,9 @@ class ContentRepository implements RepositoryInterface
     {
         $query = $this->createQuery();
 
-        $result = $query->matching($query->equals('uid', $identifier))
+        $result = $query->matching(
+            $query->equals('uid', $identifier)
+        )
             ->execute();
 
         if (is_array($result)) {
@@ -446,7 +446,6 @@ class ContentRepository implements RepositoryInterface
      *
      * @param string $methodName The name of the magic method
      * @param string $arguments The arguments of the magic method
-     * @throws UnsupportedMethodException
      * @return mixed
      * @api
      */
@@ -507,7 +506,6 @@ class ContentRepository implements RepositoryInterface
      * )
      *
      * @param array $defaultOrderings The property names to order by
-     * @throws \BadMethodCallException
      * @return void
      * @api
      */
@@ -520,7 +518,6 @@ class ContentRepository implements RepositoryInterface
      * Sets the default query settings to be used in this repository
      *
      * @param QuerySettingsInterface $defaultQuerySettings The query settings to be used by default
-     * @throws \BadMethodCallException
      * @return void
      * @api
      */
@@ -532,7 +529,7 @@ class ContentRepository implements RepositoryInterface
     /**
      * @return void
      */
-    public function resetDefaultQuerySettings()
+    public function resetDefaultQuerySettings(): void
     {
         $this->defaultQuerySettings = null;
     }
@@ -541,7 +538,7 @@ class ContentRepository implements RepositoryInterface
     /**
      * @return array
      */
-    public function getErrorMessages()
+    public function getErrorMessages(): array
     {
         return $this->errorMessages;
     }
@@ -550,7 +547,7 @@ class ContentRepository implements RepositoryInterface
      * @param string $sourceFieldName
      * @return $this
      */
-    public function setSourceFieldName($sourceFieldName)
+    public function setSourceFieldName($sourceFieldName): self
     {
         $this->sourceFieldName = $sourceFieldName;
         return $this;
@@ -559,7 +556,7 @@ class ContentRepository implements RepositoryInterface
     /**
      * @return string
      */
-    public function getDataType()
+    public function getDataType(): string
     {
         return $this->dataType;
     }
@@ -570,7 +567,7 @@ class ContentRepository implements RepositoryInterface
      * @param string $ordering
      * @return bool
      */
-    protected function hasForeignRelationIn($ordering)
+    protected function hasForeignRelationIn($ordering): bool
     {
         return strpos($ordering, '.') !== false;
     }
@@ -581,7 +578,7 @@ class ContentRepository implements RepositoryInterface
      * @param string $ordering
      * @return string
      */
-    protected function getForeignRelationFrom($ordering)
+    protected function getForeignRelationFrom($ordering): string
     {
         $parts = explode('.', $ordering);
         return $parts[0];
@@ -594,9 +591,8 @@ class ContentRepository implements RepositoryInterface
      * @param Matcher $matcher
      * @return ConstraintInterface|null
      */
-    protected function computeConstraints(Query $query, Matcher $matcher)
+    protected function computeConstraints(Query $query, Matcher $matcher): ?ConstraintInterface
     {
-
         $constraints = null;
 
         $collectedConstraints = [];
@@ -636,7 +632,7 @@ class ContentRepository implements RepositoryInterface
      * @param Matcher $matcher
      * @return ConstraintInterface|null
      */
-    protected function computeSearchTermConstraint(Query $query, Matcher $matcher)
+    protected function computeSearchTermConstraint(Query $query, Matcher $matcher): ?ConstraintInterface
     {
 
         $result = null;
@@ -676,7 +672,7 @@ class ContentRepository implements RepositoryInterface
      * @param string $value
      * @return bool
      */
-    protected function isSuitableForLike($fieldNameAndPath, $value)
+    protected function isSuitableForLike($fieldNameAndPath, $value): bool
     {
         $isSuitable = true;
 
@@ -704,7 +700,7 @@ class ContentRepository implements RepositoryInterface
      * @param string $operator
      * @return ConstraintInterface|null
      */
-    protected function computeConstraint(Query $query, Matcher $matcher, $operator)
+    protected function computeConstraint(Query $query, Matcher $matcher, $operator): ?ConstraintInterface
     {
         $result = null;
 
@@ -756,7 +752,7 @@ class ContentRepository implements RepositoryInterface
     /**
      * @return DataHandler
      */
-    protected function getDataHandler()
+    protected function getDataHandler(): DataHandler
     {
         if (!$this->dataHandler) {
             $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
@@ -772,7 +768,7 @@ class ContentRepository implements RepositoryInterface
      * @param string $flag
      * @return array
      */
-    protected function processMagicCall($propertyName, $value, $flag = '')
+    protected function processMagicCall($propertyName, $value, $flag = ''): array
     {
 
         $fieldName = Property::name($propertyName)->of($this->dataType)->toFieldName();
@@ -790,16 +786,16 @@ class ContentRepository implements RepositoryInterface
 
         $matcher->equals($fieldName, $value);
 
-        if ($flag == 'count') {
+        if ($flag === 'count') {
             $result = $this->countBy($matcher);
         } else {
             $result = $this->findBy($matcher);
         }
-        return $flag == 'one' && !empty($result) ? reset($result) : $result;
+        return $flag === 'one' && !empty($result) ? reset($result) : $result;
     }
 
     /**
-     * @return DataHandlerFactory
+     * @return DataHandlerFactory|object
      */
     protected function getDataHandlerFactory()
     {
@@ -811,13 +807,13 @@ class ContentRepository implements RepositoryInterface
      *
      * @return bool
      */
-    protected function isBackendMode()
+    protected function isBackendMode(): bool
     {
         return TYPO3_MODE === 'BE';
     }
 
     /**
-     * @return FieldPathResolver
+     * @return FieldPathResolver|object
      */
     protected function getFieldPathResolver()
     {
@@ -825,25 +821,25 @@ class ContentRepository implements RepositoryInterface
     }
 
     /**
-     * @return ObjectManager
+     * @return ObjectManager|object
      */
-    protected function getObjectManager()
+    protected function getObjectManager(): ObjectManager
     {
         return GeneralUtility::makeInstance(ObjectManager::class);
     }
 
     /**
-     * @return ContentValidator
+     * @return ContentValidator|object
      */
-    protected function getContentValidator()
+    protected function getContentValidator(): ContentValidator
     {
         return GeneralUtility::makeInstance(ContentValidator::class);
     }
 
     /**
-     * @return LanguageValidator
+     * @return LanguageValidator|object
      */
-    protected function getLanguageValidator()
+    protected function getLanguageValidator(): LanguageValidator
     {
         return GeneralUtility::makeInstance(LanguageValidator::class);
     }
@@ -854,12 +850,9 @@ class ContentRepository implements RepositoryInterface
      * @param Query $query
      * @param ConstraintInterface|null $constraints
      * @return ConstraintInterface|null $constraints
-     * @throws \InvalidArgumentException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @signal
      */
-    protected function emitPostProcessConstraintsSignal(Query $query, $constraints)
+    protected function emitPostProcessConstraintsSignal(Query $query, $constraints): ?ConstraintInterface
     {
         /** @var ConstraintContainer $constraintContainer */
         $constraintContainer = GeneralUtility::makeInstance(ConstraintContainer::class);
@@ -885,9 +878,8 @@ class ContentRepository implements RepositoryInterface
 
     /**
      * @return Dispatcher
-     * @throws \InvalidArgumentException
      */
-    protected function getSignalSlotDispatcher()
+    protected function getSignalSlotDispatcher(): Dispatcher
     {
         return $this->getObjectManager()->get(Dispatcher::class);
     }

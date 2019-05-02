@@ -143,7 +143,7 @@ class Matcher
      * @param string $searchTerm
      * @return \Fab\Vidi\Persistence\Matcher
      */
-    public function setSearchTerm($searchTerm)
+    public function setSearchTerm($searchTerm): Matcher
     {
         $this->searchTerm = $searchTerm;
         return $this;
@@ -152,7 +152,7 @@ class Matcher
     /**
      * @return string
      */
-    public function getSearchTerm()
+    public function getSearchTerm(): string
     {
         return $this->searchTerm;
     }
@@ -160,7 +160,7 @@ class Matcher
     /**
      * @return array
      */
-    public function getEquals()
+    public function getEquals(): array
     {
         return $this->equals;
     }
@@ -170,7 +170,7 @@ class Matcher
      * @param $operand
      * @return $this
      */
-    public function equals($fieldNameAndPath, $operand)
+    public function equals($fieldNameAndPath, $operand): self
     {
         $this->equals[] = ['fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand];
         return $this;
@@ -189,7 +189,7 @@ class Matcher
      * @param $operand
      * @return $this
      */
-    public function greaterThan($fieldNameAndPath, $operand)
+    public function greaterThan($fieldNameAndPath, $operand): self
     {
         $this->greaterThan[] = ['fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand];
         return $this;
@@ -198,7 +198,7 @@ class Matcher
     /**
      * @return array
      */
-    public function getGreaterThanOrEqual()
+    public function getGreaterThanOrEqual(): array
     {
         return $this->greaterThanOrEqual;
     }
@@ -208,7 +208,7 @@ class Matcher
      * @param $operand
      * @return $this
      */
-    public function greaterThanOrEqual($fieldNameAndPath, $operand)
+    public function greaterThanOrEqual($fieldNameAndPath, $operand): self
     {
         $this->greaterThanOrEqual[] = ['fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand];
         return $this;
@@ -217,7 +217,7 @@ class Matcher
     /**
      * @return array
      */
-    public function getLessThan()
+    public function getLessThan(): array
     {
         return $this->lessThan;
     }
@@ -227,7 +227,7 @@ class Matcher
      * @param $operand
      * @return $this
      */
-    public function lessThan($fieldNameAndPath, $operand)
+    public function lessThan($fieldNameAndPath, $operand): self
     {
         $this->lessThan[] = ['fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand];
         return $this;
@@ -236,7 +236,7 @@ class Matcher
     /**
      * @return array
      */
-    public function getLessThanOrEqual()
+    public function getLessThanOrEqual(): array
     {
         return $this->lessThanOrEqual;
     }
@@ -246,7 +246,7 @@ class Matcher
      * @param $operand
      * @return $this
      */
-    public function lessThanOrEqual($fieldNameAndPath, $operand)
+    public function lessThanOrEqual($fieldNameAndPath, $operand): self
     {
         $this->lessThanOrEqual[] = ['fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand];
         return $this;
@@ -255,7 +255,7 @@ class Matcher
     /**
      * @return array
      */
-    public function getLike()
+    public function getLike(): array
     {
         return $this->like;
     }
@@ -265,7 +265,7 @@ class Matcher
      * @param $operand
      * @return $this
      */
-    public function in($fieldNameAndPath, $operand)
+    public function in($fieldNameAndPath, $operand): self
     {
         $this->in[] = ['fieldNameAndPath' => $fieldNameAndPath, 'operand' => $operand];
         return $this;
@@ -274,7 +274,7 @@ class Matcher
     /**
      * @return array
      */
-    public function getIn()
+    public function getIn(): array
     {
         return $this->in;
     }
@@ -285,7 +285,7 @@ class Matcher
      * @param bool $addWildCard
      * @return $this
      */
-    public function like($fieldNameAndPath, $operand, $addWildCard = true)
+    public function like($fieldNameAndPath, $operand, $addWildCard = true): self
     {
         $wildCardSymbol = $addWildCard ? '%' : '';
         $this->like[] = ['fieldNameAndPath' => $fieldNameAndPath, 'operand' => $wildCardSymbol . $operand . $wildCardSymbol];
@@ -293,9 +293,9 @@ class Matcher
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getDefaultLogicalSeparator()
+    public function getDefaultLogicalSeparator(): string
     {
         return $this->defaultLogicalSeparator;
     }
@@ -304,7 +304,7 @@ class Matcher
      * @param string $defaultLogicalSeparator
      * @return $this
      */
-    public function setDefaultLogicalSeparator($defaultLogicalSeparator)
+    public function setDefaultLogicalSeparator($defaultLogicalSeparator): self
     {
         $this->defaultLogicalSeparator = $defaultLogicalSeparator;
         return $this;
@@ -313,7 +313,7 @@ class Matcher
     /**
      * @return string
      */
-    public function getLogicalSeparatorForEquals()
+    public function getLogicalSeparatorForEquals(): string
     {
         return $this->logicalSeparatorForEquals;
     }
@@ -322,7 +322,7 @@ class Matcher
      * @param string $logicalSeparatorForEquals
      * @return $this
      */
-    public function setLogicalSeparatorForEquals($logicalSeparatorForEquals)
+    public function setLogicalSeparatorForEquals($logicalSeparatorForEquals): self
     {
         $this->logicalSeparatorForEquals = $logicalSeparatorForEquals;
         return $this;
@@ -331,7 +331,7 @@ class Matcher
     /**
      * @return string
      */
-    public function getLogicalSeparatorForGreaterThan()
+    public function getLogicalSeparatorForGreaterThan(): string
     {
         return $this->logicalSeparatorForGreaterThan;
     }
@@ -340,7 +340,7 @@ class Matcher
      * @param string $logicalSeparatorForGreaterThan
      * @return $this
      */
-    public function setLogicalSeparatorForGreaterThan($logicalSeparatorForGreaterThan)
+    public function setLogicalSeparatorForGreaterThan($logicalSeparatorForGreaterThan): self
     {
         $this->logicalSeparatorForGreaterThan = $logicalSeparatorForGreaterThan;
         return $this;
@@ -349,7 +349,7 @@ class Matcher
     /**
      * @return string
      */
-    public function getLogicalSeparatorForGreaterThanOrEqual()
+    public function getLogicalSeparatorForGreaterThanOrEqual(): string
     {
         return $this->logicalSeparatorForGreaterThanOrEqual;
     }
@@ -358,7 +358,7 @@ class Matcher
      * @param string $logicalSeparatorForGreaterThanOrEqual
      * @return $this
      */
-    public function setLogicalSeparatorForGreaterThanOrEqual($logicalSeparatorForGreaterThanOrEqual)
+    public function setLogicalSeparatorForGreaterThanOrEqual($logicalSeparatorForGreaterThanOrEqual): self
     {
         $this->logicalSeparatorForGreaterThanOrEqual = $logicalSeparatorForGreaterThanOrEqual;
         return $this;
@@ -367,7 +367,7 @@ class Matcher
     /**
      * @return string
      */
-    public function getLogicalSeparatorForLessThan()
+    public function getLogicalSeparatorForLessThan(): string
     {
         return $this->logicalSeparatorForLessThan;
     }
@@ -376,7 +376,7 @@ class Matcher
      * @param string $logicalSeparatorForLessThan
      * @return $this
      */
-    public function setLogicalSeparatorForLessThan($logicalSeparatorForLessThan)
+    public function setLogicalSeparatorForLessThan($logicalSeparatorForLessThan): self
     {
         $this->logicalSeparatorForLessThan = $logicalSeparatorForLessThan;
         return $this;
@@ -385,7 +385,7 @@ class Matcher
     /**
      * @return string
      */
-    public function getLogicalSeparatorForLessThanOrEqual()
+    public function getLogicalSeparatorForLessThanOrEqual(): string
     {
         return $this->logicalSeparatorForLessThanOrEqual;
     }
@@ -394,7 +394,7 @@ class Matcher
      * @param string $logicalSeparatorForLessThanOrEqual
      * @return $this
      */
-    public function setLogicalSeparatorForLessThanOrEqual($logicalSeparatorForLessThanOrEqual)
+    public function setLogicalSeparatorForLessThanOrEqual($logicalSeparatorForLessThanOrEqual): self
     {
         $this->logicalSeparatorForLessThanOrEqual = $logicalSeparatorForLessThanOrEqual;
         return $this;
@@ -403,7 +403,7 @@ class Matcher
     /**
      * @return string
      */
-    public function getLogicalSeparatorForIn()
+    public function getLogicalSeparatorForIn(): string
     {
         return $this->logicalSeparatorForIn;
     }
@@ -412,7 +412,7 @@ class Matcher
      * @param string $logicalSeparatorForIn
      * @return $this
      */
-    public function setLogicalSeparatorForIn($logicalSeparatorForIn)
+    public function setLogicalSeparatorForIn($logicalSeparatorForIn): self
     {
         $this->logicalSeparatorForIn = $logicalSeparatorForIn;
         return $this;
@@ -421,7 +421,7 @@ class Matcher
     /**
      * @return string
      */
-    public function getLogicalSeparatorForLike()
+    public function getLogicalSeparatorForLike(): string
     {
         return $this->logicalSeparatorForLike;
     }
@@ -430,7 +430,7 @@ class Matcher
      * @param string $logicalSeparatorForLike
      * @return $this
      */
-    public function setLogicalSeparatorForLike($logicalSeparatorForLike)
+    public function setLogicalSeparatorForLike($logicalSeparatorForLike): self
     {
         $this->logicalSeparatorForLike = $logicalSeparatorForLike;
         return $this;
@@ -439,7 +439,7 @@ class Matcher
     /**
      * @return string
      */
-    public function getLogicalSeparatorForSearchTerm()
+    public function getLogicalSeparatorForSearchTerm(): string
     {
         return $this->logicalSeparatorForSearchTerm;
     }
@@ -448,7 +448,7 @@ class Matcher
      * @param string $logicalSeparatorForSearchTerm
      * @return $this
      */
-    public function setLogicalSeparatorForSearchTerm($logicalSeparatorForSearchTerm)
+    public function setLogicalSeparatorForSearchTerm($logicalSeparatorForSearchTerm): self
     {
         $this->logicalSeparatorForSearchTerm = $logicalSeparatorForSearchTerm;
         return $this;
@@ -457,7 +457,7 @@ class Matcher
     /**
      * @return array
      */
-    public function getSupportedOperators()
+    public function getSupportedOperators(): array
     {
         return $this->supportedOperators;
     }
@@ -465,7 +465,7 @@ class Matcher
     /**
      * @return string
      */
-    public function getDataType()
+    public function getDataType(): string
     {
         return $this->dataType;
     }
@@ -474,7 +474,7 @@ class Matcher
      * @param string $dataType
      * @return $this
      */
-    public function setDataType($dataType)
+    public function setDataType($dataType): self
     {
         $this->dataType = $dataType;
         return $this;

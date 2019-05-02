@@ -32,6 +32,11 @@ class PageFacet implements FacetInterface
     protected $label;
 
     /**
+     * @var string
+     */
+    protected $dataType;
+
+    /**
      * @var bool
      */
     protected $canModifyMatcher = false;
@@ -51,7 +56,7 @@ class PageFacet implements FacetInterface
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -59,7 +64,7 @@ class PageFacet implements FacetInterface
     /**
      * @return string
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->label;
     }
@@ -67,7 +72,7 @@ class PageFacet implements FacetInterface
     /**
      * @return array
      */
-    public function getSuggestions()
+    public function getSuggestions(): array
     {
         $values = [];
         foreach ($this->getStoragePages() as $page) {
@@ -111,7 +116,7 @@ class PageFacet implements FacetInterface
     /**
      * @return LanguageService
      */
-    protected function getLanguageService()
+    protected function getLanguageService(): LanguageService
     {
 
         /** @var LanguageService $langService */
@@ -127,7 +132,7 @@ class PageFacet implements FacetInterface
     /**
      * @return bool
      */
-    public function hasSuggestions()
+    public function hasSuggestions(): bool
     {
         return true;
     }
@@ -136,7 +141,7 @@ class PageFacet implements FacetInterface
      * @param string $dataType
      * @return $this
      */
-    public function setDataType($dataType)
+    public function setDataType($dataType): self
     {
         $this->dataType = $dataType;
         return $this;
@@ -145,7 +150,7 @@ class PageFacet implements FacetInterface
     /**
      * @return bool
      */
-    public function canModifyMatcher()
+    public function canModifyMatcher(): bool
     {
         return $this->canModifyMatcher;
     }
@@ -155,7 +160,7 @@ class PageFacet implements FacetInterface
      * @param $value
      * @return Matcher
      */
-    public function modifyMatcher(Matcher $matcher, $value)
+    public function modifyMatcher(Matcher $matcher, $value): Matcher
     {
         return $matcher;
     }
@@ -169,17 +174,6 @@ class PageFacet implements FacetInterface
     protected function getModuleLoader()
     {
         return GeneralUtility::makeInstance(ModuleLoader::class);
-    }
-
-    /**
-     * Magic method implementation for retrieving state.
-     *
-     * @param array $states
-     * @return PageFacet
-     */
-    static public function __set_state($states)
-    {
-        return new self($states['name']);
     }
 
 }

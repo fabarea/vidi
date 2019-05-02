@@ -52,7 +52,7 @@ class StandardFacet implements FacetInterface
      * @param string $label
      * @param array $suggestions
      */
-    public function __construct($name, $label = '', array $suggestions = array())
+    public function __construct($name, $label = '', array $suggestions = [])
     {
         $this->name = $name;
         if (empty($label)) {
@@ -65,7 +65,7 @@ class StandardFacet implements FacetInterface
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -73,7 +73,7 @@ class StandardFacet implements FacetInterface
     /**
      * @return string
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         if ($this->label === $this->name) {
             $label = Tca::table($this->dataType)->field($this->getName())->getLabel();
@@ -93,7 +93,7 @@ class StandardFacet implements FacetInterface
     /**
      * @return array
      */
-    public function getSuggestions()
+    public function getSuggestions(): array
     {
 
         $values = [];
@@ -112,9 +112,8 @@ class StandardFacet implements FacetInterface
     /**
      * @return LanguageService
      */
-    protected function getLanguageService()
+    protected function getLanguageService(): LanguageService
     {
-
         /** @var LanguageService $langService */
         $langService = $GLOBALS['LANG'];
         if (!$langService) {
@@ -128,7 +127,7 @@ class StandardFacet implements FacetInterface
     /**
      * @return bool
      */
-    public function hasSuggestions()
+    public function hasSuggestions(): bool
     {
         return !empty($this->suggestions);
     }
@@ -137,7 +136,7 @@ class StandardFacet implements FacetInterface
      * @param string $dataType
      * @return $this
      */
-    public function setDataType($dataType)
+    public function setDataType($dataType): self
     {
         $this->dataType = $dataType;
         return $this;
@@ -146,7 +145,7 @@ class StandardFacet implements FacetInterface
     /**
      * @return bool
      */
-    public function canModifyMatcher()
+    public function canModifyMatcher(): bool
     {
         return $this->canModifyMatcher;
     }
@@ -156,20 +155,9 @@ class StandardFacet implements FacetInterface
      * @param $value
      * @return Matcher
      */
-    public function modifyMatcher(Matcher $matcher, $value)
+    public function modifyMatcher(Matcher $matcher, $value): Matcher
     {
         return $matcher;
-    }
-
-    /**
-     * Magic method implementation for retrieving state.
-     *
-     * @param array $states
-     * @return StandardFacet
-     */
-    static public function __set_state($states)
-    {
-        return new StandardFacet($states['name'], $states['label'], $states['suggestions']);
     }
 
 }

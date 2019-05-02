@@ -24,9 +24,8 @@ class FacetSuggestionService
      *
      * @param string $fieldNameAndPath
      * @return array
-     * @throws \Exception
      */
-    public function getSuggestions($fieldNameAndPath)
+    public function getSuggestions($fieldNameAndPath): array
     {
         $values = [];
 
@@ -95,7 +94,7 @@ class FacetSuggestionService
      *
      * @return int
      */
-    protected function getLimit()
+    protected function getLimit(): int
     {
         $settings = $this->getSettings();
         $suggestionLimit = (int)$settings['suggestionLimit'];

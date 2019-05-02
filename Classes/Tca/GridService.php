@@ -59,7 +59,6 @@ class GridService extends AbstractTca
     /**
      * __construct
      *
-     * @throws InvalidKeyInArrayException
      * @param string $tableName
      */
     public function __construct($tableName)
@@ -79,7 +78,7 @@ class GridService extends AbstractTca
      *
      * @return array
      */
-    public function getFieldNames()
+    public function getFieldNames(): array
     {
         $fields = $this->getFields();
         return array_keys($fields);
@@ -90,7 +89,7 @@ class GridService extends AbstractTca
      *
      * @return array
      */
-    public function getAllFieldNames()
+    public function getAllFieldNames(): array
     {
         $allFields = $this->getAllFields();
         return array_keys($allFields);
@@ -101,9 +100,8 @@ class GridService extends AbstractTca
      *
      * @param string $fieldNameAndPath
      * @return string
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
-    public function getLabelKey($fieldNameAndPath)
+    public function getLabelKey($fieldNameAndPath): string
     {
 
         $field = $this->getField($fieldNameAndPath);
@@ -165,10 +163,9 @@ class GridService extends AbstractTca
      * Returns the field name given its position.
      *
      * @param string $position the position of the field in the grid
-     * @throws InvalidKeyInArrayException
      * @return int
      */
-    public function getFieldNameByPosition($position)
+    public function getFieldNameByPosition($position): int
     {
         $fields = array_keys($this->getFields());
         if (empty($fields[$position])) {
@@ -183,9 +180,8 @@ class GridService extends AbstractTca
      *
      * @param string $fieldName
      * @return array
-     * @throws InvalidKeyInArrayException
      */
-    public function getField($fieldName)
+    public function getField($fieldName): array
     {
         $fields = $this->getFields();
         return $fields[$fieldName];
@@ -195,12 +191,11 @@ class GridService extends AbstractTca
      * Returns an array containing column names for the Grid.
      *
      * @return array
-     * @throws \Exception
      */
-    public function getFields()
+    public function getFields(): array
     {
         // Cache this operation since it can take some time.
-        if (is_null($this->fields)) {
+        if ($this->fields === null) {
 
             // Fetch all available fields first.
             $fields = $this->getAllFields();
@@ -225,7 +220,7 @@ class GridService extends AbstractTca
      * @param $fields
      * @return array
      */
-    protected function filterByIncludedFields($fields)
+    protected function filterByIncludedFields($fields): array
     {
 
         $filteredFields = $fields;
@@ -246,9 +241,8 @@ class GridService extends AbstractTca
      *
      * @param $fields
      * @return array
-     * @throws \Exception
      */
-    protected function filterByBackendUser($fields)
+    protected function filterByBackendUser($fields): array
     {
         if (!$this->getBackendUser()->isAdmin()) {
             foreach ($fields as $fieldName => $field) {
@@ -266,7 +260,7 @@ class GridService extends AbstractTca
      * @param $fields
      * @return array
      */
-    protected function filterByExcludedFields($fields)
+    protected function filterByExcludedFields($fields): array
     {
 
         // Unset excluded fields.
@@ -284,11 +278,11 @@ class GridService extends AbstractTca
      *
      * @return array
      */
-    public function getAllFields()
+    public function getAllFields(): array
     {
 
         // Cache this operation since it can take some time.
-        if (is_null($this->allFields)) {
+        if ($this->allFields === null) {
 
             $fields = is_array($this->tca['columns']) ? $this->tca['columns'] : [];
             $gridFieldNames = array_keys($fields);
@@ -342,7 +336,7 @@ class GridService extends AbstractTca
      * @param string $fieldName
      * @return bool
      */
-    public function hasField($fieldName)
+    public function hasField($fieldName): bool
     {
         $fields = $this->getFields();
         return isset($fields[$fieldName]);
@@ -354,7 +348,7 @@ class GridService extends AbstractTca
      * @param string $facetName
      * @return bool
      */
-    public function hasFacet($facetName)
+    public function hasFacet($facetName): bool
     {
         $facets = $this->getFacets();
         return isset($facets[$facetName]);
@@ -365,7 +359,7 @@ class GridService extends AbstractTca
      *
      * @return FacetInterface[]
      */
-    public function getFacets()
+    public function getFacets(): array
     {
         if ($this->facets === null) {
             $this->facets = [];
@@ -374,19 +368,17 @@ class GridService extends AbstractTca
                 foreach ($this->tca['facets'] as $key => $facetNameOrArray) {
                     if (is_array($facetNameOrArray)) {
 
-                        $name = isset($facetNameOrArray['name'])
-                            ? $facetNameOrArray['name']
-                            : '';
+                        $name = $facetNameOrArray['name'] ?? '';
+
                         $label = isset($facetNameOrArray['label'])
                             ? $this->getLanguageService()->sL($facetNameOrArray['label'])
                             : '';
 
-                        $suggestions = isset($facetNameOrArray['suggestions'])
-                            ? $facetNameOrArray['suggestions']
-                            : [];
+                        $suggestions = $facetNameOrArray['suggestions'] ?? [];
+                        $configuration = $facetNameOrArray['configuration'] ?? [];
 
                         /** @var FacetInterface $facetObject */
-                        $facetObject = GeneralUtility::makeInstance($key, $name, $label, $suggestions);
+                        $facetObject = GeneralUtility::makeInstance($key, $name, $label, $suggestions, $configuration);
                         $this->facets[$facetObject->getName()] = $facetObject;
                     } else {
                         $this->facets[$facetNameOrArray] = $this->instantiateStandardFacet($facetNameOrArray);
@@ -421,7 +413,7 @@ class GridService extends AbstractTca
      * @param string $fieldName
      * @return bool
      */
-    public function canBeHidden($fieldName)
+    public function canBeHidden($fieldName): bool
     {
         $defaultValue = true;
         return $this->get($fieldName, 'canBeHidden', $defaultValue);
@@ -445,7 +437,7 @@ class GridService extends AbstractTca
      * @param string $fieldName
      * @return bool
      */
-    public function isVisible($fieldName)
+    public function isVisible($fieldName): bool
     {
         $defaultValue = true;
         return $this->get($fieldName, 'visible', $defaultValue);
@@ -457,7 +449,7 @@ class GridService extends AbstractTca
      * @param string $columnName
      * @return bool
      */
-    public function isEditable($columnName)
+    public function isEditable($columnName): bool
     {
         $defaultValue = false;
         return $this->get($columnName, 'editable', $defaultValue);
@@ -469,7 +461,7 @@ class GridService extends AbstractTca
      * @param string $columnName
      * @return bool
      */
-    public function isLocalized($columnName)
+    public function isLocalized($columnName): bool
     {
         $defaultValue = true;
         return $this->get($columnName, 'localized', $defaultValue);
@@ -482,7 +474,7 @@ class GridService extends AbstractTca
      * @param string $fieldName
      * @return string
      */
-    public function getHeader($fieldName)
+    public function getHeader($fieldName): string
     {
         $defaultValue = '';
         return $this->get($fieldName, 'html', $defaultValue);
@@ -520,7 +512,7 @@ class GridService extends AbstractTca
      * @param string $fieldName
      * @return bool
      */
-    public function hasRenderers($fieldName)
+    public function hasRenderers($fieldName): bool
     {
         $field = $this->getField($fieldName);
         return empty($field['renderer']) && empty($field['renderers']) ? false : true;
@@ -532,7 +524,7 @@ class GridService extends AbstractTca
      * @param string $fieldName
      * @return array
      */
-    public function getRenderers($fieldName)
+    public function getRenderers($fieldName): array
     {
         $field = $this->getField($fieldName);
         $renderers = [];
@@ -552,7 +544,7 @@ class GridService extends AbstractTca
      * @param string $renderer
      * @return array
      */
-    protected function convertRendererToArray($renderer, array $field)
+    protected function convertRendererToArray($renderer, array $field): array
     {
         $result = [];
         if (is_string($renderer)) {
@@ -578,7 +570,7 @@ class GridService extends AbstractTca
      * @param string $fieldName
      * @return bool
      */
-    public function getClass($fieldName)
+    public function getClass($fieldName): bool
     {
         $field = $this->getField($fieldName);
         return isset($field['class']) ? $field['class'] : '';
@@ -590,7 +582,7 @@ class GridService extends AbstractTca
      * @param string $fieldNameAndPath
      * @return bool
      */
-    public function hasLabel($fieldNameAndPath)
+    public function hasLabel($fieldNameAndPath): bool
     {
         $field = $this->getField($fieldNameAndPath);
 
@@ -612,7 +604,7 @@ class GridService extends AbstractTca
     /**
      * @return array
      */
-    public function getTca()
+    public function getTca(): array
     {
         return $this->tca;
     }
@@ -620,7 +612,7 @@ class GridService extends AbstractTca
     /**
      * @return array
      */
-    public function getIncludedFields()
+    public function getIncludedFields(): array
     {
         return empty($this->tca['included_fields']) ? [] : GeneralUtility::trimExplode(',', $this->tca['included_fields'], true);
     }
@@ -630,7 +622,7 @@ class GridService extends AbstractTca
      *
      * @return array
      */
-    public function getExcludedFields()
+    public function getExcludedFields(): array
     {
         $configurationFields = $this->getExcludedFieldsFromConfiguration();
         $preferencesFields = $this->getExcludedFieldsFromPreferences();
@@ -643,7 +635,7 @@ class GridService extends AbstractTca
      *
      * @return array
      */
-    protected function getExcludedFieldsFromConfiguration()
+    protected function getExcludedFieldsFromConfiguration(): array
     {
         $excludedFields = [];
         if (!empty($this->tca['excluded_fields'])) {
@@ -660,7 +652,7 @@ class GridService extends AbstractTca
      *
      * @return array
      */
-    protected function getExcludedFieldsFromPreferences()
+    protected function getExcludedFieldsFromPreferences(): array
     {
         $excludedFields = $this->getModulePreferences()->get(ConfigurablePart::EXCLUDED_FIELDS, $this->tableName);
         return is_array($excludedFields) ? $excludedFields : [];
@@ -669,7 +661,7 @@ class GridService extends AbstractTca
     /**
      * @return array
      */
-    public function areFilesIncludedInExport()
+    public function areFilesIncludedInExport(): array
     {
         $isIncluded = true;
 
@@ -685,7 +677,7 @@ class GridService extends AbstractTca
      * @param string|FacetInterface $facetName
      * @return StandardFacet
      */
-    protected function instantiateStandardFacet($facetName)
+    protected function instantiateStandardFacet($facetName): StandardFacet
     {
         $label = $this->getLabel($facetName);
 
@@ -693,7 +685,7 @@ class GridService extends AbstractTca
         $facet = GeneralUtility::makeInstance(StandardFacet::class, $facetName, $label);
 
         if (!$facet instanceof StandardFacet) {
-            throw new \RuntimeException('I could not instantiate a facet for facet name "' . (string)$facet . '""', 1445856345);
+            throw new \RuntimeException('I could not instantiate a facet for facet name "' . $facetName . '""', 1445856345);
         }
         return $facet;
     }
@@ -704,7 +696,7 @@ class GridService extends AbstractTca
      * @param string|FacetInterface $facetName
      * @return FacetInterface
      */
-    public function facet($facetName = '')
+    public function facet($facetName = ''): FacetInterface
     {
         $facets = $this->getFacets();
         return $facets[$facetName];
@@ -728,9 +720,8 @@ class GridService extends AbstractTca
 
     /**
      * @return \TYPO3\CMS\Lang\LanguageService|object
-     * @throws \InvalidArgumentException
      */
-    protected function getLanguageService()
+    protected function getLanguageService(): \TYPO3\CMS\Lang\LanguageService
     {
         return GeneralUtility::makeInstance(\TYPO3\CMS\Lang\LanguageService::class);
     }
