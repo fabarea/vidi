@@ -9,89 +9,46 @@ namespace Fab\Vidi\View\Check;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use Fab\Vidi\Module\ModulePidService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\View\AbstractComponentView;
-use TYPO3\CMS\Frontend\Page\PageRepository;
-use Fab\Vidi\Module\Parameter;
-use Fab\Vidi\Tca\Tca;
 
 /**
- * View which renders check.
+ * Class PidCheck
+ * @deprecated
  */
 class PidCheck extends AbstractComponentView
 {
-
-    /**
-     * The data type (table)
-     *
-     * @var string
-     */
-    protected $dataType = '';
-
-    /**
-     * The configured pid for the data type
-     *
-     * @var int
-     */
-    protected $configuredPid = 0;
-
-    /**
-     * The page record of the configured pid
-     *
-     * @var array
-     */
-    protected $page = null;
-
-    /**
-     * A collection of speaking error messages why the pid is invalid.
-     *
-     * @var array
-     */
-    protected $errors = [];
-
-    /**
-     * Pseudo-Constructor, which ensures all dependencies are injected when called.
-     */
-    public function initializeObject(): void
-    {
-        $this->dataType = $this->getModuleLoader()->getDataType();
-        $this->configuredPid = $this->getConfiguredPid();
-    }
-
     /**
      * Renders warnings if storagePid is not properly configured.
      *
      * @return string
      */
-    public function render()
+    public function render(): string
     {
-        $result = '';
+        $errors = $this->getModulePidService()->validateConfiguredPid();
 
-        $this->validateRootLevel();
-        $this->validatePageExist();
-        $this->validateDoktype();
-
-        if (!empty($this->errors)) {
-            $result .= $this->formatMessagePidIsNotValid();
-        }
-
-        return $result;
+        return empty($errors)
+            ? ''
+            : $this->formatMessagePidIsNotValid($errors);
     }
 
     /**
      * Format a message whenever the storage is offline.
      *
+     * @param array $errors
      * @return string
      */
-    protected function formatMessagePidIsNotValid(): string
+    protected function formatMessagePidIsNotValid(array $errors): string
     {
-        $error = implode('<br />', $this->errors);
+        $configuredPid = $this->getModulePidService()->getConfiguredNewRecordPid();
+
+        $error = implode('<br />', $errors);
+        $dataType = $this->getModuleLoader()->getDataType();
         $result = <<< EOF
 			<div class="alert alert-warning">
 				<div class="alert-title">
-					Page id "{$this->configuredPid}" has found to be a wrong configuration for "{$this->dataType}"
+					Page id "{$configuredPid}" has found to be a wrong configuration for "{$dataType}"
 				</div>
 				<div class="alert-message">
 					<p>{$error}</p>
@@ -99,7 +56,7 @@ class PidCheck extends AbstractComponentView
 					<ul>
 						<li>Settings in the Extension Manager as fallback configuration.</li>
 						<li>In some ext_tables.php file, by allowing this record type on any pages.<br />
-						\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('{$this->dataType}')
+						\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('{$dataType}')
 						</li>
 						<li>By User TSconfig:</li>
 					</ul>
@@ -107,8 +64,8 @@ class PidCheck extends AbstractComponentView
 # User TSconfig to be placed in your ext_tables.php:
 TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('
 
-	# Default pid for "{$this->dataType}" in Vidi:
-	tx_vidi.dataType.{$this->dataType}.storagePid = xx
+	# Default pid for "{$dataType}" in Vidi:
+	tx_vidi.dataType.{$dataType}.storagePid = xx
 ');
 </pre>
 
@@ -120,150 +77,12 @@ EOF;
     }
 
     /**
-     * Check if pid is 0 and given table is allowed on root level.
-     *
-     * @return void
+     * @return ModulePidService|object
      */
-    protected function validateRootLevel(): void
+    public function getModulePidService()
     {
-        if ($this->configuredPid > 0) {
-            return;
-        }
-
-        $isRootLevel = (bool)Tca::table()->get('rootLevel');
-        if (!$isRootLevel) {
-            $this->errors[] = sprintf(
-                'You are not allowed to use page id "0" unless you set $GLOBALS[\'TCA\'][\'%1$s\'][\'ctrl\'][\'rootLevel\'] = 1;',
-                $this->dataType
-            );
-        }
-    }
-
-    /**
-     * Check if a page exists for the configured pid
-     *
-     * @return void
-     */
-    protected function validatePageExist(): void
-    {
-        if ($this->configuredPid === 0) {
-            return;
-        }
-
-        $page = $this->getPage();
-        if (empty($page)) {
-            $this->errors[] = sprintf(
-                'No page found for the configured page id "%s".',
-                $this->configuredPid
-            );
-        }
-    }
-
-    /**
-     * Check if configured page is a sysfolder and if it is allowed.
-     *
-     * @return void
-     */
-    protected function validateDoktype(): void
-    {
-        if ($this->configuredPid === 0) {
-            return;
-        }
-
-        $page = $this->getPage();
-        if (!empty($page)
-            && (int)$page['doktype'] !== PageRepository::DOKTYPE_SYSFOLDER
-            && !$this->isTableAllowedOnStandardPages()
-            && $this->getModuleLoader()->hasComponentInDocHeader(\Fab\Vidi\View\Button\NewButton::class)) {
-            $this->errors[] = sprintf(
-                'The page with the id "%s" either has to be of the type "folder" (doktype=254) or the table "%s" has to be allowed on standard pages.',
-                $this->configuredPid,
-                $this->dataType
-            );
-        }
-    }
-
-    /**
-     * Check if given table is allowed on standard pages
-     *
-     * @return bool
-     * @see \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages()
-     */
-    protected function isTableAllowedOnStandardPages(): bool
-    {
-        $allowedTables = explode(',', $GLOBALS['PAGES_TYPES']['default']['allowedTables']);
-        return in_array($this->dataType, $allowedTables, true);
-    }
-
-    /**
-     * Return the default configured pid.
-     *
-     * @return int
-     */
-    protected function getConfiguredPid(): int
-    {
-
-        if (GeneralUtility::_GP(Parameter::PID)) {
-            $pid = GeneralUtility::_GP(Parameter::PID);
-        } else {
-
-            // Get pid from User TSConfig if any.
-            $tsConfigPath = sprintf('tx_vidi.dataType.%s.storagePid', $this->dataType);
-            $result = $this->getBackendUser()->getTSConfig($tsConfigPath);
-            $configuredPid = (int)$result['value'];
-
-            // If no pid is configured, use default pid from Module Loader
-            $pid = ($configuredPid) ?: $this->getModuleLoader()->getDefaultPid();
-        }
-
-        return $pid;
-    }
-
-    /**
-     * Return a pointer to the database.
-     *
-     * @return \Fab\Vidi\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection(): \Fab\Vidi\Database\DatabaseConnection
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
-
-    /**
-     * Returns the page record of the configured pid
-     *
-     * @return array
-     */
-    public function getPage(): ?array
-    {
-        if ($this->page !== null) {
-            return $this->page;
-        }
-
-        $query = $this->getQueryBuilder('pages');
-        $query->getRestrictions()->removeAll(); // we are in BE context.
-
-        $page = $query->select('doktype')
-            ->from('pages')
-            ->where('deleted = 0',
-                'uid = ' . $this->configuredPid)
-            ->execute()
-            ->fetch();
-
-        return is_array($page)
-            ? $page
-            : [];
-    }
-
-    /**
-     * @param string $tableName
-     * @return object|QueryBuilder
-     */
-    protected function getQueryBuilder($tableName): QueryBuilder
-    {
-        /** @var ConnectionPool $connectionPool */
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        return $connectionPool->getQueryBuilderForTable($tableName);
+        /** @var ModulePidService $modulePidService */
+        return GeneralUtility::makeInstance(ModulePidService::class);
     }
 
 }

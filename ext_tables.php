@@ -152,8 +152,9 @@ call_user_func(function () {
         );
 
         // Register default Tools for Vidi.
-        \Fab\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'Fab\Vidi\Tool\ModulePreferencesTool');
-        \Fab\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'Fab\Vidi\Tool\RelationAnalyserTool');
+        \Fab\Vidi\Tool\ToolRegistry::getInstance()->register('*', \Fab\Vidi\Tool\ModulePreferencesTool::class);
+        \Fab\Vidi\Tool\ToolRegistry::getInstance()->register('*', \Fab\Vidi\Tool\RelationAnalyserTool::class);
+        \Fab\Vidi\Tool\ToolRegistry::getInstance()->register('*', \Fab\Vidi\Tool\ConfiguredPidTool::class);
     }
 
     // Add new sprite icon.

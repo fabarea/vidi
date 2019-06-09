@@ -12,7 +12,7 @@ use Fab\Vidi\View\AbstractComponentView;
 use Fab\Vidi\Tca\Tca;
 
 /**
- * View which renders check.
+ * Class RelationsCheck
  */
 class RelationsCheck extends AbstractComponentView
 {

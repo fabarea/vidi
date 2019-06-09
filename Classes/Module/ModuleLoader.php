@@ -130,7 +130,6 @@ class ModuleLoader
             ],
             ModulePosition::GRID => [
                 ModulePosition::TOP => [
-                    \Fab\Vidi\View\Check\PidCheck::class,
                     \Fab\Vidi\View\Check\RelationsCheck::class,
                     #\Fab\Vidi\View\Tab\DataTypeTab::class,
                 ],
@@ -629,14 +628,14 @@ class ModuleLoader
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getDefaultPid(): string
+    public function getDefaultPid(): int
     {
         if (empty($this->defaultPid)) {
             $this->defaultPid = $this->getModuleConfiguration('defaultPid');
         }
-        return $this->defaultPid;
+        return (int)$this->defaultPid;
     }
 
     /**

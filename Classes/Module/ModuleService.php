@@ -15,6 +15,7 @@ use Fab\Vidi\Tca\Tca;
 
 /**
  * Service related to data type (AKA tablename)
+ * @deprecated this class is not used anymore
  */
 class ModuleService implements SingletonInterface
 {
@@ -39,11 +40,10 @@ class ModuleService implements SingletonInterface
      *
      * @return array
      */
-    public function getModulesForCurrentPid()
+    public function getModulesForCurrentPid(): array
     {
         $pid = $this->getModuleLoader()->getCurrentPid();
         return $this->getModulesForPid($pid);
-
     }
 
     /**
@@ -52,7 +52,7 @@ class ModuleService implements SingletonInterface
      * @param int $pid
      * @return array
      */
-    public function getModulesForPid($pid = null)
+    public function getModulesForPid($pid = null): array
     {
         if (!isset($this->storage[$pid])) {
 
@@ -79,7 +79,7 @@ class ModuleService implements SingletonInterface
      *
      * @return string
      */
-    public function getFirstModuleForCurrentPid()
+    public function getFirstModuleForCurrentPid(): string
     {
         $pid = $this->getModuleLoader()->getCurrentPid();
         return $this->getFirstModuleForPid($pid);
@@ -91,7 +91,7 @@ class ModuleService implements SingletonInterface
      * @param int $pid
      * @return string
      */
-    public function getFirstModuleForPid($pid)
+    public function getFirstModuleForPid($pid): string
     {
         $firstModule = '';
         $modules = $this->getModulesForPid($pid);
@@ -107,7 +107,7 @@ class ModuleService implements SingletonInterface
      *
      * @return \Fab\Vidi\Database\DatabaseConnection
      */
-    protected function getDatabaseConnection()
+    protected function getDatabaseConnection(): \Fab\Vidi\Database\DatabaseConnection
     {
         return $GLOBALS['TYPO3_DB'];
     }

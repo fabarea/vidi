@@ -8,13 +8,14 @@ namespace Fab\Vidi\Tool;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use Fab\Vidi\Module\ModulePidService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
- * Class RelationAnalyserTool
+ * Class ConfiguredPidTool
  */
-class RelationAnalyserTool extends AbstractTool
+class ConfiguredPidTool extends AbstractTool
 {
 
     /**
@@ -24,9 +25,9 @@ class RelationAnalyserTool extends AbstractTool
      */
     public function getTitle(): string
     {
-        return LocalizationUtility::translate(
-            'analyse_relations',
-            'vidi'
+        return sprintf('%s (%s)',
+            LocalizationUtility::translate('tool.configured_pid', 'vidi'),
+            $this->getModulePidService()->getConfiguredNewRecordPid()
         );
     }
 
@@ -37,10 +38,15 @@ class RelationAnalyserTool extends AbstractTool
      */
     public function getDescription(): string
     {
-        $templateNameAndPath = 'EXT:vidi/Resources/Private/Standalone/Tool/RelationAnalyser/Launcher.html';
+        $templateNameAndPath = 'EXT:vidi/Resources/Private/Standalone/Tool/ConfiguredPid/Launcher.html';
         $view = $this->initializeStandaloneView($templateNameAndPath);
-        $view->assign('sitePath', PATH_site);
-        $view->assign('dataType', $this->getModuleLoader()->getDataType());
+        $view->assignMultiple([
+            'sitePath' => PATH_site,
+            'dataType' => $this->getModuleLoader()->getDataType(),
+            'configuredPid' => $this->getModulePidService()->getConfiguredNewRecordPid(),
+            'errors' => $this->getModulePidService()->validateConfiguredPid(),
+        ]);
+
         return $view->render();
     }
 
@@ -52,23 +58,7 @@ class RelationAnalyserTool extends AbstractTool
      */
     public function work(array $arguments = array()): string
     {
-
-        $templateNameAndPath = 'EXT:vidi/Resources/Private/Standalone/Tool/RelationAnalyser/WorkResult.html';
-        $view = $this->initializeStandaloneView($templateNameAndPath);
-
-        $dataType = $this->getModuleLoader()->getDataType();
-        $analyse = $this->getGridAnalyserService()->checkRelationForTable($dataType);
-
-        if (empty($analyse)) {
-            $result = 'No relation involved in this Grid.';
-        } else {
-            $result = implode("\n", $analyse);
-        }
-
-        $view->assign('result', $result);
-        $view->assign('dataType', $dataType);
-
-        return $view->render();
+        return '';
     }
 
     /**
@@ -92,13 +82,13 @@ class RelationAnalyserTool extends AbstractTool
     }
 
     /**
-     * Get the Vidi Module Loader.
-     *
-     * @return \Fab\Vidi\Grid\GridAnalyserService|object
+     * @return ModulePidService|object
      */
-    protected function getGridAnalyserService()
+    public function getModulePidService()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Grid\GridAnalyserService::class);
+        /** @var ModulePidService $modulePidService */
+        return GeneralUtility::makeInstance(ModulePidService::class);
     }
+
 }
 

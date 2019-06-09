@@ -1,0 +1,46 @@
+<p>
+	Analyse the configured pid for data type "{dataType}".
+</p>
+
+<f:if condition="{errors}">
+
+	<f:then>
+		<div class="alert alert-warning">
+			<div class="alert-title">
+				Page id "{configuredPid}" has found to be a wrong configuration for "{dataType}"
+			</div>
+			<div class="alert-message">
+
+				<f:for each="{errors}" as="error">
+					<p>{error}</p>
+				</f:for>
+				New records cannot be created with this page id. The configuration can be changed at different levels:
+				<ul>
+					<li>Settings in the Extension Manager as fallback configuration.</li>
+					<li>In some ext_tables.php file, by allowing this record type on any pages.<br />
+						\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('{dataType}')
+					</li>
+					<li>By User TSconfig:</li>
+				</ul>
+				<pre># User TSconfig to be placed in your ext_tables.php:
+TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('
+
+	# Default pid for "{dataType}" in Vidi:
+	tx_vidi.dataType.{dataType}.storagePid = xx
+');</pre>
+			</div>
+		</div>
+	</f:then>
+	<f:else>
+		<div class="alert alert-success">
+			<div class="alert-title">
+				Everything is fine
+			</div>
+		</div>
+	</f:else>
+</f:if>
+
+
+
+
+{namespace v=Fab\Vidi\ViewHelpers}

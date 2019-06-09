@@ -181,6 +181,9 @@
 			<trans-unit id="analyse_relations">
 				<source>Analyse relations in TCA</source>
 			</trans-unit>
+			<trans-unit id="tool.configured_pid">
+				<source>Configured pid for new record</source>
+			</trans-unit>
 			<trans-unit id="reload_data">
 				<source>Reload data</source>
 			</trans-unit>

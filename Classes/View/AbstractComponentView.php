@@ -21,7 +21,6 @@ abstract class AbstractComponentView implements ViewComponentInterface
      * Get the Vidi Module Loader.
      *
      * @return \Fab\Vidi\Module\ModuleLoader|object
-     * @throws \InvalidArgumentException
      */
     protected function getModuleLoader()
     {
@@ -40,7 +39,6 @@ abstract class AbstractComponentView implements ViewComponentInterface
 
     /**
      * @return \TYPO3\CMS\Lang\LanguageService|object
-     * @throws \InvalidArgumentException
      */
     protected function getLanguageService()
     {
@@ -49,7 +47,6 @@ abstract class AbstractComponentView implements ViewComponentInterface
 
     /**
      * @return IconFactory|object
-     * @throws \InvalidArgumentException
      */
     protected function getIconFactory()
     {
@@ -58,7 +55,6 @@ abstract class AbstractComponentView implements ViewComponentInterface
 
     /**
      * @return LinkButton|object
-     * @throws \InvalidArgumentException
      */
     protected function makeLinkButton()
     {
