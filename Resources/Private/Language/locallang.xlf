@@ -202,6 +202,9 @@
 			<trans-unit id="visibility.admin_only">
 				<source>Admin only</source>
 			</trans-unit>
+			<trans-unit id="action.update">
+				<source>Update</source>
+			</trans-unit>
 			<trans-unit id="query.update">
 				<source>Update the current selection</source>
 			</trans-unit>
