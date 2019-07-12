@@ -3,7 +3,8 @@ if (!defined('TYPO3_MODE')) die ('Access denied.');
 
 return [
     'ctrl' => [
-        'label' => 'LLL:EXT:vidi/Resources/Private/Language/tx_vidi_selection.xlf:selection',
+        'title' => 'LLL:EXT:phpdisplay/Resources/Private/Language/locallang_db.xml:tx_phpdisplay_displays',
+        'label' => 'name',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
