@@ -660,14 +660,14 @@ class GridService extends AbstractTca
     }
 
     /**
-     * @return array
+     * @return bool
      */
-    public function areFilesIncludedInExport(): array
+    public function areFilesIncludedInExport(): bool
     {
         $isIncluded = true;
 
         if (isset($this->tca['export']['include_files'])) {
-            $isIncluded = $this->tca['export']['include_files'];
+            $isIncluded = (bool)$this->tca['export']['include_files'];
         }
         return $isIncluded;
     }
