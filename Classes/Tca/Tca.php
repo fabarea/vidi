@@ -129,7 +129,6 @@ class Tca implements SingletonInterface, TcaServiceInterface
     /**
      * Signal that is called after the content repository for a content type has been instantiated.
      *
-     * @signal
      * @param string $dataType
      * @param string $serviceType
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException

@@ -158,7 +158,6 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      *
      * @param string $dataType
      * @param Order $order
-     * @signal
      */
     protected function emitPostProcessOrderObjectSignal($dataType, Order $order)
     {
@@ -170,7 +169,6 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      *
      * @param string $dataType
      * @param Matcher $matcher
-     * @signal
      */
     protected function emitPostProcessMatcherObjectSignal($dataType, Matcher $matcher)
     {
@@ -182,7 +180,6 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      *
      * @param string $dataType
      * @param int $limit
-     * @signal
      */
     protected function emitPostProcessLimitSignal($dataType, $limit)
     {
@@ -194,7 +191,6 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      *
      * @param string $dataType
      * @param int $offset
-     * @signal
      */
     protected function emitPostProcessOffsetSignal($dataType, $offset)
     {

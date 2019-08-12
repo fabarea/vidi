@@ -859,7 +859,6 @@ class ContentRepository implements RepositoryInterface
      * @param Query $query
      * @param ConstraintInterface|null $constraints
      * @return ConstraintInterface|null $constraints
-     * @signal
      */
     protected function emitPostProcessConstraintsSignal(Query $query, $constraints): ?ConstraintInterface
     {

@@ -227,7 +227,6 @@ class MatcherObjectFactory implements SingletonInterface
      * Signal that is called for post-processing a matcher object.
      *
      * @param Matcher $matcher
-     * @signal
      */
     protected function emitPostProcessMatcherObjectSignal(Matcher $matcher): void
     {

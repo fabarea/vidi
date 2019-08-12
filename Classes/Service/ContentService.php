@@ -89,7 +89,6 @@ class ContentService
      * @param int $limit
      * @param int $offset
      * @return AfterFindContentObjectsSignalArguments
-     * @signal
      */
     protected function emitAfterFindContentObjectsSignal($contentObjects, Matcher $matcher, Order $order = null, $limit = 0, $offset = 0)
     {
