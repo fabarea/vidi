@@ -164,16 +164,16 @@ class GridService extends AbstractTca
      * Returns the field name given its position.
      *
      * @param string $position the position of the field in the grid
-     * @return int
+     * @return string
      */
-    public function getFieldNameByPosition($position): int
+    public function getFieldNameByPosition($position): string
     {
         $fields = array_keys($this->getFields());
         if (empty($fields[$position])) {
             throw new InvalidKeyInArrayException('No field exist for position: ' . $position, 1356945119);
         }
 
-        return $fields[$position];
+        return (string)$fields[$position];
     }
 
     /**
