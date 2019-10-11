@@ -33,7 +33,7 @@ class VidiModulesAspect implements TableConfigurationPostProcessingHookInterface
             \TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class
         )->get('vidi');
 
-        foreach (GeneralUtility::trimExplode(',', $configuration['data_types']) as $dataType) {
+        foreach (GeneralUtility::trimExplode(',', $configuration['data_types'],true) as $dataType) {
             if (!$moduleLoader->isRegistered($dataType)) {
                 $moduleLoader->setDataType($dataType)
                     #->isShown(false)
