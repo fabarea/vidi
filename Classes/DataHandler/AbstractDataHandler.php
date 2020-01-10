@@ -18,7 +18,7 @@ abstract class AbstractDataHandler implements DataHandlerInterface, SingletonInt
     /**
      * @var array
      */
-    protected $errorMessages;
+    protected $errorMessages = [];
 
     /**
      * Return error that have occurred while processing the data.
