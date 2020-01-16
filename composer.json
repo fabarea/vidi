@@ -19,7 +19,6 @@
 		}
 	},
 	"replace": {
-		"vidi": "self.version",
 		"typo3-ter/vidi": "self.version"
 	}
 }
