@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Persistence\Storage;
 
 /*
@@ -8,11 +9,16 @@ namespace Fab\Vidi\Persistence\Storage;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use Fab\Vidi\Persistence\Query;
 use Fab\Vidi\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Versioning\VersionState;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ComparisonInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\DynamicOperandInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\LowerCaseInterface;
@@ -35,43 +41,11 @@ class VidiDbBackend
     const OPERATOR_NOT_EQUAL_TO_NULL = 'operatorNotEqualToNull';
 
     /**
-     * The TYPO3 database object
-     *
-     * @var \Fab\Vidi\Database\DatabaseConnection
-     */
-    protected $databaseHandle;
-
-    /**
      * The TYPO3 page repository. Used for language and workspace overlay
      *
      * @var PageRepository
      */
     protected $pageRepository;
-
-    /**
-     * A first-level TypoScript configuration cache
-     *
-     * @var array
-     */
-    protected $pageTSConfigCache = [];
-
-    /**
-     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-     * @inject
-     */
-    protected $configurationManager;
-
-    /**
-     * @var \TYPO3\CMS\Extbase\Service\CacheService
-     * @inject
-     */
-    protected $cacheService;
-
-    /**
-     * @var \TYPO3\CMS\Core\Cache\CacheManager
-     * @inject
-     */
-    protected $cacheManager;
 
     /**
      * @var \TYPO3\CMS\Extbase\Service\EnvironmentService
@@ -102,33 +76,11 @@ class VidiDbBackend
     protected $currentChildTableNameAlias = '';
 
     /**
-     * The default object type being returned.
-     *
-     * @var string
+     * @param Query $query
      */
-    protected $objectType = 'Fab\Vidi\Domain\Model\Content';
-
-    /**
-     * Constructor. takes the database handle from $GLOBALS['TYPO3_DB']
-     */
-    public function __construct(QueryInterface $query)
+    public function __construct(Query $query)
     {
         $this->query = $query;
-        $this->databaseHandle = $GLOBALS['TYPO3_DB'];
-    }
-
-    /**
-     * @param array $identifier
-     * @return string
-     */
-    protected function parseIdentifier(array $identifier)
-    {
-        $fieldNames = array_keys($identifier);
-        $suffixedFieldNames = [];
-        foreach ($fieldNames as $fieldName) {
-            $suffixedFieldNames[] = $fieldName . '=?';
-        }
-        return implode(' AND ', $suffixedFieldNames);
     }
 
     /**
@@ -136,50 +88,38 @@ class VidiDbBackend
      */
     public function fetchResult()
     {
-
         $parameters = [];
-        $statementParts = $this->parseQuery($this->query, $parameters);
-        $statementParts = $this->processStatementStructureForRecursiveMMRelation($statementParts); // Mmm... check if that is the right way of doing that.
-
+        $statementParts = $this->parseQuery($parameters);
+        $statementParts = $this->processStatementStructureForRecursiveMMRelation($statementParts);
         $sql = $this->buildQuery($statementParts);
-        $tableName = '';
-        if (is_array($statementParts) && !empty(reset($statementParts['tables']))) {
-            $tableName = reset($statementParts['tables']);
-        }
-        $this->replacePlaceholders($sql, $parameters, $tableName);
-        #print $sql; exit(); // @debug
+        //print $sql; exit();
 
-        $result = $this->databaseHandle->sql_query($sql);
-        $this->checkSqlErrors($sql);
-        $rows = $this->getRowsFromResult($result);
-        $this->databaseHandle->sql_free_result($result);
+        $rows = $this->getConnection()
+            ->executeQuery($sql, $parameters)
+            ->fetchAll();
 
-        return $rows;
+        return $this->getContentObjects($rows);
     }
 
     /**
      * Returns the number of tuples matching the query.
      *
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Exception\BadConstraintException
      * @return int The number of matching tuples
      */
     public function countResult()
     {
-
         $parameters = [];
-        $statementParts = $this->parseQuery($this->query, $parameters);
-        $statementParts = $this->processStatementStructureForRecursiveMMRelation($statementParts); // Mmm... check if that is the right way of doing that.
-        // Reset $statementParts for valid table return
-        reset($statementParts);
+        $statementParts = $this->parseQuery($parameters);
+        $statementParts = $this->processStatementStructureForRecursiveMMRelation($statementParts);
 
         // if limit is set, we need to count the rows "manually" as COUNT(*) ignores LIMIT constraints
         if (!empty($statementParts['limit'])) {
-            $statement = $this->buildQuery($statementParts);
-            $this->replacePlaceholders($statement, $parameters, current($statementParts['tables']));
-            #print $statement; exit(); // @debug
-            $result = $this->databaseHandle->sql_query($statement);
-            $this->checkSqlErrors($statement);
-            $count = $this->databaseHandle->sql_num_rows($result);
+            $sql = $this->buildQuery($statementParts);
+
+            $count = $this
+                ->getConnection()
+                ->executeQuery($sql, $parameters)
+                ->rowCount();
         } else {
             $statementParts['fields'] = array('COUNT(*)');
             // having orderings without grouping is not compatible with non-MySQL DBMS
@@ -187,33 +127,25 @@ class VidiDbBackend
             if (isset($statementParts['keywords']['distinct'])) {
                 unset($statementParts['keywords']['distinct']);
                 $distinctField = $this->query->getDistinct() ? $this->query->getDistinct() : 'uid';
-                $statementParts['fields'] = array('COUNT(DISTINCT ' . reset($statementParts['tables']) . '.' . $distinctField . ')');
+                $statementParts['fields'] = array('COUNT(DISTINCT ' . $statementParts['mainTable'] . '.' . $distinctField . ')');
             }
 
-            $statement = $this->buildQuery($statementParts);
-            $this->replacePlaceholders($statement, $parameters, current($statementParts['tables']));
-
-            #print $statement; exit(); // @debug
-            $result = $this->databaseHandle->sql_query($statement);
-            $this->checkSqlErrors($statement);
-            $count = 0;
-            if ($result) {
-                $row = $this->databaseHandle->sql_fetch_assoc($result);
-                $count = current($row);
-            }
+            $sql = $this->buildQuery($statementParts);
+            $count = $this
+                ->getConnection()
+                ->executeQuery($sql, $parameters)
+                ->fetchColumn(0);
         }
-        $this->databaseHandle->sql_free_result($result);
         return (int)$count;
     }
 
     /**
      * Parses the query and returns the SQL statement parts.
      *
-     * @param QueryInterface $query The query
      * @param array &$parameters
-     * @return array The SQL statement parts
+     * @return array
      */
-    public function parseQuery(QueryInterface $query, array &$parameters)
+    public function parseQuery(array &$parameters)
     {
         $statementParts = [];
         $statementParts['keywords'] = [];
@@ -224,6 +156,7 @@ class VidiDbBackend
         $statementParts['additionalWhereClause'] = [];
         $statementParts['orderings'] = [];
         $statementParts['limit'] = [];
+        $query = $this->query;
         $source = $query->getSource();
         $this->parseSource($source, $statementParts);
         $this->parseConstraint($query->getConstraint(), $source, $statementParts, $parameters);
@@ -336,80 +269,45 @@ class VidiDbBackend
      */
     protected function parseSource(SourceInterface $source, array &$sql)
     {
-        if ($source instanceof SelectorInterface) {
-            $tableName = $source->getNodeTypeName();
-            $sql['fields'][$tableName] = $tableName . '.*';
-            $sql['tables'][$tableName] = $tableName;
-            if ($this->query->getDistinct()) {
-                $sql['fields'][$tableName] = $tableName . '.' . $this->query->getDistinct();
-                $sql['keywords']['distinct'] = 'DISTINCT';
-            }
-        } elseif ($source instanceof JoinInterface) {
-            $this->parseJoin($source, $sql);
+        $tableName = $this->getTableName();
+        $sql['fields'][$tableName] = $tableName . '.*';
+        if ($this->query->getDistinct()) {
+            $sql['fields'][$tableName] = $tableName . '.' . $this->query->getDistinct();
+            $sql['keywords']['distinct'] = 'DISTINCT';
         }
-    }
-
-    /**
-     * Transforms a Join into SQL and parameter arrays
-     *
-     * @param JoinInterface $join The join
-     * @param array &$sql The query parts
-     * @return void
-     */
-    protected function parseJoin(JoinInterface $join, array &$sql)
-    {
-        $leftSource = $join->getLeft();
-        $leftTableName = $leftSource->getSelectorName();
-        // $sql['fields'][$leftTableName] = $leftTableName . '.*';
-        $rightSource = $join->getRight();
-        if ($rightSource instanceof JoinInterface) {
-            $rightTableName = $rightSource->getLeft()->getSelectorName();
-        } else {
-            $rightTableName = $rightSource->getSelectorName();
-            $sql['fields'][$leftTableName] = $rightTableName . '.*';
-        }
-        $sql['tables'][$leftTableName] = $leftTableName;
-        $sql['unions'][$rightTableName] = 'LEFT JOIN ' . $rightTableName;
-        $joinCondition = $join->getJoinCondition();
-        if ($joinCondition instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\EquiJoinCondition) {
-            $column1Name = $joinCondition->getProperty1Name();
-            $column2Name = $joinCondition->getProperty2Name();
-            $sql['unions'][$rightTableName] .= ' ON ' . $joinCondition->getSelector1Name() . '.' . $column1Name . ' = ' . $joinCondition->getSelector2Name() . '.' . $column2Name;
-        }
-        if ($rightSource instanceof JoinInterface) {
-            $this->parseJoin($rightSource, $sql);
-        }
+        $sql['tables'][$tableName] = $tableName;
+        $sql['mainTable'] = $tableName;
     }
 
     /**
      * Transforms a constraint into SQL and parameter arrays
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface $constraint The constraint
+     * @param ConstraintInterface $constraint The constraint
      * @param SourceInterface $source The source
-     * @param array &$sql The query parts
+     * @param array &$statementParts The query parts
      * @param array &$parameters The parameters that will replace the markers
      * @return void
      */
-    protected function parseConstraint(\TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface $constraint = null, SourceInterface $source, array &$sql, array &$parameters)
+    protected function parseConstraint(ConstraintInterface $constraint = null, SourceInterface $source, array &$statementParts, array &$parameters)
     {
         if ($constraint instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\AndInterface) {
-            $sql['where'][] = '(';
-            $this->parseConstraint($constraint->getConstraint1(), $source, $sql, $parameters);
-            $sql['where'][] = ' AND ';
-            $this->parseConstraint($constraint->getConstraint2(), $source, $sql, $parameters);
-            $sql['where'][] = ')';
+            $statementParts['where'][] = '(';
+            $this->parseConstraint($constraint->getConstraint1(), $source, $statementParts, $parameters);
+            $statementParts['where'][] = ' AND ';
+            $this->parseConstraint($constraint->getConstraint2(), $source, $statementParts, $parameters);
+            $statementParts['where'][] = ')';
         } elseif ($constraint instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\OrInterface) {
-            $sql['where'][] = '(';
-            $this->parseConstraint($constraint->getConstraint1(), $source, $sql, $parameters);
-            $sql['where'][] = ' OR ';
-            $this->parseConstraint($constraint->getConstraint2(), $source, $sql, $parameters);
-            $sql['where'][] = ')';
+            $statementParts['where'][] = '(';
+            $this->parseConstraint($constraint->getConstraint1(), $source, $statementParts, $parameters);
+            $statementParts['where'][] = ' OR ';
+            $this->parseConstraint($constraint->getConstraint2(), $source, $statementParts, $parameters);
+            $statementParts['where'][] = ')';
         } elseif ($constraint instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\NotInterface) {
-            $sql['where'][] = 'NOT (';
-            $this->parseConstraint($constraint->getConstraint(), $source, $sql, $parameters);
-            $sql['where'][] = ')';
+            $statementParts['where'][] = 'NOT (';
+            $this->parseConstraint($constraint->getConstraint(), $source, $statementParts, $parameters);
+            $statementParts['where'][] = ')';
         } elseif ($constraint instanceof ComparisonInterface) {
-            $this->parseComparison($constraint, $source, $sql, $parameters);
+            $this->parseComparison($constraint, $source, $statementParts, $parameters);
         }
     }
 
@@ -418,12 +316,12 @@ class VidiDbBackend
      *
      * @param ComparisonInterface $comparison The comparison to parse
      * @param SourceInterface $source The source
-     * @param array &$sql SQL query parts to add to
+     * @param array &$statementParts SQL query parts to add to
      * @param array &$parameters Parameters to bind to the SQL
-     * @throws Exception\RepositoryException
      * @return void
+     * @throws Exception\RepositoryException
      */
-    protected function parseComparison(ComparisonInterface $comparison, SourceInterface $source, array &$sql, array &$parameters)
+    protected function parseComparison(ComparisonInterface $comparison, SourceInterface $source, array &$statementParts, array &$parameters)
     {
         $operand1 = $comparison->getOperand1();
         $operator = $comparison->getOperator();
@@ -439,37 +337,37 @@ class VidiDbBackend
                 }
             }
             if ($hasValue === false) {
-                $sql['where'][] = '1<>1';
+                $statementParts['where'][] = '1<>1';
             } else {
-                $this->parseDynamicOperand($operand1, $operator, $source, $sql, $parameters, null);
+                $this->parseDynamicOperand($operand1, $operator, $source, $statementParts, $parameters, null);
                 $parameters[] = $items;
             }
         } elseif ($operator === QueryInterface::OPERATOR_CONTAINS) {
             if ($operand2 === null) {
-                $sql['where'][] = '1<>1';
+                $statementParts['where'][] = '1<>1';
             } else {
                 throw new \Exception('Not implemented! Contact extension author.', 1412931227);
                 # @todo re-implement me if necessary.
                 #$tableName = $this->query->getType();
                 #$propertyName = $operand1->getPropertyName();
                 #while (strpos($propertyName, '.') !== false) {
-                #	$this->addUnionStatement($tableName, $propertyName, $sql);
+                #	$this->addUnionStatement($tableName, $propertyName, $statementParts);
                 #}
                 #$columnName = $propertyName;
                 #$columnMap = $propertyName;
                 #$typeOfRelation = $columnMap instanceof ColumnMap ? $columnMap->getTypeOfRelation() : null;
                 #if ($typeOfRelation === ColumnMap::RELATION_HAS_AND_BELONGS_TO_MANY) {
                 #	$relationTableName = $columnMap->getRelationTableName();
-                #	$sql['where'][] = $tableName . '.uid IN (SELECT ' . $columnMap->getParentKeyFieldName() . ' FROM ' . $relationTableName . ' WHERE ' . $columnMap->getChildKeyFieldName() . '=?)';
+                #	$statementParts['where'][] = $tableName . '.uid IN (SELECT ' . $columnMap->getParentKeyFieldName() . ' FROM ' . $relationTableName . ' WHERE ' . $columnMap->getChildKeyFieldName() . '=?)';
                 #	$parameters[] = intval($this->getPlainValue($operand2));
                 #} elseif ($typeOfRelation === ColumnMap::RELATION_HAS_MANY) {
                 #	$parentKeyFieldName = $columnMap->getParentKeyFieldName();
                 #	if (isset($parentKeyFieldName)) {
                 #		$childTableName = $columnMap->getChildTableName();
-                #		$sql['where'][] = $tableName . '.uid=(SELECT ' . $childTableName . '.' . $parentKeyFieldName . ' FROM ' . $childTableName . ' WHERE ' . $childTableName . '.uid=?)';
+                #		$statementParts['where'][] = $tableName . '.uid=(SELECT ' . $childTableName . '.' . $parentKeyFieldName . ' FROM ' . $childTableName . ' WHERE ' . $childTableName . '.uid=?)';
                 #		$parameters[] = intval($this->getPlainValue($operand2));
                 #	} else {
-                #		$sql['where'][] = 'FIND_IN_SET(?,' . $tableName . '.' . $columnName . ')';
+                #		$statementParts['where'][] = 'FIND_IN_SET(?,' . $tableName . '.' . $columnName . ')';
                 #		$parameters[] = intval($this->getPlainValue($operand2));
                 #	}
                 #} else {
@@ -484,17 +382,17 @@ class VidiDbBackend
                     $operator = self::OPERATOR_NOT_EQUAL_TO_NULL;
                 }
             }
-            $this->parseDynamicOperand($operand1, $operator, $source, $sql, $parameters);
+            $this->parseDynamicOperand($operand1, $operator, $source, $statementParts, $parameters);
             $parameters[] = $this->getPlainValue($operand2);
         }
     }
 
     /**
-     * Returns a plain value, i.e. objects are flattened out if possible.
+     * Returns a plain value, i.e. objects are flattened if possible.
      *
      * @param mixed $input
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException
      * @return mixed
+     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException
      */
     protected function getPlainValue($input)
     {
@@ -527,17 +425,17 @@ class VidiDbBackend
      * @param DynamicOperandInterface $operand
      * @param string $operator One of the JCR_OPERATOR_* constants
      * @param SourceInterface $source The source
-     * @param array &$sql The query parts
+     * @param array &$statementParts The query parts
      * @param array &$parameters The parameters that will replace the markers
      * @param string $valueFunction an optional SQL function to apply to the operand value
      * @return void
      */
-    protected function parseDynamicOperand(DynamicOperandInterface $operand, $operator, SourceInterface $source, array &$sql, array &$parameters, $valueFunction = null)
+    protected function parseDynamicOperand(DynamicOperandInterface $operand, $operator, SourceInterface $source, array &$statementParts, array &$parameters, $valueFunction = null)
     {
         if ($operand instanceof LowerCaseInterface) {
-            $this->parseDynamicOperand($operand->getOperand(), $operator, $source, $sql, $parameters, 'LOWER');
+            $this->parseDynamicOperand($operand->getOperand(), $operator, $source, $statementParts, $parameters, 'LOWER');
         } elseif ($operand instanceof UpperCaseInterface) {
-            $this->parseDynamicOperand($operand->getOperand(), $operator, $source, $sql, $parameters, 'UPPER');
+            $this->parseDynamicOperand($operand->getOperand(), $operator, $source, $statementParts, $parameters, 'UPPER');
         } elseif ($operand instanceof PropertyValueInterface) {
             $propertyName = $operand->getPropertyName();
 
@@ -547,37 +445,39 @@ class VidiDbBackend
             if ($source instanceof SelectorInterface) {
                 $tableName = $this->query->getType();
                 while (strpos($propertyName, '.') !== false) {
-                    $this->addUnionStatement($tableName, $propertyName, $sql);
+                    $this->addUnionStatement($tableName, $propertyName, $statementParts);
                 }
             } elseif ($source instanceof JoinInterface) {
                 $tableName = $source->getJoinCondition()->getSelector1Name();
             }
 
             $columnName = $propertyName;
-            $operator = $this->resolveOperator($operator);
+            $resolvedOperator = $this->resolveOperator($operator);
             $constraintSQL = '';
+
+            $marker = $operator === QueryInterface::OPERATOR_IN
+                ? '(?)'
+                : '?';
+
             if ($valueFunction === null) {
-                $constraintSQL .= (!empty($tableName) ? $tableName . '.' : '') . $columnName . ' ' . $operator . ' ?';
+                $constraintSQL .= (!empty($tableName) ? $tableName . '.' : '') . $columnName . ' ' . $resolvedOperator . ' ' . $marker;
             } else {
-                $constraintSQL .= $valueFunction . '(' . (!empty($tableName) ? $tableName . '.' : '') . $columnName . ') ' . $operator . ' ?';
+                $constraintSQL .= $valueFunction . '(' . (!empty($tableName) ? $tableName . '.' : '') . $columnName . ') ' . $resolvedOperator . ' ' . $marker;
             }
 
             if (isset($tableName) && !empty($this->currentChildTableNameAlias)) {
                 $constraintSQL = $this->replaceTableNameByAlias($tableName, $this->currentChildTableNameAlias, $constraintSQL);
             }
-            $sql['where'][] = $constraintSQL;
+            $statementParts['where'][] = $constraintSQL;
         }
     }
 
     /**
      * @param string &$tableName
-     * @param array &$propertyPath
-     * @param array &$sql
-     * @throws Exception
-     * @throws Exception\InvalidRelationConfigurationException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\MissingColumnMapException
+     * @param string &$propertyPath
+     * @param array &$statementParts
      */
-    protected function addUnionStatement(&$tableName, &$propertyPath, array &$sql)
+    protected function addUnionStatement(&$tableName, &$propertyPath, array &$statementParts)
     {
 
         $table = Tca::table($tableName);
@@ -605,9 +505,9 @@ class VidiDbBackend
             // sometimes the opposite relation is not defined. We don't want to force this config for backward compatibility reasons.
             // $parentKeyFieldName === null does the trick somehow. Before condition was if (isset($parentKeyFieldName))
             if ($table->field($fieldName)->hasRelationManyToOne() || $parentKeyFieldName === null) {
-                $sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.' . $fieldName . '=' . $childTableName . '.uid';
+                $statementParts['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.' . $fieldName . '=' . $childTableName . '.uid';
             } else {
-                $sql['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.uid=' . $childTableName . '.' . $parentKeyFieldName;
+                $statementParts['unions'][$childTableName] = 'LEFT JOIN ' . $childTableName . ' ON ' . $tableName . '.uid=' . $childTableName . '.' . $parentKeyFieldName;
             }
         } elseif ($table->field($fieldName)->hasRelationManyToMany()) {
             $relationTableName = $table->field($fieldName)->getManyToManyTable();
@@ -624,7 +524,7 @@ class VidiDbBackend
                 $relationTableNameAlias,
                 $parentKeyFieldName
             );
-            $sql['unions'][$relationTableNameAlias] = $join;
+            $statementParts['unions'][$relationTableNameAlias] = $join;
 
             // Foreign table e.g sys_category
             $childTableNameAlias = $this->generateAlias($childTableName);
@@ -637,7 +537,7 @@ class VidiDbBackend
                 $childKeyFieldName,
                 $childTableNameAlias
             );
-            $sql['unions'][$childTableNameAlias] = $join;
+            $statementParts['unions'][$childTableNameAlias] = $join;
 
             // Find a possible table name for a MM condition.
             $tableNameCondition = $table->field($fieldName)->getAdditionalTableNameCondition();
@@ -655,14 +555,12 @@ class VidiDbBackend
 
                 foreach ($additionalMMConditions as $additionalFieldName => $additionalMMCondition) {
                     $additionalJoin = sprintf(' AND %s.%s = "%s"', $relationTableNameAlias, $additionalFieldName, $additionalMMCondition);
-                    $sql['unions'][$relationTableNameAlias] .= $additionalJoin;
+                    $statementParts['unions'][$relationTableNameAlias] .= $additionalJoin;
 
                     $additionalJoin = sprintf(' AND %s.%s = "%s"', $relationTableNameAlias, $additionalFieldName, $additionalMMCondition);
-                    $sql['unions'][$childTableNameAlias] .= $additionalJoin;
+                    $statementParts['unions'][$childTableNameAlias] .= $additionalJoin;
                 }
-
             }
-
 
         } elseif ($table->field($fieldName)->hasMany()) { // includes relations "many-to-one" and "csv" relations
             $childTableNameAlias = $this->generateAlias($childTableName);
@@ -677,7 +575,7 @@ class VidiDbBackend
                     $childTableNameAlias,
                     $parentKeyFieldName
                 );
-                $sql['unions'][$childTableNameAlias] = $join;
+                $statementParts['unions'][$childTableNameAlias] = $join;
             } else {
                 $join = sprintf(
                     'LEFT JOIN %s AS %s ON (FIND_IN_SET(%s.uid, %s.%s))',
@@ -687,14 +585,13 @@ class VidiDbBackend
                     $tableName,
                     $fieldName
                 );
-                $sql['unions'][$childTableNameAlias] = $join;
+                $statementParts['unions'][$childTableNameAlias] = $join;
             }
         } else {
             throw new Exception('Could not determine type of relation.', 1252502725);
         }
 
-        // TODO check if there is another solution for this
-        $sql['keywords']['distinct'] = 'DISTINCT';
+        $statementParts['keywords']['distinct'] = 'DISTINCT';
         $propertyPath = $explodedPropertyPath[1];
         $tableName = $childTableName;
     }
@@ -703,8 +600,8 @@ class VidiDbBackend
      * Returns the SQL operator for the given JCR operator type.
      *
      * @param string $operator One of the JCR_OPERATOR_* constants
-     * @throws Exception
      * @return string an SQL operator
+     * @throws Exception
      */
     protected function resolveOperator($operator)
     {
@@ -743,43 +640,6 @@ class VidiDbBackend
                 throw new Exception('Unsupported operator encountered.', 1242816073);
         }
         return $operator;
-    }
-
-    /**
-     * Replace query placeholders in a query part by the given
-     * parameters.
-     *
-     * @param string &$sqlString The query part with placeholders
-     * @param array $parameters The parameters
-     * @param string $tableName
-     *
-     * @throws Exception
-     */
-    protected function replacePlaceholders(&$sqlString, array $parameters, $tableName = 'foo')
-    {
-        // TODO profile this method again
-        if (substr_count($sqlString, '?') !== count($parameters)) {
-            throw new Exception('The number of question marks to replace must be equal to the number of parameters.', 1242816074);
-        }
-        $offset = 0;
-        foreach ($parameters as $parameter) {
-            $markPosition = strpos($sqlString, '?', $offset);
-            if ($markPosition !== false) {
-                if ($parameter === null) {
-                    $parameter = 'null';
-                } elseif (is_array($parameter) || $parameter instanceof \ArrayAccess || $parameter instanceof \Traversable) {
-                    $items = [];
-                    foreach ($parameter as $item) {
-                        $items[] = $this->databaseHandle->fullQuoteStr($item, $tableName);
-                    }
-                    $parameter = '(' . implode(',', $items) . ')';
-                } else {
-                    $parameter = $this->databaseHandle->fullQuoteStr($parameter, $tableName);
-                }
-                $sqlString = substr($sqlString, 0, $markPosition) . $parameter . substr($sqlString, ($markPosition + 1));
-            }
-            $offset = $markPosition + strlen($parameter);
-        }
     }
 
     /**
@@ -839,7 +699,7 @@ class VidiDbBackend
      * @return string
      * @throws Exception\InconsistentQuerySettingsException
      */
-    protected function getFrontendConstraintStatement($tableNameOrAlias, $ignoreEnableFields, $enableFieldsToBeIgnored = [], $includeDeleted)
+    protected function getFrontendConstraintStatement($tableNameOrAlias, $ignoreEnableFields, $enableFieldsToBeIgnored, $includeDeleted)
     {
         $statement = '';
         $tableName = $this->resolveTableNameAlias($tableNameOrAlias);
@@ -904,12 +764,11 @@ class VidiDbBackend
      * @param string $tableNameOrAlias The database table name
      * @param array &$statementParts The query parts
      * @param QuerySettingsInterface $querySettings The TYPO3 CMS specific query settings
-     * @throws Exception
      * @return void
+     * @throws Exception
      */
     protected function addSysLanguageStatement($tableNameOrAlias, array &$statementParts, $querySettings)
     {
-
         $tableName = $this->resolveTableNameAlias($tableNameOrAlias);
         if (is_array($GLOBALS['TCA'][$tableName]['ctrl'])) {
             if (!empty($GLOBALS['TCA'][$tableName]['ctrl']['languageField'])) {
@@ -942,11 +801,11 @@ class VidiDbBackend
      *
      * @param array $orderings An array of orderings (Tx_Extbase_Persistence_QOM_Ordering)
      * @param SourceInterface $source The source
-     * @param array &$sql The query parts
-     * @throws Exception\UnsupportedOrderException
+     * @param array &$statementParts The query parts
      * @return void
+     * @throws Exception\UnsupportedOrderException
      */
-    protected function parseOrderings(array $orderings, SourceInterface $source, array &$sql)
+    protected function parseOrderings(array $orderings, SourceInterface $source, array &$statementParts)
     {
         foreach ($orderings as $fieldNameAndPath => $order) {
             switch ($order) {
@@ -962,7 +821,7 @@ class VidiDbBackend
 
             $tableName = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $this->query->getType());
             $fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $tableName);
-            $sql['orderings'][] = sprintf('%s.%s %s', $tableName, $fieldName, $order);
+            $statementParts['orderings'][] = sprintf('%s.%s %s', $tableName, $fieldName, $order);
         }
     }
 
@@ -971,55 +830,55 @@ class VidiDbBackend
      *
      * @param int $limit
      * @param int $offset
-     * @param array &$sql
+     * @param array &$statementParts
      * @return void
      */
-    protected function parseLimitAndOffset($limit, $offset, array &$sql)
+    protected function parseLimitAndOffset($limit, $offset, array &$statementParts)
     {
         if ($limit !== null && $offset !== null) {
-            $sql['limit'] = intval($offset) . ', ' . intval($limit);
+            $statementParts['limit'] = intval($offset) . ', ' . intval($limit);
         } elseif ($limit !== null) {
-            $sql['limit'] = intval($limit);
+            $statementParts['limit'] = intval($limit);
         }
     }
 
     /**
-     * Transforms a Resource from a database query to an array of rows.
-     *
-     * @param resource $result The result
-     * @return array The result as an array of rows (tuples)
+     * @param array $rows
+     * @return array
      */
-    protected function getRowsFromResult($result)
+    protected function getContentObjects(array $rows): array
     {
-        $rows = [];
-        while ($row = $this->databaseHandle->sql_fetch_assoc($result)) {
-            if (is_array($row)) {
+        $contentObjects = [];
+        foreach ($rows as $row) {
 
-                // Get language uid from querySettings.
-                // Ensure the backend handling is not broken (fallback to Get parameter 'L' if needed)
-                $overlaidRow = $this->doLanguageAndWorkspaceOverlay($this->query->getSource(), $row, $this->query->getQuerySettings());
-                $contentObject = GeneralUtility::makeInstance($this->objectType, $this->query->getType(), $overlaidRow);
-                $rows[] = $contentObject;
-            }
+            // Get language uid from querySettings.
+            // Ensure the backend handling is not broken (fallback to Get parameter 'L' if needed)
+            $overlaidRow = $this->doLanguageAndWorkspaceOverlay(
+                $row,
+                $this->query->getQuerySettings()
+            );
+
+            $contentObjects[] = GeneralUtility::makeInstance(
+                \Fab\Vidi\Domain\Model\Content::class,
+                $this->query->getType(),
+                $overlaidRow
+            );
         }
 
-        return $rows;
+        return $contentObjects;
     }
 
     /**
      * Performs workspace and language overlay on the given row array. The language and workspace id is automatically
      * detected (depending on FE or BE context). You can also explicitly set the language/workspace id.
      *
-     * @param SourceInterface $source The source (selector od join)
      * @param array $row
      * @param QuerySettingsInterface $querySettings The TYPO3 CMS specific query settings
      * @return array
      */
-    protected function doLanguageAndWorkspaceOverlay(SourceInterface $source, array $row, $querySettings)
+    protected function doLanguageAndWorkspaceOverlay(array $row, $querySettings)
     {
-
-        /** @var SelectorInterface $source */
-        $tableName = $source->getSelectorName();
+        $tableName = $this->getTableName();
 
         $pageRepository = $this->getPageRepository();
         if (is_object($GLOBALS['TSFE'])) {
@@ -1043,12 +902,16 @@ class VidiDbBackend
             if (isset($row[$GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField']])
                 && $row[$GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField']] > 0
             ) {
-                $row = $this->databaseHandle->exec_SELECTgetSingleRow(
-                    $tableName . '.*',
-                    $tableName,
-                    $tableName . '.uid=' . (int)$row[$GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField']] .
-                    ' AND ' . $tableName . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['languageField'] . '=0'
-                );
+                $queryBuilder = $this->getQueryBuilder();
+                $row = $queryBuilder
+                    ->select($tableName . '.*')
+                    ->from($tableName)
+                    ->andWhere(
+                        $tableName . '.uid=' . (int)$row[$GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField']],
+                        $tableName . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['languageField'] . ' = 0'
+                    )
+                    ->execute()
+                    ->fetch();
             }
         }
 
@@ -1175,18 +1038,31 @@ class VidiDbBackend
     }
 
     /**
-     * Checks if there are SQL errors in the last query, and if yes, throw an exception.
-     *
-     * @return void
-     * @param string $sql The SQL statement
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Exception\SqlErrorException
+     * @return object|Connection
      */
-    protected function checkSqlErrors($sql = '')
+    protected function getConnection(): Connection
     {
-        $error = $this->databaseHandle->sql_error();
-        if ($error !== '') {
-            $error .= $sql ? ': ' . $sql : '';
-            throw new \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Exception\SqlErrorException($error, 1247602160);
-        }
+        /** @var ConnectionPool $connectionPool */
+        return GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable($this->getTableName());
     }
+
+    /**
+     * @return object|QueryBuilder
+     */
+    protected function getQueryBuilder(): QueryBuilder
+    {
+        /** @var ConnectionPool $connectionPool */
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        return $connectionPool->getQueryBuilderForTable($this->getTableName());
+    }
+
+    /**
+     * @return string
+     */
+    public function getTableName(): string
+    {
+        return $this->query->getSource()->getNodeTypeName(); // getSelectorName()
+    }
+
 }
