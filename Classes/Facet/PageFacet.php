@@ -120,16 +120,6 @@ class PageFacet implements FacetInterface
     }
 
     /**
-     * Returns a pointer to the database.
-     *
-     * @return \Fab\Vidi\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
-
-    /**
      * @return LanguageService
      */
     protected function getLanguageService(): LanguageService

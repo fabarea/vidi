@@ -182,13 +182,4 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
         return GeneralUtility::makeInstance(Rows::class);
     }
 
-    /**
-     * Returns a pointer to the database.
-     *
-     * @return \Fab\Vidi\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
 }

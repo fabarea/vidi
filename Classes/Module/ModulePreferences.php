@@ -8,6 +8,7 @@ namespace Fab\Vidi\Module;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use Fab\Vidi\Service\DataService;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -113,8 +114,12 @@ class ModulePreferences implements SingletonInterface
         $configurableParts = ConfigurablePart::getParts();
 
         $dataType = $this->getModuleLoader()->getDataType();
-        $clause = sprintf('data_type = "%s"', $dataType);
-        $this->getDatabaseConnection()->exec_DELETEquery($this->tableName, $clause);
+        $this->getDataService()->delete(
+            $this->tableName,
+            [
+                'data_type' => $dataType
+            ]
+        );
 
         $sanitizedPreferences = [];
         foreach ($preferences as $key => $value) {
@@ -123,11 +128,13 @@ class ModulePreferences implements SingletonInterface
             }
         }
 
-        $values = array(
-            'data_type' => $dataType,
-            'preferences' => serialize($sanitizedPreferences),
+        $this->getDataService()->insert(
+            $this->tableName,
+            [
+                'data_type' => $dataType,
+                'preferences' => serialize($sanitizedPreferences),
+            ]
         );
-        $this->getDatabaseConnection()->exec_INSERTquery($this->tableName, $values);
     }
 
     /**
@@ -137,9 +144,12 @@ class ModulePreferences implements SingletonInterface
     public function fetchPreferencesFromDatabase($dataType)
     {
         $preferences = [];
-
-        $clause = sprintf('data_type = "%s"', $dataType);
-        $record = $this->getDatabaseConnection()->exec_SELECTgetSingleRow('*', $this->tableName, $clause);
+        $record = $this->getDataService()->getRecord(
+            $this->tableName,
+            [
+                'data_type' => $dataType
+            ]
+        );
 
         if (!empty($record)) {
             $preferences = unserialize($record['preferences']);
@@ -208,13 +218,11 @@ class ModulePreferences implements SingletonInterface
     }
 
     /**
-     * Returns a pointer to the database.
-     *
-     * @return \Fab\Vidi\Database\DatabaseConnection
+     * @return object|DataService
      */
-    protected function getDatabaseConnection()
+    protected function getDataService(): DataService
     {
-        return $GLOBALS['TYPO3_DB'];
+        return GeneralUtility::makeInstance(DataService::class);
     }
 
     /**

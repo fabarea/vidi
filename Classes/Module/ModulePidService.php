@@ -181,16 +181,6 @@ class ModulePidService
     }
 
     /**
-     * Return a pointer to the database.
-     *
-     * @return \Fab\Vidi\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection(): \Fab\Vidi\Database\DatabaseConnection
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
-
-    /**
      * Returns the page record of the configured pid
      *
      * @param int $configuredPid

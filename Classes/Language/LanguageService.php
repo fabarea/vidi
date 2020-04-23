@@ -7,6 +7,8 @@ namespace Fab\Vidi\Language;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+
+use Fab\Vidi\Service\DataService;
 use Fab\Vidi\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -45,13 +47,7 @@ class LanguageService implements SingletonInterface
     public function getLanguages()
     {
         if ($this->languages === null) {
-
-            $tableName = 'sys_language';
-
-            $clause = '1 = 1';
-            $clause .= BackendUtility::deleteClause($tableName);
-            $clause .= BackendUtility::BEenableFields($tableName);
-            $this->languages = $this->getDatabaseConnection()->exec_SELECTgetRows('*', $tableName, $clause);
+            $this->languages = $this->getDataService()->getRecords('sys_language');
         }
         return $this->languages;
     }
@@ -77,15 +73,13 @@ class LanguageService implements SingletonInterface
 
         if (empty($this->localizedRecordStorage[$objectHash][$language])) {
 
-            $clause = sprintf('%s = %s AND %s = %s',
-                Tca::table($object)->getLanguageParentField(), // e.g. l10n_parent
-                $object->getUid(),
-                Tca::table($object)->getLanguageField(), // e.g. sys_language_uid
-                $language
+            $localizedRecord = $this->getDataService()->getRecord(
+                $object->getDataType(),
+                [
+                    Tca::table($object)->getLanguageParentField() => $object->getUid(), // e.g. l10n_parent
+                    Tca::table($object)->getLanguageField() => $language, // e.g. sys_language_uid
+                ]
             );
-
-            $clause .= BackendUtility::deleteClause($object->getDataType());
-            $localizedRecord = $this->getDatabaseConnection()->exec_SELECTgetSingleRow('*', $object->getDataType(), $clause);
 
             if ($localizedRecord) {
                 $localizedContent = GeneralUtility::makeInstance(\Fab\Vidi\Domain\Model\Content::class, $object->getDataType(), $localizedRecord);
@@ -184,13 +178,11 @@ class LanguageService implements SingletonInterface
     }
 
     /**
-     * Returns a pointer to the database.
-     *
-     * @return \Fab\Vidi\Database\DatabaseConnection
+     * @return object|DataService
      */
-    protected function getDatabaseConnection()
+    protected function getDataService(): DataService
     {
-        return $GLOBALS['TYPO3_DB'];
+        return GeneralUtility::makeInstance(DataService::class);
     }
 
 }

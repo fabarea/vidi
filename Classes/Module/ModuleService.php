@@ -8,6 +8,7 @@ namespace Fab\Vidi\Module;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use Fab\Vidi\Service\DataService;
 use Fab\Vidi\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -59,9 +60,12 @@ class ModuleService implements SingletonInterface
             $modules = [];
             foreach ($GLOBALS['TCA'] as $dataType => $configuration) {
                 if (Tca::table($dataType)->isNotHidden()) {
-                    $clause = 'pid = ' . $pid;
-                    $clause .= BackendUtility::deleteClause($dataType);
-                    $record = $this->getDatabaseConnection()->exec_SELECTgetSingleRow('uid', $dataType, $clause);
+                    $record = $this->getDataService()->getRecord(
+                        $dataType,
+                        [
+                            'pid' => $pid
+                        ]
+                    );
                     if (!empty($record)) {
                         $moduleName = 'Vidi' . GeneralUtility::underscoredToUpperCamelCase($dataType) . 'M1';
                         $title = Tca::table($dataType)->getTitle();
@@ -103,13 +107,11 @@ class ModuleService implements SingletonInterface
     }
 
     /**
-     * Returns a pointer to the database.
-     *
-     * @return \Fab\Vidi\Database\DatabaseConnection
+     * @return object|DataService
      */
-    protected function getDatabaseConnection(): \Fab\Vidi\Database\DatabaseConnection
+    protected function getDataService(): DataService
     {
-        return $GLOBALS['TYPO3_DB'];
+        return GeneralUtility::makeInstance(DataService::class);
     }
 
     /**

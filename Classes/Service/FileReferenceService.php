@@ -8,7 +8,6 @@ namespace Fab\Vidi\Service;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use Fab\Vidi\Utility\BackendUtility;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -79,13 +78,14 @@ class FileReferenceService implements SingletonInterface
         $fileField = 'uid_local';
         $tableName = 'sys_file_reference';
 
-        $clause = sprintf('tablenames = "%s" %s AND fieldname = "%s" AND uid_foreign = %s',
-            $object->getDataType(),
-            $this->getWhereClauseForEnabledFields($tableName),
-            GeneralUtility::camelCaseToLowerCaseUnderscored($propertyName),
-            $object->getUid()
+        $rows = $this->getDataService()->getRecords(
+            $tableName,
+            [
+                'tablenames' => $object->getDataType(),
+                'fieldname'=> GeneralUtility::camelCaseToLowerCaseUnderscored($propertyName),
+                'uid_foreign'=> $object->getUid(),
+            ]
         );
-        $rows = $this->getDatabaseConnection()->exec_SELECTgetRows($fileField, $tableName, $clause);
 
         // Build array of Files
         $files = [];
@@ -97,53 +97,11 @@ class FileReferenceService implements SingletonInterface
     }
 
     /**
-     * get the WHERE clause for the enabled fields of this TCA table
-     * depending on the context
-     *
-     * @param $tableName
-     * @return string
+     * @return object|DataService
      */
-    protected function getWhereClauseForEnabledFields($tableName)
+    protected function getDataService(): DataService
     {
-        if ($this->isFrontendMode()) {
-            // frontend context
-            $whereClause = $this->getPageRepository()->enableFields($tableName);
-            $whereClause .= $this->getPageRepository()->deleteClause($tableName);
-        } else {
-            // backend context
-            $whereClause = BackendUtility::BEenableFields($tableName);
-            $whereClause .= BackendUtility::deleteClause($tableName);
-        }
-        return $whereClause;
+        return GeneralUtility::makeInstance(DataService::class);
     }
 
-    /**
-     * Returns whether the current mode is Frontend
-     *
-     * @return bool
-     */
-    protected function isFrontendMode()
-    {
-        return TYPO3_MODE === 'FE';
-    }
-
-    /**
-     * Returns an instance of the page repository.
-     *
-     * @return \TYPO3\CMS\Frontend\Page\PageRepository
-     */
-    protected function getPageRepository()
-    {
-        return $GLOBALS['TSFE']->sys_page;
-    }
-
-    /**
-     * Returns a pointer to the database.
-     *
-     * @return \Fab\Vidi\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
 }

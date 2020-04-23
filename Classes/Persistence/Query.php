@@ -8,6 +8,7 @@ namespace Fab\Vidi\Persistence;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use Fab\Vidi\Persistence\Storage\VidiDbBackend;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidNumberOfConstraintsException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
@@ -17,7 +18,6 @@ use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 /**
  * The Query class used to run queries against the database
  *
- * @todo check if we can not simply extend object TYPO3\CMS\Extbase\Persistence\Generic. This would simplify a lot of code!
  * @api
  */
 class Query implements QueryInterface
@@ -84,7 +84,7 @@ class Query implements QueryInterface
     protected $statement;
 
     /**
-     * @var int
+     * @var array
      */
     protected $orderings = [];
 
@@ -254,8 +254,8 @@ class Query implements QueryInterface
      */
     public function execute($returnRawQueryResult = false)
     {
-        /** @var \Fab\Vidi\Persistence\Storage\VidiDbBackend $backend */
-        $backend = $this->objectManager->get('Fab\Vidi\Persistence\Storage\VidiDbBackend', $this);
+        /** @var VidiDbBackend $backend */
+        $backend = $this->objectManager->get(VidiDbBackend::class, $this);
         return $backend->fetchResult();
     }
 
@@ -285,7 +285,6 @@ class Query implements QueryInterface
      * )
      *
      * @return array
-     * @api
      */
     public function getOrderings()
     {
@@ -380,7 +379,7 @@ class Query implements QueryInterface
     /**
      * Gets the constraint for this query.
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\Constraint the constraint, or null if none
+     * @return \TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface the constraint, or null if none
      * @api
      */
     public function getConstraint()
@@ -579,8 +578,8 @@ class Query implements QueryInterface
      */
     public function count()
     {
-        /** @var \Fab\Vidi\Persistence\Storage\VidiDbBackend $backend */
-        $backend = $this->objectManager->get('Fab\Vidi\Persistence\Storage\VidiDbBackend', $this);
+        /** @var VidiDbBackend $backend */
+        $backend = $this->objectManager->get(VidiDbBackend::class, $this);
         return $backend->countResult();
     }
 

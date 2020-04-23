@@ -170,8 +170,6 @@ abstract class AbstractServiceTest extends UnitTestCase {
 			),
 		);
 
-		$GLOBALS['TYPO3_DB'] = $this->getMock('TYPO3\CMS\Core\Database\DatabaseConnection', array());
-
 		/*
 		#################
 		# opposite many
@@ -261,7 +259,7 @@ abstract class AbstractServiceTest extends UnitTestCase {
 	}
 
 	public function tearDown() {
-		unset($this->fixture, $GLOBALS['TCA'], $GLOBALS['TYPO3_DB']);
+		unset($this->fixture, $GLOBALS['TCA']);
 	}
 
 }
