@@ -9,8 +9,6 @@ namespace Fab\Vidi\Service;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
-use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -149,22 +147,6 @@ class DataService implements SingletonInterface
         foreach ($expressions as $expression) {
             $queryBuilder->andWhere($expression);
         }
-    }
-
-    /**
-     * @return object|DeletedRestriction
-     */
-    protected function getDeletedRestriction(): DeletedRestriction
-    {
-        return GeneralUtility::makeInstance(DeletedRestriction::class);
-    }
-
-    /**
-     * @return object|HiddenRestriction
-     */
-    protected function getHiddenRestriction(): HiddenRestriction
-    {
-        return GeneralUtility::makeInstance(HiddenRestriction::class);
     }
 
     /**
