@@ -9,6 +9,7 @@ namespace Fab\Vidi\Persistence;
  */
 
 use Fab\Vidi\Persistence\Storage\VidiDbBackend;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidNumberOfConstraintsException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
@@ -52,11 +53,6 @@ class Query implements QueryInterface
      * @var string
      */
     protected $type;
-
-    /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-     */
-    protected $objectManager;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface
@@ -124,15 +120,6 @@ class Query implements QueryInterface
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager
-     * @return void
-     */
-    public function injectObjectManager(\TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager)
-    {
-        $this->objectManager = $objectManager;
-    }
-
-    /**
      * Injects the persistence manager, used to fetch the CR session
      *
      * @param \TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface $persistenceManager
@@ -183,7 +170,7 @@ class Query implements QueryInterface
         // Apply possible settings to the query.
         if ($this->isBackendMode()) {
             /** @var \TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager $backendConfigurationManager */
-            $backendConfigurationManager = $this->objectManager->get('TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager');
+            $backendConfigurationManager = $this->getObjectManager()->get('TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager');
             $configuration = $backendConfigurationManager->getTypoScriptSetup();
             $querySettings = array('respectSysLanguage');
             foreach ($querySettings as $setting) {
@@ -255,7 +242,7 @@ class Query implements QueryInterface
     public function execute($returnRawQueryResult = false)
     {
         /** @var VidiDbBackend $backend */
-        $backend = $this->objectManager->get(VidiDbBackend::class, $this);
+        $backend = $this->getObjectManager()->get(VidiDbBackend::class, $this);
         return $backend->fetchResult();
     }
 
@@ -579,7 +566,7 @@ class Query implements QueryInterface
     public function count()
     {
         /** @var VidiDbBackend $backend */
-        $backend = $this->objectManager->get(VidiDbBackend::class, $this);
+        $backend = $this->getObjectManager()->get(VidiDbBackend::class, $this);
         return $backend->countResult();
     }
 
@@ -665,6 +652,14 @@ class Query implements QueryInterface
     {
         $this->sourceFieldName = $sourceFieldName;
         return $this;
+    }
+
+    /**
+     * @return object|\TYPO3\CMS\Extbase\Object\ObjectManager
+     */
+    protected function getObjectManager()
+    {
+        return GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
     }
 
 }
