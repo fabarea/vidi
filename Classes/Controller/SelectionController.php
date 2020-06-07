@@ -11,6 +11,7 @@ namespace Fab\Vidi\Controller;
 use Fab\Vidi\Domain\Model\Selection;
 use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Annotation\Inject;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
@@ -21,7 +22,7 @@ class SelectionController extends ActionController
 
     /**
      * @var \Fab\Vidi\Domain\Repository\SelectionRepository
-     * @inject
+     * @Inject
      */
     protected $selectionRepository;
 

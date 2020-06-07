@@ -12,6 +12,7 @@ namespace Fab\Vidi\Tca;
 use Fab\Vidi\Grid\ColumnRendererInterface;
 use Fab\Vidi\Module\ConfigurablePart;
 use Fab\Vidi\Module\ModulePreferences;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Exception\InvalidKeyInArrayException;
 use Fab\Vidi\Facet\StandardFacet;
@@ -720,11 +721,11 @@ class GridService extends AbstractTca
     }
 
     /**
-     * @return \TYPO3\CMS\Lang\LanguageService|object
+     * @return LanguageService|object
      */
-    protected function getLanguageService(): \TYPO3\CMS\Lang\LanguageService
+    protected function getLanguageService()
     {
-        return GeneralUtility::makeInstance(\TYPO3\CMS\Lang\LanguageService::class);
+        return GeneralUtility::makeInstance(LanguageService::class);
     }
 
 }

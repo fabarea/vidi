@@ -10,6 +10,7 @@
  * controls using Bootstrap. See http://datatables.net/manual/styling/bootstrap
  * for further information.
  */
+
 (function(window, document, undefined){
 
 var factory = function( $, DataTable ) {
@@ -217,7 +218,7 @@ $.fn.dataTableExt.oApi.fnResetDisplay = function (oSettings, bDraw) {
 
 // Define as an AMD module if possible
 if ( typeof define === 'function' && define.amd ) {
-	define( ['jquery', 'datatables'], factory );
+	define( ['jquery', 'Fab/Vidi/DataTables/dataTables'], factory );
 }
 else if ( typeof exports === 'object' ) {
     // Node/CommonJS

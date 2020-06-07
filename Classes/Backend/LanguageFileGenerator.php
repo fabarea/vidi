@@ -10,7 +10,7 @@ namespace Fab\Vidi\Backend;
 
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Lang\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageService;
 
 /**
  * Display custom fields in the Extension Manager.
@@ -78,7 +78,7 @@ class LanguageFileGenerator implements SingletonInterface
     }
 
     /**
-     * @return \TYPO3\CMS\Lang\LanguageService
+     * @return \TYPO3\CMS\Core\Localization\LanguageService
      */
     protected function getLanguageService()
     {

@@ -38,11 +38,11 @@ abstract class AbstractComponentView implements ViewComponentInterface
     }
 
     /**
-     * @return \TYPO3\CMS\Lang\LanguageService|object
+     * @return \TYPO3\CMS\Core\Localization\LanguageService|object
      */
     protected function getLanguageService()
     {
-        return GeneralUtility::makeInstance(\TYPO3\CMS\Lang\LanguageService::class);
+        return GeneralUtility::makeInstance(\TYPO3\CMS\Core\Localization\LanguageService::class);
     }
 
     /**

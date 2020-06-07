@@ -16,6 +16,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Versioning\VersionState;
+use TYPO3\CMS\Extbase\Annotation\Inject;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ComparisonInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
@@ -49,7 +50,7 @@ class VidiDbBackend
 
     /**
      * @var \TYPO3\CMS\Extbase\Service\EnvironmentService
-     * @inject
+     * @Inject
      */
     protected $environmentService;
 
@@ -883,16 +884,16 @@ class VidiDbBackend
         $pageRepository = $this->getPageRepository();
         if (is_object($GLOBALS['TSFE'])) {
             $languageMode = $GLOBALS['TSFE']->sys_language_mode;
-            if ($this->isBackendUserLogged() && $this->getBackendUser()->workspace !== 0) {
-                $pageRepository->versioningWorkspaceId = $this->getBackendUser()->workspace;
-            }
+            #if ($this->isBackendUserLogged() && $this->getBackendUser()->workspace !== 0) {
+            #    $pageRepository->versioningWorkspaceId = $this->getBackendUser()->workspace;
+            #}
         } else {
             $languageMode = '';
             $workspaceUid = $this->getBackendUser()->workspace;
-            $pageRepository->versioningWorkspaceId = $workspaceUid;
-            if ($this->getBackendUser()->workspace !== 0) {
-                $pageRepository->versioningPreview = 1;
-            }
+            #$pageRepository->versioningWorkspaceId = $workspaceUid;
+            #if ($this->getBackendUser()->workspace !== 0) {
+            #    $pageRepository->versioningPreview = 1;
+            #}
         }
 
         // If current row is a translation select its parent

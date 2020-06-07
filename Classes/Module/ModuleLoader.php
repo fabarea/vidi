@@ -325,7 +325,7 @@ class ModuleLoader
     {
         $signature = GeneralUtility::_GP(Parameter::MODULE);
         $trimmedSignature = trim($signature, '/');
-        return str_replace('/', '_', $trimmedSignature);
+        return str_replace(['/', 'module_'], ['_', ''], $trimmedSignature);
     }
 
     /**

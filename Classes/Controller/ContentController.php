@@ -8,6 +8,7 @@ namespace Fab\Vidi\Controller;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use Fab\Vidi\Domain\Repository\SelectionRepository;
 use Fab\Vidi\Language\LanguageService;
 use Fab\Vidi\Module\ModuleLoader;
 use Fab\Vidi\Persistence\Matcher;
@@ -23,6 +24,8 @@ use Fab\Vidi\View\Uri\EditUri;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
+use TYPO3\CMS\Extbase\Annotation\Inject;
+use TYPO3\CMS\Extbase\Annotation\Validate;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use Fab\Vidi\Behavior\SavingBehavior;
 use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
@@ -43,8 +46,8 @@ class ContentController extends ActionController
 {
 
     /**
-     * @var \Fab\Vidi\Domain\Repository\SelectionRepository
-     * @inject
+     * @var SelectionRepository
+     * @Inject
      */
     protected $selectionRepository;
 
@@ -88,8 +91,8 @@ class ContentController extends ActionController
      *
      * @param array $columns corresponds to columns to be rendered.
      * @param array $matches
-     * @validate $columns Fab\Vidi\Domain\Validator\ColumnsValidator
-     * @validate $matches Fab\Vidi\Domain\Validator\MatchesValidator
+     * @Validate("Fab\Vidi\Domain\Validator\ColumnsValidator", param="columns")
+     * @Validate("Fab\Vidi\Domain\Validator\MatchesValidator", param="matches")
      * @return void
      */
     public function listAction(array $columns = [], $matches = [])

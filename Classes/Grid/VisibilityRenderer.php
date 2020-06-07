@@ -93,7 +93,7 @@ class VisibilityRenderer extends ColumnRendererAbstract
     }
 
     /**
-     * @return \TYPO3\CMS\Lang\LanguageService
+     * @return \TYPO3\CMS\Core\Localization\LanguageService
      */
     protected function getLabelService()
     {

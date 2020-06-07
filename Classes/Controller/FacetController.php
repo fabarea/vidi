@@ -12,6 +12,7 @@ use Fab\Vidi\Facet\FacetInterface;
 use Fab\Vidi\Facet\FacetSuggestionService;
 use Fab\Vidi\Tca\Tca;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Annotation\Validate;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
@@ -26,7 +27,7 @@ class FacetController extends ActionController
      *
      * @param string $facet
      * @param string $searchTerm
-     * @validate $facet Fab\Vidi\Domain\Validator\FacetValidator
+     * @Validate("Fab\Vidi\Domain\Validator\FacetValidator", param="facet")
      * @return string
      */
     public function autoSuggestAction($facet, $searchTerm)

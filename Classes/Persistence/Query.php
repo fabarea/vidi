@@ -14,6 +14,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidNumberOfConstraintsEx
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Annotation\Inject;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
 /**
@@ -105,7 +106,7 @@ class Query implements QueryInterface
      * The query settings.
      *
      * @var \Fab\Vidi\Persistence\QuerySettings
-     * @inject
+     * @Inject
      */
     protected $querySettings;
 

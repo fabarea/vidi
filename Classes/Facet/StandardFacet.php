@@ -12,7 +12,7 @@ use Fab\Vidi\Persistence\Matcher;
 use Fab\Vidi\Tca\Tca;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Lang\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageService;
 
 /**
  * Class for configuring a custom Facet item.

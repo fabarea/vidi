@@ -10,6 +10,7 @@ namespace Fab\Vidi\ViewHelpers\Be;
 
 use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Annotation\Inject;
 use TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper;
 
 /**
@@ -20,7 +21,7 @@ class AdditionalAssetsViewHelper extends AbstractBackendViewHelper
 
     /**
      * @var \TYPO3\CMS\Core\Page\PageRenderer
-     * @inject
+     * @Inject
      */
     protected $pageRenderer;
 

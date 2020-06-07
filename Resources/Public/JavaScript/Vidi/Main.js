@@ -26,7 +26,7 @@ define([
 		'Fab/Vidi/Vidi/Edit',
 		'Fab/Vidi/Vidi/Export',
 		'Fab/Vidi/Vidi/Clipboard',
-		'datatables',
+		'Fab/Vidi/DataTables/dataTables',
 		'Fab/Vidi/DataTables/dataTables.rowReordering',
 		'Fab/Vidi/DataTables/dataTables.bootstrap'
 	],

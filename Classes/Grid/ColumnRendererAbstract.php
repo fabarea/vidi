@@ -11,7 +11,7 @@ namespace Fab\Vidi\Grid;
 use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Lang\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageService;
 
 /**
  * Abstract class for rendering a column in the Grid.

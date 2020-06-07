@@ -29,9 +29,3 @@ module.tx_vidi {
 		}
 	}
 }
-
-
-# Vidi persistence configuration
-config.tx_vidi.persistence.backend.pages_language_overlay {
-	respectSysLanguage = 0
-}
