@@ -9,12 +9,14 @@ namespace Fab\Vidi\Persistence\Storage;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use Doctrine\DBAL\ParameterType;
 use Fab\Vidi\Persistence\Query;
 use Fab\Vidi\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Versioning\VersionState;
 use TYPO3\CMS\Extbase\Annotation\Inject;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception;
@@ -85,6 +87,31 @@ class VidiDbBackend
     }
 
     /**
+     * @param $parameters
+     * @return array
+     */
+    protected static function getTypes($parameters)
+    {
+        $types = [];
+        foreach ($parameters as $parameter) {
+            if (is_array($parameter)) {
+                if (MathUtility::canBeInterpretedAsInteger($parameter[0])) {
+                    $types[] = \Doctrine\DBAL\Connection::PARAM_INT_ARRAY;
+                } else {
+                    $types[] = \Doctrine\DBAL\Connection::PARAM_STR_ARRAY;
+                }
+            } else {
+                if (MathUtility::canBeInterpretedAsInteger($parameter)) {
+                    $types[] = ParameterType::INTEGER;
+                } else {
+                    $types[] = ParameterType::STRING;
+                }
+            }
+        }
+        return $types;
+    }
+
+    /**
      * Returns the result of the query
      */
     public function fetchResult()
@@ -96,7 +123,7 @@ class VidiDbBackend
         //print $sql; exit();
 
         $rows = $this->getConnection()
-            ->executeQuery($sql, $parameters)
+            ->executeQuery($sql, $parameters, self::getTypes($parameters))
             ->fetchAll();
 
         return $this->getContentObjects($rows);
@@ -112,6 +139,7 @@ class VidiDbBackend
         $parameters = [];
         $statementParts = $this->parseQuery($parameters);
         $statementParts = $this->processStatementStructureForRecursiveMMRelation($statementParts);
+        $types = self::getTypes($parameters);
 
         // if limit is set, we need to count the rows "manually" as COUNT(*) ignores LIMIT constraints
         if (!empty($statementParts['limit'])) {
@@ -119,7 +147,7 @@ class VidiDbBackend
 
             $count = $this
                 ->getConnection()
-                ->executeQuery($sql, $parameters)
+                ->executeQuery($sql, $parameters, $types)
                 ->rowCount();
         } else {
             $statementParts['fields'] = array('COUNT(*)');
@@ -134,7 +162,7 @@ class VidiDbBackend
             $sql = $this->buildQuery($statementParts);
             $count = $this
                 ->getConnection()
-                ->executeQuery($sql, $parameters)
+                ->executeQuery($sql, $parameters, $types)
                 ->fetchColumn(0);
         }
         return (int)$count;
