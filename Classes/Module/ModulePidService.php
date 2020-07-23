@@ -27,13 +27,6 @@ class ModulePidService
     protected $dataType = '';
 
     /**
-     * The page record of the configured pid
-     *
-     * @var array
-     */
-    protected $page = [];
-
-    /**
      * A collection of speaking error messages why the pid is invalid.
      *
      * @var array
@@ -188,10 +181,6 @@ class ModulePidService
      */
     protected function getPage(int $configuredPid): ?array
     {
-        if ($this->page !== null) {
-            return $this->page;
-        }
-
         $query = $this->getQueryBuilder('pages');
         $query->getRestrictions()->removeAll(); // we are in BE context.
 
