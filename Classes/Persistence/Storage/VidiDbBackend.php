@@ -119,20 +119,6 @@ class VidiDbBackend
         $statementParts = $this->parseQuery($parameters);
         $statementParts = $this->processStatementStructureForRecursiveMMRelation($statementParts);
         $sql = $this->buildQuery($statementParts);
-
-        // We might have a problem with array as they will not be bound correctly.
-        preg_match_all('/\?/', $sql,$matches, PREG_OFFSET_CAPTURE);
-
-        foreach ($parameters as $key => $parameter) {
-            if (is_array($parameter)) {
-
-                $position = $matches[0][$key][1];
-                $sqlPartRight = substr($sql, 0, $position);
-                $sqlPartLeft = substr($sql, $position + 1);
-                $sql = $sqlPartRight . "'" . implode("', '", $parameter) . "'" . $sqlPartLeft;
-                unset($parameters[$key]);
-            }
-        }
         //print $sql; exit();
 
         $rows = $this->getConnection()
