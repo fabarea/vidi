@@ -9,7 +9,7 @@ namespace Fab\Vidi\Controller;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Annotation\Validate;
+use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use Fab\Vidi\Tool\ToolInterface;
 use Fab\Vidi\Tool\ToolRegistry;
@@ -42,9 +42,9 @@ class ToolController extends ActionController
      * @param string $tool
      * @param array $arguments
      * @return void
-     * @Validate("Fab\Vidi\Domain\Validator\ToolValidator", param="tools")
+     * @Extbase\Validate("Fab\Vidi\Domain\Validator\ToolValidator", param="tool")
      */
-    public function workAction($tool, array $arguments = array())
+    public function workAction(string $tool, array $arguments = array())
     {
         /** @var ToolInterface $tool */
         $tool = GeneralUtility::makeInstance($tool);
