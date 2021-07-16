@@ -8,6 +8,7 @@ namespace Fab\Vidi\Backend;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Localization\LanguageService;
@@ -70,7 +71,7 @@ class LanguageFileGenerator implements SingletonInterface
     protected function getLanguageDirectory()
     {
         // Create language file dynamically
-        $languageDirectory = PATH_site . 'typo3temp/vidi';
+        $languageDirectory = Environment::getPublicPath() . '/typo3temp/vidi';
         if (!is_dir($languageDirectory)) {
             GeneralUtility::mkdir($languageDirectory);
         }

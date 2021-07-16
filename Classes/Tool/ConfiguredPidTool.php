@@ -9,6 +9,7 @@ namespace Fab\Vidi\Tool;
  */
 
 use Fab\Vidi\Module\ModulePidService;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -41,7 +42,7 @@ class ConfiguredPidTool extends AbstractTool
         $templateNameAndPath = 'EXT:vidi/Resources/Private/Standalone/Tool/ConfiguredPid/Launcher.html';
         $view = $this->initializeStandaloneView($templateNameAndPath);
         $view->assignMultiple([
-            'sitePath' => PATH_site,
+            'sitePath' => Environment::getPublicPath() . '/',
             'dataType' => $this->getModuleLoader()->getDataType(),
             'configuredPid' => $this->getModulePidService()->getConfiguredNewRecordPid(),
             'errors' => $this->getModulePidService()->validateConfiguredPid(),

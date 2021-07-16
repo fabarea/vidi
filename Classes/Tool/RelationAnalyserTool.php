@@ -8,6 +8,7 @@ namespace Fab\Vidi\Tool;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -39,7 +40,7 @@ class RelationAnalyserTool extends AbstractTool
     {
         $templateNameAndPath = 'EXT:vidi/Resources/Private/Standalone/Tool/RelationAnalyser/Launcher.html';
         $view = $this->initializeStandaloneView($templateNameAndPath);
-        $view->assign('sitePath', PATH_site);
+        $view->assign('sitePath', Environment::getPublicPath() . '/');
         $view->assign('dataType', $this->getModuleLoader()->getDataType());
         return $view->render();
     }

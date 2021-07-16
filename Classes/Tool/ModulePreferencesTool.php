@@ -11,6 +11,7 @@ namespace Fab\Vidi\Tool;
 use Fab\Vidi\Module\ModulePreferences;
 use Fab\Vidi\Module\ConfigurablePart;
 use Fab\Vidi\Tca\Tca;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -43,7 +44,7 @@ class ModulePreferencesTool extends AbstractTool
     {
         $templateNameAndPath = 'EXT:vidi/Resources/Private/Standalone/Tool/ModulePreferences/Launcher.html';
         $view = $this->initializeStandaloneView($templateNameAndPath);
-        $view->assign('sitePath', PATH_site);
+        $view->assign('sitePath', Environment::getPublicPath() . '/');
         return $view->render();
     }
 

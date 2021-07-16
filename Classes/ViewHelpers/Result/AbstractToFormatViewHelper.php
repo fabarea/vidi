@@ -10,6 +10,7 @@ namespace Fab\Vidi\ViewHelpers\Result;
 
 use Fab\Vidi\Tca\FieldType;
 use Fab\Vidi\View\Grid\Rows;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Model\Content;
@@ -86,7 +87,7 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
         /** @var \Fab\Vidi\Domain\Model\Content $object */
         $object = reset($objects);
 
-        $this->temporaryDirectory = PATH_site . 'typo3temp/' . uniqid() . '/';
+        $this->temporaryDirectory = Environment::getPublicPath() . '/typo3temp/' . uniqid() . '/';
         GeneralUtility::mkdir($this->temporaryDirectory);
 
         // Compute file name and path variable

@@ -9,6 +9,7 @@ namespace Fab\Vidi\ViewHelpers\Be;
  */
 
 use Fab\Vidi\Module\ModuleLoader;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation\Inject;
 use TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper;
@@ -56,7 +57,7 @@ class AdditionalAssetsViewHelper extends AbstractBackendViewHelper
     protected function resolvePath($uri)
     {
         $uri = GeneralUtility::getFileAbsFileName($uri);
-        $uri = substr($uri, strlen(PATH_site));
+        $uri = substr($uri, strlen(Environment::getPublicPath() . '/'));
         if (TYPO3_MODE === 'BE' && $uri !== false) {
             $uri = '../' . $uri;
         }
