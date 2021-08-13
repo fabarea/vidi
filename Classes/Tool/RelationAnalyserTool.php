@@ -79,7 +79,7 @@ class RelationAnalyserTool extends AbstractTool
      */
     public function isShown(): bool
     {
-        return $this->getBackendUser()->isAdmin();# && GeneralUtility::getApplicationContext()->isDevelopment();
+        return $this->getBackendUser()->isAdmin();
     }
 
     /**
