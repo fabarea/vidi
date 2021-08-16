@@ -83,7 +83,12 @@ class LanguageFileGenerator implements SingletonInterface
      */
     protected function getLanguageService()
     {
-        return GeneralUtility::makeInstance(LanguageService::class, $GLOBALS['BE_USER']->uc['lang']);
+        $locale = $GLOBALS['BE_USER']->uc['lang'] ?? '';
+        if ($locale === '') {
+            $locale = 'en';
+        }
+        $languageServiceFactory = GeneralUtility::makeInstance(LanguageServiceFactory::class);
+        return $languageServiceFactory->create($locale);
     }
 
 }
