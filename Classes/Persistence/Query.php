@@ -9,6 +9,7 @@ namespace Fab\Vidi\Persistence;
  */
 
 use Fab\Vidi\Persistence\Storage\VidiDbBackend;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidNumberOfConstraintsException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
@@ -108,7 +109,7 @@ class Query implements QueryInterface
      * @var \Fab\Vidi\Persistence\QuerySettings
      * @Inject
      */
-    protected $querySettings;
+    public $querySettings;
 
     /**
      * Constructs a query object working on the given class name
@@ -634,7 +635,7 @@ class Query implements QueryInterface
      */
     protected function isBackendMode()
     {
-        return TYPO3_MODE == 'BE';
+        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
     }
 
     /**

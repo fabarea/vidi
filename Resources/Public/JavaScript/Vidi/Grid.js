@@ -229,7 +229,7 @@ define([
 						container: 'body',
 						placement: 'auto'
 					};
-					$('[data-toggle="tooltip"]').tooltip('destroy').tooltip(options);
+					//$('[data-toggle="tooltip"]').tooltip('destroy').tooltip(options);
 
 					/**
 					 * Bind handler for editable content for input.

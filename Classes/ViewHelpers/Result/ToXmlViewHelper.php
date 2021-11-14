@@ -19,7 +19,6 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper
     /**
      * Render an XML export.
      *
-     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception\InvalidVariableException
      */
     public function render()
     {
@@ -116,20 +115,16 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper
 
     /**
      * @return void
-     * @throws \InvalidArgumentException
-     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception\InvalidVariableException
      */
     protected function sendXmlHttpHeaders()
     {
 
-        /** @var \TYPO3\CMS\Extbase\Mvc\Web\Response $response */
+        /** @var \TYPO3\CMS\Core\Http\Response $response */
         $response = $this->templateVariableContainer->get('response');
-        $response->setHeader('Content-Type', 'application/xml');
-        $response->setHeader('Content-Disposition', 'attachment; filename="' . basename($this->exportFileNameAndPath) . '"');
-        $response->setHeader('Content-Length', filesize($this->exportFileNameAndPath));
-        $response->setHeader('Content-Description', 'File Transfer');
-
-        $response->sendHeaders();
+        $response->withHeader('Content-Type', 'application/xml');
+        $response->withHeader('Content-Disposition', 'attachment; filename="' . basename($this->exportFileNameAndPath) . '"');
+        $response->withHeader('Content-Length', filesize($this->exportFileNameAndPath));
+        $response->withHeader('Content-Description', 'File Transfer');
     }
 
 }

@@ -9,6 +9,7 @@ namespace Fab\Vidi\Grid;
  */
 
 use Fab\Vidi\Utility\BackendUtility;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Fab\Vidi\Tca\Tca;
@@ -80,7 +81,7 @@ class RelationCountRenderer extends ColumnRendererAbstract
      */
     protected function isBackendMode()
     {
-        return TYPO3_MODE === 'BE';
+        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
     }
 
 }

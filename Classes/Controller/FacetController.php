@@ -28,25 +28,21 @@ class FacetController extends ActionController
      * @param string $facet
      * @param string $searchTerm
      * @Validate("Fab\Vidi\Domain\Validator\FacetValidator", param="facet")
-     * @return string
      */
     public function autoSuggestAction($facet, $searchTerm)
     {
 
         $suggestions = $this->getFacetSuggestionService()->getSuggestions($facet);
 
-        # Json header is not automatically sent in the BE...
-        $this->response->setHeader('Content-Type', 'application/json');
-        $this->response->sendHeaders();
-        return json_encode($suggestions);
+
+        return $this->responseFactory->createResponse()
+            ->withAddedHeader('Content-Type', 'application/json')
+            ->withBody($this->streamFactory->createStream(json_encode($suggestions)));
     }
 
     /**
      * Suggest values for all configured facets in the Grid.
      * Output a json list of key / values.
-     *
-     * @return string
-     * @throws \Exception
      */
     public function autoSuggestsAction()
     {
@@ -58,10 +54,9 @@ class FacetController extends ActionController
             $suggestions[$name] = $this->getFacetSuggestionService()->getSuggestions($name);
         }
 
-        # Json header is not automatically sent in the BE...
-        $this->response->setHeader('Content-Type', 'application/json');
-        $this->response->sendHeaders();
-        return json_encode($suggestions);
+        return $this->responseFactory->createResponse()
+            ->withAddedHeader('Content-Type', 'application/json')
+            ->withBody($this->streamFactory->createStream(json_encode($suggestions)));
     }
 
     /**

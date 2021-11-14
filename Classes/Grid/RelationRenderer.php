@@ -11,6 +11,7 @@ namespace Fab\Vidi\Grid;
 use Fab\Vidi\Utility\BackendUtility;
 use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Tca\Tca;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Imaging\Icon;
 
 /**
@@ -148,7 +149,6 @@ class RelationRenderer extends ColumnRendererAbstract
         );
     }
 
-
     /**
      * Return the label field of the foreign table.
      *
@@ -173,7 +173,7 @@ class RelationRenderer extends ColumnRendererAbstract
      */
     protected function isBackendMode()
     {
-        return TYPO3_MODE === 'BE';
+        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
     }
 
 }

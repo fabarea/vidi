@@ -8,6 +8,8 @@ namespace Fab\Vidi\Tca;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Http\ApplicationType;
+
 /**
  * An abstract class to handle TCA.
  */
@@ -31,7 +33,7 @@ abstract class AbstractTca implements TcaServiceInterface
      */
     protected function isBackendMode()
     {
-        return TYPO3_MODE == 'BE';
+        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
     }
 
     /**
@@ -41,7 +43,7 @@ abstract class AbstractTca implements TcaServiceInterface
      */
     protected function isFrontendMode()
     {
-        return TYPO3_MODE == 'FE';
+        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
     }
 
 }

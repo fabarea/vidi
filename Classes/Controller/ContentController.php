@@ -49,7 +49,7 @@ class ContentController extends ActionController
      * @var SelectionRepository
      * @Inject
      */
-    protected $selectionRepository;
+    public $selectionRepository;
 
     /**
      * Initialize every action.
@@ -111,7 +111,8 @@ class ContentController extends ActionController
         $this->view->assign('objects', $contentService->getObjects());
         $this->view->assign('numberOfObjects', $contentService->getNumberOfObjects());
         $this->view->assign('pager', $pager);
-        $this->view->assign('response', $this->response);
+
+        $this->view->assign('response', $this->responseFactory->createResponse());
     }
 
     /**
@@ -137,7 +138,6 @@ class ContentController extends ActionController
      * @param string $savingBehavior
      * @param int $language
      * @param array $columns
-     * @return string
      * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      */
     public function updateAction($fieldNameAndPath, array $content, array $matches = [], $savingBehavior = SavingBehavior::REPLACE, $language = 0, $columns = [])
@@ -228,9 +228,10 @@ class ContentController extends ActionController
             }
         }
 
-        // Set the result and render the JSON view.
-        $this->getJsonView()->setResult($result);
-        return $this->getJsonView()->render();
+        $response = $this->responseFactory->createResponse()
+            ->withHeader('Content-Type', 'application/json; charset=utf-8');
+        $response->getBody()->write(json_encode($result));
+        return $response;
     }
 
     /**
@@ -238,7 +239,6 @@ class ContentController extends ActionController
      *
      * @param array $matches
      * @param int $previousIdentifier
-     * @return string
      */
     public function sortAction(array $matches = [], $previousIdentifier = null)
     {
@@ -279,9 +279,10 @@ class ContentController extends ActionController
             $result->addErrorMessages($errorMessages);
         }
 
-        // Set the result and render the JSON view.
-        $this->getJsonView()->setResult($result);
-        return $this->getJsonView()->render();
+        $response = $this->responseFactory->createResponse()
+            ->withHeader('Content-Type', 'application/json; charset=utf-8');
+        $response->getBody()->write(json_encode($result));
+        return $response;
     }
 
     /**
@@ -397,7 +398,6 @@ class ContentController extends ActionController
      * Possible values for $matches, refer to method "updateAction".
      *
      * @param array $matches
-     * @return string
      */
     public function deleteAction(array $matches = [])
     {
@@ -434,9 +434,10 @@ class ContentController extends ActionController
             $result->addErrorMessages($errorMessages);
         }
 
-        // Set the result and render the JSON view.
-        $this->getJsonView()->setResult($result);
-        return $this->getJsonView()->render();
+        $response = $this->responseFactory->createResponse()
+            ->withHeader('Content-Type', 'application/json; charset=utf-8');
+        $response->getBody()->write(json_encode($result));
+        return $response;
     }
 
     /**
@@ -460,7 +461,6 @@ class ContentController extends ActionController
      *
      * @param string $target
      * @throws \Exception
-     * @return string
      */
     public function copyClipboardAction($target)
     {
@@ -503,9 +503,10 @@ class ContentController extends ActionController
             $this->getClipboardService()->flush();
         }
 
-        // Set the result and render the JSON view.
-        $this->getJsonView()->setResult($result);
-        return $this->getJsonView()->render();
+        $response = $this->responseFactory->createResponse()
+            ->withHeader('Content-Type', 'application/json; charset=utf-8');
+        $response->getBody()->write(json_encode($result));
+        return $response;
     }
 
     /**
@@ -515,7 +516,6 @@ class ContentController extends ActionController
      *
      * @param string $target
      * @param array $matches
-     * @return string
      */
     public function moveAction($target, array $matches = [])
     {
@@ -552,16 +552,16 @@ class ContentController extends ActionController
             $result->addErrorMessages($errorMessages);
         }
 
-        // Set the result and render the JSON view.
-        $this->getJsonView()->setResult($result);
-        return $this->getJsonView()->render();
+        $response = $this->responseFactory->createResponse()
+            ->withHeader('Content-Type', 'application/json; charset=utf-8');
+        $response->getBody()->write(json_encode($result));
+        return $response;
     }
 
     /**
      * Retrieve Content objects from the Clipboard then "move" them according to the target.
      *
      * @param string $target
-     * @return string
      */
     public function moveClipboardAction($target)
     {
@@ -604,9 +604,10 @@ class ContentController extends ActionController
             $this->getClipboardService()->flush();
         }
 
-        // Set the result and render the JSON view.
-        $this->getJsonView()->setResult($result);
-        return $this->getJsonView()->render();
+        $response = $this->responseFactory->createResponse()
+            ->withHeader('Content-Type', 'application/json; charset=utf-8');
+        $response->getBody()->write(json_encode($result));
+        return $response;
     }
 
     /**
@@ -617,7 +618,6 @@ class ContentController extends ActionController
      * @param string $fieldNameAndPath
      * @param array $matches
      * @param int $language
-     * @return string
      * @throws \Exception
      */
     public function localizeAction($fieldNameAndPath, array $matches = [], $language = 0)
@@ -684,9 +684,10 @@ class ContentController extends ActionController
             $result->addErrorMessages($errorMessages);
         }
 
-        // Set the result and render the JSON view.
-        $this->getJsonView()->setResult($result);
-        return $this->getJsonView()->render();
+        $response = $this->responseFactory->createResponse()
+            ->withHeader('Content-Type', 'application/json; charset=utf-8');
+        $response->getBody()->write(json_encode($result));
+        return $response;
     }
 
     /**
@@ -713,22 +714,6 @@ class ContentController extends ActionController
     protected function getFieldPathResolver()
     {
         return GeneralUtility::makeInstance(FieldPathResolver::class);
-    }
-
-    /**
-     * Return a special view for handling JSON
-     * Goal is to have this view injected but require more configuration.
-     *
-     * @return JsonView
-     */
-    protected function getJsonView()
-    {
-        if (!$this->view instanceof JsonView) {
-            /** @var JsonView $view */
-            $this->view = $this->objectManager->get(JsonView::class);
-            $this->view->setResponse($this->response);
-        }
-        return $this->view;
     }
 
     /**

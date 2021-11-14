@@ -21,11 +21,9 @@ class ToJsonViewHelper extends AbstractViewHelper
     /**
      * Render a Json response
      *
-     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception\InvalidVariableException
      */
     public function render()
     {
-
         $objects = $this->templateVariableContainer->get('objects');
         $columns = $this->templateVariableContainer->get('columns');
         $output = array(
@@ -54,15 +52,13 @@ class ToJsonViewHelper extends AbstractViewHelper
 
     /**
      * @return void
-     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception\InvalidVariableException
      * @throws \InvalidArgumentException
      */
     protected function setHttpHeaders()
     {
-        /** @var \TYPO3\CMS\Extbase\Mvc\Web\Response $response */
+        /** @var \TYPO3\CMS\Core\Http\Response $response */
         $response = $this->templateVariableContainer->get('response');
-        $response->setHeader('Content-Type', 'application/json');
-        $response->sendHeaders();
+        $response->withHeader('Content-Type', 'application/json');
     }
 
     /**

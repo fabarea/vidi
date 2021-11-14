@@ -20,7 +20,6 @@ class ToXlsViewHelper extends AbstractToFormatViewHelper
     /**
      * Render a XLS export request.
      *
-     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception\InvalidVariableException
      */
     public function render()
     {
@@ -58,7 +57,6 @@ class ToXlsViewHelper extends AbstractToFormatViewHelper
      *
      * @param array $objects
      * @return void
-     * @throws \InvalidArgumentException
      */
     protected function writeXlsFile(array $objects)
     {
@@ -96,24 +94,19 @@ class ToXlsViewHelper extends AbstractToFormatViewHelper
 
     /**
      * @return void
-     * @throws \InvalidArgumentException
-     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception\InvalidVariableException
      */
     protected function sendXlsHttpHeaders()
     {
-
-        /** @var \TYPO3\CMS\Extbase\Mvc\Web\Response $response */
+        /** @var \TYPO3\CMS\Core\Http\Response $response */
         $response = $this->templateVariableContainer->get('response');
-        $response->setHeader('Pragma', 'public');
-        $response->setHeader('Expires', '0');
-        $response->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
-        $response->setHeader('Content-Type', 'application/vnd.ms-excel');
-        $response->setHeader('Content-Disposition', 'attachment; filename="' . basename($this->exportFileNameAndPath) . '"');
-        $response->setHeader('Content-Length', filesize($this->exportFileNameAndPath));
-        $response->setHeader('Content-Description', 'File Transfer');
-        $response->setHeader('Content-Transfer-Encoding', 'binary');
-
-        $response->sendHeaders();
+        $response->withHeader('Pragma', 'public');
+        $response->withHeader('Expires', '0');
+        $response->withHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
+        $response->withHeader('Content-Type', 'application/vnd.ms-excel');
+        $response->withHeader('Content-Disposition', 'attachment; filename="' . basename($this->exportFileNameAndPath) . '"');
+        $response->withHeader('Content-Length', filesize($this->exportFileNameAndPath));
+        $response->withHeader('Content-Description', 'File Transfer');
+        $response->withHeader('Content-Transfer-Encoding', 'binary');
     }
 
 }

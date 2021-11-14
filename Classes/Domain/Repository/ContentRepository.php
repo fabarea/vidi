@@ -16,6 +16,7 @@ use Fab\Vidi\Persistence\ConstraintContainer;
 use Fab\Vidi\Persistence\QuerySettings;
 use Fab\Vidi\Resolver\FieldPathResolver;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -818,7 +819,7 @@ class ContentRepository implements RepositoryInterface
      */
     protected function isBackendMode(): bool
     {
-        return TYPO3_MODE === 'BE';
+        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
     }
 
     /**

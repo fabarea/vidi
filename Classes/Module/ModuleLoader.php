@@ -303,12 +303,12 @@ class ModuleLoader
                 $this->dataType . '_' . $this->moduleKey,
                 $this->position,
                 [
-                    'Content' => 'index, list, delete, update, edit, copy, move, localize, sort, copyClipboard, moveClipboard',
-                    'Tool' => 'welcome, work',
-                    'Facet' => 'autoSuggest, autoSuggests',
-                    'Selection' => 'edit, update, create, delete, list, show',
-                    'UserPreferences' => 'save',
-                    'Clipboard' => 'save, flush, show',
+                    \Fab\Vidi\Controller\ContentController::class => 'index, list, delete, update, edit, copy, move, localize, sort, copyClipboard, moveClipboard',
+                    \Fab\Vidi\Controller\ToolController::class => 'welcome, work',
+                    \Fab\Vidi\Controller\FacetController::class => 'autoSuggest, autoSuggests',
+                    \Fab\Vidi\Controller\SelectionController::class => 'edit, update, create, delete, list, show',
+                    \Fab\Vidi\Controller\UserPreferencesController::class => 'save',
+                    \Fab\Vidi\Controller\ClipboardController::class => 'save, flush, show',
                 ],
                 $moduleConfiguration
             );

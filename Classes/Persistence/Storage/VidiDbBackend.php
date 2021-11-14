@@ -15,6 +15,8 @@ use Fab\Vidi\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Versioning\VersionState;
@@ -31,7 +33,6 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\UpperCaseInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 use Fab\Vidi\Tca\Tca;
 
 /**
@@ -54,7 +55,7 @@ class VidiDbBackend
      * @var \TYPO3\CMS\Extbase\Service\EnvironmentService
      * @Inject
      */
-    protected $environmentService;
+    public $environmentService;
 
     /**
      * @var \Fab\Vidi\Persistence\Query
@@ -706,7 +707,7 @@ class VidiDbBackend
             if ($this->environmentService->isEnvironmentInFrontendMode()) {
                 $statement .= $this->getFrontendConstraintStatement($tableNameOrAlias, $ignoreEnableFields, $enableFieldsToBeIgnored, $includeDeleted);
             } else {
-                // TYPO3_MODE === 'BE'
+                // 'BE' case
                 $statement .= $this->getBackendConstraintStatement($tableNameOrAlias, $ignoreEnableFields, $includeDeleted);
             }
 
@@ -945,7 +946,7 @@ class VidiDbBackend
         }
 
         // Retrieve the original uid; Used for Workspaces!
-        if (TYPO3_MODE !== 'BE') {
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
             $pageRepository->versionOL($tableName, $row, true, true);
         } else {
             \TYPO3\CMS\Backend\Utility\BackendUtility::workspaceOL($tableName, $row);

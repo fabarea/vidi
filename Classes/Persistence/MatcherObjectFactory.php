@@ -11,6 +11,7 @@ namespace Fab\Vidi\Persistence;
 
 use Fab\Vidi\Module\ModuleName;
 use Fab\Vidi\Resolver\FieldPathResolver;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -294,6 +295,6 @@ class MatcherObjectFactory implements SingletonInterface
      */
     protected function isBackendMode(): bool
     {
-        return TYPO3_MODE === 'BE';
+        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
     }
 }

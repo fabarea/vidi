@@ -10,6 +10,7 @@ namespace Fab\Vidi\ViewHelpers\Be;
 
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper;
 
 /**
@@ -31,7 +32,8 @@ class RequireJsViewHelper extends AbstractBackendViewHelper
         $content = $this->renderChildren();
         $pageRenderer->addJsInlineCode('vidi-inline', $content);
 
-        $configuration['paths']['Fab/Vidi'] = '../typo3conf/ext/vidi/Resources/Public/JavaScript';
+        $publicResourcesPath = PathUtility::getPublicResourceWebPath('EXT:vidi/Resources/Public/');
+        $configuration['paths']['Fab/Vidi'] = $publicResourcesPath . 'JavaScript';
         $pageRenderer->addRequireJsConfiguration($configuration);
         $pageRenderer->loadRequireJsModule('Fab/Vidi/Vidi/Main');
     }

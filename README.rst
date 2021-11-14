@@ -226,7 +226,7 @@ The landing page of the Tools can be accessed by clicking the upper right icon w
 To take example, there is a Tool which is shown for admin User that will check the relations used in the Grid.
 To register your own Tool, add the following lines into in ``ext_tables.php``::
 
-	if (TYPO3_MODE == 'BE') {
+	if (TYPO3 == 'BE') {
 
 		// Register a Tool for a FE User content type only.
 		\Fab\Vidi\Tool\ToolRegistry::getInstance()->register('*', 'Fab\Vidi\Tool\RelationAnalyserTool');

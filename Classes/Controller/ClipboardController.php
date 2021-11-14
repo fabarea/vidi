@@ -61,8 +61,6 @@ class ClipboardController extends ActionController
 
     /**
      * Show the content of the clipboard.
-     *
-     * @return string
      */
     public function showAction()
     {

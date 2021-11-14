@@ -24,7 +24,7 @@ class SelectionController extends ActionController
      * @var \Fab\Vidi\Domain\Repository\SelectionRepository
      * @Inject
      */
-    protected $selectionRepository;
+    public $selectionRepository;
 
     /**
      * @param Selection $selection

@@ -138,8 +138,6 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
      * Check whether the given object is meant to include files in some fields.
      *
      * @param Content $object
-     * @return void
-     * @throws \Fab\Vidi\Exception\NotExistingClassException
      */
     protected function checkWhetherObjectMayIncludeFiles(Content $object)
     {
@@ -156,23 +154,19 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
 
     /**
      * @return void
-     * @throws \InvalidArgumentException
-     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception\InvalidVariableException
      */
     protected function sendZipHttpHeaders()
     {
-        /** @var \TYPO3\CMS\Extbase\Mvc\Web\Response $response */
+        /** @var \TYPO3\CMS\Core\Http\Response $response */
         $response = $this->templateVariableContainer->get('response');
-        $response->setHeader('Pragma', 'public');
-        $response->setHeader('Expires', '0');
-        $response->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
-        $response->setHeader('Content-Type', 'application/zip');
-        $response->setHeader('Content-Disposition', 'attachment; filename="' . basename($this->zipFileNameAndPath) . '"');
-        $response->setHeader('Content-Length', filesize($this->zipFileNameAndPath));
-        $response->setHeader('Content-Description', 'File Transfer');
-        $response->setHeader('Content-Transfer-Encoding', 'binary');
-
-        $response->sendHeaders();
+        $response->withHeader('Pragma', 'public');
+        $response->withHeader('Expires', '0');
+        $response->withHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
+        $response->withHeader('Content-Type', 'application/zip');
+        $response->withHeader('Content-Disposition', 'attachment; filename="' . basename($this->zipFileNameAndPath) . '"');
+        $response->withHeader('Content-Length', filesize($this->zipFileNameAndPath));
+        $response->withHeader('Content-Description', 'File Transfer');
+        $response->withHeader('Content-Transfer-Encoding', 'binary');
     }
 
     /**

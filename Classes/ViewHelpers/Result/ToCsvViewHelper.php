@@ -19,11 +19,9 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper
     /**
      * Render a CSV export request.
      *
-     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception\InvalidVariableException
      */
     public function render()
     {
-
         $objects = $this->templateVariableContainer->get('objects');
 
         // Make sure we have something to process...
@@ -56,12 +54,9 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper
      * Write the CSV file to a temporary location.
      *
      * @param array $objects
-     * @return void
-     * @throws \Exception
      */
     protected function writeCsvFile(array $objects)
     {
-
         // Create a file pointer
         $output = fopen($this->exportFileNameAndPath, 'w');
 
@@ -95,20 +90,15 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper
 
     /**
      * @return void
-     * @throws \InvalidArgumentException
-     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception\InvalidVariableException
      */
     protected function sendCsvHttpHeaders()
     {
-
-        /** @var \TYPO3\CMS\Extbase\Mvc\Web\Response $response */
+        /** @var \TYPO3\CMS\Core\Http\Response $response */
         $response = $this->templateVariableContainer->get('response');
-        $response->setHeader('Content-Type', 'application/csv');
-        $response->setHeader('Content-Disposition', 'attachment; filename="' . basename($this->exportFileNameAndPath) . '"');
-        $response->setHeader('Content-Length', filesize($this->exportFileNameAndPath));
-        $response->setHeader('Content-Description', 'File Transfer');
-
-        $response->sendHeaders();
+        $response->withHeader('Content-Type', 'application/csv');
+        $response->withHeader('Content-Disposition', 'attachment; filename="' . basename($this->exportFileNameAndPath) . '"');
+        $response->withHeader('Content-Length', filesize($this->exportFileNameAndPath));
+        $response->withHeader('Content-Description', 'File Transfer');
     }
 
 }

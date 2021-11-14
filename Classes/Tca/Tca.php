@@ -8,6 +8,7 @@ namespace Fab\Vidi\Tca;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Model\Content;
@@ -65,7 +66,7 @@ class Tca implements SingletonInterface, TcaServiceInterface
      */
     static protected function getService($dataType = '', $serviceType)
     {
-        if (TYPO3_MODE === 'BE' && empty($dataType)) {
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend() && empty($dataType)) {
 
             /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
             $moduleLoader = GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);

@@ -9,6 +9,7 @@ namespace Fab\Vidi\Domain\Model;
  */
 
 use Fab\Vidi\Tca\FieldType;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException;
 use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
@@ -466,7 +467,7 @@ class Content implements \ArrayAccess
      */
     protected function isBackendMode()
     {
-        return TYPO3_MODE === 'BE';
+        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();;
     }
 
 }

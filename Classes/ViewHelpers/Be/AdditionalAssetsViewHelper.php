@@ -10,6 +10,7 @@ namespace Fab\Vidi\ViewHelpers\Be;
 
 use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation\Inject;
 use TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper;
@@ -24,7 +25,7 @@ class AdditionalAssetsViewHelper extends AbstractBackendViewHelper
      * @var \TYPO3\CMS\Core\Page\PageRenderer
      * @Inject
      */
-    protected $pageRenderer;
+    public $pageRenderer;
 
     /**
      * Load the assets (JavaScript, CSS) for this Vidi module.
@@ -58,7 +59,7 @@ class AdditionalAssetsViewHelper extends AbstractBackendViewHelper
     {
         $uri = GeneralUtility::getFileAbsFileName($uri);
         $uri = substr($uri, strlen(Environment::getPublicPath() . '/'));
-        if (TYPO3_MODE === 'BE' && $uri !== false) {
+        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend() && $uri !== false) {
             $uri = '../' . $uri;
         }
         return $uri;
