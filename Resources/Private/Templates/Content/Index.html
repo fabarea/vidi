@@ -5,9 +5,10 @@
 
 <f:section name="main">
 	<style>
+
 		.dropdown-menu {
 			background-color: #EDEDED;
-
+			color: #0c0c0c;
 		}
 		.dropdown-menu > li > a:hover {
 			background-color: #FAFAFA;
@@ -41,9 +42,7 @@
 					</a>
 
 					<div class="dropdown dropdown-fields pull-right" title="{f:translate(key:'show_hide_columns')}">
-						<a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#">
-							<span class="caret"></span>
-						</a>
+						<a class="btn btn-default btn-sm dropdown-toggle" data-bs-toggle="dropdown" href="#" style="position: relative; bottom: 1px"></a>
 						<ul class="dropdown-menu" style="max-height: 800px; overflow-y: scroll;">
 							<f:for each="{columns}" key="columnName" as="configuration" iteration="iterator">
 								<li class="checkbox">
@@ -90,9 +89,6 @@
 				<f:link.action id="link-auto-suggest" controller="Facet" action="autoSuggest" format="json"/>
 				<f:link.action id="link-auto-suggests" controller="Facet" action="autoSuggests" format="json"/>
 				<input type="hidden" id="ajax-additional-parameters"/>
-
-				<!-- this part is going to be moved next to the Visual Search bar -->
-				<f:render section="List" partial="Selection/List" arguments="{_all}"/>
 
 				<f:link.action
 						id="link-selection-list"
@@ -156,7 +152,7 @@
 					<th colspan="{numberOfColumns}">
 						<div class="dropup">
 							<a class="btn btn-default btn-sm dropdown-toggle mass-action-label"
-							   data-toggle="dropdown"
+							   data-bs-toggle="dropdown"
 							   href="#"
 							   onclick="return false"
 							   aria-haspopup="true"
@@ -167,6 +163,24 @@
 								{v:render.components(part: 'menuMassAction') -> f:format.raw()}
 							</ul>
 						</div>
+
+						<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
+							<li><a class="dropdown-item active" href="#">Action</a></li>
+							<li><a class="dropdown-item" href="#">Another action</a></li>
+							<li><a class="dropdown-item" href="#">Something else here</a></li>
+							<li><hr class="dropdown-divider"></li>
+							<li><a class="dropdown-item" href="#">Separated link</a></li>
+						</ul>
+
+						<div class="btn-group dropup">
+							<button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+								Dropup
+							</button>
+							<ul class="dropdown-menu">
+								<!-- Dropdown menu links -->
+							</ul>
+						</div>
+
 					</th>
 				</tr>
 				</tfoot>

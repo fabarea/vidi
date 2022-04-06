@@ -26,7 +26,7 @@ class ExportXlsMenuItem extends AbstractComponentView
      */
     public function render()
     {
-        $result = sprintf('<li><a href="#" class="export-xls" data-format="xls">%s %s</a></li>',
+        $result = sprintf('<li><a href="#" class="dropdown-item export-xls" data-format="xls">%s %s</a></li>',
             $this->getIconFactory()->getIcon('mimetypes-excel', Icon::SIZE_SMALL),
             $this->getLanguageService()->sL('LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:export-xls')
         );

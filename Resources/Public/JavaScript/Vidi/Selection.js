@@ -14,6 +14,7 @@
  */
 
 /**
+ * @deprecated will be removed for typo3 v12 compatibility
  * Module: Fab/Vidi/Vidi/Selection
  */
 define([

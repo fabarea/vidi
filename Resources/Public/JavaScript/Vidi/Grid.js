@@ -22,8 +22,7 @@ define([
 	'Fab/Vidi/Vidi/Session',
 	'Fab/Vidi/Vidi/Edit',
 	'Fab/Vidi/Vidi/Delete',
-	'Fab/Vidi/Vidi/VisualSearch',
-	'Fab/Vidi/Vidi/Selection'
+	'Fab/Vidi/Vidi/VisualSearch'
 ], function($, Notification, Tooltip, Session, VidiEdit, VidiRemove, VisualSearch) {
 	'use strict';
 
@@ -187,7 +186,7 @@ define([
 				displayLength: Vidi.module.defaultLength,
 				initComplete: function() {
 					Vidi.VisualSearch.initialize();
-					Vidi.Selection.initialize();
+					// Vidi.Selection.initialize();
 
 					var query = Vidi.Session.get('visualSearchQuery');
 					Vidi.VisualSearch.instance.searchBox.setQuery(query);

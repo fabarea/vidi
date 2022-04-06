@@ -23,6 +23,6 @@ class DividerMenuItem extends AbstractComponentView
      */
     public function render()
     {
-        return '<li role="separator" class="divider"></li>';
+        return ' <li><hr class="dropdown-divider"></li>';
     }
 }

@@ -26,7 +26,7 @@ class ExportXmlMenuItem extends AbstractComponentView
      */
     public function render()
     {
-        $result = sprintf('<li><a href="#" class="export-xml" data-format="xml">%s %s</a></li>',
+        $result = sprintf('<li><a href="#" class="dropdown-item export-xml" data-format="xml">%s %s</a></li>',
             $this->getIconFactory()->getIcon('mimetypes-text-html', Icon::SIZE_SMALL),
             $this->getLanguageService()->sL('LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:export-xml')
         );

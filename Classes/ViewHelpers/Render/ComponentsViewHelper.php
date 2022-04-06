@@ -46,7 +46,7 @@ class ComponentsViewHelper extends AbstractViewHelper
      *
      * @param array $arguments
      * @param \Closure $renderChildrenClosure
-     * @param \TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface $renderingContext
+     * @param RenderingContextInterface $renderingContext
      * @return string
      */
     public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
@@ -58,7 +58,6 @@ class ComponentsViewHelper extends AbstractViewHelper
 
         $getComponents = 'get' . ucfirst($part) . 'Components';
         $components = $moduleLoader->$getComponents();
-
 
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 

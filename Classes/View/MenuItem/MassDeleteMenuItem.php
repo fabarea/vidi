@@ -25,7 +25,7 @@ class MassDeleteMenuItem extends AbstractComponentView
      */
     public function render()
     {
-        return sprintf('<li><a href="%s" class="mass-delete" >%s %s</a>',
+        return sprintf('<li><a href="%s" class="dropdown-item mass-delete" >%s %s</a>',
             $this->getMassDeleteUri(),
             $this->getIconFactory()->getIcon('actions-edit-delete', Icon::SIZE_SMALL),
             $this->getLanguageService()->sL('LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:delete')

@@ -15,6 +15,7 @@ use TYPO3\CMS\Extbase\Annotation\Inject;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
+ * @deprecated selection feature has been removed
  * Controller which handles actions related to Selection in Vidi Backend.
  */
 class SelectionController extends ActionController
