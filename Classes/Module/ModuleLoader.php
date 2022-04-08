@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Module;
 
 /*
@@ -168,9 +169,7 @@ class ModuleLoader
     protected function getExistingInternalConfiguration(): array
     {
         $internalModuleSignature = $this->getInternalModuleSignature();
-        return is_array($GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature])
-            ? $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature]
-            : [];
+        return $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature] ?? [];
     }
 
     /**
@@ -178,8 +177,8 @@ class ModuleLoader
      */
     protected function getExistingMainConfiguration(): array
     {
-        $possibleConfiguration = $GLOBALS['TBE_MODULES']['_configuration'][$this->computeMainModule() . '_' . $this->getInternalModuleSignature()];
-        return is_array($possibleConfiguration) ? $possibleConfiguration : [];
+        $moduleSignature = $this->computeMainModule() . '_' . $this->getInternalModuleSignature();
+        return $GLOBALS['TBE_MODULES']['_configuration'][$moduleSignature] ?? [];
     }
 
     /**
@@ -191,7 +190,7 @@ class ModuleLoader
 
         if ($this->mainModule !== null) {
             $mainModule = $this->mainModule;
-        } elseif ($existingConfiguration['mainModule']) { // existing configuration may override.
+        } elseif (!empty($existingConfiguration['mainModule'])) { // existing configuration may override.
             $mainModule = $existingConfiguration['mainModule'];
         } else {
             $mainModule = self::DEFAULT_MAIN_MODULE; //default value.
@@ -208,7 +207,7 @@ class ModuleLoader
 
         if ($this->defaultPid !== null) {
             $defaultPid = $this->defaultPid;
-        } elseif ($existingConfiguration['defaultPid']) { // existing configuration may override.
+        } elseif (!empty($existingConfiguration['defaultPid'])) { // existing configuration may override.
             $defaultPid = $existingConfiguration['defaultPid'];
         } else {
             $defaultPid = self::DEFAULT_PID; //default value.
@@ -225,7 +224,7 @@ class ModuleLoader
 
         // Possible merge of existing javascript files.
         $existingConfiguration = $this->getExistingInternalConfiguration();
-        if ($existingConfiguration['additionalJavaScriptFiles']) {
+        if (!empty($existingConfiguration['additionalJavaScriptFiles'])) {
             $additionalJavaScriptFiles = array_merge($additionalJavaScriptFiles, $existingConfiguration['additionalJavaScriptFiles']);
         }
 
@@ -241,7 +240,7 @@ class ModuleLoader
 
         // Possible merge of existing style sheets.
         $existingConfiguration = $this->getExistingInternalConfiguration();
-        if ($existingConfiguration['additionalStyleSheetFiles']) {
+        if (!empty($existingConfiguration['additionalStyleSheetFiles'])) {
             $additionalStyleSheetFiles = array_merge($additionalStyleSheetFiles, $existingConfiguration['additionalStyleSheetFiles']);
         }
 
@@ -524,8 +523,7 @@ class ModuleLoader
             $moduleLanguageFile = $this->moduleLanguageFile;
         } elseif ($moduleConfiguration['labels']) { // existing configuration may override.
             $moduleLanguageFile = $moduleConfiguration['labels'];
-        }
-        else {
+        } else {
             $moduleLanguageFile = ''; //default value.
         }
 
@@ -941,7 +939,7 @@ class ModuleLoader
 
         if ($this->access !== null) {
             $access = $this->access;
-        } elseif ($moduleConfiguration['access']) { // existing configuration may override.
+        } elseif (!empty($moduleConfiguration['access'])) { // existing configuration may override.
             $access = $moduleConfiguration['access'];
         } else {
             $access = Access::USER; //default value.
@@ -1019,7 +1017,7 @@ class ModuleLoader
         }
         $subModuleName = $dataType . '_' . $this->moduleKey;
 
-        $mainModule = $this->mainModule ? : self::DEFAULT_MAIN_MODULE;
+        $mainModule = $this->mainModule ?: self::DEFAULT_MAIN_MODULE;
         return $mainModule . '_Vidi' . GeneralUtility::underscoredToUpperCamelCase($subModuleName);
     }
 
