@@ -108,7 +108,7 @@ class TableService extends AbstractTca
     {
         $title = '';
         try {
-            $title = LocalizationUtility::translate($this->get('title'), '');
+            $title = LocalizationUtility::translate((string)$this->get('title'), '');
         } catch (\InvalidArgumentException $e) {
         }
         if (empty($title)) {

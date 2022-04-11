@@ -90,7 +90,7 @@ class FileReferenceService implements SingletonInterface
         // Build array of Files
         $files = [];
         foreach ($rows as $row) {
-            $files[] = ResourceFactory::getInstance()->getFileObject($row[$fileField]);
+            $files[] = GeneralUtility::makeInstance(ResourceFactory::class)->getFileObject($row[$fileField]);
         }
 
         return $files;

@@ -59,12 +59,12 @@ class Tca implements SingletonInterface, TcaServiceInterface
      *
      * @throws NotExistingClassException
      * @param string $dataType
-     * @param string $serviceType of the TCA, TcaServiceInterface::TYPE_TABLE or TcaServiceInterface::TYPE_GRID
+     * @param string $serviceType
      * @return TcaServiceInterface
      * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
      * @throws \InvalidArgumentException
      */
-    static protected function getService($dataType = '', $serviceType)
+    static protected function getService($dataType, $serviceType)
     {
         if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend() && empty($dataType)) {
 
