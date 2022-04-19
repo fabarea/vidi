@@ -1,14 +1,15 @@
 <?php
+
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 defined('TYPO3') or die();
 
 call_user_func(function () {
-
     // Check from Vidi configuration what default module should be loaded.
     // Make sure the class exists to avoid a Runtime Error
 
     // Add content main module before 'user'
     if (!isset($GLOBALS['TBE_MODULES']['content'])) {
-
         // Position module "content" after module "user" manually. No API is available for that, it seems...
         $modules = [];
         foreach ($GLOBALS['TBE_MODULES'] as $key => $val) {
@@ -20,24 +21,16 @@ call_user_func(function () {
         $GLOBALS['TBE_MODULES'] = $modules;
 
         // Register "data management" module.
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
-            'content',
-            '',
-            '',
-            '',
-            [
-                'name' => 'content',
-                'access' => 'user,group',
-                'labels' => [
-                    'll_ref' => 'LLL:EXT:vidi/Resources/Private/Language/content_module.xlf',
-                ],
-            ]
-        );
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule('content', '', '', '', [
+            'name' => 'content',
+            'access' => 'user,group',
+            'labels' => [
+                'll_ref' => 'LLL:EXT:vidi/Resources/Private/Language/content_module.xlf',
+            ],
+        ]);
     }
 
-    $configuration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-        \TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class
-    )->get('vidi');
+    $configuration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class)->get('vidi');
 
     $pids = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['default_pid'], true);
     $defaultPid = array_shift($pids);
@@ -51,11 +44,8 @@ call_user_func(function () {
 
     // Loop around the data types and register them to be displayed within a BE module.
     if ($configuration['data_types']) {
-
         $dataTypes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['data_types'], true);
         foreach ($dataTypes as $dataType) {
-
-
             /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
             $moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class, $dataType);
 
@@ -76,7 +66,8 @@ call_user_func(function () {
             $pid = $defaultPids[$dataType] ?? $defaultPid;
 
             /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
-            $moduleLoader->setIcon($icon)
+            $moduleLoader
+                ->setIcon($icon)
                 ->setModuleLanguageFile($languageFile)
                 ->setDefaultPid($pid)
                 ->register();
@@ -84,7 +75,7 @@ call_user_func(function () {
     }
 
     // Possible Static TS loading
-    if (true === isset($configuration['autoload_typoscript']) && false === (bool)$configuration['autoload_typoscript']) {
+    if (true === isset($configuration['autoload_typoscript']) && false === (bool) $configuration['autoload_typoscript']) {
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('vidi', 'Configuration/TypoScript', 'Vidi: versatile and interactive display');
     }
 
@@ -126,11 +117,8 @@ call_user_func(function () {
     #	');
     #}
 
-    /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-    $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-
     /** @var $signalSlotDispatcher \TYPO3\CMS\Extbase\SignalSlot\Dispatcher */
-    $signalSlotDispatcher = $objectManager->get('TYPO3\CMS\Extbase\SignalSlot\Dispatcher');
+    $signalSlotDispatcher = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\SignalSlot\Dispatcher');
 
     // Connect "processContentData" signal slot with the "ContentObjectProcessor".
     $signalSlotDispatcher->connect(
@@ -138,7 +126,7 @@ call_user_func(function () {
         'processContentData',
         'Fab\Vidi\Processor\ContentObjectProcessor',
         'processRelations',
-        true
+        true,
     );
 
     // Connect "processContentData" signal with the "MarkerProcessor".
@@ -147,7 +135,7 @@ call_user_func(function () {
         'processContentData',
         'Fab\Vidi\Processor\MarkerProcessor',
         'processMarkers',
-        true
+        true,
     );
 
     // Register default Tools for Vidi.
@@ -163,12 +151,9 @@ call_user_func(function () {
     /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
     $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
     foreach ($icons as $key => $icon) {
-        $iconRegistry->registerIcon('extensions-vidi-' . $key,
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            [
-                'source' => $icon
-            ]
-        );
+        $iconRegistry->registerIcon('extensions-vidi-' . $key, \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class, [
+            'source' => $icon,
+        ]);
     }
     unset($iconRegistry);
 });

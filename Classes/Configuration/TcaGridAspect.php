@@ -20,7 +20,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
 {
-
     /**
      * Scans each data type of the TCA and add a Grid TCA if missing.
      *
@@ -33,7 +32,6 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
         $dataTypes = GeneralUtility::trimExplode(',', $configuration['data_types'], true);
 
         if (ExtensionManagementUtility::isLoaded('vidi_frontend')) {
-
             $extendedConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('vidi_frontend');
             $vidiFrontendContentTypes = GeneralUtility::trimExplode(',', $extendedConfiguration['content_types'], true);
             $extendedDataTypes = array_merge($dataTypes, $vidiFrontendContentTypes);
@@ -44,7 +42,7 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
             $this->ensureMinimumTcaForGrid($dataType);
         }
 
-        return array($GLOBALS['TCA']);
+        return [$GLOBALS['TCA']];
     }
 
     /**
@@ -58,10 +56,7 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
         }
 
         if (empty($GLOBALS['TCA'][$dataType]['grid']['facets'])) {
-            $GLOBALS['TCA'][$dataType]['grid']['facets'] = [
-                'uid',
-                $labelField,
-            ];
+            $GLOBALS['TCA'][$dataType]['grid']['facets'] = ['uid', $labelField];
         }
 
         if (empty($GLOBALS['TCA'][$dataType]['grid']['columns'])) {
@@ -105,13 +100,4 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
     {
         return isset($GLOBALS['TCA'][$dataType]['ctrl']['label']);
     }
-
-    /**
-     * @return \TYPO3\CMS\Extbase\Object\ObjectManager
-     */
-    protected function getObjectManager()
-    {
-        return GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-    }
-
 }

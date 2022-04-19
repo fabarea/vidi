@@ -17,7 +17,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ModulePreferences implements SingletonInterface
 {
-
     /**
      * @var array
      */
@@ -35,7 +34,6 @@ class ModulePreferences implements SingletonInterface
      */
     public function get($key, $dataType = '')
     {
-
         if (empty($dataType)) {
             $dataType = $this->getModuleLoader()->getDataType();
         }
@@ -65,7 +63,6 @@ class ModulePreferences implements SingletonInterface
      */
     public function getAll($dataType = '')
     {
-
         if (empty($dataType)) {
             $dataType = $this->getModuleLoader()->getDataType();
         }
@@ -93,7 +90,6 @@ class ModulePreferences implements SingletonInterface
      */
     public function load($dataType)
     {
-
         // Fetch preferences from different sources and overlay them
         $databasePreferences = $this->fetchPreferencesFromDatabase($dataType);
         $generalPreferences = $this->fetchGlobalPreferencesFromTypoScript();
@@ -114,12 +110,9 @@ class ModulePreferences implements SingletonInterface
         $configurableParts = ConfigurablePart::getParts();
 
         $dataType = $this->getModuleLoader()->getDataType();
-        $this->getDataService()->delete(
-            $this->tableName,
-            [
-                'data_type' => $dataType
-            ]
-        );
+        $this->getDataService()->delete($this->tableName, [
+            'data_type' => $dataType,
+        ]);
 
         $sanitizedPreferences = [];
         foreach ($preferences as $key => $value) {
@@ -128,13 +121,10 @@ class ModulePreferences implements SingletonInterface
             }
         }
 
-        $this->getDataService()->insert(
-            $this->tableName,
-            [
-                'data_type' => $dataType,
-                'preferences' => serialize($sanitizedPreferences),
-            ]
-        );
+        $this->getDataService()->insert($this->tableName, [
+            'data_type' => $dataType,
+            'preferences' => serialize($sanitizedPreferences),
+        ]);
     }
 
     /**
@@ -144,12 +134,9 @@ class ModulePreferences implements SingletonInterface
     public function fetchPreferencesFromDatabase($dataType)
     {
         $preferences = [];
-        $record = $this->getDataService()->getRecord(
-            $this->tableName,
-            [
-                'data_type' => $dataType
-            ]
-        );
+        $record = $this->getDataService()->getRecord($this->tableName, [
+            'data_type' => $dataType,
+        ]);
 
         if (!empty($record)) {
             $preferences = unserialize($record['preferences']);
@@ -211,8 +198,7 @@ class ModulePreferences implements SingletonInterface
     protected function getSettings()
     {
         /** @var \TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager $backendConfigurationManager */
-        $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-        $backendConfigurationManager = $objectManager->get(\TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager::class);
+        $backendConfigurationManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager::class);
         $configuration = $backendConfigurationManager->getTypoScriptSetup();
         return $configuration['module.']['tx_vidi.']['settings.'];
     }
@@ -234,5 +220,4 @@ class ModulePreferences implements SingletonInterface
     {
         return GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
     }
-
 }

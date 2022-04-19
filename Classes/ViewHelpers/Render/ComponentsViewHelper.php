@@ -10,7 +10,6 @@ namespace Fab\Vidi\ViewHelpers\Render;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Module\ModuleLoader;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -34,11 +33,7 @@ class ComponentsViewHelper extends AbstractViewHelper
      */
     public function render()
     {
-        return static::renderStatic(
-            $this->arguments,
-            $this->buildRenderChildrenClosure(),
-            $this->renderingContext
-        );
+        return static::renderStatic($this->arguments, $this->buildRenderChildrenClosure(), $this->renderingContext);
     }
 
     /**
@@ -59,19 +54,16 @@ class ComponentsViewHelper extends AbstractViewHelper
         $getComponents = 'get' . ucfirst($part) . 'Components';
         $components = $moduleLoader->$getComponents();
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
         $result = '';
         foreach ($components as $component) {
-            $viewHelper = $objectManager->get($component);
+            $viewHelper = GeneralUtility::makeInstance($component);
 
             // Get possible arguments but remove first one.
             $arguments = func_get_args();
             array_shift($arguments);
-            $result .= call_user_func_array(array($viewHelper, 'render'), $arguments);
+            $result .= call_user_func_array([$viewHelper, 'render'], $arguments);
         }
 
         return $result;
     }
-
 }

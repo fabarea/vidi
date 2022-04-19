@@ -18,7 +18,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class FacetSuggestionService
 {
-
     /**
      * Retrieve possible suggestions for a field name
      *
@@ -32,14 +31,24 @@ class FacetSuggestionService
         $dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath);
         $fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
 
-        if (Tca::grid()->facet($fieldNameAndPath)->hasSuggestions()) {
-            $values = Tca::grid()->facet($fieldNameAndPath)->getSuggestions();
-        } else if (Tca::table($dataType)->hasField($fieldName)) {
-
-            if (Tca::table($dataType)->field($fieldName)->hasRelation()) {
-
+        if (
+            Tca::grid()
+                ->facet($fieldNameAndPath)
+                ->hasSuggestions()
+        ) {
+            $values = Tca::grid()
+                ->facet($fieldNameAndPath)
+                ->getSuggestions();
+        } elseif (Tca::table($dataType)->hasField($fieldName)) {
+            if (
+                Tca::table($dataType)
+                    ->field($fieldName)
+                    ->hasRelation()
+            ) {
                 // Fetch the adequate repository
-                $foreignTable = Tca::table($dataType)->field($fieldName)->getForeignTable();
+                $foreignTable = Tca::table($dataType)
+                    ->field($fieldName)
+                    ->getForeignTable();
                 $contentRepository = ContentRepositoryFactory::getInstance($foreignTable);
                 $table = Tca::table($foreignTable);
 
@@ -48,14 +57,18 @@ class FacetSuggestionService
 
                 $numberOfValues = $contentRepository->countBy($matcher);
                 if ($numberOfValues <= $this->getLimit()) {
-
                     $contents = $contentRepository->findBy($matcher);
 
                     foreach ($contents as $content) {
-                        $values[] = array($content->getUid() => $content[$table->getLabelField()]);
+                        $values[] = [$content->getUid() => $content[$table->getLabelField()]];
                     }
                 }
-            } elseif (!Tca::table($dataType)->field($fieldName)->isTextArea()) { // We don't want suggestion if field is text area.
+            } elseif (
+                !Tca::table($dataType)
+                    ->field($fieldName)
+                    ->isTextArea()
+            ) {
+                // We don't want suggestion if field is text area.
 
                 // Fetch the adequate repository
                 /** @var \Fab\Vidi\Domain\Repository\ContentRepository $contentRepository */
@@ -69,16 +82,20 @@ class FacetSuggestionService
 
                 // Only returns suggestion if there are not too many for the browser.
                 if ($numberOfValues <= $this->getLimit()) {
-
                     // Query the repository.
                     $contents = $contentRepository->findDistinctValues($fieldName, $matcher);
 
                     foreach ($contents as $content) {
-
                         $value = $content[$fieldName];
                         $label = $content[$fieldName];
-                        if (Tca::table($dataType)->field($fieldName)->isSelect()) {
-                            $label = Tca::table($dataType)->field($fieldName)->getLabelForItem($value);
+                        if (
+                            Tca::table($dataType)
+                                ->field($fieldName)
+                                ->isSelect()
+                        ) {
+                            $label = Tca::table($dataType)
+                                ->field($fieldName)
+                                ->getLabelForItem($value);
                         }
 
                         $values[] = $label;
@@ -97,7 +114,7 @@ class FacetSuggestionService
     protected function getLimit(): int
     {
         $settings = $this->getSettings();
-        $suggestionLimit = (int)$settings['suggestionLimit'];
+        $suggestionLimit = (int) $settings['suggestionLimit'];
         if ($suggestionLimit <= 0) {
             $suggestionLimit = 1000;
         }
@@ -120,10 +137,8 @@ class FacetSuggestionService
     protected function getSettings()
     {
         /** @var \TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager $backendConfigurationManager */
-        $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-        $backendConfigurationManager = $objectManager->get('TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager');
+        $backendConfigurationManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager::class);
         $configuration = $backendConfigurationManager->getTypoScriptSetup();
         return $configuration['module.']['tx_vidi.']['settings.'];
     }
-
 }

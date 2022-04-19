@@ -17,7 +17,6 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
  */
 abstract class AbstractTool implements ToolInterface
 {
-
     /**
      * @param string $templateNameAndPath
      * @return StandaloneView
@@ -25,11 +24,10 @@ abstract class AbstractTool implements ToolInterface
      */
     protected function initializeStandaloneView($templateNameAndPath)
     {
-
         $templateNameAndPath = GeneralUtility::getFileAbsFileName($templateNameAndPath);
 
         /** @var StandaloneView $view */
-        $view = $this->getObjectManager()->get(StandaloneView::class);
+        $view = GeneralUtility::makeInstance(StandaloneView::class);
 
         $view->setTemplatePathAndFilename($templateNameAndPath);
         return $view;
@@ -46,15 +44,6 @@ abstract class AbstractTool implements ToolInterface
     }
 
     /**
-     * @return ObjectManager
-     * @throws \InvalidArgumentException
-     */
-    protected function getObjectManager()
-    {
-        return GeneralUtility::makeInstance(ObjectManager::class);
-    }
-
-    /**
      * Get the Vidi Module Loader.
      *
      * @return ModuleLoader
@@ -64,5 +53,4 @@ abstract class AbstractTool implements ToolInterface
     {
         return GeneralUtility::makeInstance(ModuleLoader::class);
     }
-
 }

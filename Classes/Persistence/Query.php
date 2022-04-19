@@ -25,7 +25,6 @@ use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
  */
 class Query implements QueryInterface
 {
-
     /**
      * An inner join.
      */
@@ -172,12 +171,12 @@ class Query implements QueryInterface
         // Apply possible settings to the query.
         if ($this->isBackendMode()) {
             /** @var \TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager $backendConfigurationManager */
-            $backendConfigurationManager = $this->getObjectManager()->get('TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager');
+            $backendConfigurationManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager::class);
             $configuration = $backendConfigurationManager->getTypoScriptSetup();
-            $querySettings = array('respectSysLanguage');
+            $querySettings = ['respectSysLanguage'];
             foreach ($querySettings as $setting) {
                 if (isset($configuration['config.']['tx_vidi.']['persistence.']['backend.'][$this->type . '.'][$setting])) {
-                    $value = (bool)$configuration['config.']['tx_vidi.']['persistence.']['backend.'][$this->type . '.'][$setting];
+                    $value = (bool) $configuration['config.']['tx_vidi.']['persistence.']['backend.'][$this->type . '.'][$setting];
                     ObjectAccess::setProperty($this->querySettings, $setting, $value);
                 }
             }
@@ -244,7 +243,7 @@ class Query implements QueryInterface
     public function execute($returnRawQueryResult = false)
     {
         /** @var VidiDbBackend $backend */
-        $backend = $this->getObjectManager()->get(VidiDbBackend::class, $this);
+        $backend = GeneralUtility::makeInstance(VidiDbBackend::class, $this);
         return $backend->fetchResult();
     }
 
@@ -454,9 +453,21 @@ class Query implements QueryInterface
     public function equals($propertyName, $operand, $caseSensitive = true)
     {
         if (is_object($operand) || $caseSensitive) {
-            $comparison = $this->qomFactory->comparison($this->qomFactory->propertyValue($propertyName, $this->getSelectorName()), QueryInterface::OPERATOR_EQUAL_TO, $operand);
+            $comparison = $this->qomFactory->comparison(
+                $this->qomFactory->propertyValue($propertyName, $this->getSelectorName()),
+                QueryInterface::OPERATOR_EQUAL_TO,
+                $operand,
+            );
         } else {
-            $comparison = $this->qomFactory->comparison($this->qomFactory->lowerCase($this->qomFactory->propertyValue($propertyName, $this->getSelectorName())), QueryInterface::OPERATOR_EQUAL_TO, \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class)->conv_case(\TYPO3\CMS\Extbase\Persistence\Generic\Query::CHARSET, $operand, 'toLower'));
+            $comparison = $this->qomFactory->comparison(
+                $this->qomFactory->lowerCase($this->qomFactory->propertyValue($propertyName, $this->getSelectorName())),
+                QueryInterface::OPERATOR_EQUAL_TO,
+                \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class)->conv_case(
+                    \TYPO3\CMS\Extbase\Persistence\Generic\Query::CHARSET,
+                    $operand,
+                    'toLower',
+                ),
+            );
         }
         return $comparison;
     }
@@ -472,7 +483,11 @@ class Query implements QueryInterface
      */
     public function like($propertyName, $operand, $caseSensitive = true)
     {
-        return $this->qomFactory->comparison($this->qomFactory->propertyValue($propertyName, $this->getSelectorName()), QueryInterface::OPERATOR_LIKE, $operand);
+        return $this->qomFactory->comparison(
+            $this->qomFactory->propertyValue($propertyName, $this->getSelectorName()),
+            QueryInterface::OPERATOR_LIKE,
+            $operand,
+        );
     }
 
     /**
@@ -486,7 +501,11 @@ class Query implements QueryInterface
      */
     public function contains($propertyName, $operand)
     {
-        return $this->qomFactory->comparison($this->qomFactory->propertyValue($propertyName, $this->getSelectorName()), QueryInterface::OPERATOR_CONTAINS, $operand);
+        return $this->qomFactory->comparison(
+            $this->qomFactory->propertyValue($propertyName, $this->getSelectorName()),
+            QueryInterface::OPERATOR_CONTAINS,
+            $operand,
+        );
     }
 
     /**
@@ -517,7 +536,11 @@ class Query implements QueryInterface
      */
     public function lessThan($propertyName, $operand)
     {
-        return $this->qomFactory->comparison($this->qomFactory->propertyValue($propertyName, $this->getSelectorName()), QueryInterface::OPERATOR_LESS_THAN, $operand);
+        return $this->qomFactory->comparison(
+            $this->qomFactory->propertyValue($propertyName, $this->getSelectorName()),
+            QueryInterface::OPERATOR_LESS_THAN,
+            $operand,
+        );
     }
 
     /**
@@ -530,7 +553,11 @@ class Query implements QueryInterface
      */
     public function lessThanOrEqual($propertyName, $operand)
     {
-        return $this->qomFactory->comparison($this->qomFactory->propertyValue($propertyName, $this->getSelectorName()), QueryInterface::OPERATOR_LESS_THAN_OR_EQUAL_TO, $operand);
+        return $this->qomFactory->comparison(
+            $this->qomFactory->propertyValue($propertyName, $this->getSelectorName()),
+            QueryInterface::OPERATOR_LESS_THAN_OR_EQUAL_TO,
+            $operand,
+        );
     }
 
     /**
@@ -543,7 +570,11 @@ class Query implements QueryInterface
      */
     public function greaterThan($propertyName, $operand)
     {
-        return $this->qomFactory->comparison($this->qomFactory->propertyValue($propertyName, $this->getSelectorName()), QueryInterface::OPERATOR_GREATER_THAN, $operand);
+        return $this->qomFactory->comparison(
+            $this->qomFactory->propertyValue($propertyName, $this->getSelectorName()),
+            QueryInterface::OPERATOR_GREATER_THAN,
+            $operand,
+        );
     }
 
     /**
@@ -556,7 +587,11 @@ class Query implements QueryInterface
      */
     public function greaterThanOrEqual($propertyName, $operand)
     {
-        return $this->qomFactory->comparison($this->qomFactory->propertyValue($propertyName, $this->getSelectorName()), QueryInterface::OPERATOR_GREATER_THAN_OR_EQUAL_TO, $operand);
+        return $this->qomFactory->comparison(
+            $this->qomFactory->propertyValue($propertyName, $this->getSelectorName()),
+            QueryInterface::OPERATOR_GREATER_THAN_OR_EQUAL_TO,
+            $operand,
+        );
     }
 
     /**
@@ -568,7 +603,7 @@ class Query implements QueryInterface
     public function count()
     {
         /** @var VidiDbBackend $backend */
-        $backend = $this->getObjectManager()->get(VidiDbBackend::class, $this);
+        $backend = GeneralUtility::makeInstance(VidiDbBackend::class, $this);
         return $backend->countResult();
     }
 
@@ -612,7 +647,7 @@ class Query implements QueryInterface
      * @param array $parameters An array of parameters. These will be bound to placeholders '?' in the $statement.
      * @return QueryInterface
      */
-    public function statement($statement, array $parameters = array())
+    public function statement($statement, array $parameters = [])
     {
         $this->statement = $this->qomFactory->statement($statement, $parameters);
         return $this;
@@ -655,13 +690,4 @@ class Query implements QueryInterface
         $this->sourceFieldName = $sourceFieldName;
         return $this;
     }
-
-    /**
-     * @return object|\TYPO3\CMS\Extbase\Object\ObjectManager
-     */
-    protected function getObjectManager()
-    {
-        return GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-    }
-
 }

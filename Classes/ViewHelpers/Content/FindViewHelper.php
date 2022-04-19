@@ -12,14 +12,12 @@ use Fab\Vidi\Domain\Model\Selection;
 use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
 use Fab\Vidi\Domain\Repository\SelectionRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * View helper which returns a list of records.
  */
 class FindViewHelper extends AbstractContentViewHelper
 {
-
     /**
      * @return void
      * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception
@@ -28,7 +26,13 @@ class FindViewHelper extends AbstractContentViewHelper
     {
         parent::initializeArguments();
 
-        $this->registerArgument('orderings', 'array', 'Key / value array to be used for ordering. The key corresponds to a field name. The value can be "DESC" or "ASC".', false, array());
+        $this->registerArgument(
+            'orderings',
+            'array',
+            'Key / value array to be used for ordering. The key corresponds to a field name. The value can be "DESC" or "ASC".',
+            false,
+            [],
+        );
         $this->registerArgument('limit', 'int', 'Limit the number of records being fetched.', false, 0);
         $this->registerArgument('offset', 'int', 'Where to start the list of records.', false, 0);
     }
@@ -41,13 +45,11 @@ class FindViewHelper extends AbstractContentViewHelper
      */
     public function render()
     {
-        $selectionIdentifier = (int)$this->arguments['selection'];
+        $selectionIdentifier = (int) $this->arguments['selection'];
 
         if ($selectionIdentifier > 0) {
-
             /** @var SelectionRepository $selectionRepository */
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $selectionRepository = $objectManager->get(SelectionRepository::class);
+            $selectionRepository = GeneralUtility::makeInstance(SelectionRepository::class);
 
             /** @var Selection $selection */
             $selection = $selectionRepository->findByUid($selectionIdentifier);
@@ -86,5 +88,4 @@ class FindViewHelper extends AbstractContentViewHelper
 
         return $resultSet;
     }
-
 }

@@ -38,7 +38,6 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
  */
 class ContentRepository implements RepositoryInterface
 {
-
     /**
      * Tell whether it is a raw result (array) or object being returned.
      *
@@ -203,10 +202,9 @@ class ContentRepository implements RepositoryInterface
      */
     public function findBy(Matcher $matcher, Order $order = null, $limit = null, $offset = null): array
     {
-
         $query = $this->createQuery();
 
-        $limit = (int)$limit; // make sure to cast
+        $limit = (int) $limit; // make sure to cast
         if ($limit > 0) {
             $query->setLimit($limit);
         }
@@ -245,7 +243,6 @@ class ContentRepository implements RepositoryInterface
      */
     public function findOneBy(Matcher $matcher): Content
     {
-
         $query = $this->createQuery();
 
         $constraints = $this->computeConstraints($query, $matcher);
@@ -271,7 +268,6 @@ class ContentRepository implements RepositoryInterface
      */
     public function countBy(Matcher $matcher): int
     {
-
         $query = $this->createQuery();
 
         $constraints = $this->computeConstraints($query, $matcher);
@@ -292,13 +288,15 @@ class ContentRepository implements RepositoryInterface
      */
     public function localize($content, $language): bool
     {
-
         // Security check
         $this->getContentValidator()->validate($content);
         $this->getLanguageValidator()->validate($language);
 
         $dataType = $content->getDataType();
-        $handler = $this->getDataHandlerFactory()->action(ProcessAction::LOCALIZE)->forType($dataType)->getDataHandler();
+        $handler = $this->getDataHandlerFactory()
+            ->action(ProcessAction::LOCALIZE)
+            ->forType($dataType)
+            ->getDataHandler();
 
         $handlerResult = $handler->processLocalize($content, $language);
         $this->errorMessages = $handler->getErrorMessages();
@@ -313,12 +311,14 @@ class ContentRepository implements RepositoryInterface
      */
     public function update($content)
     {
-
         // Security check.
         $this->getContentValidator()->validate($content);
 
         $dataType = $content->getDataType();
-        $handler = $this->getDataHandlerFactory()->action(ProcessAction::UPDATE)->forType($dataType)->getDataHandler();
+        $handler = $this->getDataHandlerFactory()
+            ->action(ProcessAction::UPDATE)
+            ->forType($dataType)
+            ->getDataHandler();
 
         $handlerResult = $handler->processUpdate($content);
         $this->errorMessages = $handler->getErrorMessages();
@@ -334,7 +334,10 @@ class ContentRepository implements RepositoryInterface
     public function remove($content)
     {
         $dataType = $content->getDataType();
-        $handler = $this->getDataHandlerFactory()->action(ProcessAction::REMOVE)->forType($dataType)->getDataHandler();
+        $handler = $this->getDataHandlerFactory()
+            ->action(ProcessAction::REMOVE)
+            ->forType($dataType)
+            ->getDataHandler();
 
         $handlerResult = $handler->processRemove($content);
         $this->errorMessages = $handler->getErrorMessages();
@@ -352,12 +355,14 @@ class ContentRepository implements RepositoryInterface
      */
     public function move($content, $target): bool
     {
-
         // Security check.
         $this->getContentValidator()->validate($content);
 
         $dataType = $content->getDataType();
-        $handler = $this->getDataHandlerFactory()->action(ProcessAction::MOVE)->forType($dataType)->getDataHandler();
+        $handler = $this->getDataHandlerFactory()
+            ->action(ProcessAction::MOVE)
+            ->forType($dataType)
+            ->getDataHandler();
 
         $handlerResult = $handler->processMove($content, $target);
         $this->errorMessages = $handler->getErrorMessages();
@@ -372,12 +377,14 @@ class ContentRepository implements RepositoryInterface
      */
     public function copy($content, $target): bool
     {
-
         // Security check.
         $this->getContentValidator()->validate($content);
 
         $dataType = $content->getDataType();
-        $handler = $this->getDataHandlerFactory()->action(ProcessAction::COPY)->forType($dataType)->getDataHandler();
+        $handler = $this->getDataHandlerFactory()
+            ->action(ProcessAction::COPY)
+            ->forType($dataType)
+            ->getDataHandler();
 
         $handlerResult = $handler->processCopy($content, $target);
         $this->errorMessages = $handler->getErrorMessages();
@@ -431,10 +438,7 @@ class ContentRepository implements RepositoryInterface
     {
         $query = $this->createQuery();
 
-        $result = $query->matching(
-            $query->equals('uid', $identifier)
-        )
-            ->execute();
+        $result = $query->matching($query->equals('uid', $identifier))->execute();
 
         if (is_array($result)) {
             $result = current($result);
@@ -477,16 +481,15 @@ class ContentRepository implements RepositoryInterface
     public function createQuery()
     {
         /** @var Query $query */
-        $query = $this->getObjectManager()->get(Query::class, $this->dataType);
+        $query = GeneralUtility::makeInstance(Query::class, $this->dataType);
         $query->setSourceFieldName($this->sourceFieldName);
 
         if ($this->defaultQuerySettings) {
             $query->setQuerySettings($this->defaultQuerySettings);
         } else {
-
             // Initialize and pass the query settings at this level.
             /** @var QuerySettings $querySettings */
-            $querySettings = $this->getObjectManager()->get(QuerySettings::class);
+            $querySettings = GeneralUtility::makeInstance(QuerySettings::class);
 
             // Default choice for the BE.
             if ($this->isBackendMode()) {
@@ -535,7 +538,6 @@ class ContentRepository implements RepositoryInterface
     {
         $this->defaultQuerySettings = null;
     }
-
 
     /**
      * @return array
@@ -616,7 +618,6 @@ class ContentRepository implements RepositoryInterface
             $logical = $matcher->getDefaultLogicalSeparator();
             $constraints = $query->$logical($collectedConstraints);
         } elseif (!empty($collectedConstraints)) {
-
             // true means there is one constraint only and should become the result
             $constraints = current($collectedConstraints);
         }
@@ -636,24 +637,28 @@ class ContentRepository implements RepositoryInterface
      */
     protected function computeSearchTermConstraint(Query $query, Matcher $matcher): ?ConstraintInterface
     {
-
         $result = null;
 
         // Search term case
         if ($matcher->getSearchTerm()) {
-
             $fields = GeneralUtility::trimExplode(',', Tca::table($this->dataType)->getSearchFields(), true);
 
             $constraints = [];
             $likeClause = sprintf('%%%s%%', $matcher->getSearchTerm());
             foreach ($fields as $fieldNameAndPath) {
                 if ($this->isSuitableForLike($fieldNameAndPath, $matcher->getSearchTerm())) {
-
                     $dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $this->dataType);
                     $fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $this->dataType);
 
-                    if (Tca::table($dataType)->hasField($fieldName) && Tca::table($dataType)->field($fieldName)->hasRelation()) {
-                        $foreignTable = Tca::table($dataType)->field($fieldName)->getForeignTable();
+                    if (
+                        Tca::table($dataType)->hasField($fieldName) &&
+                        Tca::table($dataType)
+                            ->field($fieldName)
+                            ->hasRelation()
+                    ) {
+                        $foreignTable = Tca::table($dataType)
+                            ->field($fieldName)
+                            ->getForeignTable();
                         $fieldNameAndPath = $fieldNameAndPath . '.' . Tca::table($foreignTable)->getLabelField();
                     }
                     $constraints[] = $query->like($fieldNameAndPath, $likeClause);
@@ -680,12 +685,16 @@ class ContentRepository implements RepositoryInterface
 
         // true means it is a string
         if (!MathUtility::canBeInterpretedAsInteger($value)) {
-
             $dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $this->dataType);
             $fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $this->dataType);
 
-            if (Tca::table($dataType)->field($fieldName)->isNumerical()
-                && !Tca::table($dataType)->field($fieldName)->hasRelation()
+            if (
+                Tca::table($dataType)
+                    ->field($fieldName)
+                    ->isNumerical() &&
+                !Tca::table($dataType)
+                    ->field($fieldName)
+                    ->hasRelation()
             ) {
                 $isSuitable = false;
             }
@@ -714,7 +723,6 @@ class ContentRepository implements RepositoryInterface
             $constraints = [];
 
             foreach ($criteria as $criterion) {
-
                 $fieldNameAndPath = $criterion['fieldNameAndPath'];
                 $operand = $criterion['operand'];
 
@@ -724,11 +732,17 @@ class ContentRepository implements RepositoryInterface
                 $fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $this->dataType);
                 $fieldPath = $this->getFieldPathResolver()->stripFieldName($fieldNameAndPath, $this->dataType);
 
-                if (Tca::table($dataType)->field($fieldName)->hasRelation()) {
+                if (
+                    Tca::table($dataType)
+                        ->field($fieldName)
+                        ->hasRelation()
+                ) {
                     if (MathUtility::canBeInterpretedAsInteger($operand)) {
                         $fieldNameAndPath = $fieldName . '.uid';
                     } else {
-                        $foreignTableName = Tca::table($dataType)->field($fieldName)->getForeignTable();
+                        $foreignTableName = Tca::table($dataType)
+                            ->field($fieldName)
+                            ->getForeignTable();
                         $foreignTable = Tca::table($foreignTableName);
                         $fieldNameAndPath = $fieldName . '.' . $foreignTable->getLabelField();
                     }
@@ -749,9 +763,7 @@ class ContentRepository implements RepositoryInterface
             }
 
             $getLogicalSeparator = sprintf('getLogicalSeparatorFor%s', $operatorName);
-            $logical = method_exists($matcher, $getLogicalSeparator)
-                ? $matcher->$getLogicalSeparator()
-                : $matcher->getDefaultLogicalSeparator();
+            $logical = method_exists($matcher, $getLogicalSeparator) ? $matcher->$getLogicalSeparator() : $matcher->getDefaultLogicalSeparator();
 
             $result = $query->$logical($constraints);
         }
@@ -780,15 +792,15 @@ class ContentRepository implements RepositoryInterface
      */
     protected function processMagicCall($propertyName, $value, $flag = '')
     {
-
-        $fieldName = Property::name($propertyName)->of($this->dataType)->toFieldName();
+        $fieldName = Property::name($propertyName)
+            ->of($this->dataType)
+            ->toFieldName();
 
         /** @var $matcher Matcher */
         $matcher = GeneralUtility::makeInstance(Matcher::class, [], $this->getDataType());
 
         $table = Tca::table($this->dataType);
         if ($table->field($fieldName)->isGroup()) {
-
             $valueParts = explode('.', $value, 2);
             $fieldName = $fieldName . '.' . $valueParts[0];
             $value = $valueParts[1];
@@ -865,15 +877,7 @@ class ContentRepository implements RepositoryInterface
     {
         /** @var ConstraintContainer $constraintContainer */
         $constraintContainer = GeneralUtility::makeInstance(ConstraintContainer::class);
-        $result = $this->getSignalSlotDispatcher()->dispatch(
-            self::class,
-            'postProcessConstraintsObject',
-            [
-                $query,
-                $constraints,
-                $constraintContainer
-            ]
-        );
+        $result = $this->getSignalSlotDispatcher()->dispatch(self::class, 'postProcessConstraintsObject', [$query, $constraints, $constraintContainer]);
 
         // Backward compatibility.
         $processedConstraints = $result[1];
@@ -892,5 +896,4 @@ class ContentRepository implements RepositoryInterface
     {
         return $this->getObjectManager()->get(Dispatcher::class);
     }
-
 }
