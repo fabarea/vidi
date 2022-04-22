@@ -7,7 +7,8 @@ namespace Fab\Vidi\ViewHelpers\Result;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Domain\Model\Content;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -61,7 +62,7 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper
     {
 
         // Get first object of $objects to check whether it contains possible files to include.
-        /** @var \Fab\Vidi\Domain\Model\Content $object */
+        /** @var Content $object */
         $object = reset($objects);
         $this->checkWhetherObjectMayIncludeFiles($object);
 
@@ -119,7 +120,7 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper
     protected function sendXmlHttpHeaders()
     {
 
-        /** @var \TYPO3\CMS\Core\Http\Response $response */
+        /** @var Response $response */
         $response = $this->templateVariableContainer->get('response');
         $response->withHeader('Content-Type', 'application/xml');
         $response->withHeader('Content-Disposition', 'attachment; filename="' . basename($this->exportFileNameAndPath) . '"');

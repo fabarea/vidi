@@ -7,7 +7,7 @@ namespace Fab\Vidi\ViewHelpers;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Utility\ExtensionManagementUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -23,6 +23,6 @@ class PublicPathViewHelper extends AbstractViewHelper
      */
     public function render()
     {
-        return \Fab\Vidi\Utility\ExtensionManagementUtility::siteRelPath('vidi');
+        return ExtensionManagementUtility::siteRelPath('vidi');
     }
 }

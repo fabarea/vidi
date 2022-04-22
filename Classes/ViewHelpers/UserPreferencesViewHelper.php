@@ -7,7 +7,8 @@ namespace Fab\Vidi\ViewHelpers;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -20,7 +21,7 @@ class UserPreferencesViewHelper extends AbstractViewHelper
 {
 
     /**
-     * @var \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend
+     * @var AbstractFrontend
      */
     protected $cacheInstance;
 
@@ -62,7 +63,7 @@ class UserPreferencesViewHelper extends AbstractViewHelper
     /**
      * Returns an instance of the current Backend User.
      *
-     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     * @return BackendUserAuthentication
      */
     protected function getBackendUser()
     {

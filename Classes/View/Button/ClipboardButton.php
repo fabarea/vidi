@@ -7,7 +7,7 @@ namespace Fab\Vidi\View\Button;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Service\ClipboardService;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\View\AbstractComponentView;
@@ -59,11 +59,11 @@ class ClipboardButton extends AbstractComponentView
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Service\ClipboardService|object
+     * @return ClipboardService|object
      */
     protected function getClipboardService()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Service\ClipboardService::class);
+        return GeneralUtility::makeInstance(ClipboardService::class);
     }
 
 }

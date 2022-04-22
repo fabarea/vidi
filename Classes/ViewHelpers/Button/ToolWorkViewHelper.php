@@ -7,7 +7,7 @@ namespace Fab\Vidi\ViewHelpers\Button;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -65,10 +65,10 @@ class ToolWorkViewHelper extends AbstractViewHelper
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader|object
+     * @return ModuleLoader|object
      */
     protected function getModuleLoader()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
+        return GeneralUtility::makeInstance(ModuleLoader::class);
     }
 }

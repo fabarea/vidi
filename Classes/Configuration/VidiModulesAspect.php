@@ -7,7 +7,8 @@ namespace Fab\Vidi\Configuration;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Module\ModuleLoader;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\TableConfigurationPostProcessingHookInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -25,12 +26,12 @@ class VidiModulesAspect implements TableConfigurationPostProcessingHookInterface
     public function processData()
     {
 
-        /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
-        $moduleLoader = GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
+        /** @var ModuleLoader $moduleLoader */
+        $moduleLoader = GeneralUtility::makeInstance(ModuleLoader::class);
 
 
-        $configuration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-            \TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class
+        $configuration = GeneralUtility::makeInstance(
+            ExtensionConfiguration::class
         )->get('vidi');
 
         foreach (GeneralUtility::trimExplode(',', $configuration['data_types'],true) as $dataType) {

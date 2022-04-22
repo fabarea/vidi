@@ -7,7 +7,7 @@ namespace Fab\Vidi\ViewHelpers\Selection;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use Fab\Vidi\Domain\Model\Selection;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
@@ -38,7 +38,7 @@ class VisibilityOptionsViewHelper extends AbstractViewHelper
     /**
      * Returns an instance of the current Backend User.
      *
-     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     * @return BackendUserAuthentication
      */
     protected function getBackendUser()
     {

@@ -7,26 +7,24 @@ namespace Fab\Vidi\ViewHelpers\Content;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Exception\NotExistingClassException;
 use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
 use Fab\Vidi\Persistence\Matcher;
 use Fab\Vidi\Resolver\FieldPathResolver;
 use Fab\Vidi\Tca\Tca;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3\CMS\Fluid\Core\ViewHelper\Facets\CompilableInterface;
 
 /**
  * Class FindOneViewHelper
  */
-class FindOneViewHelper extends AbstractViewHelper implements CompilableInterface
+class FindOneViewHelper extends AbstractViewHelper
 {
 
     /**
      * @return void
-     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception
      */
     public function initializeArguments()
     {
@@ -41,9 +39,6 @@ class FindOneViewHelper extends AbstractViewHelper implements CompilableInterfac
 
     /**
      * @return string Rendered string
-     * @throws \Fab\Vidi\Exception\NotExistingClassException
-     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception\InvalidVariableException
-     * @throws \InvalidArgumentException
      * @api
      */
     public function render()
@@ -61,9 +56,6 @@ class FindOneViewHelper extends AbstractViewHelper implements CompilableInterfac
      * @param RenderingContextInterface $renderingContext
      *
      * @return string
-     * @throws \Fab\Vidi\Exception\NotExistingClassException
-     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception\InvalidVariableException
-     * @throws \InvalidArgumentException
      */
     public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
@@ -122,8 +114,6 @@ class FindOneViewHelper extends AbstractViewHelper implements CompilableInterfac
      * @param string $dataType
      * @param array $matches
      * @return Matcher
-     * @throws \Fab\Vidi\Exception\NotExistingClassException
-     * @throws \InvalidArgumentException
      */
     protected static function getMatcher($dataType, array $matches = [])
     {
@@ -161,7 +151,6 @@ class FindOneViewHelper extends AbstractViewHelper implements CompilableInterfac
 
     /**
      * @return FieldPathResolver
-     * @throws \InvalidArgumentException
      */
     protected static function getFieldPathResolver()
     {

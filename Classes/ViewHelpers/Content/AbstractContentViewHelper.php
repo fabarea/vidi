@@ -7,7 +7,9 @@ namespace Fab\Vidi\ViewHelpers\Content;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use TYPO3Fluid\Fluid\Core\ViewHelper\Exception;
+use Fab\Vidi\Exception\NotExistingClassException;
+use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use Fab\Vidi\Persistence\QuerySettings;
 use Fab\Vidi\Persistence\ResultSetStorage;
 use Fab\Vidi\Resolver\FieldPathResolver;
@@ -27,7 +29,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
 
     /**
      * @return void
-     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception
+     * @throws Exception
      */
     public function initializeArguments()
     {
@@ -61,7 +63,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      * @param string $dataType
      * @param array $matches
      * @return Matcher
-     * @throws \Fab\Vidi\Exception\NotExistingClassException
+     * @throws NotExistingClassException
      * @throws \InvalidArgumentException
      */
     protected function getMatcher($dataType, $matches = array())
@@ -217,7 +219,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
 
     /**
      * @param $ignoreEnableFields
-     * @return \TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface
+     * @return QuerySettingsInterface
      */
     protected function getDefaultQuerySettings($ignoreEnableFields)
     {

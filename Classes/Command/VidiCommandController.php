@@ -8,7 +8,7 @@ namespace Fab\Vidi\Command;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Grid\GridAnalyserService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -72,10 +72,10 @@ class VidiCommandController extends Command
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Grid\GridAnalyserService|object
+     * @return GridAnalyserService|object
      */
     protected function getGridAnalyserService()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Grid\GridAnalyserService::class);
+        return GeneralUtility::makeInstance(GridAnalyserService::class);
     }
 }

@@ -7,7 +7,7 @@ namespace Fab\Vidi\Service;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
@@ -29,7 +29,7 @@ class ContentService
     protected $dataType;
 
     /**
-     * @var \Fab\Vidi\Domain\Model\Content[]
+     * @var Content[]
      */
     protected $objects = [];
 
@@ -84,7 +84,7 @@ class ContentService
      * Signal that is called after the content objects have been found.
      *
      * @param array $contentObjects
-     * @param \Fab\Vidi\Persistence\Matcher $matcher
+     * @param Matcher $matcher
      * @param Order $order
      * @param int $limit
      * @param int $offset
@@ -130,7 +130,7 @@ class ContentService
     }
 
     /**
-     * @return \Fab\Vidi\Domain\Model\Content[]
+     * @return Content[]
      */
     public function getObjects()
     {

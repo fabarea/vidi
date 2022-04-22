@@ -7,7 +7,7 @@ namespace Fab\Vidi\Resolver;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Language\LanguageService;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Model\Content;
@@ -89,18 +89,18 @@ class ContentObjectResolver implements SingletonInterface
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\FieldPathResolver|object
+     * @return FieldPathResolver|object
      */
     protected function getFieldPathResolver()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Resolver\FieldPathResolver::class);
+        return GeneralUtility::makeInstance(FieldPathResolver::class);
     }
 
     /**
-     * @return \Fab\Vidi\Language\LanguageService|object
+     * @return LanguageService|object
      */
     protected function getLanguageService()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Language\LanguageService::class);
+        return GeneralUtility::makeInstance(LanguageService::class);
     }
 }

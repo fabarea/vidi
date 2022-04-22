@@ -7,7 +7,7 @@ namespace Fab\Vidi\ViewHelpers\Result;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use TYPO3\CMS\Core\Http\Response;
 use Fab\Vidi\Tca\FieldType;
 use Fab\Vidi\View\Grid\Rows;
 use TYPO3\CMS\Core\Core\Environment;
@@ -84,7 +84,7 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
     protected function initializeEnvironment(array $objects)
     {
 
-        /** @var \Fab\Vidi\Domain\Model\Content $object */
+        /** @var Content $object */
         $object = reset($objects);
 
         $this->temporaryDirectory = Environment::getPublicPath() . '/typo3temp/' . uniqid() . '/';
@@ -101,7 +101,7 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
     /**
      * Fetch the files given an object.
      *
-     * @param \Fab\Vidi\Domain\Model\Content $object
+     * @param Content $object
      * @return void
      */
     protected function collectFiles(Content $object)
@@ -157,7 +157,7 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
      */
     protected function sendZipHttpHeaders()
     {
-        /** @var \TYPO3\CMS\Core\Http\Response $response */
+        /** @var Response $response */
         $response = $this->templateVariableContainer->get('response');
         $response->withHeader('Pragma', 'public');
         $response->withHeader('Expires', '0');

@@ -7,7 +7,7 @@ namespace Fab\Vidi\Tool;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Module\ModuleLoader;
 use Fab\Vidi\Module\ModulePidService;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -75,11 +75,11 @@ class ConfiguredPidTool extends AbstractTool
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader|object
+     * @return ModuleLoader|object
      */
-    protected function getModuleLoader(): \Fab\Vidi\Module\ModuleLoader
+    protected function getModuleLoader(): ModuleLoader
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
+        return GeneralUtility::makeInstance(ModuleLoader::class);
     }
 
     /**

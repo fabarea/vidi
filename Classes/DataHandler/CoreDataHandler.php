@@ -7,7 +7,7 @@ namespace Fab\Vidi\DataHandler;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Tca\Tca;
@@ -144,12 +144,12 @@ class CoreDataHandler extends AbstractDataHandler
     }
 
     /**
-     * @return \TYPO3\CMS\Core\DataHandling\DataHandler
+     * @return DataHandler
      */
     protected function getDataHandler()
     {
         if (!$this->dataHandler) {
-            $this->dataHandler = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
+            $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
         }
         return $this->dataHandler;
     }

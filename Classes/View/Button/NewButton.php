@@ -34,7 +34,7 @@ class NewButton extends AbstractComponentView
         // New button only for the current data type.
         if ($this->getModulePidService()->isConfiguredPidValid()) {
             $output = $this->makeLinkButton()->setHref($this->getNewUri())
-                ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:newRecordGeneral'))
+                ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/Resources/Private/Language/locallang_mod_web_list.xlf:newRecordGeneral'))
                 ->setIcon($this->getIconFactory()->getIcon('actions-document-new', Icon::SIZE_SMALL))
                 ->render();
         }

@@ -7,7 +7,7 @@ namespace Fab\Vidi\ViewHelpers\Content;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use TYPO3Fluid\Fluid\Core\ViewHelper\Exception;
 use Fab\Vidi\Domain\Model\Selection;
 use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
 use Fab\Vidi\Domain\Repository\SelectionRepository;
@@ -22,7 +22,7 @@ class FindViewHelper extends AbstractContentViewHelper
 
     /**
      * @return void
-     * @throws \TYPO3\CMS\Fluid\Core\ViewHelper\Exception
+     * @throws Exception
      */
     public function initializeArguments()
     {

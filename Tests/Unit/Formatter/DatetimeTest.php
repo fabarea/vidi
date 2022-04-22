@@ -1,6 +1,9 @@
 <?php
 namespace Fab\Vidi\Tests\Unit\Formatter;
 
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fab\Vidi\Formatter\Date;
+use Fab\Vidi\Formatter\Datetime;
 /**
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,20 +16,19 @@ namespace Fab\Vidi\Tests\Unit\Formatter;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
 /**
  * Test case for class \Fab\Vidi\Formatter\Datetime.
  */
-class DatetimeTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
+class DatetimeTest extends UnitTestCase {
 
 	/**
-	 * @var \Fab\Vidi\Formatter\Date
+	 * @var Date
 	 */
 	private $subject;
 
 	public function setUp() {
 		date_default_timezone_set('GMT');
-		$this->subject = new \Fab\Vidi\Formatter\Datetime();
+		$this->subject = new Datetime();
 		$GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] = 'd.m.Y';
 		$GLOBALS['TYPO3_CONF_VARS']['SYS']['hhmm'] = 'H:i';
 	}

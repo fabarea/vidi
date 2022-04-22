@@ -8,7 +8,19 @@ namespace Fab\Vidi\Persistence\Storage;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use TYPO3\CMS\Extbase\Service\EnvironmentService;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\AndInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\OrInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\NotInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
+use TYPO3\CMS\Extbase\Persistence\Generic\LazyLoadingProxy;
+use TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidRelationConfigurationException;
+use TYPO3\CMS\Extbase\Persistence\Generic\Exception\InconsistentQuerySettingsException;
+use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedOrderException;
+use Fab\Vidi\Domain\Model\Content;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use Fab\Vidi\Resolver\FieldPathResolver;
 use Doctrine\DBAL\ParameterType;
 use Fab\Vidi\Persistence\Query;
 use Fab\Vidi\Utility\BackendUtility;
@@ -52,13 +64,13 @@ class VidiDbBackend
     protected $pageRepository;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Service\EnvironmentService
+     * @var EnvironmentService
      * @Inject
      */
     public $environmentService;
 
     /**
-     * @var \Fab\Vidi\Persistence\Query
+     * @var Query
      */
     protected $query;
 
@@ -320,19 +332,19 @@ class VidiDbBackend
      */
     protected function parseConstraint(ConstraintInterface $constraint = null, SourceInterface $source, array &$statementParts, array &$parameters)
     {
-        if ($constraint instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\AndInterface) {
+        if ($constraint instanceof AndInterface) {
             $statementParts['where'][] = '(';
             $this->parseConstraint($constraint->getConstraint1(), $source, $statementParts, $parameters);
             $statementParts['where'][] = ' AND ';
             $this->parseConstraint($constraint->getConstraint2(), $source, $statementParts, $parameters);
             $statementParts['where'][] = ')';
-        } elseif ($constraint instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\OrInterface) {
+        } elseif ($constraint instanceof OrInterface) {
             $statementParts['where'][] = '(';
             $this->parseConstraint($constraint->getConstraint1(), $source, $statementParts, $parameters);
             $statementParts['where'][] = ' OR ';
             $this->parseConstraint($constraint->getConstraint2(), $source, $statementParts, $parameters);
             $statementParts['where'][] = ')';
-        } elseif ($constraint instanceof \TYPO3\CMS\Extbase\Persistence\Generic\Qom\NotInterface) {
+        } elseif ($constraint instanceof NotInterface) {
             $statementParts['where'][] = 'NOT (';
             $this->parseConstraint($constraint->getConstraint(), $source, $statementParts, $parameters);
             $statementParts['where'][] = ')';
@@ -422,25 +434,25 @@ class VidiDbBackend
      *
      * @param mixed $input
      * @return mixed
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException
+     * @throws UnexpectedTypeException
      */
     protected function getPlainValue($input)
     {
         if (is_array($input)) {
-            throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException('An array could not be converted to a plain value.', 1274799932);
+            throw new UnexpectedTypeException('An array could not be converted to a plain value.', 1274799932);
         }
         if ($input instanceof \DateTime) {
             return $input->format('U');
         } elseif (is_object($input)) {
-            if ($input instanceof \TYPO3\CMS\Extbase\Persistence\Generic\LazyLoadingProxy) {
+            if ($input instanceof LazyLoadingProxy) {
                 $realInput = $input->_loadRealInstance();
             } else {
                 $realInput = $input;
             }
-            if ($realInput instanceof \TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface) {
+            if ($realInput instanceof DomainObjectInterface) {
                 return $realInput->getUid();
             } else {
-                throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException('An object of class "' . get_class($realInput) . '" could not be converted to a plain value.', 1274799934);
+                throw new UnexpectedTypeException('An object of class "' . get_class($realInput) . '" could not be converted to a plain value.', 1274799934);
             }
         } elseif (is_bool($input)) {
             return $input === true ? 1 : 0;
@@ -528,7 +540,7 @@ class VidiDbBackend
         $childTableName = $table->field($fieldName)->getForeignTable();
 
         if ($childTableName === null) {
-            throw new Exception\InvalidRelationConfigurationException('The relation information for property "' . $fieldName . '" of class "' . $tableName . '" is missing.', 1353170925);
+            throw new InvalidRelationConfigurationException('The relation information for property "' . $fieldName . '" of class "' . $tableName . '" is missing.', 1353170925);
         }
 
         if ($table->field($fieldName)->hasOne()) { // includes relation "one-to-one" and "many-to-one"
@@ -743,7 +755,7 @@ class VidiDbBackend
         } elseif (!$ignoreEnableFields && !$includeDeleted) {
             $statement .= $this->getPageRepository()->enableFields($tableName);
         } elseif (!$ignoreEnableFields && $includeDeleted) {
-            throw new Exception\InconsistentQuerySettingsException('Query setting "ignoreEnableFields=false" can not be used together with "includeDeleted=true" in frontend context.', 1327678173);
+            throw new InconsistentQuerySettingsException('Query setting "ignoreEnableFields=false" can not be used together with "includeDeleted=true" in frontend context.', 1327678173);
         }
         return $this->replaceTableNameByAlias($tableName, $tableNameOrAlias, $statement);
     }
@@ -846,7 +858,7 @@ class VidiDbBackend
                     $order = 'DESC';
                     break;
                 default:
-                    throw new Exception\UnsupportedOrderException('Unsupported order encountered.', 1456845126);
+                    throw new UnsupportedOrderException('Unsupported order encountered.', 1456845126);
             }
 
             $tableName = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $this->query->getType());
@@ -889,7 +901,7 @@ class VidiDbBackend
             );
 
             $contentObjects[] = GeneralUtility::makeInstance(
-                \Fab\Vidi\Domain\Model\Content::class,
+                Content::class,
                 $this->query->getType(),
                 $overlaidRow
             );
@@ -1026,7 +1038,7 @@ class VidiDbBackend
     /**
      * Returns an instance of the current Backend User.
      *
-     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     * @return BackendUserAuthentication
      */
     protected function getBackendUser()
     {
@@ -1060,11 +1072,11 @@ class VidiDbBackend
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\FieldPathResolver|object
+     * @return FieldPathResolver|object
      */
     protected function getFieldPathResolver()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Resolver\FieldPathResolver::class);
+        return GeneralUtility::makeInstance(FieldPathResolver::class);
     }
 
     /**

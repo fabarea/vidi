@@ -7,7 +7,10 @@ namespace Fab\Vidi\Tca;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Exception\InvalidKeyInArrayException;
+use Fab\Vidi\Module\ModuleLoader;
+use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException;
+use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -61,15 +64,15 @@ class Tca implements SingletonInterface, TcaServiceInterface
      * @param string $dataType
      * @param string $serviceType
      * @return TcaServiceInterface
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
+     * @throws InvalidKeyInArrayException
      * @throws \InvalidArgumentException
      */
     static protected function getService($dataType, $serviceType)
     {
         if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend() && empty($dataType)) {
 
-            /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
-            $moduleLoader = GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
+            /** @var ModuleLoader $moduleLoader */
+            $moduleLoader = GeneralUtility::makeInstance(ModuleLoader::class);
             $dataType = $moduleLoader->getDataType();
         }
 
@@ -89,8 +92,8 @@ class Tca implements SingletonInterface, TcaServiceInterface
      * Returns a "grid" service instance.
      *
      * @param string|Content $tableNameOrContentObject
-     * @return \Fab\Vidi\Tca\GridService
-     * @throws \Fab\Vidi\Exception\NotExistingClassException
+     * @return GridService
+     * @throws NotExistingClassException
      */
     static public function grid($tableNameOrContentObject = '')
     {
@@ -102,8 +105,8 @@ class Tca implements SingletonInterface, TcaServiceInterface
      * Returns a "table" service instance ("ctrl" part of the TCA).
      *
      * @param string|Content $tableNameOrContentObject
-     * @return \Fab\Vidi\Tca\TableService
-     * @throws \Fab\Vidi\Exception\NotExistingClassException
+     * @return TableService
+     * @throws NotExistingClassException
      */
     static public function table($tableNameOrContentObject = '')
     {
@@ -132,8 +135,8 @@ class Tca implements SingletonInterface, TcaServiceInterface
      *
      * @param string $dataType
      * @param string $serviceType
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     * @throws InvalidSlotException
+     * @throws InvalidSlotReturnException
      * @throws \InvalidArgumentException
      */
     static protected function emitPreProcessTcaSignal($dataType, $serviceType)

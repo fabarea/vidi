@@ -7,7 +7,8 @@ namespace Fab\Vidi\Tool;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Module\ModuleLoader;
+use Fab\Vidi\Grid\GridAnalyserService;
 use Fab\Vidi\Module\ModulePreferences;
 use Fab\Vidi\Module\ConfigurablePart;
 use Fab\Vidi\Tca\Tca;
@@ -117,11 +118,11 @@ class ModulePreferencesTool extends AbstractTool
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader|object
+     * @return ModuleLoader|object
      */
     protected function getModuleLoader()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
+        return GeneralUtility::makeInstance(ModuleLoader::class);
     }
 
     /**
@@ -129,17 +130,17 @@ class ModulePreferencesTool extends AbstractTool
      */
     protected function getModulePreferences()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Module\ModulePreferences::class);
+        return GeneralUtility::makeInstance(ModulePreferences::class);
     }
 
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Grid\GridAnalyserService|object
+     * @return GridAnalyserService|object
      */
     protected function getGridAnalyserService()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Grid\GridAnalyserService::class);
+        return GeneralUtility::makeInstance(GridAnalyserService::class);
     }
 }
 

@@ -7,7 +7,12 @@ namespace Fab\Vidi\Controller;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Domain\Repository\SelectionRepository;
+use Fab\Vidi\Exception\InvalidKeyInArrayException;
+use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
+use TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException;
+use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use Fab\Vidi\Domain\Model\Selection;
 use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -22,14 +27,14 @@ class SelectionController extends ActionController
 {
 
     /**
-     * @var \Fab\Vidi\Domain\Repository\SelectionRepository
+     * @var SelectionRepository
      * @Inject
      */
     public $selectionRepository;
 
     /**
      * @param Selection $selection
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
+     * @throws InvalidKeyInArrayException
      */
     public function createAction(Selection $selection = null)
     {
@@ -43,7 +48,7 @@ class SelectionController extends ActionController
     /**
      * @param Selection $selection
      * @return string
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
+     * @throws IllegalObjectTypeException
      */
     public function deleteAction(Selection $selection)
     {
@@ -53,9 +58,9 @@ class SelectionController extends ActionController
 
     /**
      * @param Selection $selection
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws IllegalObjectTypeException
+     * @throws UnknownObjectException
+     * @throws StopActionException
      */
     public function updateAction(Selection $selection)
     {
@@ -104,7 +109,7 @@ class SelectionController extends ActionController
     /**
      * Returns an instance of the current Backend User.
      *
-     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     * @return BackendUserAuthentication
      */
     protected function getBackendUser()
     {

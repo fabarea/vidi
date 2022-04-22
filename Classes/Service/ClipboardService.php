@@ -7,7 +7,8 @@ namespace Fab\Vidi\Service;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Module\ModuleLoader;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use Fab\Vidi\Persistence\Matcher;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -28,7 +29,7 @@ class ClipboardService implements SingletonInterface
         $matcher = $this->getBackendUser()->getModuleData($this->getDataKey());
         if (!$matcher) {
             /** @var $matcher Matcher */
-            $matcher = GeneralUtility::makeInstance(\Fab\Vidi\Persistence\Matcher::class);
+            $matcher = GeneralUtility::makeInstance(Matcher::class);
         }
         return $matcher;
     }
@@ -81,17 +82,17 @@ class ClipboardService implements SingletonInterface
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader|object
+     * @return ModuleLoader|object
      */
     protected function getModuleLoader()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
+        return GeneralUtility::makeInstance(ModuleLoader::class);
     }
 
     /**
      * Returns an instance of the current Backend User.
      *
-     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     * @return BackendUserAuthentication
      */
     protected function getBackendUser()
     {

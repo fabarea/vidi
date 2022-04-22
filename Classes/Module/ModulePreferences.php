@@ -7,7 +7,8 @@ namespace Fab\Vidi\Module;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use Fab\Vidi\Service\DataService;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -210,9 +211,9 @@ class ModulePreferences implements SingletonInterface
      */
     protected function getSettings()
     {
-        /** @var \TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager $backendConfigurationManager */
-        $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-        $backendConfigurationManager = $objectManager->get(\TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager::class);
+        /** @var BackendConfigurationManager $backendConfigurationManager */
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $backendConfigurationManager = $objectManager->get(BackendConfigurationManager::class);
         $configuration = $backendConfigurationManager->getTypoScriptSetup();
         return $configuration['module.']['tx_vidi.']['settings.'];
     }
@@ -228,11 +229,11 @@ class ModulePreferences implements SingletonInterface
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader|object
+     * @return ModuleLoader|object
      */
     protected function getModuleLoader()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
+        return GeneralUtility::makeInstance(ModuleLoader::class);
     }
 
 }

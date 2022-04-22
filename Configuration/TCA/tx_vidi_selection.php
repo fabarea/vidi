@@ -19,7 +19,7 @@ return [
         ],
     ],
     'types' => [
-        '1' => ['showitem' => 'hidden,--palette--;;1, type, name, data_type, query'],
+        '1' => ['showitem' => 'hidden,--palette--;;1,type,name,data_type,query'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],
@@ -28,7 +28,7 @@ return [
 
         'hidden' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
             ],

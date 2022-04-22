@@ -8,7 +8,7 @@ namespace Fab\Vidi\Persistence;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use Fab\Vidi\Module\ModuleName;
 use Fab\Vidi\Resolver\FieldPathResolver;
 use TYPO3\CMS\Core\Http\ApplicationType;
@@ -281,9 +281,9 @@ class MatcherObjectFactory implements SingletonInterface
     /**
      * Returns an instance of the current Backend User.
      *
-     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     * @return BackendUserAuthentication
      */
-    protected function getBackendUser(): \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+    protected function getBackendUser(): BackendUserAuthentication
     {
         return $GLOBALS['BE_USER'];
     }

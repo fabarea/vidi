@@ -58,7 +58,7 @@ class TableService extends AbstractTca
     /**
      * Tell whether the table has a label field.
      *
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
+     * @throws InvalidKeyInArrayException
      * @return string
      */
     public function hasLabelField()
@@ -69,7 +69,7 @@ class TableService extends AbstractTca
     /**
      * Get the label name of table name.
      *
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
+     * @throws InvalidKeyInArrayException
      * @return string
      */
     public function getLabelField()
@@ -120,7 +120,7 @@ class TableService extends AbstractTca
     /**
      * Return the "disabled" field.
      *
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
+     * @throws InvalidKeyInArrayException
      * @return string|null
      */
     public function getHiddenField()
@@ -136,7 +136,7 @@ class TableService extends AbstractTca
     /**
      * Return the "starttime" field.
      *
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
+     * @throws InvalidKeyInArrayException
      * @return string|null
      */
     public function getStartTimeField()
@@ -152,7 +152,7 @@ class TableService extends AbstractTca
     /**
      * Return the "endtime" field.
      *
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
+     * @throws InvalidKeyInArrayException
      * @return string|null
      */
     public function getEndTimeField()
@@ -415,7 +415,7 @@ class TableService extends AbstractTca
     /**
      * @param string $fieldName
      * @throws \Exception
-     * @return \Fab\Vidi\Tca\FieldService
+     * @return FieldService
      */
     public function field($fieldName)
     {

@@ -7,7 +7,7 @@ namespace Fab\Vidi\ViewHelpers\Result;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use TYPO3\CMS\Core\Http\Response;
 use Fab\Vidi\View\Grid\Rows;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
@@ -56,7 +56,7 @@ class ToJsonViewHelper extends AbstractViewHelper
      */
     protected function setHttpHeaders()
     {
-        /** @var \TYPO3\CMS\Core\Http\Response $response */
+        /** @var Response $response */
         $response = $this->templateVariableContainer->get('response');
         $response->withHeader('Content-Type', 'application/json');
     }

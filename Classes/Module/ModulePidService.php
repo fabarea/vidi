@@ -7,7 +7,8 @@ namespace Fab\Vidi\Module;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\View\Button\NewButton;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use Fab\Vidi\Tca\Tca;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -152,7 +153,7 @@ class ModulePidService
         if (!empty($page)
             && (int)$page['doktype'] !== PageRepository::DOKTYPE_SYSFOLDER
             && !$this->isTableAllowedOnStandardPages()
-            && $this->getModuleLoader()->hasComponentInDocHeader(\Fab\Vidi\View\Button\NewButton::class)) {
+            && $this->getModuleLoader()->hasComponentInDocHeader(NewButton::class)) {
             $this->errors[] = sprintf(
                 'The page with the id "%s" either has to be of the type "folder" (doktype=254) or the table "%s" has to be allowed on standard pages.',
                 $configuredPid,
@@ -210,7 +211,7 @@ class ModulePidService
     /**
      * Returns an instance of the current Backend User.
      *
-     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     * @return BackendUserAuthentication
      */
     protected function getBackendUser()
     {
@@ -220,11 +221,11 @@ class ModulePidService
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader|object
+     * @return ModuleLoader|object
      */
     protected function getModuleLoader()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
+        return GeneralUtility::makeInstance(ModuleLoader::class);
     }
 
 }

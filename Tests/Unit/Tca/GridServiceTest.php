@@ -13,7 +13,7 @@ namespace Fab\Vidi\Tests\Unit\Tca;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
+use Fab\Vidi\Tca\GridService;
 use Fab\Vidi\Formatter\Date;
 use Fab\Vidi\Formatter\Datetime;
 use Fab\Vidi\Tca\Tca;
@@ -24,7 +24,7 @@ use Fab\Vidi\Tca\Tca;
 class GridServiceTest extends AbstractServiceTest {
 
 	/**
-	 * @var \Fab\Vidi\Tca\GridService
+	 * @var GridService
 	 */
 	private $fixture;
 

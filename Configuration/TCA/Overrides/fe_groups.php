@@ -1,4 +1,8 @@
 <?php
+use Fab\Vidi\Facet\PageFacet;
+use Fab\Vidi\Grid\CheckBoxRenderer;
+use Fab\Vidi\Grid\ButtonGroupRenderer;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 if (!defined('TYPO3')) die ('Access denied.');
 
 $tca = [
@@ -16,13 +20,13 @@ $tca = [
             'uid',
             'title',
             'description',
-            \Fab\Vidi\Facet\PageFacet::class => [
+            PageFacet::class => [
                 'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:facet.pid'
             ]
         ],
         'columns' => [
             '__checkbox' => [
-                'renderer' => \Fab\Vidi\Grid\CheckBoxRenderer::class,
+                'renderer' => CheckBoxRenderer::class,
             ],
             'uid' => [
                 'visible' => false,
@@ -50,10 +54,10 @@ $tca = [
                 'width' => '3%',
             ],
             '__buttons' => [
-                'renderer' => \Fab\Vidi\Grid\ButtonGroupRenderer::class,
+                'renderer' => ButtonGroupRenderer::class,
             ],
         ]
     ]
 ];
 
-\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($GLOBALS['TCA']['fe_groups'], $tca);
+ArrayUtility::mergeRecursiveWithOverrule($GLOBALS['TCA']['fe_groups'], $tca);

@@ -30,13 +30,13 @@ class PagerObjectFactory implements SingletonInterface
     /**
      * Returns a pager object.
      *
-     * @return \Fab\Vidi\Persistence\Pager
+     * @return Pager
      */
     public function getPager()
     {
 
         /** @var $pager \Fab\Vidi\Persistence\Pager */
-        $pager = GeneralUtility::makeInstance(\Fab\Vidi\Persistence\Pager::class);
+        $pager = GeneralUtility::makeInstance(Pager::class);
 
         // Set items per page
         if (GeneralUtility::_GET('length') !== null) {

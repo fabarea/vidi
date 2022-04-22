@@ -7,7 +7,8 @@ namespace Fab\Vidi\ViewHelpers\Result;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Domain\Model\Content;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -61,7 +62,7 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper
         $output = fopen($this->exportFileNameAndPath, 'w');
 
         // Handle CSV header, get the first object and get the list of fields.
-        /** @var \Fab\Vidi\Domain\Model\Content $object */
+        /** @var Content $object */
         $object = reset($objects);
         fputcsv($output, $object->toFields());
         $this->checkWhetherObjectMayIncludeFiles($object);
@@ -93,7 +94,7 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper
      */
     protected function sendCsvHttpHeaders()
     {
-        /** @var \TYPO3\CMS\Core\Http\Response $response */
+        /** @var Response $response */
         $response = $this->templateVariableContainer->get('response');
         $response->withHeader('Content-Type', 'application/csv');
         $response->withHeader('Content-Disposition', 'attachment; filename="' . basename($this->exportFileNameAndPath) . '"');

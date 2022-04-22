@@ -37,13 +37,13 @@ class EditButton extends AbstractComponentView
                 'toggle' => 'tooltip',
             ])
             ->setClasses('btn-edit')
-            ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:edit'))
+            ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/Resources/Private/Language/locallang_mod_web_list.xlf:edit'))
             ->setIcon($this->getIconFactory()->getIcon('actions-document-open', Icon::SIZE_SMALL))
             ->render();
     }
 
     /**
-     * @return \Fab\Vidi\View\Uri\EditUri
+     * @return EditUri
      * @throws \InvalidArgumentException
      */
     protected function getUriRenderer()

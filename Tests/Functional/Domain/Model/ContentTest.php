@@ -24,7 +24,7 @@ require_once dirname(dirname(dirname(__FILE__))) . '/AbstractFunctionalTestCase.
 class ContentTest extends AbstractFunctionalTestCase {
 
 	/**
-	 * @var \Fab\Vidi\Domain\Model\Content
+	 * @var Content
 	 */
 	private $fixture;
 
@@ -39,7 +39,7 @@ class ContentTest extends AbstractFunctionalTestCase {
 			'foo' => [],
 			'foo_bar' => [],
 		);
-		$this->fixture = new \Fab\Vidi\Domain\Model\Content($this->dataType);
+		$this->fixture = new Content($this->dataType);
 	}
 
 	public function tearDown() {
@@ -54,7 +54,7 @@ class ContentTest extends AbstractFunctionalTestCase {
 		$data = array(
 			$fieldName => 'foo data',
 		);
-		$object = new \Fab\Vidi\Domain\Model\Content($this->dataType, $data);
+		$object = new Content($this->dataType, $data);
 		$this->assertObjectHasAttribute($propertyName, $object);
 	}
 
@@ -93,7 +93,7 @@ class ContentTest extends AbstractFunctionalTestCase {
 		$data = array(
 			$fieldName => 'foo data',
 		);
-		$object = new \Fab\Vidi\Domain\Model\Content($this->dataType, $data);
+		$object = new Content($this->dataType, $data);
 		$array = $object->toArray();
 		$this->assertArrayHasKey($fieldName, $array);
 	}

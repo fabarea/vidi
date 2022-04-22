@@ -7,7 +7,10 @@ namespace Fab\Vidi\Facet;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Domain\Repository\ContentRepository;
+use Fab\Vidi\Resolver\FieldPathResolver;
+use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
 use Fab\Vidi\Persistence\MatcherObjectFactory;
@@ -56,9 +59,8 @@ class FacetSuggestionService
                     }
                 }
             } elseif (!Tca::table($dataType)->field($fieldName)->isTextArea()) { // We don't want suggestion if field is text area.
-
                 // Fetch the adequate repository
-                /** @var \Fab\Vidi\Domain\Repository\ContentRepository $contentRepository */
+                /** @var ContentRepository $contentRepository */
                 $contentRepository = ContentRepositoryFactory::getInstance($dataType);
 
                 // Initialize some objects related to the query
@@ -105,11 +107,11 @@ class FacetSuggestionService
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\FieldPathResolver|object
+     * @return FieldPathResolver|object
      */
     protected function getFieldPathResolver()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Resolver\FieldPathResolver::class);
+        return GeneralUtility::makeInstance(FieldPathResolver::class);
     }
 
     /**
@@ -119,8 +121,8 @@ class FacetSuggestionService
      */
     protected function getSettings()
     {
-        /** @var \TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager $backendConfigurationManager */
-        $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
+        /** @var BackendConfigurationManager $backendConfigurationManager */
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $backendConfigurationManager = $objectManager->get('TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager');
         $configuration = $backendConfigurationManager->getTypoScriptSetup();
         return $configuration['module.']['tx_vidi.']['settings.'];

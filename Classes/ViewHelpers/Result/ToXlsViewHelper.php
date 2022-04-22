@@ -7,7 +7,8 @@ namespace Fab\Vidi\ViewHelpers\Result;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Domain\Model\Content;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Service\SpreadSheetService;
 
@@ -65,7 +66,7 @@ class ToXlsViewHelper extends AbstractToFormatViewHelper
         $spreadSheet = GeneralUtility::makeInstance(SpreadSheetService::class);
 
         // Handle object header, get the first object and get the list of fields.
-        /** @var \Fab\Vidi\Domain\Model\Content $object */
+        /** @var Content $object */
         $object = reset($objects);
         $spreadSheet->addRow($object->toFields());
 
@@ -97,7 +98,7 @@ class ToXlsViewHelper extends AbstractToFormatViewHelper
      */
     protected function sendXlsHttpHeaders()
     {
-        /** @var \TYPO3\CMS\Core\Http\Response $response */
+        /** @var Response $response */
         $response = $this->templateVariableContainer->get('response');
         $response->withHeader('Pragma', 'public');
         $response->withHeader('Expires', '0');

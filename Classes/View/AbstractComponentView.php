@@ -7,6 +7,9 @@ namespace Fab\Vidi\View;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+use Fab\Vidi\Module\ModuleLoader;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Backend\Template\Components\Buttons\LinkButton;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -20,17 +23,17 @@ abstract class AbstractComponentView implements ViewComponentInterface
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader|object
+     * @return ModuleLoader|object
      */
     protected function getModuleLoader()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
+        return GeneralUtility::makeInstance(ModuleLoader::class);
     }
 
     /**
      * Returns an instance of the current Backend User.
      *
-     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     * @return BackendUserAuthentication
      */
     protected function getBackendUser()
     {
@@ -38,11 +41,11 @@ abstract class AbstractComponentView implements ViewComponentInterface
     }
 
     /**
-     * @return \TYPO3\CMS\Core\Localization\LanguageService|object
+     * @return LanguageService|object
      */
     protected function getLanguageService()
     {
-        return GeneralUtility::makeInstance(\TYPO3\CMS\Core\Localization\LanguageService::class);
+        return GeneralUtility::makeInstance(LanguageService::class);
     }
 
     /**

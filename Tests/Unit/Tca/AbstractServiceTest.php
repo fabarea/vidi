@@ -1,28 +1,15 @@
 <?php
 namespace Fab\Vidi\Tests\Unit\Tca;
 
-/**
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
- */
-
-use TYPO3\CMS\Core\Tests\UnitTestCase;
-
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fab\Vidi\Tca\GridService;
 /**
  * Test case for class \Fab\Vidi\Tca\GridService.
  */
 abstract class AbstractServiceTest extends UnitTestCase {
 
 	/**
-	 * @var \Fab\Vidi\Tca\GridService
+	 * @var GridService
 	 */
 	private $fixture;
 
@@ -71,6 +58,7 @@ abstract class AbstractServiceTest extends UnitTestCase {
 					'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:usergroup',
 					'config' => array(
 						'type' => 'select',
+						'renderType' => 'selectMultipleSideBySide',
 						'foreign_table' => 'fe_groups',
 						'foreign_table_where' => 'ORDER BY fe_groups.title',
 						'size' => '6',

@@ -82,7 +82,7 @@ class LanguageService implements SingletonInterface
             );
 
             if ($localizedRecord) {
-                $localizedContent = GeneralUtility::makeInstance(\Fab\Vidi\Domain\Model\Content::class, $object->getDataType(), $localizedRecord);
+                $localizedContent = GeneralUtility::makeInstance(Content::class, $object->getDataType(), $localizedRecord);
                 $this->localizedRecordStorage[$objectHash][$language] = $localizedContent;
             } else {
                 $this->localizedRecordStorage[$objectHash][$language] = []; // We want an array at least, even if empty.

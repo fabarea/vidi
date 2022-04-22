@@ -7,7 +7,7 @@ namespace Fab\Vidi\Domain\Validator;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Language\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -32,11 +32,11 @@ class LanguageValidator
     }
 
     /**
-     * @return \Fab\Vidi\Language\LanguageService|object
+     * @return LanguageService|object
      */
     protected function getLanguageService()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Language\LanguageService::class);
+        return GeneralUtility::makeInstance(LanguageService::class);
     }
 
 }

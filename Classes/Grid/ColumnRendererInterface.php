@@ -1,13 +1,13 @@
 <?php
 namespace Fab\Vidi\Grid;
 
+use Fab\Vidi\Domain\Model\Content;
 /*
  * This file is part of the Fab/Vidi project under GPLv2 or later.
  *
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
 /**
  * Interface for rendering a column in the Grid.
  */
@@ -22,7 +22,7 @@ interface ColumnRendererInterface
     public function render();
 
     /**
-     * @param \Fab\Vidi\Domain\Model\Content $object
+     * @param Content $object
      * @return $this
      */
     public function setObject($object);

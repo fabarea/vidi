@@ -38,7 +38,7 @@ class DeleteButton extends AbstractComponentView
                 'label' => $label,
             ])
             ->setClasses('btn-delete')
-            ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:delete'))
+            ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/Resources/Private/Language/locallang_mod_web_list.xlf:delete'))
             ->setIcon($this->getIconFactory()->getIcon('actions-edit-delete', Icon::SIZE_SMALL))
             ->render();
     }

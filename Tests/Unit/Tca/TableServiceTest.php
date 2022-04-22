@@ -24,7 +24,7 @@ namespace Fab\Vidi\Tests\Unit\Tca;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use Fab\Vidi\Tca\TableService;
 use Fab\Vidi\Tca\Tca;
 
 /**
@@ -33,13 +33,13 @@ use Fab\Vidi\Tca\Tca;
 class TableServiceTest extends AbstractServiceTest {
 
 	/**
-	 * @var \Fab\Vidi\Tca\TableService
+	 * @var TableService
 	 */
 	private $fixture;
 
 	public function setUp() {
 		parent::setUp();
-		$this->fixture = new \Fab\Vidi\Tca\TableService('tx_foo', Tca::TYPE_TABLE);
+		$this->fixture = new TableService('tx_foo', Tca::TYPE_TABLE);
 	}
 
 	public function tearDown() {

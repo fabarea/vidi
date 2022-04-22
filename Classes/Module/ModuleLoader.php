@@ -8,7 +8,23 @@ namespace Fab\Vidi\Module;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\View\Button\ToolButton;
+use Fab\Vidi\View\Button\NewButton;
+use Fab\Vidi\ViewHelpers\Link\BackViewHelper;
+use Fab\Vidi\View\Check\RelationsCheck;
+use Fab\Vidi\View\Button\EditButton;
+use Fab\Vidi\View\Button\DeleteButton;
+use Fab\Vidi\View\MenuItem\ExportXlsMenuItem;
+use Fab\Vidi\View\MenuItem\ExportXmlMenuItem;
+use Fab\Vidi\View\MenuItem\ExportCsvMenuItem;
+use Fab\Vidi\View\MenuItem\DividerMenuItem;
+use Fab\Vidi\View\MenuItem\MassDeleteMenuItem;
+use Fab\Vidi\Controller\ContentController;
+use Fab\Vidi\Controller\ToolController;
+use Fab\Vidi\Controller\FacetController;
+use Fab\Vidi\Controller\SelectionController;
+use Fab\Vidi\Controller\UserPreferencesController;
+use Fab\Vidi\Controller\ClipboardController;
 use Fab\Vidi\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
@@ -118,34 +134,34 @@ class ModuleLoader
                 ModulePosition::TOP => [
                     ModulePosition::LEFT => [],
                     ModulePosition::RIGHT => [
-                        \Fab\Vidi\View\Button\ToolButton::class,
+                        ToolButton::class,
                     ],
                 ],
                 ModulePosition::BOTTOM => [
                     ModulePosition::LEFT => [
-                        \Fab\Vidi\View\Button\NewButton::class,
-                        \Fab\Vidi\ViewHelpers\Link\BackViewHelper::class,
+                        NewButton::class,
+                        BackViewHelper::class,
                     ],
                     ModulePosition::RIGHT => [],
                 ],
             ],
             ModulePosition::GRID => [
                 ModulePosition::TOP => [
-                    \Fab\Vidi\View\Check\RelationsCheck::class,
+                    RelationsCheck::class,
                     #\Fab\Vidi\View\Tab\DataTypeTab::class,
                 ],
                 ModulePosition::BUTTONS => [
-                    \Fab\Vidi\View\Button\EditButton::class,
-                    \Fab\Vidi\View\Button\DeleteButton::class,
+                    EditButton::class,
+                    DeleteButton::class,
                 ],
                 ModulePosition::BOTTOM => [],
             ],
             ModulePosition::MENU_MASS_ACTION => [
-                \Fab\Vidi\View\MenuItem\ExportXlsMenuItem::class,
-                \Fab\Vidi\View\MenuItem\ExportXmlMenuItem::class,
-                \Fab\Vidi\View\MenuItem\ExportCsvMenuItem::class,
-                \Fab\Vidi\View\MenuItem\DividerMenuItem::class,
-                \Fab\Vidi\View\MenuItem\MassDeleteMenuItem::class,
+                ExportXlsMenuItem::class,
+                ExportXmlMenuItem::class,
+                ExportCsvMenuItem::class,
+                DividerMenuItem::class,
+                MassDeleteMenuItem::class,
                 #\Fab\Vidi\View\MenuItem\MassEditMenuItem::class,
             ],
         ];
@@ -302,12 +318,12 @@ class ModuleLoader
                 $this->dataType . '_' . $this->moduleKey,
                 $this->position,
                 [
-                    \Fab\Vidi\Controller\ContentController::class => 'index, list, delete, update, edit, copy, move, localize, sort, copyClipboard, moveClipboard',
-                    \Fab\Vidi\Controller\ToolController::class => 'welcome, work',
-                    \Fab\Vidi\Controller\FacetController::class => 'autoSuggest, autoSuggests',
-                    \Fab\Vidi\Controller\SelectionController::class => 'edit, update, create, delete, list, show',
-                    \Fab\Vidi\Controller\UserPreferencesController::class => 'save',
-                    \Fab\Vidi\Controller\ClipboardController::class => 'save, flush, show',
+                    ContentController::class => 'index, list, delete, update, edit, copy, move, localize, sort, copyClipboard, moveClipboard',
+                    ToolController::class => 'welcome, work',
+                    FacetController::class => 'autoSuggest, autoSuggests',
+                    SelectionController::class => 'edit, update, create, delete, list, show',
+                    UserPreferencesController::class => 'save',
+                    ClipboardController::class => 'save, flush, show',
                 ],
                 $moduleConfiguration
             );

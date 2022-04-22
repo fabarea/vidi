@@ -7,7 +7,7 @@ namespace Fab\Vidi\Controller;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Exception\InvalidKeyInArrayException;
 use Fab\Vidi\Domain\Repository\SelectionRepository;
 use Fab\Vidi\Language\LanguageService;
 use Fab\Vidi\Module\ModuleLoader;
@@ -138,7 +138,7 @@ class ContentController extends ActionController
      * @param string $savingBehavior
      * @param int $language
      * @param array $columns
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
+     * @throws InvalidKeyInArrayException
      */
     public function updateAction($fieldNameAndPath, array $content, array $matches = [], $savingBehavior = SavingBehavior::REPLACE, $language = 0, $columns = [])
     {
@@ -222,7 +222,7 @@ class ContentController extends ActionController
 
                 if (!empty($columns)) {
                     /** @var Row $row */
-                    $row = GeneralUtility::makeInstance(\Fab\Vidi\View\Grid\Row::class, $columns);
+                    $row = GeneralUtility::makeInstance(Row::class, $columns);
                     $result->setRow($row->render($updatedObject));
                 }
             }
@@ -738,8 +738,8 @@ class ContentController extends ActionController
     protected function emitProcessContentDataSignal(Content $contentObject, $fieldNameAndPath, $contentData, $counter, $savingBehavior, $language)
     {
 
-        /** @var \Fab\Vidi\Signal\ProcessContentDataSignalArguments $signalArguments */
-        $signalArguments = GeneralUtility::makeInstance(\Fab\Vidi\Signal\ProcessContentDataSignalArguments::class);
+        /** @var ProcessContentDataSignalArguments $signalArguments */
+        $signalArguments = GeneralUtility::makeInstance(ProcessContentDataSignalArguments::class);
         $signalArguments->setContentObject($contentObject)
             ->setFieldNameAndPath($fieldNameAndPath)
             ->setContentData($contentData)

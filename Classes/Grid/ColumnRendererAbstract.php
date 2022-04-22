@@ -7,7 +7,7 @@ namespace Fab\Vidi\Grid;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -22,7 +22,7 @@ abstract class ColumnRendererAbstract implements ColumnRendererInterface
     /**
      * The content object.
      *
-     * @var \Fab\Vidi\Domain\Model\Content
+     * @var Content
      */
     protected $object;
 
@@ -75,7 +75,7 @@ abstract class ColumnRendererAbstract implements ColumnRendererInterface
     }
 
     /**
-     * @return \Fab\Vidi\Domain\Model\Content
+     * @return Content
      */
     public function getObject()
     {
@@ -83,7 +83,7 @@ abstract class ColumnRendererAbstract implements ColumnRendererInterface
     }
 
     /**
-     * @param \Fab\Vidi\Domain\Model\Content $object
+     * @param Content $object
      * @return $this
      */
     public function setObject($object)

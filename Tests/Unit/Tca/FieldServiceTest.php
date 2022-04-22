@@ -13,7 +13,7 @@ namespace Fab\Vidi\Tests\Unit\Tca;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
+use Fab\Vidi\Tca\TableService;
 use Fab\Vidi\Tca\FieldType;
 
 /**
@@ -22,13 +22,13 @@ use Fab\Vidi\Tca\FieldType;
 class FieldServiceTest extends AbstractServiceTest {
 
 	/**
-	 * @var \Fab\Vidi\Tca\TableService
+	 * @var TableService
 	 */
 	private $fixture;
 
 	public function setUp() {
 		parent::setUp();
-		$this->fixture = new \Fab\Vidi\Tca\TableService('tx_foo');
+		$this->fixture = new TableService('tx_foo');
 	}
 
 	public function tearDown() {

@@ -7,7 +7,11 @@ namespace Fab\Vidi\Domain\Model;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Exception\NotExistingClassException;
+use Fab\Vidi\Tca\TableService;
+use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException;
+use Fab\Vidi\Domain\Repository\ContentRepository;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use Fab\Vidi\Tca\FieldType;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -41,7 +45,7 @@ class Content implements \ArrayAccess
      * @param array $contentData
      * @return \Fab\Vidi\Domain\Model\Content
      * @throws \InvalidArgumentException
-     * @throws \Fab\Vidi\Exception\NotExistingClassException
+     * @throws NotExistingClassException
      */
     public function __construct($dataType, array $contentData = array())
     {
@@ -49,7 +53,7 @@ class Content implements \ArrayAccess
         $this->dataType = $dataType;
         $this->uid = empty($contentData['uid']) ? null : (int)$contentData['uid'];
 
-        /** @var \Fab\Vidi\Tca\TableService $table */
+        /** @var TableService $table */
         $table = Tca::table($dataType);
 
         // Initialize the array containing the allowed fields to be filled-in.
@@ -88,7 +92,7 @@ class Content implements \ArrayAccess
      *
      * @param string $methodName The name of the magic method
      * @param string $arguments The arguments of the magic method
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException
+     * @throws UnsupportedMethodException
      * @return mixed
      * @api
      */
@@ -150,7 +154,7 @@ class Content implements \ArrayAccess
         $foreignDataType = Tca::table($this->dataType)->field($fieldName)->relationDataType();
 
         // Get the foreign repository instance form the factory
-        /** @var \Fab\Vidi\Domain\Repository\ContentRepository $foreignContentRepository */
+        /** @var ContentRepository $foreignContentRepository */
         $foreignContentRepository = ContentRepositoryFactory::getInstance($foreignDataType, $fieldName);
 
         if (Tca::table($this->dataType)->field($fieldName)->hasRelationWithCommaSeparatedValues()) {
@@ -453,7 +457,7 @@ class Content implements \ArrayAccess
     /**
      * Returns an instance of the current Backend User.
      *
-     * @return \TYPO3\CMS\Core\Authentication\BackendUserAuthentication
+     * @return BackendUserAuthentication
      */
     protected function getBackendUser()
     {

@@ -1,34 +1,21 @@
 <?php
 namespace Fab\Vidi\Tests\Unit\Formatter;
 
-/**
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
- */
-
-use TYPO3\CMS\Core\Tests\UnitTestCase;
-
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fab\Vidi\Formatter\Date;
 /**
  * Test case for class \Fab\Vidi\Formatter\Date.
  */
 class DateTest extends UnitTestCase {
 
 	/**
-	 * @var \Fab\Vidi\Formatter\Date
+	 * @var Date
 	 */
 	private $subject;
 
 	public function setUp() {
 		date_default_timezone_set('GMT');
-		$this->subject = new \Fab\Vidi\Formatter\Date();
+		$this->subject = new Date();
 		$GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] = 'd.m.Y';
 	}
 

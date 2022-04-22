@@ -130,7 +130,7 @@ class AfterFindContentObjectsSignalArguments
     }
 
     /**
-     * @param \Fab\Vidi\Persistence\Matcher $matcher
+     * @param Matcher $matcher
      * @return $this
      */
     public function setMatcher($matcher)
@@ -140,7 +140,7 @@ class AfterFindContentObjectsSignalArguments
     }
 
     /**
-     * @return \Fab\Vidi\Persistence\Matcher
+     * @return Matcher
      */
     public function getMatcher()
     {

@@ -7,7 +7,8 @@ namespace Fab\Vidi\View\Grid;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Exception\InvalidKeyInArrayException;
+use Fab\Vidi\Formatter\FormatterInterface;
 use Fab\Vidi\Resolver\ContentObjectResolver;
 use Fab\Vidi\Resolver\FieldPathResolver;
 use Fab\Vidi\Tca\FieldType;
@@ -48,7 +49,7 @@ class Row extends AbstractComponentView
     /**
      * Render a row to be displayed in the Grid given an Content Object.
      *
-     * @param \Fab\Vidi\Domain\Model\Content $object
+     * @param Content $object
      * @param int $rowIndex
      * @return array
      * @throws \Exception
@@ -151,7 +152,7 @@ class Row extends AbstractComponentView
     /**
      * Store some often used variable values and speed up the processing.
      *
-     * @param \Fab\Vidi\Domain\Model\Content $object
+     * @param Content $object
      * @param string $fieldNameAndPath
      * @return void
      */
@@ -416,7 +417,7 @@ class Row extends AbstractComponentView
     /**
      * Compute the value for the Content object according to a field name.
      *
-     * @param \Fab\Vidi\Domain\Model\Content $object
+     * @param Content $object
      * @param string $fieldNameAndPath
      * @return string
      */
@@ -486,10 +487,10 @@ class Row extends AbstractComponentView
      *       e.g DefaultValueGridProcessor, TextAreaGridProcessor, ...
      *
      * @param string $value
-     * @param \Fab\Vidi\Domain\Model\Content $object
+     * @param Content $object
      * @param string $fieldNameAndPath
      * @return string
-     * @throws \Fab\Vidi\Exception\InvalidKeyInArrayException
+     * @throws InvalidKeyInArrayException
      */
     protected function processValue($value, Content $object, $fieldNameAndPath)
     {
@@ -497,7 +498,7 @@ class Row extends AbstractComponentView
         // Set default value if $field name correspond to the label of the table
         $fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
         if (Tca::table($object->getDataType())->getLabelField() === $fieldName && empty($value)) {
-            $value = sprintf('[%s]', $this->getLabelService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.no_title'));
+            $value = sprintf('[%s]', $this->getLabelService()->sL('LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.no_title'));
         }
 
         // Sanitize the value in case of "select" or "radio button".
@@ -530,7 +531,7 @@ class Row extends AbstractComponentView
         }
         $className = $configuration['format'];
 
-        /** @var \Fab\Vidi\Formatter\FormatterInterface $formatter */
+        /** @var FormatterInterface $formatter */
         $formatter = GeneralUtility::makeInstance($className);
         $value = $formatter->format($value);
 

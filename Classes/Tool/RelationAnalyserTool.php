@@ -7,7 +7,8 @@ namespace Fab\Vidi\Tool;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Module\ModuleLoader;
+use Fab\Vidi\Grid\GridAnalyserService;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -85,21 +86,21 @@ class RelationAnalyserTool extends AbstractTool
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Module\ModuleLoader|object
+     * @return ModuleLoader|object
      */
-    protected function getModuleLoader(): \Fab\Vidi\Module\ModuleLoader
+    protected function getModuleLoader(): ModuleLoader
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
+        return GeneralUtility::makeInstance(ModuleLoader::class);
     }
 
     /**
      * Get the Vidi Module Loader.
      *
-     * @return \Fab\Vidi\Grid\GridAnalyserService|object
+     * @return GridAnalyserService|object
      */
     protected function getGridAnalyserService()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Grid\GridAnalyserService::class);
+        return GeneralUtility::makeInstance(GridAnalyserService::class);
     }
 }
 

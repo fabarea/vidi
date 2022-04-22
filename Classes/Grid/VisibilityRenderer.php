@@ -7,7 +7,7 @@ namespace Fab\Vidi\Grid;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use TYPO3\CMS\Core\Localization\LanguageService;
 use Fab\Vidi\Domain\Model\Content;
 use TYPO3\CMS\Backend\Template\Components\Buttons\LinkButton;
 use Fab\Vidi\Tca\Tca;
@@ -44,7 +44,7 @@ class VisibilityRenderer extends ColumnRendererAbstract
                 ->setDataAttributes([
                     'toggle' => 'tooltip',
                 ])
-                ->setTitle($this->getLabelService()->sL('LLL:EXT:lang/locallang_mod_web_list.xlf:' . $label))
+                ->setTitle($this->getLabelService()->sL('LLL:EXT:lang/Resources/Private/Language/locallang_mod_web_list.xlf:' . $label))
                 ->setIcon($this->getIconFactory()->getIcon($spriteName, Icon::SIZE_SMALL))
                 ->render();
         }
@@ -93,7 +93,7 @@ class VisibilityRenderer extends ColumnRendererAbstract
     }
 
     /**
-     * @return \TYPO3\CMS\Core\Localization\LanguageService
+     * @return LanguageService
      */
     protected function getLabelService()
     {

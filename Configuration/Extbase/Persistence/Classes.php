@@ -1,8 +1,10 @@
 <?php
 declare(strict_types = 1);
 
+use Fab\Vidi\Domain\Model\Selection;
+
 return [
-    \Fab\Vidi\Domain\Model\Selection::class => [
+    Selection::class => [
         'tableName' => 'tx_vidi_selection',
     ],
 ];

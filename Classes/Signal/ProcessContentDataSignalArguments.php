@@ -65,7 +65,7 @@ class ProcessContentDataSignalArguments
     }
 
     /**
-     * @param \Fab\Vidi\Domain\Model\Content $contentObject
+     * @param Content $contentObject
      * @return $this
      */
     public function setContentObject($contentObject)
@@ -75,7 +75,7 @@ class ProcessContentDataSignalArguments
     }
 
     /**
-     * @return \Fab\Vidi\Domain\Model\Content
+     * @return Content
      */
     public function getContentObject()
     {

@@ -13,7 +13,7 @@ namespace Fab\Vidi\Tests\Module\Functional;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
+use Fab\Vidi\Module\ModuleLoader;
 use Fab\Vidi\Tests\Functional\AbstractFunctionalTestCase;
 
 require_once dirname(dirname(__FILE__)) . '/AbstractFunctionalTestCase.php';
@@ -24,7 +24,7 @@ require_once dirname(dirname(__FILE__)) . '/AbstractFunctionalTestCase.php';
 class ModuleLoaderTest extends AbstractFunctionalTestCase {
 
 	/**
-	 * @var \Fab\Vidi\Module\ModuleLoader
+	 * @var ModuleLoader
 	 */
 	private $fixture;
 
@@ -41,7 +41,7 @@ class ModuleLoaderTest extends AbstractFunctionalTestCase {
 
 	public function setUp() {
 		parent::setUp();
-		$this->fixture = new \Fab\Vidi\Module\ModuleLoader($this->dataType);
+		$this->fixture = new ModuleLoader($this->dataType);
 		$this->fixture->register();
 	}
 
@@ -92,7 +92,7 @@ class ModuleLoaderTest extends AbstractFunctionalTestCase {
 	 * @test
 	 */
 	public function getModuleConfigurationReturnsArrayWithSomeKeys() {
-		$moduleLoader = new \Fab\Vidi\Module\ModuleLoader($this->dataType);
+		$moduleLoader = new ModuleLoader($this->dataType);
 		$moduleLoader->register();
 		$GLOBALS['_GET']['M'] = $this->moduleCode;
 
@@ -107,7 +107,7 @@ class ModuleLoaderTest extends AbstractFunctionalTestCase {
 	 * @test
 	 */
 	public function getModuleConfigurationWithParameterDataTypeReturnsDataType() {
-		$moduleLoader = new \Fab\Vidi\Module\ModuleLoader($this->dataType);
+		$moduleLoader = new ModuleLoader($this->dataType);
 		$moduleLoader->register();
 		$GLOBALS['_GET']['M'] = $this->moduleCode;
 		$this->assertEquals($this->dataType, $moduleLoader->getModuleConfiguration('dataType'));

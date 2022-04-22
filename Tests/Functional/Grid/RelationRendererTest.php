@@ -13,7 +13,8 @@ namespace Fab\Vidi\Grid;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
+use Fab\Vidi\Module\ModuleLoader;
+use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Tests\Functional\AbstractFunctionalTestCase;
 
 require_once dirname(dirname(__FILE__)) . '/AbstractFunctionalTestCase.php';
@@ -24,7 +25,7 @@ require_once dirname(dirname(__FILE__)) . '/AbstractFunctionalTestCase.php';
 class RelationRendererTest extends AbstractFunctionalTestCase {
 
 	/**
-	 * @var \Fab\Vidi\Grid\RelationRenderer
+	 * @var RelationRenderer
 	 */
 	private $fixture;
 
@@ -40,10 +41,10 @@ class RelationRendererTest extends AbstractFunctionalTestCase {
 
 	public function setUp() {
 		parent::setUp();
-		$moduleLoader = new \Fab\Vidi\Module\ModuleLoader($this->dataType);
+		$moduleLoader = new ModuleLoader($this->dataType);
 		$moduleLoader->register();
 		$GLOBALS['_GET']['M'] = $this->moduleCode;
-		$this->fixture = new \Fab\Vidi\Grid\RelationRenderer();
+		$this->fixture = new RelationRenderer();
 	}
 
 	public function tearDown() {
@@ -54,7 +55,7 @@ class RelationRendererTest extends AbstractFunctionalTestCase {
 	 * @test
 	 */
 	public function renderAssetWithNoCategoryReturnsEmpty() {
-		$content = new \Fab\Vidi\Domain\Model\Content($this->dataType);
+		$content = new Content($this->dataType);
 		$this->markTestIncomplete(); # TCA must be faked
 		#$actual = $this->fixture->setObject($content)->render();
 	}

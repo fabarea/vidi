@@ -7,7 +7,7 @@ namespace Fab\Vidi\Domain\Repository;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -28,16 +28,16 @@ class ContentRepositoryFactory implements SingletonInterface
      *
      * @param string $dataType
      * @param string $sourceFieldName
-     * @return \Fab\Vidi\Domain\Repository\ContentRepository
+     * @return ContentRepository
      */
     static public function getInstance($dataType = null, $sourceFieldName = '')
     {
 
-        /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
+        /** @var ModuleLoader $moduleLoader */
         if (is_null($dataType)) {
 
             // Try to get the data type from the module loader.
-            $moduleLoader = GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class);
+            $moduleLoader = GeneralUtility::makeInstance(ModuleLoader::class);
             $dataType = $moduleLoader->getDataType();
         }
 

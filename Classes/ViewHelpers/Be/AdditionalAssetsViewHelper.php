@@ -7,7 +7,7 @@ namespace Fab\Vidi\ViewHelpers\Be;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use TYPO3\CMS\Core\Page\PageRenderer;
 use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\ApplicationType;
@@ -22,7 +22,7 @@ class AdditionalAssetsViewHelper extends AbstractBackendViewHelper
 {
 
     /**
-     * @var \TYPO3\CMS\Core\Page\PageRenderer
+     * @var PageRenderer
      * @Inject
      */
     public $pageRenderer;

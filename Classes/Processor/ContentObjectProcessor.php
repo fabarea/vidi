@@ -7,7 +7,8 @@ namespace Fab\Vidi\Processor;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Resolver\ContentObjectResolver;
+use Fab\Vidi\Resolver\FieldPathResolver;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Behavior\SavingBehavior;
@@ -43,7 +44,7 @@ class ContentObjectProcessor implements SingletonInterface
     }
 
     /**
-     * @param \Fab\Vidi\Domain\Model\Content $object
+     * @param Content $object
      * @param $fieldNameAndPath
      * @param array $contentData
      * @param string $savingBehavior
@@ -103,7 +104,7 @@ class ContentObjectProcessor implements SingletonInterface
     }
 
     /**
-     * @param \Fab\Vidi\Domain\Model\Content $object
+     * @param Content $object
      * @param string $fieldNameAndPath
      * @param string $fieldName
      * @return array
@@ -125,18 +126,18 @@ class ContentObjectProcessor implements SingletonInterface
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\ContentObjectResolver|object
+     * @return ContentObjectResolver|object
      */
     protected function getContentObjectResolver()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Resolver\ContentObjectResolver::class);
+        return GeneralUtility::makeInstance(ContentObjectResolver::class);
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\FieldPathResolver|object
+     * @return FieldPathResolver|object
      */
     protected function getFieldPathResolver()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Resolver\FieldPathResolver::class);
+        return GeneralUtility::makeInstance(FieldPathResolver::class);
     }
 }

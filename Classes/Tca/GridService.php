@@ -8,7 +8,7 @@ namespace Fab\Vidi\Tca;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use Fab\Vidi\Resolver\FieldPathResolver;
 use Fab\Vidi\Grid\ColumnRendererInterface;
 use Fab\Vidi\Module\ConfigurablePart;
 use Fab\Vidi\Module\ModulePreferences;
@@ -705,11 +705,11 @@ class GridService extends AbstractTca
     }
 
     /**
-     * @return \Fab\Vidi\Resolver\FieldPathResolver|object
+     * @return FieldPathResolver|object
      */
     protected function getFieldPathResolver()
     {
-        return GeneralUtility::makeInstance(\Fab\Vidi\Resolver\FieldPathResolver::class);
+        return GeneralUtility::makeInstance(FieldPathResolver::class);
     }
 
     /**
