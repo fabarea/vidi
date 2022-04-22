@@ -130,16 +130,6 @@
 									<f:format.raw>
 										<v:grid.column.title/>
 									</f:format.raw>
-									<f:if condition="{v:grid.column.isEditable(name: '{columnName}')}">
-										<f:link.action action="edit"
-										               class="mass-edit {f:if(condition: '{v:grid.column.hasRelation()}', then: 'mass-edit-relation', else: 'mass-edit-scalar')}"
-										               arguments="{fieldNameAndPath: '{v:grid.column.fieldName()}'}"
-										               style="opacity: 0">
-											<f:format.raw>
-												<v:sprite name="actions-document-open"/>
-											</f:format.raw>
-										</f:link.action>
-									</f:if>
 								</f:else>
 							</f:if>
 						</th>
