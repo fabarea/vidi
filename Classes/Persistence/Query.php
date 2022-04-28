@@ -123,7 +123,7 @@ class Query implements QueryInterface
      *
      * @var Typo3QuerySettings
      */
-    public $typo3QuerySettings;
+    public Typo3QuerySettings $typo3QuerySettings;
 
     /**
      * Constructs a query object working on the given class name
@@ -654,4 +654,13 @@ class Query implements QueryInterface
         return $this;
     }
 
+    public function setQuerySettings(QuerySettingsInterface $querySettings)
+    {
+        $this->typo3QuerySettings = $querySettings;
+    }
+
+    public function getQuerySettings()
+    {
+        return $this->typo3QuerySettings;
+    }
 }
