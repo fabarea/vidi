@@ -17,7 +17,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use Fab\Vidi\Module\ModuleLoader;
 use Fab\Vidi\Tca\Tca;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
@@ -235,7 +234,7 @@ class MatcherObjectFactory implements SingletonInterface
         if (strlen($matcher->getDataType()) <= 0) {
 
             /** @var ModuleLoader $moduleLoader */
-            $moduleLoader = $this->getObjectManager()->get(ModuleLoader::class);
+            $moduleLoader = GeneralUtility::makeInstance(ModuleLoader::class);
             $matcher->setDataType($moduleLoader->getDataType());
         }
 
@@ -249,15 +248,7 @@ class MatcherObjectFactory implements SingletonInterface
      */
     protected function getSignalSlotDispatcher()
     {
-        return $this->getObjectManager()->get(Dispatcher::class);
-    }
-
-    /**
-     * @return ObjectManager|object
-     */
-    protected function getObjectManager()
-    {
-        return GeneralUtility::makeInstance(ObjectManager::class);
+        return GeneralUtility::makeInstance(Dispatcher::class);
     }
 
     /**

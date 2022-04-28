@@ -1,4 +1,20 @@
 <?php
+
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use Fab\Vidi\Module\ModuleLoader;
+use Fab\Vidi\Backend\LanguageFileGenerator;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
+use Fab\Vidi\Processor\ContentObjectProcessor;
+use Fab\Vidi\Processor\MarkerProcessor;
+use Fab\Vidi\Tool\ToolRegistry;
+use Fab\Vidi\Tool\ModulePreferencesTool;
+use Fab\Vidi\Tool\RelationAnalyserTool;
+use Fab\Vidi\Tool\ConfiguredPidTool;
+use TYPO3\CMS\Core\Imaging\IconRegistry;
+use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 defined('TYPO3') or die();
 
 call_user_func(function () {
@@ -20,7 +36,7 @@ call_user_func(function () {
         $GLOBALS['TBE_MODULES'] = $modules;
 
         // Register "data management" module.
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+        ExtensionManagementUtility::addModule(
             'content',
             '',
             '',
@@ -35,15 +51,15 @@ call_user_func(function () {
         );
     }
 
-    $configuration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-        \TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class
+    $configuration = GeneralUtility::makeInstance(
+        ExtensionConfiguration::class
     )->get('vidi');
 
-    $pids = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['default_pid'], true);
+    $pids = GeneralUtility::trimExplode(',', $configuration['default_pid'], true);
     $defaultPid = array_shift($pids);
     $defaultPids = [];
     foreach ($pids as $dataTypeAndPid) {
-        $parts = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(':', $dataTypeAndPid);
+        $parts = GeneralUtility::trimExplode(':', $dataTypeAndPid);
         if (count($parts) === 2) {
             $defaultPids[$parts[0]] = $parts[1];
         }
@@ -52,12 +68,12 @@ call_user_func(function () {
     // Loop around the data types and register them to be displayed within a BE module.
     if ($configuration['data_types']) {
 
-        $dataTypes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $configuration['data_types'], true);
+        $dataTypes = GeneralUtility::trimExplode(',', $configuration['data_types'], true);
         foreach ($dataTypes as $dataType) {
 
 
-            /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
-            $moduleLoader = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleLoader::class, $dataType);
+            /** @var ModuleLoader $moduleLoader */
+            $moduleLoader = GeneralUtility::makeInstance(ModuleLoader::class, $dataType);
 
             // Special case already defined in Vidi.
             if ($dataType === 'fe_users') {
@@ -67,15 +83,15 @@ call_user_func(function () {
                 $languageFile = 'LLL:EXT:vidi/Resources/Private/Language/fe_groups.xlf';
                 $icon = 'EXT:vidi/Resources/Public/Images/fe_groups.svg';
             } else {
-                /** @var \Fab\Vidi\Backend\LanguageFileGenerator $languageService */
-                $languageService = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(Fab\Vidi\Backend\LanguageFileGenerator::class);
+                /** @var LanguageFileGenerator $languageService */
+                $languageService = GeneralUtility::makeInstance(LanguageFileGenerator::class);
                 $languageFile = $languageService->generate($dataType);
                 $icon = '';
             }
 
             $pid = $defaultPids[$dataType] ?? $defaultPid;
 
-            /** @var \Fab\Vidi\Module\ModuleLoader $moduleLoader */
+            /** @var ModuleLoader $moduleLoader */
             $moduleLoader->setIcon($icon)
                 ->setModuleLanguageFile($languageFile)
                 ->setDefaultPid($pid)
@@ -85,7 +101,7 @@ call_user_func(function () {
 
     // Possible Static TS loading
     if (true === isset($configuration['autoload_typoscript']) && false === (bool)$configuration['autoload_typoscript']) {
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('vidi', 'Configuration/TypoScript', 'Vidi: versatile and interactive display');
+        ExtensionManagementUtility::addStaticFile('vidi', 'Configuration/TypoScript', 'Vidi: versatile and interactive display');
     }
 
     // Register List2 only if beta feature is enabled.
@@ -126,17 +142,14 @@ call_user_func(function () {
     #	');
     #}
 
-    /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-    $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-
     /** @var $signalSlotDispatcher \TYPO3\CMS\Extbase\SignalSlot\Dispatcher */
-    $signalSlotDispatcher = $objectManager->get('TYPO3\CMS\Extbase\SignalSlot\Dispatcher');
+    $signalSlotDispatcher = GeneralUtility::makeInstance(Dispatcher::class);
 
     // Connect "processContentData" signal slot with the "ContentObjectProcessor".
     $signalSlotDispatcher->connect(
         'Fab\Vidi\Controller\Backend\ContentController',
         'processContentData',
-        'Fab\Vidi\Processor\ContentObjectProcessor',
+        ContentObjectProcessor::class,
         'processRelations',
         true
     );
@@ -145,26 +158,26 @@ call_user_func(function () {
     $signalSlotDispatcher->connect(
         'Fab\Vidi\Controller\Backend\ContentController',
         'processContentData',
-        'Fab\Vidi\Processor\MarkerProcessor',
+        MarkerProcessor::class,
         'processMarkers',
         true
     );
 
     // Register default Tools for Vidi.
-    \Fab\Vidi\Tool\ToolRegistry::getInstance()->register('*', \Fab\Vidi\Tool\ModulePreferencesTool::class);
-    \Fab\Vidi\Tool\ToolRegistry::getInstance()->register('*', \Fab\Vidi\Tool\RelationAnalyserTool::class);
-    \Fab\Vidi\Tool\ToolRegistry::getInstance()->register('*', \Fab\Vidi\Tool\ConfiguredPidTool::class);
+    ToolRegistry::getInstance()->register('*', ModulePreferencesTool::class);
+    ToolRegistry::getInstance()->register('*', RelationAnalyserTool::class);
+    ToolRegistry::getInstance()->register('*', ConfiguredPidTool::class);
 
     // Add new sprite icon.
     $icons = [
         'go' => 'EXT:vidi/Resources/Public/Images/bullet_go.png',
         'query' => 'EXT:vidi/Resources/Public/Images/drive_disk.png',
     ];
-    /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
-    $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
+    /** @var IconRegistry $iconRegistry */
+    $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
     foreach ($icons as $key => $icon) {
         $iconRegistry->registerIcon('extensions-vidi-' . $key,
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            BitmapIconProvider::class,
             [
                 'source' => $icon
             ]

@@ -7,6 +7,7 @@ namespace Fab\Vidi\Controller;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+use Psr\Http\Message\ResponseInterface;
 use Fab\Vidi\Exception\InvalidKeyInArrayException;
 use Fab\Vidi\Domain\Repository\SelectionRepository;
 use Fab\Vidi\Language\LanguageService;
@@ -24,7 +25,6 @@ use Fab\Vidi\View\Uri\EditUri;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
-use TYPO3\CMS\Extbase\Annotation\Inject;
 use TYPO3\CMS\Extbase\Annotation\Validate;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use Fab\Vidi\Behavior\SavingBehavior;
@@ -44,13 +44,6 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
  */
 class ContentController extends ActionController
 {
-
-    /**
-     * @var SelectionRepository
-     * @Inject
-     */
-    public $selectionRepository;
-
     /**
      * Initialize every action.
      */
@@ -63,7 +56,7 @@ class ContentController extends ActionController
         if ($this->arguments->hasArgument('columns')) {
 
             /** @var CsvToArrayConverter $typeConverter */
-            $typeConverter = $this->objectManager->get(CsvToArrayConverter::class);
+            $typeConverter = GeneralUtility::makeInstance(CsvToArrayConverter::class);
 
             $propertyMappingConfiguration = $this->arguments->getArgument('columns')->getPropertyMappingConfiguration();
             $propertyMappingConfiguration->setTypeConverter($typeConverter);
@@ -75,7 +68,7 @@ class ContentController extends ActionController
      *
      * @return void
      */
-    public function indexAction()
+    public function indexAction(): ResponseInterface
     {
         $dataType = $this->getModuleLoader()->getDataType();
         $selections = $this->selectionRepository->findByDataTypeForCurrentBackendUser($dataType);
@@ -84,6 +77,7 @@ class ContentController extends ActionController
         $columns = Tca::grid()->getFields();
         $this->view->assign('columns', $columns);
         $this->view->assign('numberOfColumns', count($columns));
+        return $this->htmlResponse();
     }
 
     /**
@@ -95,7 +89,7 @@ class ContentController extends ActionController
      * @Validate("Fab\Vidi\Domain\Validator\MatchesValidator", param="matches")
      * @return void
      */
-    public function listAction(array $columns = [], $matches = [])
+    public function listAction(array $columns = [], $matches = []): ResponseInterface
     {
         // Initialize some objects related to the query.
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
@@ -113,6 +107,7 @@ class ContentController extends ActionController
         $this->view->assign('pager', $pager);
 
         $this->view->assign('response', $this->responseFactory->createResponse());
+        return $this->htmlResponse();
     }
 
     /**
@@ -297,7 +292,7 @@ class ContentController extends ActionController
      * @param bool $hasRecursiveSelection
      * @throws \Exception
      */
-    public function editAction($fieldNameAndPath, array $matches = [], $hasRecursiveSelection = false)
+    public function editAction($fieldNameAndPath, array $matches = [], $hasRecursiveSelection = false): ResponseInterface
     {
 
         // Instantiate the Matcher object according different rules.
@@ -390,6 +385,7 @@ class ContentController extends ActionController
                 Tca::table($dataType)->field($fieldName)->isRenderModeTree() ? FieldType::TREE : null
             );
         }
+        return $this->htmlResponse();
     }
 
     /**
@@ -758,7 +754,7 @@ class ContentController extends ActionController
      */
     protected function getSignalSlotDispatcher()
     {
-        return $this->objectManager->get(Dispatcher::class);
+        return GeneralUtility::makeInstance(Dispatcher::class);
     }
 
     /**
@@ -787,6 +783,11 @@ class ContentController extends ActionController
     protected function getModuleLoader()
     {
         return GeneralUtility::makeInstance(ModuleLoader::class);
+    }
+
+    public function injectSelectionRepository(SelectionRepository $selectionRepository): void
+    {
+        $this->selectionRepository = $selectionRepository;
     }
 
 }

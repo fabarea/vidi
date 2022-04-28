@@ -10,7 +10,6 @@ namespace Fab\Vidi\Facet;
 use Fab\Vidi\Domain\Repository\ContentRepository;
 use Fab\Vidi\Resolver\FieldPathResolver;
 use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
 use Fab\Vidi\Persistence\MatcherObjectFactory;
@@ -122,8 +121,7 @@ class FacetSuggestionService
     protected function getSettings()
     {
         /** @var BackendConfigurationManager $backendConfigurationManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $backendConfigurationManager = $objectManager->get('TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager');
+        $backendConfigurationManager = GeneralUtility::makeInstance(BackendConfigurationManager::class);
         $configuration = $backendConfigurationManager->getTypoScriptSetup();
         return $configuration['module.']['tx_vidi.']['settings.'];
     }

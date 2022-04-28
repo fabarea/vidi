@@ -7,6 +7,8 @@ namespace Fab\Vidi\Persistence;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\QueryObjectModelFactory;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface;
@@ -22,7 +24,6 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Qom\NotInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ComparisonInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use Fab\Vidi\Persistence\Storage\VidiDbBackend;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -30,7 +31,6 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidNumberOfConstraintsEx
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-use TYPO3\CMS\Extbase\Annotation\Inject;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
 /**
@@ -121,10 +121,9 @@ class Query implements QueryInterface
     /**
      * The query settings.
      *
-     * @var QuerySettings
-     * @Inject
+     * @var Typo3QuerySettings
      */
-    public $querySettings;
+    public $typo3QuerySettings;
 
     /**
      * Constructs a query object working on the given class name
@@ -134,71 +133,55 @@ class Query implements QueryInterface
     public function __construct($type)
     {
         $this->type = $type;
+        $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManagerInterface::class);
+        $this->qomFactory = GeneralUtility::makeInstance(QueryObjectModelFactory::class);
     }
 
-    /**
-     * Injects the persistence manager, used to fetch the CR session
-     *
-     * @param PersistenceManagerInterface $persistenceManager
-     * @return void
-     */
-    public function injectPersistenceManager(PersistenceManagerInterface $persistenceManager)
+    public function injectTypo3QuerySettings(Typo3QuerySettings $querySettings): void
     {
-        $this->persistenceManager = $persistenceManager;
-    }
-
-    /**
-     * Injects the Query Object Model Factory
-     *
-     * @param QueryObjectModelFactory $qomFactory
-     * @return void
-     */
-    public function injectQomFactory(QueryObjectModelFactory $qomFactory)
-    {
-        $this->qomFactory = $qomFactory;
+        $this->typo3QuerySettings = $querySettings;
     }
 
     /**
      * Sets the Query Settings. These Query settings must match the settings expected by
      * the specific Storage Backend.
      *
-     * @param QuerySettingsInterface $querySettings The Query Settings
+     * @param QuerySettingsInterface $typo3QuerySettings The Query Settings
      * @return void
-     * @api This method is not part of FLOW3 API
      */
-    public function setQuerySettings(QuerySettingsInterface $querySettings)
+    public function setTypo3QuerySettings(QuerySettingsInterface $typo3QuerySettings)
     {
-        $this->querySettings = $querySettings;
+        $this->typo3QuerySettings = $typo3QuerySettings;
     }
 
     /**
      * Returns the Query Settings.
      *
      * @throws \Exception
-     * @return QuerySettings $querySettings The Query Settings
+     * @return Typo3QuerySettings $querySettings The Query Settings
      * @api This method is not part of FLOW3 API
      */
-    public function getQuerySettings()
+    public function getTypo3QuerySettings()
     {
-        if (!$this->querySettings instanceof QuerySettingsInterface) {
+        if (!$this->typo3QuerySettings instanceof QuerySettingsInterface) {
             throw new Exception('Tried to get the query settings without setting them before.', 1248689115);
         }
 
         // Apply possible settings to the query.
         if ($this->isBackendMode()) {
             /** @var BackendConfigurationManager $backendConfigurationManager */
-            $backendConfigurationManager = $this->getObjectManager()->get('TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager');
+            $backendConfigurationManager = GeneralUtility::makeInstance(BackendConfigurationManager::class);
             $configuration = $backendConfigurationManager->getTypoScriptSetup();
             $querySettings = array('respectSysLanguage');
             foreach ($querySettings as $setting) {
                 if (isset($configuration['config.']['tx_vidi.']['persistence.']['backend.'][$this->type . '.'][$setting])) {
                     $value = (bool)$configuration['config.']['tx_vidi.']['persistence.']['backend.'][$this->type . '.'][$setting];
-                    ObjectAccess::setProperty($this->querySettings, $setting, $value);
+                    ObjectAccess::setProperty($this->typo3QuerySettings, $setting, $value);
                 }
             }
         }
 
-        return $this->querySettings;
+        return $this->typo3QuerySettings;
     }
 
     /**
@@ -259,7 +242,7 @@ class Query implements QueryInterface
     public function execute($returnRawQueryResult = false)
     {
         /** @var VidiDbBackend $backend */
-        $backend = $this->getObjectManager()->get(VidiDbBackend::class, $this);
+        $backend = GeneralUtility::makeInstance(VidiDbBackend::class, $this);
         return $backend->fetchResult();
     }
 
@@ -583,7 +566,7 @@ class Query implements QueryInterface
     public function count()
     {
         /** @var VidiDbBackend $backend */
-        $backend = $this->getObjectManager()->get(VidiDbBackend::class, $this);
+        $backend = GeneralUtility::makeInstance(VidiDbBackend::class, $this);
         return $backend->countResult();
     }
 
@@ -669,14 +652,6 @@ class Query implements QueryInterface
     {
         $this->sourceFieldName = $sourceFieldName;
         return $this;
-    }
-
-    /**
-     * @return object|ObjectManager
-     */
-    protected function getObjectManager()
-    {
-        return GeneralUtility::makeInstance(ObjectManager::class);
     }
 
 }

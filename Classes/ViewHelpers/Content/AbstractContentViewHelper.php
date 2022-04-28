@@ -7,14 +7,14 @@ namespace Fab\Vidi\ViewHelpers\Content;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Exception;
 use Fab\Vidi\Exception\NotExistingClassException;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
-use Fab\Vidi\Persistence\QuerySettings;
 use Fab\Vidi\Persistence\ResultSetStorage;
 use Fab\Vidi\Resolver\FieldPathResolver;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Persistence\Matcher;
@@ -206,15 +206,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      */
     protected function getSignalSlotDispatcher()
     {
-        return $this->getObjectManager()->get(Dispatcher::class);
-    }
-
-    /**
-     * @return ObjectManager
-     */
-    protected function getObjectManager()
-    {
-        return GeneralUtility::makeInstance(ObjectManager::class);
+        return GeneralUtility::makeInstance(Dispatcher::class);
     }
 
     /**
@@ -223,8 +215,8 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      */
     protected function getDefaultQuerySettings($ignoreEnableFields)
     {
-        /** @var QuerySettings $defaultQuerySettings */
-        $defaultQuerySettings = GeneralUtility::makeInstance(QuerySettings::class);
+        /** @var Typo3QuerySettings $defaultQuerySettings */
+        $defaultQuerySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
         $defaultQuerySettings->setIgnoreEnableFields($ignoreEnableFields);
         return $defaultQuerySettings;
     }

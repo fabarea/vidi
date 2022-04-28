@@ -10,7 +10,6 @@ namespace Fab\Vidi\ViewHelpers\Render;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Module\ModuleLoader;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -59,11 +58,9 @@ class ComponentsViewHelper extends AbstractViewHelper
         $getComponents = 'get' . ucfirst($part) . 'Components';
         $components = $moduleLoader->$getComponents();
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-
         $result = '';
         foreach ($components as $component) {
-            $viewHelper = $objectManager->get($component);
+            $viewHelper = GeneralUtility::makeInstance($component);
 
             // Get possible arguments but remove first one.
             $arguments = func_get_args();

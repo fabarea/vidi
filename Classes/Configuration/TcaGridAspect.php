@@ -7,7 +7,6 @@ namespace Fab\Vidi\Configuration;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use Fab\Vidi\Grid\ButtonGroupRenderer;
 use Fab\Vidi\Grid\CheckBoxRenderer;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -104,14 +103,6 @@ class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
     protected function hasLabelField($dataType)
     {
         return isset($GLOBALS['TCA'][$dataType]['ctrl']['label']);
-    }
-
-    /**
-     * @return ObjectManager
-     */
-    protected function getObjectManager()
-    {
-        return GeneralUtility::makeInstance(ObjectManager::class);
     }
 
 }

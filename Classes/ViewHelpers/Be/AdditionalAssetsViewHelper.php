@@ -12,7 +12,6 @@ use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Annotation\Inject;
 use TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper;
 
 /**
@@ -22,12 +21,6 @@ class AdditionalAssetsViewHelper extends AbstractBackendViewHelper
 {
 
     /**
-     * @var PageRenderer
-     * @Inject
-     */
-    public $pageRenderer;
-
-    /**
      * Load the assets (JavaScript, CSS) for this Vidi module.
      *
      * @return void
@@ -35,17 +28,18 @@ class AdditionalAssetsViewHelper extends AbstractBackendViewHelper
      */
     public function render()
     {
+        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
         /** @var ModuleLoader $moduleLoader */
         $moduleLoader = GeneralUtility::makeInstance(ModuleLoader::class);
 
         foreach ($moduleLoader->getAdditionalStyleSheetFiles() as $addCssFile) {
             $fileNameAndPath = $this->resolvePath($addCssFile);
-            $this->pageRenderer->addCssFile($fileNameAndPath);
+            $pageRenderer->addCssFile($fileNameAndPath);
         }
 
         foreach ($moduleLoader->getAdditionalJavaScriptFiles() as $addJsFile) {
             $fileNameAndPath = $this->resolvePath($addJsFile);
-            $this->pageRenderer->addJsFile($fileNameAndPath);
+            $pageRenderer->addJsFile($fileNameAndPath);
         }
     }
 

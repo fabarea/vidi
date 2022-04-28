@@ -10,7 +10,6 @@ namespace Fab\Vidi\Tool;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
@@ -30,7 +29,7 @@ abstract class AbstractTool implements ToolInterface
         $templateNameAndPath = GeneralUtility::getFileAbsFileName($templateNameAndPath);
 
         /** @var StandaloneView $view */
-        $view = $this->getObjectManager()->get(StandaloneView::class);
+        $view = GeneralUtility::makeInstance(StandaloneView::class);
 
         $view->setTemplatePathAndFilename($templateNameAndPath);
         return $view;
@@ -44,15 +43,6 @@ abstract class AbstractTool implements ToolInterface
     protected function getBackendUser()
     {
         return $GLOBALS['BE_USER'];
-    }
-
-    /**
-     * @return ObjectManager
-     * @throws \InvalidArgumentException
-     */
-    protected function getObjectManager()
-    {
-        return GeneralUtility::makeInstance(ObjectManager::class);
     }
 
     /**

@@ -14,7 +14,6 @@ use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
 use Fab\Vidi\Persistence\Matcher;
 use Fab\Vidi\Persistence\Order;
 use Fab\Vidi\Signal\AfterFindContentObjectsSignalArguments;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
@@ -124,9 +123,7 @@ class ContentService
      */
     protected function getSignalSlotDispatcher()
     {
-        /** @var ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        return $objectManager->get(Dispatcher::class);
+        return GeneralUtility::makeInstance(Dispatcher::class);
     }
 
     /**

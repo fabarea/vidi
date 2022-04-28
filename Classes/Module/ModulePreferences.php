@@ -8,7 +8,6 @@ namespace Fab\Vidi\Module;
  * LICENSE.md file that was distributed with this source code.
  */
 use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use Fab\Vidi\Service\DataService;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -212,8 +211,7 @@ class ModulePreferences implements SingletonInterface
     protected function getSettings()
     {
         /** @var BackendConfigurationManager $backendConfigurationManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $backendConfigurationManager = $objectManager->get(BackendConfigurationManager::class);
+        $backendConfigurationManager = GeneralUtility::makeInstance(BackendConfigurationManager::class);
         $configuration = $backendConfigurationManager->getTypoScriptSetup();
         return $configuration['module.']['tx_vidi.']['settings.'];
     }

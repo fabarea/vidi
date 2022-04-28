@@ -8,18 +8,16 @@ namespace Fab\Vidi\Domain\Repository;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use Fab\Vidi\DataHandler\DataHandlerFactory;
 use Fab\Vidi\Domain\Validator\ContentValidator;
 use Fab\Vidi\Domain\Validator\LanguageValidator;
 use Fab\Vidi\Persistence\ConstraintContainer;
-use Fab\Vidi\Persistence\QuerySettings;
 use Fab\Vidi\Resolver\FieldPathResolver;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\RepositoryInterface;
@@ -121,8 +119,8 @@ class ContentRepository implements RepositoryInterface
 
         // Assemble the final constraints or not.
         if ($matcherConstraint) {
-            $query->logicalAnd($matcherConstraint, $constraint);
-            $query->matching($query->logicalAnd($matcherConstraint, $constraint));
+            $query->logicalAnd([$matcherConstraint, $constraint]);
+            $query->matching($query->logicalAnd([$matcherConstraint, $constraint]));
         } else {
             $query->matching($constraint);
         }
@@ -157,8 +155,8 @@ class ContentRepository implements RepositoryInterface
 
         // Assemble the final constraints or not.
         if ($matcherConstraint) {
-            $query->logicalAnd($matcherConstraint, $constraint);
-            $query->matching($query->logicalAnd($matcherConstraint, $constraint));
+            $query->logicalAnd([$matcherConstraint, $constraint]);
+            $query->matching($query->logicalAnd([$matcherConstraint, $constraint]));
         } else {
             $query->matching($constraint);
         }
@@ -477,23 +475,22 @@ class ContentRepository implements RepositoryInterface
     public function createQuery()
     {
         /** @var Query $query */
-        $query = $this->getObjectManager()->get(Query::class, $this->dataType);
+        $query = GeneralUtility::makeInstance(Query::class, $this->dataType);
         $query->setSourceFieldName($this->sourceFieldName);
 
         if ($this->defaultQuerySettings) {
-            $query->setQuerySettings($this->defaultQuerySettings);
+            $query->setTypo3QuerySettings($this->defaultQuerySettings);
         } else {
 
             // Initialize and pass the query settings at this level.
-            /** @var QuerySettings $querySettings */
-            $querySettings = $this->getObjectManager()->get(QuerySettings::class);
+            $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
 
             // Default choice for the BE.
             if ($this->isBackendMode()) {
                 $querySettings->setIgnoreEnableFields(true);
             }
 
-            $query->setQuerySettings($querySettings);
+            $query->setTypo3QuerySettings($querySettings);
         }
 
         return $query;
@@ -831,14 +828,6 @@ class ContentRepository implements RepositoryInterface
     }
 
     /**
-     * @return ObjectManager|object
-     */
-    protected function getObjectManager(): ObjectManager
-    {
-        return GeneralUtility::makeInstance(ObjectManager::class);
-    }
-
-    /**
      * @return ContentValidator|object
      */
     protected function getContentValidator(): ContentValidator
@@ -890,7 +879,7 @@ class ContentRepository implements RepositoryInterface
      */
     protected function getSignalSlotDispatcher(): Dispatcher
     {
-        return $this->getObjectManager()->get(Dispatcher::class);
+        return GeneralUtility::makeInstance(Dispatcher::class);
     }
 
 }

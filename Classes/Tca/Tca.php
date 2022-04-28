@@ -16,7 +16,6 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Exception\NotExistingClassException;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
@@ -152,8 +151,7 @@ class Tca implements SingletonInterface, TcaServiceInterface
      */
     static protected function getSignalSlotDispatcher()
     {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        return $objectManager->get(Dispatcher::class);
+        return GeneralUtility::makeInstance(Dispatcher::class);
     }
 
 }

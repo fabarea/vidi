@@ -8,7 +8,6 @@ namespace Fab\Vidi\Persistence\Storage;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-use TYPO3\CMS\Extbase\Service\EnvironmentService;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\AndInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\OrInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\NotInterface;
@@ -32,7 +31,6 @@ use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Versioning\VersionState;
-use TYPO3\CMS\Extbase\Annotation\Inject;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ComparisonInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
@@ -62,12 +60,6 @@ class VidiDbBackend
      * @var PageRepository
      */
     protected $pageRepository;
-
-    /**
-     * @var EnvironmentService
-     * @Inject
-     */
-    public $environmentService;
 
     /**
      * @var Query
@@ -207,7 +199,7 @@ class VidiDbBackend
         $tableNames = array_unique(array_keys($statementParts['tables'] + $statementParts['unions']));
         foreach ($tableNames as $tableNameOrAlias) {
             if (is_string($tableNameOrAlias) && strlen($tableNameOrAlias) > 0) {
-                $this->addAdditionalWhereClause($query->getQuerySettings(), $tableNameOrAlias, $statementParts);
+                $this->addAdditionalWhereClause($query->getTypo3QuerySettings(), $tableNameOrAlias, $statementParts);
             }
         }
 
@@ -716,7 +708,7 @@ class VidiDbBackend
             $ignoreEnableFields = $querySettings->getIgnoreEnableFields();
             $enableFieldsToBeIgnored = $querySettings->getEnableFieldsToBeIgnored();
             $includeDeleted = $querySettings->getIncludeDeleted();
-            if ($this->environmentService->isEnvironmentInFrontendMode()) {
+            if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
                 $statement .= $this->getFrontendConstraintStatement($tableNameOrAlias, $ignoreEnableFields, $enableFieldsToBeIgnored, $includeDeleted);
             } else {
                 // 'BE' case
@@ -897,7 +889,7 @@ class VidiDbBackend
             // Ensure the backend handling is not broken (fallback to Get parameter 'L' if needed)
             $overlaidRow = $this->doLanguageAndWorkspaceOverlay(
                 $row,
-                $this->query->getQuerySettings()
+                $this->query->getTypo3QuerySettings()
             );
 
             $contentObjects[] = GeneralUtility::makeInstance(
@@ -1061,7 +1053,7 @@ class VidiDbBackend
     protected function getPageRepository()
     {
         if (!$this->pageRepository instanceof PageRepository) {
-            if ($this->environmentService->isEnvironmentInFrontendMode() && is_object($GLOBALS['TSFE'])) {
+            if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend() && is_object($GLOBALS['TSFE'])) {
                 $this->pageRepository = $GLOBALS['TSFE']->sys_page;
             } else {
                 $this->pageRepository = GeneralUtility::makeInstance(PageRepository::class);

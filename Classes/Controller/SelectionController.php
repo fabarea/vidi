@@ -11,12 +11,10 @@ use Fab\Vidi\Domain\Repository\SelectionRepository;
 use Fab\Vidi\Exception\InvalidKeyInArrayException;
 use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
 use TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException;
-use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use Fab\Vidi\Domain\Model\Selection;
 use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Annotation\Inject;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
@@ -27,44 +25,36 @@ class SelectionController extends ActionController
 {
 
     /**
-     * @var SelectionRepository
-     * @Inject
-     */
-    public $selectionRepository;
-
-    /**
      * @param Selection $selection
-     * @throws InvalidKeyInArrayException
      */
     public function createAction(Selection $selection = null)
     {
+        $selectionRepository = GeneralUtility::makeInstance(SelectionRepository::class);
         $selection->setDataType($this->getModuleLoader()->getDataType());
 
         $selection->setOwner($this->getBackendUser()->user['uid']);
-        $this->selectionRepository->add($selection);
+        $selectionRepository->add($selection);
         $this->redirect('edit', 'Selection', 'vidi', array('dataType' => $selection->getDataType()));
     }
 
     /**
      * @param Selection $selection
      * @return string
-     * @throws IllegalObjectTypeException
      */
     public function deleteAction(Selection $selection)
     {
-        $this->selectionRepository->remove($selection);
+        $selectionRepository = GeneralUtility::makeInstance(SelectionRepository::class);
+        $selectionRepository->remove($selection);
         return 'ok';
     }
 
     /**
      * @param Selection $selection
-     * @throws IllegalObjectTypeException
-     * @throws UnknownObjectException
-     * @throws StopActionException
      */
     public function updateAction(Selection $selection)
     {
-        $this->selectionRepository->update($selection);
+        $selectionRepository = GeneralUtility::makeInstance(SelectionRepository::class);
+        $selectionRepository->update($selection);
         $this->redirect('show', 'Selection', 'vidi', array('selection' => $selection->getUid()));
     }
 
@@ -83,7 +73,8 @@ class SelectionController extends ActionController
      */
     public function editAction($dataType)
     {
-        $selections = $this->selectionRepository->findByDataTypeForCurrentBackendUser($dataType);
+        $selectionRepository = GeneralUtility::makeInstance(SelectionRepository::class);
+        $selections = $selectionRepository->findByDataTypeForCurrentBackendUser($dataType);
         $this->view->assign('selections', $selections);
     }
 
@@ -92,7 +83,8 @@ class SelectionController extends ActionController
      */
     public function listAction($dataType)
     {
-        $selections = $this->selectionRepository->findByDataTypeForCurrentBackendUser($dataType);
+        $selectionRepository = GeneralUtility::makeInstance(SelectionRepository::class);
+        $selections = $selectionRepository->findByDataTypeForCurrentBackendUser($dataType);
         $this->view->assign('selections', $selections);
     }
 
