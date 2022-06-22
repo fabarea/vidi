@@ -57,17 +57,13 @@ class Property
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function toFieldName()
     {
-
         $propertyName = $this->getPropertyName();
         $tableName = $this->getTableName();
 
         if (empty($this->storage[$tableName][$propertyName])) {
-            if ($this->storage[$tableName]) {
+            if (!array_key_exists($tableName, $this->storage)) {
                 $this->storage[$tableName] = [];
             }
 

@@ -58,10 +58,6 @@ class Field implements SingletonInterface
         return $this;
     }
 
-    /**
-     * @return string
-     * @throws \RuntimeException
-     */
     public function toPropertyName()
     {
 
@@ -69,7 +65,7 @@ class Field implements SingletonInterface
         $tableName = $this->getTableName();
 
         if (empty($this->storage[$tableName][$fieldName])) {
-            if ($this->storage[$tableName]) {
+            if (!array_key_exists($tableName, $this->storage)) {
                 $this->storage[$tableName] = [];
             }
 
