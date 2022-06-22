@@ -955,7 +955,7 @@ class VidiDbBackend
         } else {
             \TYPO3\CMS\Backend\Utility\BackendUtility::workspaceOL($tableName, $row);
         }
-        if ($pageRepository->versioningPreview && isset($row['_ORIG_uid'])) {
+        if (isset($row['_ORIG_uid'])) {
             $row['uid'] = $row['_ORIG_uid'];
         }
 
