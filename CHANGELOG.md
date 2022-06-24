@@ -1,3 +1,7 @@
+## 5.0.4 (2022-06-24)
+
+[TASK] Update composer dependency
+
 ## 5.0.3 (2022-06-22)
 
 [BUGFIX] Remove call to deprecated workspace attribute
