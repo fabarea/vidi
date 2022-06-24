@@ -18,12 +18,12 @@
 			"Fab\\Vidi\\": "Classes/"
 		}
 	},
-	"replace": {
-		"typo3-ter/vidi": "self.version"
-	},
 	"extra": {
 		"typo3/cms": {
 			"extension-key": "vidi"
 		}
+	},
+	"require": {
+		"typo3/cms-core": "^11"
 	}
 }
