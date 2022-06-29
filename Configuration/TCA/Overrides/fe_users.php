@@ -34,7 +34,6 @@ $tca = [
             'name',
             'first_name',
             'last_name',
-            'middle_name',
             'address',
             'telephone',
             'fax',
