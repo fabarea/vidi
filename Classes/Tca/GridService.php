@@ -72,7 +72,7 @@ class GridService extends AbstractTca
             throw new InvalidKeyInArrayException('No TCA existence for table name: ' . $this->tableName, 1356945108);
         }
 
-        $this->tca = $GLOBALS['TCA'][$this->tableName]['grid'];
+        $this->tca = $GLOBALS['TCA'][$this->tableName]['grid'] ?? [];
     }
 
     /**
@@ -286,7 +286,7 @@ class GridService extends AbstractTca
         // Cache this operation since it can take some time.
         if ($this->allFields === null) {
 
-            $fields = is_array($this->tca['columns']) ? $this->tca['columns'] : [];
+            $fields = isset($this->tca['columns']) && is_array($this->tca['columns']) ? $this->tca['columns'] : [];
             $gridFieldNames = array_keys($fields);
 
             // Fetch all fields of the TCA and merge it back to the fields configured for Grid.
