@@ -37,7 +37,7 @@ class EditButton extends AbstractComponentView
                 'toggle' => 'tooltip',
             ])
             ->setClasses('btn-edit')
-            ->setTitle($this->getLanguageService()->sL('LLL:EXT:lang/Resources/Private/Language/locallang_mod_web_list.xlf:edit'))
+            ->setTitle($this->getLanguageService()->sL('LLL:EXT:core/Resources/Private/Language/locallang_mod_web_list.xlf:edit'))
             ->setIcon($this->getIconFactory()->getIcon('actions-document-open', Icon::SIZE_SMALL))
             ->render();
     }

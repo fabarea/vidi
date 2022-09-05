@@ -7,6 +7,7 @@ namespace Fab\Vidi\Controller;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+use Psr\Http\Message\ResponseInterface;
 use Fab\Vidi\Service\ClipboardService;
 use Fab\Vidi\Service\ContentService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -25,7 +26,7 @@ class ClipboardController extends ActionController
      * @param array $matches
      * @return string
      */
-    public function saveAction(array $matches = array())
+    public function saveAction(array $matches = array()): ResponseInterface
     {
 
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
@@ -42,7 +43,7 @@ class ClipboardController extends ActionController
         # Json header is not automatically sent in the BE...
         $this->response->setHeader('Content-Type', 'application/json');
         $this->response->sendHeaders();
-        return json_encode($numberOfObjects);
+        return $this->jsonResponse(json_encode($numberOfObjects));
     }
 
     /**
@@ -50,20 +51,20 @@ class ClipboardController extends ActionController
      *
      * @return string
      */
-    public function flushAction()
+    public function flushAction(): ResponseInterface
     {
         $this->getClipboardService()->flush();
 
         # Json header is not automatically sent in the BE...
         $this->response->setHeader('Content-Type', 'application/json');
         $this->response->sendHeaders();
-        return json_encode(true);
+        return $this->jsonResponse(json_encode(true));
     }
 
     /**
      * Show the content of the clipboard.
      */
-    public function showAction()
+    public function showAction(): ResponseInterface
     {
 
         // Retrieve matcher object from clipboard.
@@ -76,6 +77,7 @@ class ClipboardController extends ActionController
         $this->view->assign('target', GeneralUtility::_GP('id'));
         $this->view->assign('numberOfObjects', $contentService->getNumberOfObjects());
         $this->view->assign('objects', $contentService->getObjects());
+        return $this->htmlResponse();
     }
 
     /**

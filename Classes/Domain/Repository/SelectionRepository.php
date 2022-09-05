@@ -29,24 +29,14 @@ class SelectionRepository extends Repository
 
         // Compute the OR part
         if ($this->getBackendUser()->isAdmin()) {
-            $logicalOr = $query->logicalOr(
-                $query->equals('visibility', Selection::VISIBILITY_EVERYONE),
-                $query->equals('visibility', Selection::VISIBILITY_ADMIN_ONLY),
-                $query->equals('cruser_id', $this->getBackendUser()->user['uid'])
-            );
+            $logicalOr = $query->logicalOr([$query->equals('visibility', Selection::VISIBILITY_EVERYONE), $query->equals('visibility', Selection::VISIBILITY_ADMIN_ONLY), $query->equals('cruser_id', $this->getBackendUser()->user['uid'])]);
         } else {
-            $logicalOr = $query->logicalOr(
-                $query->equals('visibility', Selection::VISIBILITY_EVERYONE),
-                $query->equals('cruser_id', $this->getBackendUser()->user['uid'])
-            );
+            $logicalOr = $query->logicalOr([$query->equals('visibility', Selection::VISIBILITY_EVERYONE), $query->equals('cruser_id', $this->getBackendUser()->user['uid'])]);
         }
 
         // Add matching criteria
         $query->matching(
-            $query->logicalAnd(
-                $query->equals('dataType', $dataType),
-                $logicalOr
-            )
+            $query->logicalAnd([$query->equals('dataType', $dataType), $logicalOr])
         );
 
         // Set ordering
@@ -67,10 +57,7 @@ class SelectionRepository extends Repository
 
         // Add matching criteria
         $query->matching(
-            $query->logicalAnd(
-                $query->equals('dataType', $dataType),
-                $query->equals('visibility', Selection::VISIBILITY_EVERYONE)
-            )
+            $query->logicalAnd([$query->equals('dataType', $dataType), $query->equals('visibility', Selection::VISIBILITY_EVERYONE)])
         );
 
         // Set ordering

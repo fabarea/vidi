@@ -7,6 +7,7 @@ namespace Fab\Vidi\Controller;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend;
 use TYPO3\CMS\Core\Cache\CacheManager;
@@ -26,7 +27,7 @@ class UserPreferencesController extends ActionController
      * @param string $preferenceSignature
      * @return string
      */
-    public function saveAction($key, $value, $preferenceSignature)
+    public function saveAction($key, $value, $preferenceSignature): ResponseInterface
     {
 
         $dataType = $this->getModuleLoader()->getDataType();
@@ -37,7 +38,7 @@ class UserPreferencesController extends ActionController
         $key = $dataType . '_' . $this->getBackendUserIdentifier() . '_signature';
         $this->getCacheInstance()->set($key, $preferenceSignature, [], 0);
 
-        return 'OK';
+        return $this->htmlResponse('OK');
     }
 
     /**

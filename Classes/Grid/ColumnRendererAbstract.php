@@ -61,7 +61,7 @@ abstract class ColumnRendererAbstract implements ColumnRendererInterface
     {
         if (is_string($configuration)) {
             $configuration = $legacyParameterConfiguration;
-            GeneralUtility::deprecationLog('ColumnRendererAbstract: first parameter must now be an array. Please edit me in ' . get_class($this));
+            trigger_error('ColumnRendererAbstract: first parameter must now be an array. Please edit me in ' . get_class($this), E_USER_DEPRECATED);
         }
         $this->configuration = $configuration;
     }

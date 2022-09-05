@@ -313,7 +313,7 @@ class ModuleLoader
             }
 
             ExtensionUtility::registerModule(
-                'Fab.vidi',
+                'Vidi',
                 $this->computeMainModule(),
                 $this->dataType . '_' . $this->moduleKey,
                 $this->position,
@@ -429,13 +429,10 @@ class ModuleLoader
     {
         $moduleConfiguration = $this->getExistingMainConfiguration();
 
-
         if ($this->icon) {
             $icon = $this->icon;
-        } elseif ($moduleConfiguration['icon']) { // existing configuration may override.
-            $icon = $moduleConfiguration['icon'];
         } else {
-            $icon = ''; //default value.
+            $icon = $moduleConfiguration['icon'] ?? '';
         }
 
         return $icon;

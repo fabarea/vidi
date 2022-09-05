@@ -7,6 +7,7 @@ namespace Fab\Vidi\Tca;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -187,7 +188,7 @@ class FieldService extends AbstractTca
 
             $replaces = array(
                 $this->getFrontendObject()->id,
-                $this->getFrontendObject()->sys_language_uid,
+                GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('language', 'id'),
             );
 
             $clause = str_replace($searches, $replaces, $clause);

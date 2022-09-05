@@ -7,6 +7,7 @@ namespace Fab\Vidi\Utility;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -78,11 +79,11 @@ class BackendUtility
                 }
                 if ($ctrl['enablecolumns']['starttime'] ?? false) {
                     $field = $table . '.' . $ctrl['enablecolumns']['starttime'];
-                    $query->add($expressionBuilder->lte($field, (int)$GLOBALS['SIM_ACCESS_TIME']));
+                    $query->add($expressionBuilder->lte($field, (int)GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp')));
                     $invQuery->add(
                         $expressionBuilder->andX(
                             $expressionBuilder->neq($field, 0),
-                            $expressionBuilder->gt($field, (int)$GLOBALS['SIM_ACCESS_TIME'])
+                            $expressionBuilder->gt($field, (int)GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp'))
                         )
                     );
                 }
@@ -91,13 +92,13 @@ class BackendUtility
                     $query->add(
                         $expressionBuilder->orX(
                             $expressionBuilder->eq($field, 0),
-                            $expressionBuilder->gt($field, (int)$GLOBALS['SIM_ACCESS_TIME'])
+                            $expressionBuilder->gt($field, (int)GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp'))
                         )
                     );
                     $invQuery->add(
                         $expressionBuilder->andX(
                             $expressionBuilder->neq($field, 0),
-                            $expressionBuilder->lte($field, (int)$GLOBALS['SIM_ACCESS_TIME'])
+                            $expressionBuilder->lte($field, (int)GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp'))
                         )
                     );
                 }

@@ -44,7 +44,7 @@ class VisibilityRenderer extends ColumnRendererAbstract
                 ->setDataAttributes([
                     'toggle' => 'tooltip',
                 ])
-                ->setTitle($this->getLabelService()->sL('LLL:EXT:lang/Resources/Private/Language/locallang_mod_web_list.xlf:' . $label))
+                ->setTitle($this->getLabelService()->sL('LLL:EXT:core/Resources/Private/Language/locallang_mod_web_list.xlf:' . $label))
                 ->setIcon($this->getIconFactory()->getIcon($spriteName, Icon::SIZE_SMALL))
                 ->render();
         }

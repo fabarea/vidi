@@ -7,6 +7,7 @@ namespace Fab\Vidi\Controller;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+use Psr\Http\Message\ResponseInterface;
 use Fab\Vidi\Domain\Repository\SelectionRepository;
 use Fab\Vidi\Exception\InvalidKeyInArrayException;
 use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
@@ -41,11 +42,11 @@ class SelectionController extends ActionController
      * @param Selection $selection
      * @return string
      */
-    public function deleteAction(Selection $selection)
+    public function deleteAction(Selection $selection): ResponseInterface
     {
         $selectionRepository = GeneralUtility::makeInstance(SelectionRepository::class);
         $selectionRepository->remove($selection);
-        return 'ok';
+        return $this->htmlResponse('ok');
     }
 
     /**
@@ -61,9 +62,10 @@ class SelectionController extends ActionController
     /**
      * @param Selection $selection
      */
-    public function showAction(Selection $selection)
+    public function showAction(Selection $selection): ResponseInterface
     {
         $this->view->assign('selection', $selection);
+        return $this->htmlResponse();
     }
 
     /**
@@ -71,21 +73,23 @@ class SelectionController extends ActionController
      *
      * @param string $dataType
      */
-    public function editAction($dataType)
+    public function editAction($dataType): ResponseInterface
     {
         $selectionRepository = GeneralUtility::makeInstance(SelectionRepository::class);
         $selections = $selectionRepository->findByDataTypeForCurrentBackendUser($dataType);
         $this->view->assign('selections', $selections);
+        return $this->htmlResponse();
     }
 
     /**
      * @param string $dataType
      */
-    public function listAction($dataType)
+    public function listAction($dataType): ResponseInterface
     {
         $selectionRepository = GeneralUtility::makeInstance(SelectionRepository::class);
         $selections = $selectionRepository->findByDataTypeForCurrentBackendUser($dataType);
         $this->view->assign('selections', $selections);
+        return $this->htmlResponse();
     }
 
     /**

@@ -8,6 +8,7 @@ namespace Fab\Vidi\Persistence\Storage;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\AndInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\OrInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\NotInterface;
@@ -916,7 +917,7 @@ class VidiDbBackend
 
         $pageRepository = $this->getPageRepository();
         if (is_object($GLOBALS['TSFE'])) {
-            $languageMode = $GLOBALS['TSFE']->sys_language_mode;
+            $languageMode = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('language', 'legacyLanguageMode');
             #if ($this->isBackendUserLogged() && $this->getBackendUser()->workspace !== 0) {
             #    $pageRepository->versioningWorkspaceId = $this->getBackendUser()->workspace;
             #}

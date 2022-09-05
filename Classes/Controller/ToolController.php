@@ -7,6 +7,7 @@ namespace Fab\Vidi\Controller;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+use Psr\Http\Message\ResponseInterface;
 use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
@@ -23,7 +24,7 @@ class ToolController extends ActionController
     /**
      * @return void
      */
-    public function welcomeAction()
+    public function welcomeAction(): ResponseInterface
     {
         $items = [];
         $tools = ToolRegistry::getInstance()->getTools($this->getModuleLoader()->getDataType());
@@ -36,6 +37,7 @@ class ToolController extends ActionController
             $items[] = $item;
         }
         $this->view->assign('items', $items);
+        return $this->htmlResponse();
     }
 
     /**
@@ -44,12 +46,13 @@ class ToolController extends ActionController
      * @return void
      * @Extbase\Validate("Fab\Vidi\Domain\Validator\ToolValidator", param="tool")
      */
-    public function workAction(string $tool, array $arguments = array())
+    public function workAction(string $tool, array $arguments = array()): ResponseInterface
     {
         /** @var ToolInterface $tool */
         $tool = GeneralUtility::makeInstance($tool);
         $workResult = $tool->work($arguments);
         $this->view->assign('result', $workResult);
+        return $this->htmlResponse();
     }
 
     /**

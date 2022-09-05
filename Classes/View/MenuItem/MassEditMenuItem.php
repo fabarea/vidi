@@ -27,7 +27,7 @@ class MassEditMenuItem extends AbstractComponentView
     {
         return sprintf('<li><a href="#" class="dropdown-item mass-edit">%s %s (not implemented)</a></li>',
             $this->getIconFactory()->getIcon('actions-document-open', Icon::SIZE_SMALL),
-            $this->getLanguageService()->sL('LLL:EXT:lang/Resources/Private/Language/locallang_mod_web_list.xlf:edit')
+            $this->getLanguageService()->sL('LLL:EXT:core/Resources/Private/Language/locallang_mod_web_list.xlf:edit')
         );
     }
 }

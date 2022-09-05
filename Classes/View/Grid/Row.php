@@ -498,7 +498,7 @@ class Row extends AbstractComponentView
         // Set default value if $field name correspond to the label of the table
         $fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
         if (Tca::table($object->getDataType())->getLabelField() === $fieldName && empty($value)) {
-            $value = sprintf('[%s]', $this->getLabelService()->sL('LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf:labels.no_title'));
+            $value = sprintf('[%s]', $this->getLabelService()->sL('LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.no_title'));
         }
 
         // Sanitize the value in case of "select" or "radio button".
