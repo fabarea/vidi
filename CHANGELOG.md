@@ -1,3 +1,8 @@
+## 5.0.5 (2022-09-05)
+
+[TASK] TYPO3 rector
+[FIX] Remove middle name as facet
+
 ## 5.0.4 (2022-06-24)
 
 [TASK] Update composer dependency
