@@ -1,3 +1,7 @@
+## 5.0.6 (2022-09-05)
+
+[TASK] Avoid undefined key array
+
 ## 5.0.5 (2022-09-05)
 
 [TASK] TYPO3 rector
