@@ -766,6 +766,11 @@ class ContentController extends ActionController
         return $signalResult[0];
     }
 
+    public function injectSelectionRepository(SelectionRepository $selectionRepository)
+    {
+        $this->selectionRepository = $selectionRepository;
+    }
+
     /**
      * Get the SignalSlot dispatcher.
      *
