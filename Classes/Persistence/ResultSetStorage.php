@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Persistence;
 
 /*
@@ -15,7 +16,6 @@ use TYPO3\CMS\Core\SingletonInterface;
  */
 class ResultSetStorage implements SingletonInterface
 {
-
     /**
      * @var array
      */
@@ -43,5 +43,4 @@ class ResultSetStorage implements SingletonInterface
     {
         $this->resultSets[$querySignature] = $resultSet;
     }
-
 }

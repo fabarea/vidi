@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Exception;
 
 /*
@@ -13,5 +14,4 @@ namespace Fab\Vidi\Exception;
  */
 class MissingIdentifierException extends \Exception
 {
-
 }

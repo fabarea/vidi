@@ -51,9 +51,8 @@ use Fab\Vidi\Tca\Tca;
  */
 class VidiDbBackend
 {
-
-    const OPERATOR_EQUAL_TO_NULL = 'operatorEqualToNull';
-    const OPERATOR_NOT_EQUAL_TO_NULL = 'operatorNotEqualToNull';
+    public const OPERATOR_EQUAL_TO_NULL = 'operatorEqualToNull';
+    public const OPERATOR_NOT_EQUAL_TO_NULL = 'operatorNotEqualToNull';
 
     /**
      * The TYPO3 page repository. Used for language and workspace overlay
@@ -217,7 +216,6 @@ class VidiDbBackend
      */
     public function processStatementStructureForRecursiveMMRelation(array $statementParts)
     {
-
         if ($this->hasRecursiveMMRelation()) {
             $tableName = $this->query->getType();
 
@@ -255,7 +253,6 @@ class VidiDbBackend
     public function hasRecursiveMMRelation()
     {
         return isset($this->tableNameAliases['aliasIncrement'][$this->query->getType()]);
-
     }
 
     /**
@@ -266,7 +263,6 @@ class VidiDbBackend
      */
     public function buildQuery(array $statementParts)
     {
-
         // Add more statement to the UNION part.
         if (!empty($statementParts['unions'])) {
             foreach ($statementParts['unions'] as $tableName => $unionPart) {
@@ -514,7 +510,6 @@ class VidiDbBackend
      */
     protected function addUnionStatement(&$tableName, &$propertyPath, array &$statementParts)
     {
-
         $table = Tca::table($tableName);
 
         $explodedPropertyPath = explode('.', $propertyPath, 2);
@@ -553,7 +548,8 @@ class VidiDbBackend
             // MM table e.g sys_category_record_mm
             $relationTableNameAlias = $this->generateAlias($relationTableName);
             $join = sprintf(
-                'LEFT JOIN %s AS %s ON %s.uid=%s.%s', $relationTableName,
+                'LEFT JOIN %s AS %s ON %s.uid=%s.%s',
+                $relationTableName,
                 $relationTableNameAlias,
                 $tableName,
                 $relationTableNameAlias,
@@ -577,7 +573,6 @@ class VidiDbBackend
             // Find a possible table name for a MM condition.
             $tableNameCondition = $table->field($fieldName)->getAdditionalTableNameCondition();
             if ($tableNameCondition) {
-
                 // If we can find a source file name,  we can then retrieve more MM conditions from the TCA such as a field name.
                 $sourceFileName = $this->query->getSourceFieldName();
                 if (empty($sourceFileName)) {
@@ -596,7 +591,6 @@ class VidiDbBackend
                     $statementParts['unions'][$childTableNameAlias] .= $additionalJoin;
                 }
             }
-
         } elseif ($table->field($fieldName)->hasMany()) { // includes relations "many-to-one" and "csv" relations
             $childTableNameAlias = $this->generateAlias($childTableName);
             $this->currentChildTableNameAlias = $childTableNameAlias;
@@ -885,7 +879,6 @@ class VidiDbBackend
     {
         $contentObjects = [];
         foreach ($rows as $row) {
-
             // Get language uid from querySettings.
             // Ensure the backend handling is not broken (fallback to Get parameter 'L' if needed)
             $overlaidRow = $this->doLanguageAndWorkspaceOverlay(
@@ -918,9 +911,9 @@ class VidiDbBackend
         $pageRepository = $this->getPageRepository();
         if (is_object($GLOBALS['TSFE'])) {
             $languageMode = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('language', 'legacyLanguageMode');
-            #if ($this->isBackendUserLogged() && $this->getBackendUser()->workspace !== 0) {
+        #if ($this->isBackendUserLogged() && $this->getBackendUser()->workspace !== 0) {
             #    $pageRepository->versioningWorkspaceId = $this->getBackendUser()->workspace;
-            #}
+        #}
         } else {
             $languageMode = '';
             $workspaceUid = $this->getBackendUser()->workspace;
@@ -998,7 +991,6 @@ class VidiDbBackend
      */
     protected function generateAlias($tableName)
     {
-
         if (!isset($this->tableNameAliases['aliasIncrement'][$tableName])) {
             $this->tableNameAliases['aliasIncrement'][$tableName] = 0;
         }
@@ -1099,5 +1091,4 @@ class VidiDbBackend
     {
         return $this->query->getSource()->getNodeTypeName(); // getSelectorName()
     }
-
 }

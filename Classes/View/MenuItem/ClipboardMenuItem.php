@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\View\MenuItem;
 
 /*
@@ -18,7 +19,6 @@ use Fab\Vidi\View\AbstractComponentView;
  */
 class ClipboardMenuItem extends AbstractComponentView
 {
-
     /**
      * Renders a "mass delete" menu item to be placed in the grid menu.
      *
@@ -28,7 +28,8 @@ class ClipboardMenuItem extends AbstractComponentView
     {
         $output = '';
         if ($this->getMediaModule()->hasFolderTree()) {
-            $output = sprintf('<li><a href="%s" class="clipboard-save" >%s %s</a>',
+            $output = sprintf(
+                '<li><a href="%s" class="clipboard-save" >%s %s</a>',
                 $this->getSaveInClipboardUri(),
                 $this->getIconFactory()->getIcon('actions-document-paste-after', Icon::SIZE_SMALL),
                 $this->getLanguageService()->sL('LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:save')

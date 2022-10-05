@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Domain\Validator;
 
 /*
@@ -16,7 +17,6 @@ use Fab\Vidi\Exception\MissingIdentifierException;
  */
 class ContentValidator
 {
-
     /**
      * Check whether $Content object is valid.
      *
@@ -26,11 +26,9 @@ class ContentValidator
      */
     public function validate(Content $content)
     {
-
         // Security check.
         if ($content->getUid() <= 0) {
             throw new MissingIdentifierException('Missing identifier for Content Object', 1351605542);
         }
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Grid\Column;
 
 /*
@@ -18,7 +19,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class ConfigurationViewHelper extends AbstractViewHelper
 {
-
     /**
      * Render the columns of the grid.
      *
@@ -30,7 +30,6 @@ class ConfigurationViewHelper extends AbstractViewHelper
         $output = '';
 
         foreach (Tca::grid()->getFields() as $fieldNameAndPath => $configuration) {
-
             // Early failure if field does not exist.
             if (!$this->isAllowed($fieldNameAndPath)) {
                 $message = sprintf('Property "%s" does not exist!', $fieldNameAndPath);
@@ -41,7 +40,8 @@ class ConfigurationViewHelper extends AbstractViewHelper
             // -------------------
             // mData: internal name of DataTable plugin and can not contains a path, e.g. metadata.title
             // columnName: whole field name with path
-            $output .= sprintf('Vidi._columns.push({ "data": "%s", "sortable": %s, "visible": %s, "width": "%s", "class": "%s", "columnName": "%s" });' . PHP_EOL,
+            $output .= sprintf(
+                'Vidi._columns.push({ "data": "%s", "sortable": %s, "visible": %s, "width": "%s", "class": "%s", "columnName": "%s" });' . PHP_EOL,
                 $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath), // Suitable field name for the DataTable plugin.
                 Tca::grid()->isSortable($fieldNameAndPath) ? 'true' : 'false',
                 Tca::grid()->isVisible($fieldNameAndPath) ? 'true' : 'false',

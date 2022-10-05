@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Formatter;
 
 /*
@@ -13,7 +14,6 @@ namespace Fab\Vidi\Formatter;
  */
 interface FormatterInterface
 {
-
     /**
      * Format a date
      *
@@ -21,5 +21,4 @@ interface FormatterInterface
      * @return string
      */
     public function format($value);
-
 }

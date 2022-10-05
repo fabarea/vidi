@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Content;
 
 /*
@@ -18,7 +19,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class FindViewHelper extends AbstractContentViewHelper
 {
-
     /**
      * @return void
      * @throws Exception
@@ -43,7 +43,6 @@ class FindViewHelper extends AbstractContentViewHelper
         $selectionIdentifier = (int)$this->arguments['selection'];
 
         if ($selectionIdentifier > 0) {
-
             /** @var SelectionRepository $selectionRepository */
             $selectionRepository = GeneralUtility::makeInstance(SelectionRepository::class);
 
@@ -84,5 +83,4 @@ class FindViewHelper extends AbstractContentViewHelper
 
         return $resultSet;
     }
-
 }

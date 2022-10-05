@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Converter;
 
 /*
@@ -17,16 +18,15 @@ use Fab\Vidi\Domain\Model\Content;
  */
 class Field implements SingletonInterface
 {
+    /**
+     * @var string
+     */
+    protected static $currentField;
 
     /**
      * @var string
      */
-    static protected $currentField;
-
-    /**
-     * @var string
-     */
-    static protected $currentTable;
+    protected static $currentTable;
 
     /**
      * @var array
@@ -38,7 +38,7 @@ class Field implements SingletonInterface
      * @return $this
      * @throws \InvalidArgumentException
      */
-    static public function name($fieldName)
+    public static function name($fieldName)
     {
         self::$currentField = $fieldName;
         self::$currentTable = ''; // reset the table name value.
@@ -60,7 +60,6 @@ class Field implements SingletonInterface
 
     public function toPropertyName()
     {
-
         $fieldName = $this->getFieldName();
         $tableName = $this->getTableName();
 
@@ -107,5 +106,4 @@ class Field implements SingletonInterface
         }
         return $tableName;
     }
-
 }

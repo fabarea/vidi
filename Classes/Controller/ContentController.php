@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Controller;
 
 /*
@@ -30,7 +31,6 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use Fab\Vidi\Behavior\SavingBehavior;
 use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
 use Fab\Vidi\Domain\Model\Content;
-use Fab\Vidi\Mvc\JsonView;
 use Fab\Vidi\Mvc\JsonResult;
 use Fab\Vidi\Persistence\MatcherObjectFactory;
 use Fab\Vidi\Persistence\OrderObjectFactory;
@@ -54,7 +54,6 @@ class ContentController extends ActionController
 
         // Configure property mapping to retrieve the file object.
         if ($this->arguments->hasArgument('columns')) {
-
             /** @var CsvToArrayConverter $typeConverter */
             $typeConverter = GeneralUtility::makeInstance(CsvToArrayConverter::class);
 
@@ -137,7 +136,6 @@ class ContentController extends ActionController
      */
     public function updateAction($fieldNameAndPath, array $content, array $matches = [], $savingBehavior = SavingBehavior::REPLACE, $language = 0, $columns = [])
     {
-
         // Instantiate the Matcher object according different rules.
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
         $order = OrderObjectFactory::getInstance()->getOrder();
@@ -153,7 +151,6 @@ class ContentController extends ActionController
         $result->setNumberOfObjects($contentService->getNumberOfObjects());
 
         foreach ($contentService->getObjects() as $index => $object) {
-
             $identifier = $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, 'uid', $language);
 
             // It could be the identifier is not found because the translation
@@ -183,7 +180,6 @@ class ContentController extends ActionController
             // We only want to see the detail result if there is one object updated.
             // Required for inline editing + it will display some useful info on the GUI in the flash messages.
             if ($contentService->getNumberOfObjects() === 1) {
-
                 // Fetch the updated object from repository.
                 $updatedObject = ContentRepositoryFactory::getInstance()->findByUid($object->getUid());
 
@@ -237,7 +233,6 @@ class ContentController extends ActionController
      */
     public function sortAction(array $matches = [], $previousIdentifier = null)
     {
-
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
 
         // Fetch objects via the Content Service.
@@ -251,7 +246,6 @@ class ContentController extends ActionController
         $result->setNumberOfObjects($contentService->getNumberOfObjects());
 
         foreach ($contentService->getObjects() as $object) {
-
             // Store the first object, so that the "action" message can be more explicit when deleting only one record.
             if ($contentService->getNumberOfObjects() === 1) {
                 $tableTitleValue = $object[$tableTitleField];
@@ -294,7 +288,6 @@ class ContentController extends ActionController
      */
     public function editAction($fieldNameAndPath, array $matches = [], $hasRecursiveSelection = false): ResponseInterface
     {
-
         // Instantiate the Matcher object according different rules.
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
 
@@ -316,7 +309,6 @@ class ContentController extends ActionController
 
         // Fetch content and its relations.
         if ($fieldType === FieldType::MULTISELECT) {
-
             $object = ContentRepositoryFactory::getInstance()->findOneBy($matcher);
             $identifier = $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, 'uid');
             $dataType = $this->getContentObjectResolver()->getDataType($object, $fieldNameAndPath);
@@ -344,7 +336,6 @@ class ContentController extends ActionController
             $relatedContents = ContentRepositoryFactory::getInstance($relatedDataType)->findBy($matcher, $defaultOrder);
 
             if (Tca::table($dataType)->field($fieldName)->isRenderModeTree()) {
-
                 $fieldConfiguration = Tca::table($dataType)->field($fieldName)->getConfiguration();
                 $parentField = $fieldConfiguration['treeConfig']['parentField'];
 
@@ -397,7 +388,6 @@ class ContentController extends ActionController
      */
     public function deleteAction(array $matches = [])
     {
-
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
 
         // Fetch objects via the Content Service.
@@ -411,7 +401,6 @@ class ContentController extends ActionController
         $result->setNumberOfObjects($contentService->getNumberOfObjects());
 
         foreach ($contentService->getObjects() as $object) {
-
             // Store the first object, so that the delete message can be more explicit when deleting only one record.
             if ($contentService->getNumberOfObjects() === 1) {
                 $tableTitleValue = $object[$tableTitleField];
@@ -460,7 +449,6 @@ class ContentController extends ActionController
      */
     public function copyClipboardAction($target)
     {
-
         // Retrieve matcher object from clipboard.
         $matcher = $this->getClipboardService()->getMatcher();
 
@@ -475,7 +463,6 @@ class ContentController extends ActionController
         $result->setNumberOfObjects($contentService->getNumberOfObjects());
 
         foreach ($contentService->getObjects() as $object) {
-
             // Store the first object, so that the "action" message can be more explicit when deleting only one record.
             if ($contentService->getNumberOfObjects() === 1) {
                 $tableTitleValue = $object[$tableTitleField];
@@ -515,7 +502,6 @@ class ContentController extends ActionController
      */
     public function moveAction($target, array $matches = [])
     {
-
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
 
         // Fetch objects via the Content Service.
@@ -529,7 +515,6 @@ class ContentController extends ActionController
         $result->setNumberOfObjects($contentService->getNumberOfObjects());
 
         foreach ($contentService->getObjects() as $object) {
-
             // Store the first object, so that the "action" message can be more explicit when deleting only one record.
             if ($contentService->getNumberOfObjects() === 1) {
                 $tableTitleValue = $object[$tableTitleField];
@@ -561,7 +546,6 @@ class ContentController extends ActionController
      */
     public function moveClipboardAction($target)
     {
-
         // Retrieve matcher object from clipboard.
         $matcher = $this->getClipboardService()->getMatcher();
 
@@ -576,7 +560,6 @@ class ContentController extends ActionController
         $result->setNumberOfObjects($contentService->getNumberOfObjects());
 
         foreach ($contentService->getObjects() as $object) {
-
             // Store the first object, so that the "action" message can be more explicit when deleting only one record.
             if ($contentService->getNumberOfObjects() === 1) {
                 $tableTitleValue = $object[$tableTitleField];
@@ -618,7 +601,6 @@ class ContentController extends ActionController
      */
     public function localizeAction($fieldNameAndPath, array $matches = [], $language = 0)
     {
-
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
 
         // Fetch objects via the Content Service.
@@ -629,7 +611,6 @@ class ContentController extends ActionController
         $result->setNumberOfObjects($contentService->getNumberOfObjects());
 
         foreach ($contentService->getObjects() as $object) {
-
             $identifier = $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, 'uid');
             $dataType = $this->getContentObjectResolver()->getDataType($object, $fieldNameAndPath);
 
@@ -651,9 +632,9 @@ class ContentController extends ActionController
 
             // Redirect to TCEForm so that the BE User can do its job!
             if ($contentService->getNumberOfObjects() === 1) {
-
                 if (!empty($errorMessages)) {
-                    $message = sprintf('Something went wrong when localizing content "%s" with identifier "%s". <br/>%s',
+                    $message = sprintf(
+                        'Something went wrong when localizing content "%s" with identifier "%s". <br/>%s',
                         $dataType,
                         $identifier,
                         implode('<br/>', $errorMessages)
@@ -663,7 +644,8 @@ class ContentController extends ActionController
 
                 $localizedContent = $this->getLanguageService()->getLocalizedContent($content, $language);
                 if (empty($localizedContent)) {
-                    $message = sprintf('Oups! I could not retrieve localized content of type "%s" with identifier "%s"',
+                    $message = sprintf(
+                        'Oups! I could not retrieve localized content of type "%s" with identifier "%s"',
                         $content->getDataType(),
                         $content->getUid()
                     );
@@ -733,7 +715,6 @@ class ContentController extends ActionController
      */
     protected function emitProcessContentDataSignal(Content $contentObject, $fieldNameAndPath, $contentData, $counter, $savingBehavior, $language)
     {
-
         /** @var ProcessContentDataSignalArguments $signalArguments */
         $signalArguments = GeneralUtility::makeInstance(ProcessContentDataSignalArguments::class);
         $signalArguments->setContentObject($contentObject)
@@ -789,5 +770,4 @@ class ContentController extends ActionController
     {
         $this->selectionRepository = $selectionRepository;
     }
-
 }

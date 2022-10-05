@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Backend;
 
 /*
@@ -18,7 +19,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class LanguageFileGenerator implements SingletonInterface
 {
-
     protected $template = '<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.0">
 	<file source-language="en" datatype="plaintext" original="messages" date="" product-name="local lang module">
@@ -90,5 +90,4 @@ class LanguageFileGenerator implements SingletonInterface
         $languageServiceFactory = GeneralUtility::makeInstance(LanguageServiceFactory::class);
         return $languageServiceFactory->create($locale);
     }
-
 }

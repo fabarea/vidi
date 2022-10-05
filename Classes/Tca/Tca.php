@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Tca;
 
 /*
@@ -23,13 +24,12 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
  */
 class Tca implements SingletonInterface, TcaServiceInterface
 {
-
     /**
      * Fields that are considered as system.
      *
      * @var array
      */
-    static protected $systemFields = array(
+    protected static $systemFields = array(
         'uid',
         'pid',
         'tstamp',
@@ -53,7 +53,7 @@ class Tca implements SingletonInterface, TcaServiceInterface
     /**
      * @var array
      */
-    static protected $instances;
+    protected static $instances;
 
     /**
      * Returns a class instance of a corresponding TCA service.
@@ -66,10 +66,9 @@ class Tca implements SingletonInterface, TcaServiceInterface
      * @throws InvalidKeyInArrayException
      * @throws \InvalidArgumentException
      */
-    static protected function getService($dataType, $serviceType)
+    protected static function getService($dataType, $serviceType)
     {
         if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend() && empty($dataType)) {
-
             /** @var ModuleLoader $moduleLoader */
             $moduleLoader = GeneralUtility::makeInstance(ModuleLoader::class);
             $dataType = $moduleLoader->getDataType();
@@ -94,7 +93,7 @@ class Tca implements SingletonInterface, TcaServiceInterface
      * @return GridService
      * @throws NotExistingClassException
      */
-    static public function grid($tableNameOrContentObject = '')
+    public static function grid($tableNameOrContentObject = '')
     {
         $tableName = $tableNameOrContentObject instanceof Content ? $tableNameOrContentObject->getDataType() : $tableNameOrContentObject;
         return self::getService($tableName, self::TYPE_GRID);
@@ -107,7 +106,7 @@ class Tca implements SingletonInterface, TcaServiceInterface
      * @return TableService
      * @throws NotExistingClassException
      */
-    static public function table($tableNameOrContentObject = '')
+    public static function table($tableNameOrContentObject = '')
     {
         $tableName = $tableNameOrContentObject instanceof Content ? $tableNameOrContentObject->getDataType() : $tableNameOrContentObject;
         return self::getService($tableName, self::TYPE_TABLE);
@@ -138,7 +137,7 @@ class Tca implements SingletonInterface, TcaServiceInterface
      * @throws InvalidSlotReturnException
      * @throws \InvalidArgumentException
      */
-    static protected function emitPreProcessTcaSignal($dataType, $serviceType)
+    protected static function emitPreProcessTcaSignal($dataType, $serviceType)
     {
         self::getSignalSlotDispatcher()->dispatch(Tca::class, 'preProcessTca', array($dataType, $serviceType));
     }
@@ -149,9 +148,8 @@ class Tca implements SingletonInterface, TcaServiceInterface
      * @return Dispatcher
      * @throws \InvalidArgumentException
      */
-    static protected function getSignalSlotDispatcher()
+    protected static function getSignalSlotDispatcher()
     {
         return GeneralUtility::makeInstance(Dispatcher::class);
     }
-
 }

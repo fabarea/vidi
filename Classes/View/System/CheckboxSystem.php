@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\View\System;
 
 /*
@@ -17,7 +18,6 @@ use Fab\Vidi\View\AbstractComponentView;
  */
 class CheckboxSystem extends AbstractComponentView
 {
-
     /**
      * Returns a checkbox for the grids.
      *

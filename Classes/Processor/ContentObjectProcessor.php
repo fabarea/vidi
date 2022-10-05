@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Processor;
 
 /*
@@ -22,14 +23,12 @@ use Fab\Vidi\Tca\Tca;
  */
 class ContentObjectProcessor implements SingletonInterface
 {
-
     /**
      * @param ProcessContentDataSignalArguments $signalArguments
      * @return array
      */
     public function processRelations(ProcessContentDataSignalArguments $signalArguments)
     {
-
         $contentObject = $signalArguments->getContentObject();
         $fieldNameAndPath = $signalArguments->getFieldNameAndPath();
         $contentData = $signalArguments->getContentData();
@@ -52,13 +51,10 @@ class ContentObjectProcessor implements SingletonInterface
      */
     protected function appendOrRemoveRelations(Content $object, $fieldNameAndPath, array $contentData, $savingBehavior)
     {
-
         foreach ($contentData as $fieldName => $values) {
-
             $resolvedObject = $this->getContentObjectResolver()->getObject($object, $fieldNameAndPath);
 
             if (Tca::table($resolvedObject)->field($fieldName)->hasMany()) {
-
                 // true means CSV values must be converted to array.
                 if (!is_array($values)) {
                     $values = GeneralUtility::trimExplode(',', $values);
@@ -111,7 +107,6 @@ class ContentObjectProcessor implements SingletonInterface
      */
     protected function getRelatedValues(Content $object, $fieldNameAndPath, $fieldName)
     {
-
         $values = [];
         $relatedContentObjects = $this->getContentObjectResolver()->getValue($object, $fieldNameAndPath, $fieldName);
 

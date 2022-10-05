@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Converter;
 
 /*
@@ -16,16 +17,15 @@ use Fab\Vidi\Domain\Model\Content;
  */
 class Property
 {
+    /**
+     * @var string
+     */
+    protected static $currentProperty;
 
     /**
      * @var string
      */
-    static protected $currentProperty;
-
-    /**
-     * @var string
-     */
-    static protected $currentTable;
+    protected static $currentTable;
 
     /**
      * @var array
@@ -37,7 +37,7 @@ class Property
      * @return $this
      * @throws \InvalidArgumentException
      */
-    static public function name($propertyName)
+    public static function name($propertyName)
     {
         self::$currentProperty = $propertyName;
         self::$currentTable = ''; // reset the table name value.
@@ -110,5 +110,4 @@ class Property
         }
         return $tableName;
     }
-
 }

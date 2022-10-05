@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Service;
 
 /*
@@ -20,9 +21,8 @@ namespace Fab\Vidi\Service;
  */
 class SpreadSheetService
 {
-
-    const XmlHeader = "<?xml version=\"1.0\" encoding=\"%s\"?\>\n<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\" xmlns:x=\"urn:schemas-microsoft-com:office:excel\" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\" xmlns:html=\"http://www.w3.org/TR/REC-html40\">";
-    const XmlFooter = "</Workbook>";
+    public const XmlHeader = "<?xml version=\"1.0\" encoding=\"%s\"?\>\n<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\" xmlns:x=\"urn:schemas-microsoft-com:office:excel\" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\" xmlns:html=\"http://www.w3.org/TR/REC-html40\">";
+    public const XmlFooter = "</Workbook>";
 
     /**
      * @var string
@@ -79,7 +79,6 @@ class SpreadSheetService
      */
     protected function generateHeader()
     {
-
         // workbook header
         $output = stripslashes(sprintf(self::XmlHeader, $this->encoding)) . "\n";
 
@@ -163,5 +162,4 @@ class SpreadSheetService
 
         return $output;
     }
-
 }

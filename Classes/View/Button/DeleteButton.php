@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\View\Button;
 
 /*
@@ -18,7 +19,6 @@ use Fab\Vidi\View\AbstractComponentView;
  */
 class DeleteButton extends AbstractComponentView
 {
-
     /**
      * Renders a "delete" button to be placed in the grid.
      *
@@ -61,5 +61,4 @@ class DeleteButton extends AbstractComponentView
         );
         return $this->getModuleLoader()->getModuleUrl($additionalParameters);
     }
-
 }

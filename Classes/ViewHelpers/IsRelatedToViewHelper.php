@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers;
 
 /*
@@ -17,7 +18,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class IsRelatedToViewHelper extends AbstractViewHelper
 {
-
     /**
      * @return void
      */
@@ -43,7 +43,6 @@ class IsRelatedToViewHelper extends AbstractViewHelper
         // Only computes whether the object is checked if one row is beeing edited.
         $numberOfObjects = $this->templateVariableContainer->get('numberOfObjects');
         if ($numberOfObjects === 1) {
-
             /** @var Content $content */
             $content = $this->templateVariableContainer->get('content');
             $fieldName = $this->templateVariableContainer->get('fieldName');

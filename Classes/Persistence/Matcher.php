@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Persistence;
 
 /*
@@ -16,12 +17,12 @@ class Matcher
     /**
      * The logical OR
      */
-    const LOGICAL_OR = 'logicalOr';
+    public const LOGICAL_OR = 'logicalOr';
 
     /**
      * The logical AND
      */
-    const LOGICAL_AND = 'logicalAnd';
+    public const LOGICAL_AND = 'logicalAnd';
 
     /**
      * @var string

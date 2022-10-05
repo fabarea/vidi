@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Tool;
 
 /*
@@ -18,7 +19,6 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class ConfiguredPidTool extends AbstractTool
 {
-
     /**
      * Display the title of the tool on the welcome screen.
      *
@@ -26,7 +26,8 @@ class ConfiguredPidTool extends AbstractTool
      */
     public function getTitle(): string
     {
-        return sprintf('%s (%s)',
+        return sprintf(
+            '%s (%s)',
             LocalizationUtility::translate('tool.configured_pid', 'vidi'),
             $this->getModulePidService()->getConfiguredNewRecordPid()
         );
@@ -90,6 +91,4 @@ class ConfiguredPidTool extends AbstractTool
         /** @var ModulePidService $modulePidService */
         return GeneralUtility::makeInstance(ModulePidService::class);
     }
-
 }
-

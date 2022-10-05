@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Grid;
 
 /*
@@ -17,7 +18,6 @@ use TYPO3\CMS\Core\Imaging\Icon;
  */
 class RelationEditRenderer extends ColumnRendererAbstract
 {
-
     /**
      * @return string
      */
@@ -36,7 +36,6 @@ class RelationEditRenderer extends ColumnRendererAbstract
      */
     protected function renderForBackend()
     {
-
         // Initialize url parameters array.
         $urlParameters = array(
             $this->getModuleLoader()->getParameterPrefix() => array(
@@ -67,7 +66,7 @@ class RelationEditRenderer extends ColumnRendererAbstract
      */
     protected function isBackendMode()
     {
-        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();;
+        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
+        ;
     }
-
 }

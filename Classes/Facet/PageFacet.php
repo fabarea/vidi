@@ -22,7 +22,6 @@ use TYPO3\CMS\Core\Localization\LanguageService;
  */
 class PageFacet implements FacetInterface
 {
-
     /**
      * @var string
      */
@@ -99,7 +98,8 @@ class PageFacet implements FacetInterface
                 sprintf(
                     'uid IN (SELECT DISTINCT(pid) FROM %s WHERE 1=1 %s)',
                     $this->getModuleLoader()->getDataType(),
-                    BackendUtility::deleteClause($this->getModuleLoader()->getDataType()
+                    BackendUtility::deleteClause(
+                        $this->getModuleLoader()->getDataType()
                     )
                 ),
                 BackendUtility::deleteClause('pages', '')
@@ -124,7 +124,6 @@ class PageFacet implements FacetInterface
      */
     protected function getLanguageService(): LanguageService
     {
-
         /** @var LanguageService $langService */
         $langService = $GLOBALS['LANG'];
         if (!$langService) {
@@ -181,5 +180,4 @@ class PageFacet implements FacetInterface
     {
         return GeneralUtility::makeInstance(ModuleLoader::class);
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Controller;
 
 /*
@@ -9,9 +10,6 @@ namespace Fab\Vidi\Controller;
  */
 use Psr\Http\Message\ResponseInterface;
 use Fab\Vidi\Domain\Repository\SelectionRepository;
-use Fab\Vidi\Exception\InvalidKeyInArrayException;
-use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
-use TYPO3\CMS\Extbase\Persistence\Exception\UnknownObjectException;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use Fab\Vidi\Domain\Model\Selection;
 use Fab\Vidi\Module\ModuleLoader;
@@ -24,7 +22,6 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
  */
 class SelectionController extends ActionController
 {
-
     /**
      * @param Selection $selection
      */
@@ -111,5 +108,4 @@ class SelectionController extends ActionController
     {
         return $GLOBALS['BE_USER'];
     }
-
 }

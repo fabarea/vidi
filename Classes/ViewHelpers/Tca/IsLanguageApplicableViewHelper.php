@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Tca;
 
 /*
@@ -16,7 +17,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class IsLanguageApplicableViewHelper extends AbstractViewHelper
 {
-
     /**
      * Returns whether the field in the context is localizable or not.
      *
@@ -30,5 +30,4 @@ class IsLanguageApplicableViewHelper extends AbstractViewHelper
         $isLanguageApplicable = Tca::table($dataType)->hasLanguageSupport() && Tca::table($dataType)->field($fieldName)->isLocalized();
         return $isLanguageApplicable;
     }
-
 }

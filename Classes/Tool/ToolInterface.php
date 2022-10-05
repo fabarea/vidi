@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Tool;
 
 /*
@@ -13,7 +14,6 @@ namespace Fab\Vidi\Tool;
  */
 interface ToolInterface
 {
-
     /**
      * Display the title of the tool on the welcome screen.
      *
@@ -42,5 +42,4 @@ interface ToolInterface
      * @return bool
      */
     public function isShown();
-
 }

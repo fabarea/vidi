@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Grid\Column;
 
 /*
@@ -15,7 +16,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class FieldNameViewHelper extends AbstractViewHelper
 {
-
     /**
      * Return the final field name in the context of the Grid.
      *
@@ -23,7 +23,6 @@ class FieldNameViewHelper extends AbstractViewHelper
      */
     public function render()
     {
-
         $fieldName = $this->templateVariableContainer->get('columnName');
         $configuration = $this->templateVariableContainer->get('configuration');
 
@@ -33,5 +32,4 @@ class FieldNameViewHelper extends AbstractViewHelper
 
         return $fieldName;
     }
-
 }

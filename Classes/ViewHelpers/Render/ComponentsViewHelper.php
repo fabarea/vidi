@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Render;
 
 /*
@@ -70,5 +71,4 @@ class ComponentsViewHelper extends AbstractViewHelper
 
         return $result;
     }
-
 }

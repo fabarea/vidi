@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Tool;
 
 /*
@@ -21,7 +22,6 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class ModulePreferencesTool extends AbstractTool
 {
-
     /**
      * Display the title of the tool on the welcome screen.
      *
@@ -57,10 +57,7 @@ class ModulePreferencesTool extends AbstractTool
      */
     public function work(array $arguments = array())
     {
-
-
         if (isset($arguments['save'])) {
-
             // Revert visible <-> excluded
             $excludedFields = array_diff(
                 Tca::grid()->getAllFieldNames(),
@@ -143,4 +140,3 @@ class ModulePreferencesTool extends AbstractTool
         return GeneralUtility::makeInstance(GridAnalyserService::class);
     }
 }
-

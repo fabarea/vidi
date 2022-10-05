@@ -29,23 +29,21 @@ use Fab\Vidi\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 use Fab\Vidi\Exception\InvalidKeyInArrayException;
-use Fab\Vidi\Service\BackendUserPreferenceService;
 
 /**
  * Service class used in other extensions to register a vidi based backend module.
  */
 class ModuleLoader
 {
-
     /**
      * Define the default main module
      */
-    const DEFAULT_MAIN_MODULE = 'content';
+    public const DEFAULT_MAIN_MODULE = 'content';
 
     /**
      * Define the default pid
      */
-    const DEFAULT_PID = 0;
+    public const DEFAULT_PID = 0;
 
     /**
      * The type of data being listed (which corresponds to a table name in TCA)
@@ -295,7 +293,6 @@ class ModuleLoader
         // Core module registration.
         // Register and displays module in the BE only if told, default is "true".
         if ($this->isShown) {
-
             $moduleConfiguration = [];
             #$moduleConfiguration['routeTarget'] = \Fab\Vidi\Controller\ContentController::class . '::mainAction', // what to do here?
             $moduleConfiguration['access'] = $this->getAccess();
@@ -389,7 +386,6 @@ class ModuleLoader
      */
     public function getModuleConfiguration($key = '')
     {
-
         $vidiModuleCode = $this->getSignature();
 
         // Module code must exist
@@ -477,7 +473,6 @@ class ModuleLoader
     {
         foreach ($this->components[ModulePosition::DOC_HEADER] as $verticalPosition => $docHeaders) {
             foreach ($docHeaders as $horizontalPosition => $docHeader) {
-
                 $index = array_search($component, $docHeader, true);
                 if ($index !== false) {
                     // $verticalPosition: top or bottom
@@ -515,7 +510,6 @@ class ModuleLoader
     {
         foreach ($this->getModuleConfiguration('components')[ModulePosition::DOC_HEADER] as $verticalPosition => $docHeaders) {
             foreach ($docHeaders as $horizontalPosition => $docHeader) {
-
                 $index = array_search($component, $docHeader, true);
                 if ($index !== false) {
                     return true;
@@ -1033,5 +1027,4 @@ class ModuleLoader
         $mainModule = $this->mainModule ?: self::DEFAULT_MAIN_MODULE;
         return $mainModule . '_Vidi' . GeneralUtility::underscoredToUpperCamelCase($subModuleName);
     }
-
 }

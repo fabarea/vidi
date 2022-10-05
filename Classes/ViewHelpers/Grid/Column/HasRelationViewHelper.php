@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Grid\Column;
 
 /*
@@ -17,7 +18,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class HasRelationViewHelper extends AbstractViewHelper
 {
-
     /**
      * Return whether the current field name has a relation to the main content.
      *

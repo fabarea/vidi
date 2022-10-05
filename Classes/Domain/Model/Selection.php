@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Domain\Model;
 
 /*
@@ -15,10 +16,9 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 class Selection extends AbstractEntity
 {
-
-    const VISIBILITY_EVERYONE = 0;
-    const VISIBILITY_PRIVATE = 1;
-    const VISIBILITY_ADMIN_ONLY = 2;
+    public const VISIBILITY_EVERYONE = 0;
+    public const VISIBILITY_PRIVATE = 1;
+    public const VISIBILITY_ADMIN_ONLY = 2;
 
     /**
      * @var int
@@ -157,5 +157,4 @@ class Selection extends AbstractEntity
         $this->owner = $owner;
         return $this;
     }
-
 }

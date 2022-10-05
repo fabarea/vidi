@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Content;
 
 /*
@@ -26,7 +27,6 @@ use Fab\Vidi\Tca\Tca;
  */
 abstract class AbstractContentViewHelper extends AbstractViewHelper
 {
-
     /**
      * @return void
      * @throws Exception
@@ -68,19 +68,16 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      */
     protected function getMatcher($dataType, $matches = array())
     {
-
         /** @var $matcher Matcher */
         $matcher = GeneralUtility::makeInstance(Matcher::class, [], $dataType);
 
         // @todo implement advanced selection parsing {or: {usergroup.title: {like: foo}}, {tstamp: {greaterThan: 1234}}}
         foreach ($matches as $fieldNameAndPath => $value) {
-
             // CSV values should be considered as "in" operator in Query, otherwise "equals".
             $explodedValues = GeneralUtility::trimExplode(',', $value, true);
 
             // The matching value contains a "1,2" as example
             if (count($explodedValues) > 1) {
-
                 $resolvedDataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $dataType);
                 $resolvedFieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $dataType);
 
@@ -112,7 +109,6 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      */
     protected function replacesAliases(array $values)
     {
-
         $aliases = $this->arguments['aliases'];
 
         foreach ($aliases as $aliasName => $aliasValue) {
@@ -228,5 +224,4 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
     {
         return GeneralUtility::makeInstance(FieldPathResolver::class);
     }
-
 }

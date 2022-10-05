@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Resolver;
 
 /*
@@ -18,7 +19,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class FieldPathResolver implements SingletonInterface
 {
-
     /**
      * Remove the prefixing path from the file name.
      *
@@ -28,11 +28,9 @@ class FieldPathResolver implements SingletonInterface
      */
     public function stripFieldPath($fieldNameAndPath, $dataType = '')
     {
-
         $dataType = $this->getContextualDataType($dataType);
 
         if ($this->containsPath($fieldNameAndPath, $dataType)) {
-
             // Corresponds to the field name of the foreign table.
             $fieldParts = GeneralUtility::trimExplode('.', $fieldNameAndPath);
             $fieldName = $fieldParts[1];
@@ -51,11 +49,9 @@ class FieldPathResolver implements SingletonInterface
      */
     public function stripFieldName($fieldNameAndPath, $dataType = '')
     {
-
         $dataType = $this->getContextualDataType($dataType);
 
         if ($this->containsPath($fieldNameAndPath, $dataType)) {
-
             // Corresponds to the field name of the foreign table.
             $fieldParts = GeneralUtility::trimExplode('.', $fieldNameAndPath);
             $fieldName = $fieldParts[0];
@@ -74,11 +70,9 @@ class FieldPathResolver implements SingletonInterface
      */
     public function getDataType($fieldNameAndPath, $dataType = '')
     {
-
         $dataType = $this->getContextualDataType($dataType);
 
         if ($this->containsPath($fieldNameAndPath, $dataType)) {
-
             // Compute the foreign data type.
             $fieldParts = GeneralUtility::trimExplode('.', $fieldNameAndPath);
             $fieldNameAndPath = $fieldParts[0];
@@ -95,7 +89,6 @@ class FieldPathResolver implements SingletonInterface
      */
     public function getContextualDataType($dataType)
     {
-
         if (!$dataType) {
             $dataType = $this->getModuleLoader()->getDataType();
         }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Tests\Unit\Tca;
 
 /***************************************************************
@@ -30,35 +31,38 @@ use Fab\Vidi\Tca\Tca;
 /**
  * Test case for class \Fab\Vidi\Tca\TableService.
  */
-class TableServiceTest extends AbstractServiceTest {
+class TableServiceTest extends AbstractServiceTest
+{
+    /**
+     * @var TableService
+     */
+    private $fixture;
 
-	/**
-	 * @var TableService
-	 */
-	private $fixture;
+    public function setUp()
+    {
+        parent::setUp();
+        $this->fixture = new TableService('tx_foo', Tca::TYPE_TABLE);
+    }
 
-	public function setUp() {
-		parent::setUp();
-		$this->fixture = new TableService('tx_foo', Tca::TYPE_TABLE);
-	}
+    public function tearDown()
+    {
+        unset($this->fixture);
+    }
 
-	public function tearDown() {
-		unset($this->fixture);
-	}
+    /**
+     * @test
+     */
+    public function getLabelReturnNameAsValue()
+    {
+        $this->assertEquals('username', $this->fixture->getLabelField());
+    }
 
-	/**
-	 * @test
-	 */
-	public function getLabelReturnNameAsValue() {
-		$this->assertEquals('username', $this->fixture->getLabelField());
-	}
-
-	/**
-	 * @test
-	 */
-	public function getSearchableFieldsIsNotEmptyByDefaultForTableSysFile() {
-		$actual = $this->fixture->getSearchFields();
-		$this->assertNotEmpty($actual);
-	}
-
+    /**
+     * @test
+     */
+    public function getSearchableFieldsIsNotEmptyByDefaultForTableSysFile()
+    {
+        $actual = $this->fixture->getSearchFields();
+        $this->assertNotEmpty($actual);
+    }
 }

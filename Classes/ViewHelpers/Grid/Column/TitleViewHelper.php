@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Grid\Column;
 
 /*
@@ -16,7 +17,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class TitleViewHelper extends AbstractViewHelper
 {
-
     /**
      * Returns a column title.
      *
@@ -27,5 +27,4 @@ class TitleViewHelper extends AbstractViewHelper
         $columnName = $this->templateVariableContainer->get('columnName');
         return Tca::grid()->getLabel($columnName);
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Utility;
 
 /*
@@ -18,7 +19,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class BackendUtility
 {
-
     /*******************************************
      *
      * SQL-related, selecting records, searching
@@ -47,9 +47,9 @@ class BackendUtility
             ->getQueryBuilderForTable($table)
             ->expr();
         return $withLogicalSeparator . ' ' . $expressionBuilder->eq(
-                $table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'],
-                0
-            );
+            $table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'],
+            0
+        );
     }
     /**
      * Backend implementation of enableFields()
@@ -129,5 +129,4 @@ class BackendUtility
         }
         return (string)$uri;
     }
-
 }

@@ -1,7 +1,9 @@
 <?php
+
 namespace Fab\Vidi\Grid;
 
 use Fab\Vidi\Domain\Model\Content;
+
 /*
  * This file is part of the Fab/Vidi project under GPLv2 or later.
  *
@@ -13,7 +15,6 @@ use Fab\Vidi\Domain\Model\Content;
  */
 interface ColumnRendererInterface
 {
-
     /**
      * Render a column in the Grid.
      *
@@ -55,5 +56,4 @@ interface ColumnRendererInterface
      * @return array
      */
     public function getConfiguration();
-
 }

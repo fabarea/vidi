@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Grid;
 
 /*
@@ -20,7 +21,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class VisibilityRenderer extends ColumnRendererAbstract
 {
-
     /**
      * Render visibility for the Grid.
      *
@@ -28,12 +28,10 @@ class VisibilityRenderer extends ColumnRendererAbstract
      */
     public function render()
     {
-
         $output = '';
         $hiddenField = Tca::table()->getHiddenField();
 
         if ($hiddenField) {
-
             $spriteName = $this->object[$hiddenField] ? 'actions-edit-unhide' : 'actions-edit-hide';
 
             $label = $this->object[$hiddenField] ? 'unHide' : 'hide';
@@ -99,5 +97,4 @@ class VisibilityRenderer extends ColumnRendererAbstract
     {
         return $GLOBALS['LANG'];
     }
-
 }

@@ -1,9 +1,13 @@
 <?php
+
 use Fab\Vidi\Facet\PageFacet;
 use Fab\Vidi\Grid\CheckBoxRenderer;
 use Fab\Vidi\Grid\ButtonGroupRenderer;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
-if (!defined('TYPO3')) die ('Access denied.');
+
+if (!defined('TYPO3')) {
+    die('Access denied.');
+}
 
 $tca = [
     'vidi' => [

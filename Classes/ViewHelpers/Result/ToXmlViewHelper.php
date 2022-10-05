@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Result;
 
 /*
@@ -16,19 +17,16 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ToXmlViewHelper extends AbstractToFormatViewHelper
 {
-
     /**
      * Render an XML export.
      *
      */
     public function render()
     {
-
         $objects = $this->templateVariableContainer->get('objects');
 
         // Make sure we have something to process...
         if (!empty($objects)) {
-
             // Initialization step.
             $this->initializeEnvironment($objects);
             $this->exportFileNameAndPath .= '.xml'; // add extension to the file.
@@ -38,7 +36,6 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper
 
             // We must generate a zip archive since there are files included.
             if ($this->hasCollectedFiles()) {
-
                 $this->writeZipFile();
                 $this->sendZipHttpHeaders();
 
@@ -60,7 +57,6 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper
      */
     protected function writeXmlFile(array $objects)
     {
-
         // Get first object of $objects to check whether it contains possible files to include.
         /** @var Content $object */
         $object = reset($objects);
@@ -119,7 +115,6 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper
      */
     protected function sendXmlHttpHeaders()
     {
-
         /** @var Response $response */
         $response = $this->templateVariableContainer->get('response');
         $response->withHeader('Content-Type', 'application/xml');
@@ -127,5 +122,4 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper
         $response->withHeader('Content-Length', filesize($this->exportFileNameAndPath));
         $response->withHeader('Content-Description', 'File Transfer');
     }
-
 }

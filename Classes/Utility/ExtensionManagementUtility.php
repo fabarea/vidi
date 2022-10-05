@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Utility;
 
 /*
@@ -42,5 +43,4 @@ class ExtensionManagementUtility
     {
         return substr($path, strlen(Environment::getPublicPath() . '/'));
     }
-
 }

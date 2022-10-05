@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Facet;
 
 /*
@@ -8,7 +9,6 @@ namespace Fab\Vidi\Facet;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Persistence\Matcher;
 
 /**
@@ -16,7 +16,6 @@ use Fab\Vidi\Persistence\Matcher;
  */
 interface FacetInterface
 {
-
     /**
      * Return the "key" of the facet.
      *
@@ -64,5 +63,4 @@ interface FacetInterface
      * @return Matcher
      */
     public function modifyMatcher(Matcher $matcher, $value);
-
 }

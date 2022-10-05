@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers;
 
 /*
@@ -17,7 +18,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class GpViewHelper extends AbstractViewHelper
 {
-
     /**
      * @return void
      */

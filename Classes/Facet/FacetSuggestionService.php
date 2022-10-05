@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Facet;
 
 /*
@@ -20,7 +21,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class FacetSuggestionService
 {
-
     /**
      * Retrieve possible suggestions for a field name
      *
@@ -36,10 +36,8 @@ class FacetSuggestionService
 
         if (Tca::grid()->facet($fieldNameAndPath)->hasSuggestions()) {
             $values = Tca::grid()->facet($fieldNameAndPath)->getSuggestions();
-        } else if (Tca::table($dataType)->hasField($fieldName)) {
-
+        } elseif (Tca::table($dataType)->hasField($fieldName)) {
             if (Tca::table($dataType)->field($fieldName)->hasRelation()) {
-
                 // Fetch the adequate repository
                 $foreignTable = Tca::table($dataType)->field($fieldName)->getForeignTable();
                 $contentRepository = ContentRepositoryFactory::getInstance($foreignTable);
@@ -50,7 +48,6 @@ class FacetSuggestionService
 
                 $numberOfValues = $contentRepository->countBy($matcher);
                 if ($numberOfValues <= $this->getLimit()) {
-
                     $contents = $contentRepository->findBy($matcher);
 
                     foreach ($contents as $content) {
@@ -70,12 +67,10 @@ class FacetSuggestionService
 
                 // Only returns suggestion if there are not too many for the browser.
                 if ($numberOfValues <= $this->getLimit()) {
-
                     // Query the repository.
                     $contents = $contentRepository->findDistinctValues($fieldName, $matcher);
 
                     foreach ($contents as $content) {
-
                         $value = $content[$fieldName];
                         $label = $content[$fieldName];
                         if (Tca::table($dataType)->field($fieldName)->isSelect()) {
@@ -125,5 +120,4 @@ class FacetSuggestionService
         $configuration = $backendConfigurationManager->getTypoScriptSetup();
         return $configuration['module.']['tx_vidi.']['settings.'];
     }
-
 }

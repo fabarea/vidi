@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Grid\Column;
 
 /*
@@ -16,7 +17,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class IsExcludedViewHelper extends AbstractViewHelper
 {
-
     /**
      * @return void
      */
@@ -35,5 +35,4 @@ class IsExcludedViewHelper extends AbstractViewHelper
         $excludedFields = Tca::grid()->getExcludedFields();
         return !in_array($this->arguments['name'], $excludedFields, true);
     }
-
 }

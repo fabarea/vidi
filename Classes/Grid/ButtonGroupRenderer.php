@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Grid;
 
 /*
@@ -15,7 +16,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ButtonGroupRenderer extends ColumnRendererAbstract
 {
-
     /**
      * Configure the "Button Group" Grid Renderer.
      */
@@ -40,7 +40,6 @@ class ButtonGroupRenderer extends ColumnRendererAbstract
 
         $buttons = [];
         foreach ($components as $component) {
-
             /** @var  $view */
             $view = GeneralUtility::makeInstance($component);
             $buttons[] = $view->render($this->getObject());
@@ -53,5 +52,4 @@ class ButtonGroupRenderer extends ColumnRendererAbstract
 
         return $output;
     }
-
 }

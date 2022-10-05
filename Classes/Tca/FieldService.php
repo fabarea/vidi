@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Tca;
 
 /*
@@ -17,7 +18,6 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class FieldService extends AbstractTca
 {
-
     /**
      * @var string
      */
@@ -111,7 +111,6 @@ class FieldService extends AbstractTca
         if (!empty($configuration['foreign_field'])) {
             $result = $configuration['foreign_field'];
         } elseif ($this->hasRelationManyToMany()) {
-
             $foreignTable = $this->getForeignTable();
             $manyToManyTable = $this->getManyToManyTable();
 
@@ -180,7 +179,6 @@ class FieldService extends AbstractTca
     protected function substituteKnownMarkers($clause)
     {
         if ($clause && $this->isFrontendMode()) {
-
             $searches = array(
                 '###CURRENT_PID###',
                 '###REC_FIELD_sys_language_uid###'
@@ -242,7 +240,6 @@ class FieldService extends AbstractTca
         if (!empty($configuration['MM_match_fields']['tablenames'])) {
             $result = $configuration['MM_match_fields']['tablenames'];
         } elseif ($this->isGroup()) {
-
             // @todo check if $this->fieldName could be simply used as $result
             $fieldParts = explode('.', $this->compositeField, 2);
             $result = $fieldParts[1];
@@ -267,7 +264,6 @@ class FieldService extends AbstractTca
 
         // Add in any case a table name for "group"
         if ($this->isGroup()) {
-
             // @todo check if $this->fieldName could be simply used as $result
             $fieldParts = explode('.', $this->compositeField, 2);
             $additionalMMConditions = array(
@@ -296,7 +292,6 @@ class FieldService extends AbstractTca
      */
     public function getType()
     {
-
         if ($this->isSystem()) {
             $fieldType = FieldType::NUMBER;
         } else {
@@ -376,7 +371,6 @@ class FieldService extends AbstractTca
      */
     public function getLabelForItem($itemValue)
     {
-
         // Early return whether there is nothing to be translated as label.
         if (is_null($itemValue)) {
             return '';
@@ -425,7 +419,6 @@ class FieldService extends AbstractTca
         if (!empty($configuration['itemsProcFunc'])) {
             $parts = explode('php:', $configuration['itemsProcFunc']);
             if (!empty($parts[1])) {
-
                 list($class, $method) = explode('->', $parts[1]);
 
                 $parameters['items'] = [];
@@ -587,7 +580,6 @@ class FieldService extends AbstractTca
     {
         $isLocalized = false;
         if (isset($this->tca['l10n_mode'])) {
-
             if ($this->tca['l10n_mode'] == 'prefixLangTitle' || $this->tca['l10n_mode'] == 'mergeIfNotBlank') {
                 $isLocalized = true;
             }
@@ -689,7 +681,6 @@ class FieldService extends AbstractTca
 
         $foreignField = $this->getForeignField();
         if (!empty($foreignField)) {
-
             // Load TCA service of the foreign field.
             $foreignTable = $this->getForeignTable();
             $result = $this->hasOne() && Tca::table($foreignTable)->field($foreignField)->hasMany();
@@ -708,7 +699,6 @@ class FieldService extends AbstractTca
 
         $foreignField = $this->getForeignField();
         if (!empty($foreignField)) {
-
             // Load TCA service of the foreign field.
             $foreignTable = $this->getForeignTable();
             $result = $this->hasMany() && Tca::table($foreignTable)->field($foreignField)->hasOne();
@@ -727,7 +717,6 @@ class FieldService extends AbstractTca
 
         $foreignField = $this->getForeignField();
         if (!empty($foreignField)) {
-
             // Load TCA service of foreign field.
             $foreignTable = $this->getForeignTable();
             $result = $this->hasOne() && Tca::table($foreignTable)->field($foreignField)->hasOne();
@@ -790,5 +779,4 @@ class FieldService extends AbstractTca
     {
         return $GLOBALS['TSFE'];
     }
-
 }

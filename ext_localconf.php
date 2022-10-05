@@ -1,18 +1,18 @@
 <?php
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
+
 defined('TYPO3') or die();
 
 call_user_func(function () {
-
     $configuration = GeneralUtility::makeInstance(
         ExtensionConfiguration::class
     )->get('vidi');
 
     if (false === isset($configuration['autoload_typoscript']) || true === (bool)$configuration['autoload_typoscript']) {
-
         ExtensionManagementUtility::addTypoScript(
             'vidi',
             'constants',

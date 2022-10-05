@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers;
 
 /*
@@ -19,7 +20,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class UserPreferencesViewHelper extends AbstractViewHelper
 {
-
     /**
      * @var AbstractFrontend
      */
@@ -99,5 +99,4 @@ class UserPreferencesViewHelper extends AbstractViewHelper
     {
         return GeneralUtility::makeInstance(CacheManager::class);
     }
-
 }

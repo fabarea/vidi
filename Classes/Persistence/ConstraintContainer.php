@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Persistence;
 
 /*
@@ -37,5 +38,4 @@ class ConstraintContainer
         $this->constraint = $constraint;
         return $this;
     }
-
 }

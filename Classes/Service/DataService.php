@@ -17,7 +17,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class DataService implements SingletonInterface
 {
-
     public function getRecord(string $tableName, array $demand = []): array
     {
         $queryBuilder = $this->getQueryBuilder($tableName);

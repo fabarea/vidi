@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Controller;
 
 /*
@@ -19,7 +20,6 @@ use Fab\Vidi\Persistence\MatcherObjectFactory;
  */
 class ClipboardController extends ActionController
 {
-
     /**
      * Save data into the clipboard.
      *
@@ -28,7 +28,6 @@ class ClipboardController extends ActionController
      */
     public function saveAction(array $matches = array()): ResponseInterface
     {
-
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
         $this->getClipboardService()->save($matcher);
 
@@ -66,7 +65,6 @@ class ClipboardController extends ActionController
      */
     public function showAction(): ResponseInterface
     {
-
         // Retrieve matcher object from clipboard.
         $matcher = $this->getClipboardService()->getMatcher();
 
@@ -95,5 +93,4 @@ class ClipboardController extends ActionController
     {
         return GeneralUtility::makeInstance(ContentService::class);
     }
-
 }

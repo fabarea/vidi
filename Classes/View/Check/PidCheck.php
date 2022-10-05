@@ -84,5 +84,4 @@ EOF;
         /** @var ModulePidService $modulePidService */
         return GeneralUtility::makeInstance(ModulePidService::class);
     }
-
 }

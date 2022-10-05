@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Result;
 
 /*
@@ -16,7 +17,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ToCsvViewHelper extends AbstractToFormatViewHelper
 {
-
     /**
      * Render a CSV export request.
      *
@@ -27,7 +27,6 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper
 
         // Make sure we have something to process...
         if (!empty($objects)) {
-
             // Initialization step.
             $this->initializeEnvironment($objects);
             $this->exportFileNameAndPath .= '.csv'; // add extension to the file.
@@ -37,7 +36,6 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper
 
             // We must generate a zip archive since there are files included.
             if ($this->hasCollectedFiles()) {
-
                 $this->writeZipFile();
                 $this->sendZipHttpHeaders();
 
@@ -101,5 +99,4 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper
         $response->withHeader('Content-Length', filesize($this->exportFileNameAndPath));
         $response->withHeader('Content-Description', 'File Transfer');
     }
-
 }

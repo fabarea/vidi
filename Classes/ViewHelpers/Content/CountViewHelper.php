@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Content;
 
 /*
@@ -8,19 +9,13 @@ namespace Fab\Vidi\ViewHelpers\Content;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
-use Fab\Vidi\Persistence\Matcher;
-use Fab\Vidi\Tca\Tca;
 
 /**
  * View helper which counts a result set.
  */
 class CountViewHelper extends AbstractContentViewHelper
 {
-
-
     /**
      * Count a result set.
      *
@@ -44,5 +39,4 @@ class CountViewHelper extends AbstractContentViewHelper
         $numberOfObjects = ContentRepositoryFactory::getInstance($dataType)->countBy($matcher);
         return $numberOfObjects;
     }
-
 }

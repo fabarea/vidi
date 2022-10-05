@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\View;
 
 /*
@@ -19,7 +20,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractComponentView implements ViewComponentInterface
 {
-
     /**
      * Get the Vidi Module Loader.
      *
@@ -63,5 +63,4 @@ abstract class AbstractComponentView implements ViewComponentInterface
     {
         return GeneralUtility::makeInstance(LinkButton::class);
     }
-
 }

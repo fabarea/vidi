@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Processor;
 
 /*
@@ -19,7 +20,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class MarkerProcessor implements SingletonInterface
 {
-
     /**
      * @var array
      */
@@ -36,14 +36,12 @@ class MarkerProcessor implements SingletonInterface
      */
     public function processMarkers(ProcessContentDataSignalArguments $signalArguments)
     {
-
         $contentData = $signalArguments->getContentData();
         $creationTime = $this->getCreationTime($signalArguments);
 
         // Process markers
         foreach ($signalArguments->getContentData() as $fieldName => $updateValue) {
             if (is_scalar($updateValue)) {
-
                 $currentValue = $this->getContentObjectResolver()->getValue(
                     $signalArguments->getContentObject(),
                     $signalArguments->getFieldNameAndPath(),
@@ -72,7 +70,6 @@ class MarkerProcessor implements SingletonInterface
      */
     protected function replaceWellKnownMarkers($updateValue, $currentValue, $counter, $creationTime)
     {
-
         // Replaces values.
         $replaces = array(
             $currentValue,
@@ -92,7 +89,6 @@ class MarkerProcessor implements SingletonInterface
      */
     protected function searchAndReplace($updateValue, $currentValue)
     {
-
         if (strpos($updateValue, 's/') !== false) {
             $structure = explode('/', $updateValue);
             $search = $structure[1];
@@ -129,5 +125,4 @@ class MarkerProcessor implements SingletonInterface
     {
         return GeneralUtility::makeInstance(ContentObjectResolver::class);
     }
-
 }

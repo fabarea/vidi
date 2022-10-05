@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Resolver;
 
 /*
@@ -11,7 +12,6 @@ use Fab\Vidi\Language\LanguageService;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Model\Content;
-use Fab\Vidi\Tca\Tca;
 
 /**
  * Class for retrieving value from an object.
@@ -19,7 +19,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class ContentObjectResolver implements SingletonInterface
 {
-
     /**
      * @param Content $object
      * @param string $fieldNameAndPath
@@ -27,7 +26,6 @@ class ContentObjectResolver implements SingletonInterface
      */
     public function getDataType(Content $object, $fieldNameAndPath)
     {
-
         // Important to notice the field name can contains a path, e.g. metadata.title and must be sanitized.
         $relationalFieldName = $this->getFieldPathResolver()->stripFieldName($fieldNameAndPath); // ex: metadata.title -> metadata
 
@@ -53,7 +51,6 @@ class ContentObjectResolver implements SingletonInterface
      */
     public function getValue(Content $object, $fieldNameAndPath, $fieldName, $language = 0)
     {
-
         $resolvedContentObject = $this->getObject($object, $fieldNameAndPath);
         $resolvedValue = $resolvedContentObject[$fieldName];
 
@@ -74,7 +71,6 @@ class ContentObjectResolver implements SingletonInterface
      */
     public function getObject(Content $object, $fieldNameAndPath)
     {
-
         // Important to notice the field name can contains a path, e.g. metadata.title and must be sanitized.
         $fieldPath = $this->getFieldPathResolver()->stripFieldName($fieldNameAndPath); // ex: metadata.title -> metadata
 

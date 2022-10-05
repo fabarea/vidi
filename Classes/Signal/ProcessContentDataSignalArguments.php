@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Signal;
 
 /*
@@ -15,7 +16,6 @@ use Fab\Vidi\Domain\Model\Content;
  */
 class ProcessContentDataSignalArguments
 {
-
     /**
      * @var Content
      */
@@ -153,6 +153,4 @@ class ProcessContentDataSignalArguments
         $this->language = $language;
         return $this;
     }
-
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Selection;
 
 /*
@@ -17,7 +18,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class VisibilityOptionsViewHelper extends AbstractViewHelper
 {
-
     /**
      * Returns the options for the visibility field of a Selection.
      *
@@ -44,5 +44,4 @@ class VisibilityOptionsViewHelper extends AbstractViewHelper
     {
         return $GLOBALS['BE_USER'];
     }
-
 }

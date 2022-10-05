@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Domain\Repository;
 
 /*
@@ -16,11 +17,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ContentRepositoryFactory implements SingletonInterface
 {
-
     /**
      * @var array
      */
-    static protected $instances = [];
+    protected static $instances = [];
 
     /**
      * Returns a class instance of a repository.
@@ -30,12 +30,10 @@ class ContentRepositoryFactory implements SingletonInterface
      * @param string $sourceFieldName
      * @return ContentRepository
      */
-    static public function getInstance($dataType = null, $sourceFieldName = '')
+    public static function getInstance($dataType = null, $sourceFieldName = '')
     {
-
         /** @var ModuleLoader $moduleLoader */
         if (is_null($dataType)) {
-
             // Try to get the data type from the module loader.
             $moduleLoader = GeneralUtility::makeInstance(ModuleLoader::class);
             $dataType = $moduleLoader->getDataType();
@@ -56,5 +54,4 @@ class ContentRepositoryFactory implements SingletonInterface
         $contentRepository->setSourceFieldName($sourceFieldName);
         return $contentRepository;
     }
-
 }

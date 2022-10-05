@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\View\Button;
 
 /*
@@ -21,7 +22,6 @@ use Fab\Vidi\View\AbstractComponentView;
  */
 class NewButton extends AbstractComponentView
 {
-
     /**
      * Renders a "new" button to be placed in the doc header.
      *
@@ -126,5 +126,4 @@ class NewButton extends AbstractComponentView
         /** @var ModulePidService $modulePidService */
         return GeneralUtility::makeInstance(ModulePidService::class);
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\View\MenuItem;
 
 /*
@@ -15,7 +16,6 @@ use Fab\Vidi\View\AbstractComponentView;
  */
 class DividerMenuItem extends AbstractComponentView
 {
-
     /**
      * Renders a "divider" menu item to be placed in the grid menu.
      *

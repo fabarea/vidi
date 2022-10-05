@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Grid\Column;
 
 /*
@@ -16,7 +17,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class IsEditableViewHelper extends AbstractViewHelper
 {
-
     /**
      * @return void
      */
@@ -34,5 +34,4 @@ class IsEditableViewHelper extends AbstractViewHelper
     {
         return Tca::grid()->isEditable($this->arguments['name']);
     }
-
 }

@@ -1,6 +1,7 @@
 <?php
 
 use Fab\Vidi\Command\VidiCommandController;
+
 /**
  * example: bin/typo3 vidi:analyseRelations
  */

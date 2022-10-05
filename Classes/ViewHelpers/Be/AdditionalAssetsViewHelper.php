@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Be;
 
 /*
@@ -19,7 +20,6 @@ use TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper;
  */
 class AdditionalAssetsViewHelper extends AbstractBackendViewHelper
 {
-
     /**
      * Load the assets (JavaScript, CSS) for this Vidi module.
      *
@@ -58,5 +58,4 @@ class AdditionalAssetsViewHelper extends AbstractBackendViewHelper
         }
         return $uri;
     }
-
 }

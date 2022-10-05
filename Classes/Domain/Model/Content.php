@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Domain\Model;
 
 /*
@@ -27,7 +28,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class Content implements \ArrayAccess
 {
-
     /**
      * @var int
      */
@@ -49,7 +49,6 @@ class Content implements \ArrayAccess
      */
     public function __construct($dataType, array $contentData = array())
     {
-
         $this->dataType = $dataType;
         $this->uid = empty($contentData['uid']) ? null : (int)$contentData['uid'];
 
@@ -111,14 +110,12 @@ class Content implements \ArrayAccess
             if ($this->hasRelation($propertyName) && is_scalar($this->$propertyName)) {
                 $value = $this->resolveRelation($propertyName);
             } elseif ($field->getType() === FieldType::RADIO || $field->getType() === FieldType::SELECT) {
-
                 // Attempt to convert the value into a label for radio and select fields.
                 $label = Tca::table($this->getDataType())->field($fieldName)->getLabelForItem($value);
                 if ($label) {
                     $value = $label;
                 }
             }
-
         } elseif (substr($methodName, 0, 3) === 'set' && strlen($methodName) > 4 && isset($arguments[0])) {
             $propertyName = strtolower(substr(substr($methodName, 3), 0, 1)) . substr(substr($methodName, 3), 1);
             $this->$propertyName = $arguments[0];
@@ -148,7 +145,6 @@ class Content implements \ArrayAccess
      */
     protected function resolveRelation($propertyName)
     {
-
         // Convert property name to field name and get the foreign data type.
         $fieldName = Property::name($propertyName)->of($this)->toFieldName();
         $foreignDataType = Tca::table($this->dataType)->field($fieldName)->relationDataType();
@@ -158,7 +154,6 @@ class Content implements \ArrayAccess
         $foreignContentRepository = ContentRepositoryFactory::getInstance($foreignDataType, $fieldName);
 
         if (Tca::table($this->dataType)->field($fieldName)->hasRelationWithCommaSeparatedValues()) {
-
             // Fetch values from repository
             $values = GeneralUtility::trimExplode(',', $this->$propertyName);
             $this->$propertyName = $foreignContentRepository->findIn('uid', $values);
@@ -169,7 +164,8 @@ class Content implements \ArrayAccess
 
             $foreignFieldName = Tca::table($this->dataType)->field($fieldName)->getForeignField();
             if (empty($foreignFieldName)) {
-                $message = sprintf('Missing "foreign_field" key for field "%s" in table "%s".',
+                $message = sprintf(
+                    'Missing "foreign_field" key for field "%s" in table "%s".',
                     $fieldName,
                     $this->dataType
                 );
@@ -188,9 +184,7 @@ class Content implements \ArrayAccess
             }
 
             $this->$propertyName = $foreignContentRepository->$findByProperty($propertyValue);
-
         } elseif (Tca::table($this->dataType)->field($fieldName)->hasOne()) {
-
             $fieldConfiguration = Tca::table($this->dataType)->field($fieldName)->getConfiguration();
 
             // First case, we are on the "good side" of the relation, just query the repository
@@ -209,7 +203,6 @@ class Content implements \ArrayAccess
                 /** @var Content $foreignObject */
                 $this->$propertyName = $foreignContentRepository->$find($this->getUid());
             }
-
         }
         return $this->$propertyName;
     }
@@ -333,7 +326,6 @@ class Content implements \ArrayAccess
 
                 $resolvedValue = '';
                 if ($field->getType() === FieldType::FILE) {
-
                     if ($field->hasMany()) {
                         $files = FileReferenceService::getInstance()->findReferencedBy($propertyName, $this);
 
@@ -350,7 +342,6 @@ class Content implements \ArrayAccess
 
                     // Reset value
                     $result[$fieldName] = $resolvedValue;
-
                 } elseif (Tca::table($this->dataType)->field($fieldName)->hasRelation()) {
                     $objects = $this[$fieldName];
                     if (is_array($objects)) {
@@ -443,7 +434,6 @@ class Content implements \ArrayAccess
      */
     protected function filterForConfiguration($fields)
     {
-
         $excludedFields = Tca::grid($this->dataType)->getExcludedFields();
         foreach ($fields as $key => $field) {
             if (in_array($field, $excludedFields)) {
@@ -471,7 +461,7 @@ class Content implements \ArrayAccess
      */
     protected function isBackendMode()
     {
-        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();;
+        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
+        ;
     }
-
 }

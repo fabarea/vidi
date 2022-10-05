@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Mvc;
 
 /*
@@ -13,7 +14,6 @@ namespace Fab\Vidi\Mvc;
  */
 class JsonResult
 {
-
     /**
      * @var int
      */

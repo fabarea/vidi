@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Service;
 
 /*
@@ -15,13 +16,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class BackendUserPreferenceService
 {
-
     /**
      * Returns a class instance
      *
      * @return \Fab\Vidi\Service\BackendUserPreferenceService|object
      */
-    static public function getInstance()
+    public static function getInstance()
     {
         return GeneralUtility::makeInstance(\Fab\Vidi\Service\BackendUserPreferenceService::class);
     }
@@ -37,7 +37,6 @@ class BackendUserPreferenceService
         $result = '';
         if ($this->getBackendUser() && !empty($this->getBackendUser()->uc[$key])) {
             $result = $this->getBackendUser()->uc[$key];
-
         }
         return $result;
     }

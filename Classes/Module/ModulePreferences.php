@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Module;
 
 /*
@@ -17,7 +18,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ModulePreferences implements SingletonInterface
 {
-
     /**
      * @var array
      */
@@ -35,7 +35,6 @@ class ModulePreferences implements SingletonInterface
      */
     public function get($key, $dataType = '')
     {
-
         if (empty($dataType)) {
             $dataType = $this->getModuleLoader()->getDataType();
         }
@@ -65,7 +64,6 @@ class ModulePreferences implements SingletonInterface
      */
     public function getAll($dataType = '')
     {
-
         if (empty($dataType)) {
             $dataType = $this->getModuleLoader()->getDataType();
         }
@@ -93,7 +91,6 @@ class ModulePreferences implements SingletonInterface
      */
     public function load($dataType)
     {
-
         // Fetch preferences from different sources and overlay them
         $databasePreferences = $this->fetchPreferencesFromDatabase($dataType);
         $generalPreferences = $this->fetchGlobalPreferencesFromTypoScript();
@@ -233,5 +230,4 @@ class ModulePreferences implements SingletonInterface
     {
         return GeneralUtility::makeInstance(ModuleLoader::class);
     }
-
 }

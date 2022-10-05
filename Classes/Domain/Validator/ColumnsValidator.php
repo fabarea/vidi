@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Domain\Validator;
 
 /*
@@ -16,7 +17,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class ColumnsValidator extends AbstractValidator
 {
-
     /**
      * Check if $columns is valid. If it is not valid, throw an exception.
      *

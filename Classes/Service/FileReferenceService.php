@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Service;
 
 /*
@@ -21,18 +22,17 @@ use Fab\Vidi\Tca\Tca;
  */
 class FileReferenceService implements SingletonInterface
 {
-
     /**
      * @var array
      */
-    static protected $instances = [];
+    protected static $instances = [];
 
     /**
      * Returns a class instance
      *
      * @return \Fab\Vidi\Service\FileReferenceService|object
      */
-    static public function getInstance()
+    public static function getInstance()
     {
         return GeneralUtility::makeInstance(\Fab\Vidi\Service\FileReferenceService::class);
     }
@@ -44,9 +44,7 @@ class FileReferenceService implements SingletonInterface
      */
     public function findReferencedBy($propertyName, Content $object)
     {
-
         if (!isset(self::$instances[$object->getUid()][$propertyName])) {
-
             // Initialize instances value
             if (!isset(self::$instances[$object->getUid()])) {
                 self::$instances[$object->getUid()] = [];
@@ -74,7 +72,6 @@ class FileReferenceService implements SingletonInterface
      */
     protected function findByFileReference($propertyName, Content $object)
     {
-
         $fileField = 'uid_local';
         $tableName = 'sys_file_reference';
 
@@ -103,5 +100,4 @@ class FileReferenceService implements SingletonInterface
     {
         return GeneralUtility::makeInstance(DataService::class);
     }
-
 }

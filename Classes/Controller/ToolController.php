@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Controller;
 
 /*
@@ -20,7 +21,6 @@ use Fab\Vidi\Tool\ToolRegistry;
  */
 class ToolController extends ActionController
 {
-
     /**
      * @return void
      */
@@ -64,5 +64,4 @@ class ToolController extends ActionController
     {
         return GeneralUtility::makeInstance(ModuleLoader::class);
     }
-
 }

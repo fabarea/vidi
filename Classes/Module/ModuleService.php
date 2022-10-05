@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Module;
 
 /*
@@ -9,7 +10,6 @@ namespace Fab\Vidi\Module;
  */
 
 use Fab\Vidi\Service\DataService;
-use Fab\Vidi\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Tca\Tca;
@@ -20,7 +20,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class ModuleService implements SingletonInterface
 {
-
     /**
      * @var array
      */
@@ -31,7 +30,7 @@ class ModuleService implements SingletonInterface
      *
      * @return \Fab\Vidi\Module\ModuleService|object
      */
-    static public function getInstance()
+    public static function getInstance()
     {
         return GeneralUtility::makeInstance(\Fab\Vidi\Module\ModuleService::class);
     }
@@ -56,7 +55,6 @@ class ModuleService implements SingletonInterface
     public function getModulesForPid($pid = null): array
     {
         if (!isset($this->storage[$pid])) {
-
             $modules = [];
             foreach ($GLOBALS['TCA'] as $dataType => $configuration) {
                 if (Tca::table($dataType)->isNotHidden()) {

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Grid\Column;
 
 /*
@@ -16,7 +17,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class HeaderViewHelper extends AbstractViewHelper
 {
-
     /**
      * @return void
      */
@@ -34,5 +34,4 @@ class HeaderViewHelper extends AbstractViewHelper
     {
         return Tca::grid()->getHeader($this->arguments['name']);
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\DataHandler;
 
 /*
@@ -14,7 +15,6 @@ use TYPO3\CMS\Core\SingletonInterface;
  */
 abstract class AbstractDataHandler implements DataHandlerInterface, SingletonInterface
 {
-
     /**
      * @var array
      */
@@ -29,5 +29,4 @@ abstract class AbstractDataHandler implements DataHandlerInterface, SingletonInt
     {
         return $this->errorMessages;
     }
-
 }

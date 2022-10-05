@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Tool;
 
 /*
@@ -17,7 +18,6 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
  */
 abstract class AbstractTool implements ToolInterface
 {
-
     /**
      * @param string $templateNameAndPath
      * @return StandaloneView
@@ -25,7 +25,6 @@ abstract class AbstractTool implements ToolInterface
      */
     protected function initializeStandaloneView($templateNameAndPath)
     {
-
         $templateNameAndPath = GeneralUtility::getFileAbsFileName($templateNameAndPath);
 
         /** @var StandaloneView $view */
@@ -55,5 +54,4 @@ abstract class AbstractTool implements ToolInterface
     {
         return GeneralUtility::makeInstance(ModuleLoader::class);
     }
-
 }

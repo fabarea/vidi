@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Module;
 
 /*
@@ -15,21 +16,19 @@ use TYPO3\CMS\Core\Type\Enumeration;
  */
 class ModulePosition extends Enumeration
 {
+    public const DOC_HEADER = 'doc-header';
 
-    const DOC_HEADER = 'doc-header';
+    public const TOP = 'top';
 
-    const TOP = 'top';
+    public const BOTTOM = 'bottom';
 
-    const BOTTOM = 'bottom';
+    public const LEFT = 'left';
 
-    const LEFT = 'left';
+    public const RIGHT = 'right';
 
-    const RIGHT = 'right';
+    public const GRID = 'grid';
 
-    const GRID = 'grid';
+    public const BUTTONS = 'buttons';
 
-    const BUTTONS = 'buttons';
-
-    const MENU_MASS_ACTION = 'menu-mass-action';
-
+    public const MENU_MASS_ACTION = 'menu-mass-action';
 }

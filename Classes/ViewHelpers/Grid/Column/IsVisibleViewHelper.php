@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Grid\Column;
 
 /*
@@ -16,7 +17,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class IsVisibleViewHelper extends AbstractViewHelper
 {
-
     /**
      * @return void
      */
@@ -34,5 +34,4 @@ class IsVisibleViewHelper extends AbstractViewHelper
     {
         return Tca::grid()->isVisible($this->arguments['name']);
     }
-
 }

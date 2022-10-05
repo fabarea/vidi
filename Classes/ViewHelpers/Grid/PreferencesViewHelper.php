@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Grid;
 
 /*
@@ -17,7 +18,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class PreferencesViewHelper extends AbstractViewHelper
 {
-
     /**
      * @return void
      */
@@ -43,5 +43,4 @@ class PreferencesViewHelper extends AbstractViewHelper
     {
         return GeneralUtility::makeInstance(ModulePreferences::class);
     }
-
 }

@@ -19,7 +19,6 @@ use Fab\Vidi\Exception\InvalidKeyInArrayException;
  */
 class TableService extends AbstractTca
 {
-
     /**
      * @var array
      */
@@ -255,7 +254,6 @@ class TableService extends AbstractTca
      */
     public function getDefaultOrderings()
     {
-
         // first clean up the sql segment
         $defaultOrder = str_replace('ORDER BY', '', $this->getDefaultOrderSql());
         $defaultOrderParts = GeneralUtility::trimExplode(',', $defaultOrder, true);
@@ -322,7 +320,7 @@ class TableService extends AbstractTca
     {
         if ($this->isComposite($fieldName)) {
             $parts = explode('.', $fieldName);
-            list ($strippedFieldPath, $possibleTableName) = $parts;
+            list($strippedFieldPath, $possibleTableName) = $parts;
             $hasField = isset($this->columnTca[$strippedFieldPath], $GLOBALS['TCA'][$possibleTableName]);
 
             // Continue checking that the $strippedFieldName is of type "group"
@@ -419,7 +417,6 @@ class TableService extends AbstractTca
      */
     public function field($fieldName)
     {
-
         // In case field contains items.tx_table for field type "group"
         $compositeField = '';
         if (strpos($fieldName, '.') !== false) {
@@ -449,7 +446,6 @@ class TableService extends AbstractTca
 
 
         if (empty($this->instances[$fieldName])) {
-
             $instance = GeneralUtility::makeInstance(
                 'Fab\Vidi\Tca\FieldService',
                 $fieldName,
@@ -462,5 +458,4 @@ class TableService extends AbstractTca
         }
         return $this->instances[$fieldName];
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Tool;
 
 /*
@@ -18,7 +19,6 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class RelationAnalyserTool extends AbstractTool
 {
-
     /**
      * Display the title of the tool on the welcome screen.
      *
@@ -54,7 +54,6 @@ class RelationAnalyserTool extends AbstractTool
      */
     public function work(array $arguments = array()): string
     {
-
         $templateNameAndPath = 'EXT:vidi/Resources/Private/Standalone/Tool/RelationAnalyser/WorkResult.html';
         $view = $this->initializeStandaloneView($templateNameAndPath);
 
@@ -103,4 +102,3 @@ class RelationAnalyserTool extends AbstractTool
         return GeneralUtility::makeInstance(GridAnalyserService::class);
     }
 }
-

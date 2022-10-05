@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Domain\Repository;
 
 /*
@@ -18,7 +19,6 @@ use Fab\Vidi\Domain\Model\Selection;
  */
 class SelectionRepository extends Repository
 {
-
     /**
      * @param string $dataType
      * @return QueryResult
@@ -77,5 +77,4 @@ class SelectionRepository extends Repository
     {
         return $GLOBALS['BE_USER'];
     }
-
 }

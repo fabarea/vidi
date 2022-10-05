@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\View\Button;
 
 /*
@@ -17,7 +18,6 @@ use Fab\Vidi\View\AbstractComponentView;
  */
 class ClipboardButton extends AbstractComponentView
 {
-
     /**
      * Renders a "clipboard" button to be placed in the doc header.
      *
@@ -65,5 +65,4 @@ class ClipboardButton extends AbstractComponentView
     {
         return GeneralUtility::makeInstance(ClipboardService::class);
     }
-
 }

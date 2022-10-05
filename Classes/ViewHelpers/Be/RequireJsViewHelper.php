@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Be;
 
 /*
@@ -18,7 +19,6 @@ use TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper;
  */
 class RequireJsViewHelper extends AbstractBackendViewHelper
 {
-
     /**
      * Load RequireJS code.
      *
@@ -26,7 +26,6 @@ class RequireJsViewHelper extends AbstractBackendViewHelper
      */
     public function render()
     {
-
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
 
         $content = $this->renderChildren();
@@ -37,5 +36,4 @@ class RequireJsViewHelper extends AbstractBackendViewHelper
         $pageRenderer->addRequireJsConfiguration($configuration);
         $pageRenderer->loadRequireJsModule('Fab/Vidi/Vidi/Main');
     }
-
 }

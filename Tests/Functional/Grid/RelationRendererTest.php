@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Grid;
 
 /**
@@ -22,41 +23,44 @@ require_once dirname(dirname(__FILE__)) . '/AbstractFunctionalTestCase.php';
 /**
  * Test case for class \Fab\Vidi\Grid\CategoryRenderer.
  */
-class RelationRendererTest extends AbstractFunctionalTestCase {
+class RelationRendererTest extends AbstractFunctionalTestCase
+{
+    /**
+     * @var RelationRenderer
+     */
+    private $fixture;
 
-	/**
-	 * @var RelationRenderer
-	 */
-	private $fixture;
+    /**
+     * @var string
+     */
+    private $dataType = 'fe_users';
 
-	/**
-	 * @var string
-	 */
-	private $dataType = 'fe_users';
+    /**
+     * @var string
+     */
+    private $moduleCode = 'user_VidiFeUsersM1';
 
-	/**
-	 * @var string
-	 */
-	private $moduleCode = 'user_VidiFeUsersM1';
+    public function setUp()
+    {
+        parent::setUp();
+        $moduleLoader = new ModuleLoader($this->dataType);
+        $moduleLoader->register();
+        $GLOBALS['_GET']['M'] = $this->moduleCode;
+        $this->fixture = new RelationRenderer();
+    }
 
-	public function setUp() {
-		parent::setUp();
-		$moduleLoader = new ModuleLoader($this->dataType);
-		$moduleLoader->register();
-		$GLOBALS['_GET']['M'] = $this->moduleCode;
-		$this->fixture = new RelationRenderer();
-	}
+    public function tearDown()
+    {
+        unset($this->fixture, $GLOBALS['_GET']['M']);
+    }
 
-	public function tearDown() {
-		unset($this->fixture, $GLOBALS['_GET']['M']);
-	}
-
-	/**
-	 * @test
-	 */
-	public function renderAssetWithNoCategoryReturnsEmpty() {
-		$content = new Content($this->dataType);
-		$this->markTestIncomplete(); # TCA must be faked
-		#$actual = $this->fixture->setObject($content)->render();
-	}
+    /**
+     * @test
+     */
+    public function renderAssetWithNoCategoryReturnsEmpty()
+    {
+        $content = new Content($this->dataType);
+        $this->markTestIncomplete(); # TCA must be faked
+        #$actual = $this->fixture->setObject($content)->render();
+    }
 }

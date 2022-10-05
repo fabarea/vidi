@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Module;
 
 /*
@@ -13,11 +14,10 @@ namespace Fab\Vidi\Module;
  */
 class ConfigurablePart
 {
-
-    const __default = '';
-    const EXCLUDED_FIELDS = 'excluded_fields';
-    const MENU_VISIBLE_ITEMS = 'menuVisibleItems';
-    const MENU_VISIBLE_ITEMS_DEFAULT = 'menuVisibleItemsDefault';
+    public const __default = '';
+    public const EXCLUDED_FIELDS = 'excluded_fields';
+    public const MENU_VISIBLE_ITEMS = 'menuVisibleItems';
+    public const MENU_VISIBLE_ITEMS_DEFAULT = 'menuVisibleItemsDefault';
 
     /**
      * Get the valid values for this enum.
@@ -25,14 +25,12 @@ class ConfigurablePart
      * @param boolean $include_default
      * @return array
      */
-    static public function getParts($include_default = false)
+    public static function getParts($include_default = false)
     {
-
         return array(
             'EXCLUDED_FIELDS' => self::EXCLUDED_FIELDS,
             'MENU_VISIBLE_ITEMS' => self::MENU_VISIBLE_ITEMS,
             'MENU_VISIBLE_ITEMS_DEFAULT' => self::MENU_VISIBLE_ITEMS_DEFAULT,
         );
     }
-
 }

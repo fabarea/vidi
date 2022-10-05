@@ -36,7 +36,6 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
  */
 class ContentRepository implements RepositoryInterface
 {
-
     /**
      * Tell whether it is a raw result (array) or object being returned.
      *
@@ -201,7 +200,6 @@ class ContentRepository implements RepositoryInterface
      */
     public function findBy(Matcher $matcher, Order $order = null, $limit = null, $offset = null): array
     {
-
         $query = $this->createQuery();
 
         $limit = (int)$limit; // make sure to cast
@@ -243,7 +241,6 @@ class ContentRepository implements RepositoryInterface
      */
     public function findOneBy(Matcher $matcher): Content
     {
-
         $query = $this->createQuery();
 
         $constraints = $this->computeConstraints($query, $matcher);
@@ -269,7 +266,6 @@ class ContentRepository implements RepositoryInterface
      */
     public function countBy(Matcher $matcher): int
     {
-
         $query = $this->createQuery();
 
         $constraints = $this->computeConstraints($query, $matcher);
@@ -290,7 +286,6 @@ class ContentRepository implements RepositoryInterface
      */
     public function localize($content, $language): bool
     {
-
         // Security check
         $this->getContentValidator()->validate($content);
         $this->getLanguageValidator()->validate($language);
@@ -311,7 +306,6 @@ class ContentRepository implements RepositoryInterface
      */
     public function update($content)
     {
-
         // Security check.
         $this->getContentValidator()->validate($content);
 
@@ -350,7 +344,6 @@ class ContentRepository implements RepositoryInterface
      */
     public function move($content, $target): bool
     {
-
         // Security check.
         $this->getContentValidator()->validate($content);
 
@@ -370,7 +363,6 @@ class ContentRepository implements RepositoryInterface
      */
     public function copy($content, $target): bool
     {
-
         // Security check.
         $this->getContentValidator()->validate($content);
 
@@ -481,7 +473,6 @@ class ContentRepository implements RepositoryInterface
         if ($this->defaultQuerySettings) {
             $query->setTypo3QuerySettings($this->defaultQuerySettings);
         } else {
-
             // Initialize and pass the query settings at this level.
             $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
 
@@ -613,7 +604,6 @@ class ContentRepository implements RepositoryInterface
             $logical = $matcher->getDefaultLogicalSeparator();
             $constraints = $query->$logical($collectedConstraints);
         } elseif (!empty($collectedConstraints)) {
-
             // true means there is one constraint only and should become the result
             $constraints = current($collectedConstraints);
         }
@@ -633,19 +623,16 @@ class ContentRepository implements RepositoryInterface
      */
     protected function computeSearchTermConstraint(Query $query, Matcher $matcher): ?ConstraintInterface
     {
-
         $result = null;
 
         // Search term case
         if ($matcher->getSearchTerm()) {
-
             $fields = GeneralUtility::trimExplode(',', Tca::table($this->dataType)->getSearchFields(), true);
 
             $constraints = [];
             $likeClause = sprintf('%%%s%%', $matcher->getSearchTerm());
             foreach ($fields as $fieldNameAndPath) {
                 if ($this->isSuitableForLike($fieldNameAndPath, $matcher->getSearchTerm())) {
-
                     $dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $this->dataType);
                     $fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $this->dataType);
 
@@ -677,7 +664,6 @@ class ContentRepository implements RepositoryInterface
 
         // true means it is a string
         if (!MathUtility::canBeInterpretedAsInteger($value)) {
-
             $dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $this->dataType);
             $fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $this->dataType);
 
@@ -711,7 +697,6 @@ class ContentRepository implements RepositoryInterface
             $constraints = [];
 
             foreach ($criteria as $criterion) {
-
                 $fieldNameAndPath = $criterion['fieldNameAndPath'];
                 $operand = $criterion['operand'];
 
@@ -777,7 +762,6 @@ class ContentRepository implements RepositoryInterface
      */
     protected function processMagicCall($propertyName, $value, $flag = '')
     {
-
         $fieldName = Property::name($propertyName)->of($this->dataType)->toFieldName();
 
         /** @var $matcher Matcher */
@@ -785,7 +769,6 @@ class ContentRepository implements RepositoryInterface
 
         $table = Tca::table($this->dataType);
         if ($table->field($fieldName)->isGroup()) {
-
             $valueParts = explode('.', $value, 2);
             $fieldName = $fieldName . '.' . $valueParts[0];
             $value = $valueParts[1];
@@ -881,5 +864,4 @@ class ContentRepository implements RepositoryInterface
     {
         return GeneralUtility::makeInstance(Dispatcher::class);
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Grid;
 
 /*
@@ -19,7 +20,6 @@ use TYPO3\CMS\Core\Imaging\Icon;
  */
 class RelationRenderer extends ColumnRendererAbstract
 {
-
     /**
      * Render a representation of the relation on the GUI.
      *
@@ -41,14 +41,12 @@ class RelationRenderer extends ColumnRendererAbstract
      */
     protected function renderForBackend()
     {
-
         $output = '';
 
         // Get label of the foreign table.
         $foreignLabelField = $this->getForeignTableLabelField($this->fieldName);
 
         if (Tca::table($this->object)->field($this->fieldName)->hasOne()) {
-
             $foreignObject = $this->object[$this->fieldName];
 
             if ($foreignObject) {
@@ -61,9 +59,7 @@ class RelationRenderer extends ColumnRendererAbstract
                 );
             }
         } elseif (Tca::table($this->object)->field($this->fieldName)->hasMany()) {
-
             if (!empty($this->object[$this->fieldName])) {
-
                 /** @var $foreignObject \Fab\Vidi\Domain\Model\Content */
                 foreach ($this->object[$this->fieldName] as $foreignObject) {
                     $output .= sprintf(
@@ -85,14 +81,12 @@ class RelationRenderer extends ColumnRendererAbstract
      */
     protected function renderForFrontend()
     {
-
         $output = '';
 
         // Get label of the foreign table.
         $foreignLabelField = $this->getForeignTableLabelField($this->fieldName);
 
         if (Tca::table($this->object)->field($this->fieldName)->hasOne()) {
-
             $foreignObject = $this->object[$this->fieldName];
 
             if ($foreignObject) {
@@ -102,9 +96,7 @@ class RelationRenderer extends ColumnRendererAbstract
                 );
             }
         } elseif (Tca::table($this->object)->field($this->fieldName)->hasMany()) {
-
             if (!empty($this->object[$this->fieldName])) {
-
                 /** @var $foreignObject \Fab\Vidi\Domain\Model\Content */
                 foreach ($this->object[$this->fieldName] as $foreignObject) {
                     $output .= sprintf(
@@ -157,7 +149,6 @@ class RelationRenderer extends ColumnRendererAbstract
      */
     protected function getForeignTableLabelField($fieldName)
     {
-
         // Get TCA table service.
         $table = Tca::table($this->object);
 
@@ -175,5 +166,4 @@ class RelationRenderer extends ColumnRendererAbstract
     {
         return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
     }
-
 }

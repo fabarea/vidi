@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers;
 
 /*
@@ -18,7 +19,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class SpriteViewHelper extends AbstractViewHelper
 {
-
     /**
      * @return void
      */
@@ -44,5 +44,4 @@ class SpriteViewHelper extends AbstractViewHelper
     {
         return GeneralUtility::makeInstance(IconFactory::class);
     }
-
 }

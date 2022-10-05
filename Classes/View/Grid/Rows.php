@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\View\Grid;
 
 /*
@@ -15,7 +16,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Rows
 {
-
     /**
      * Returns rows of content as array.
      *

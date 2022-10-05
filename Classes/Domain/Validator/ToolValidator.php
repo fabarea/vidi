@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Domain\Validator;
 
 /*
@@ -17,7 +18,6 @@ use Fab\Vidi\Tool\ToolRegistry;
  */
 class ToolValidator extends AbstractValidator
 {
-
     /**
      * Check whether $tool is valid.
      *
@@ -26,7 +26,6 @@ class ToolValidator extends AbstractValidator
      */
     public function isValid($tool)
     {
-
         $dataType = $this->getModuleLoader()->getDataType();
         $isValid = ToolRegistry::getInstance()->isAllowed($dataType, $tool);
 

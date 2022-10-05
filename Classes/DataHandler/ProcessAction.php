@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\DataHandler;
 
 /*
@@ -15,15 +16,13 @@ use TYPO3\CMS\Core\Type\Enumeration;
  */
 class ProcessAction extends Enumeration
 {
+    public const REMOVE = 'remove';
 
-    const REMOVE = 'remove';
+    public const UPDATE = 'update';
 
-    const UPDATE = 'update';
+    public const COPY = 'copy';
 
-    const COPY = 'copy';
+    public const MOVE = 'move';
 
-    const MOVE = 'move';
-
-    const LOCALIZE = 'localize';
-
+    public const LOCALIZE = 'localize';
 }

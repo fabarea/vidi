@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers;
 
 /*
@@ -17,7 +18,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class ModuleLoaderViewHelper extends AbstractViewHelper
 {
-
     /**
      * @return void
      */
@@ -39,5 +39,4 @@ class ModuleLoaderViewHelper extends AbstractViewHelper
         $moduleLoader = GeneralUtility::makeInstance(ModuleLoader::class);
         return $moduleLoader->$getter();
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Controller;
 
 /*
@@ -20,7 +21,6 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
  */
 class FacetController extends ActionController
 {
-
     /**
      * Suggest values according to a facet.
      * Output a json list of key / values.
@@ -31,7 +31,6 @@ class FacetController extends ActionController
      */
     public function autoSuggestAction($facet, $searchTerm)
     {
-
         $suggestions = $this->getFacetSuggestionService()->getSuggestions($facet);
 
 
@@ -46,7 +45,6 @@ class FacetController extends ActionController
      */
     public function autoSuggestsAction()
     {
-
         $suggestions = [];
         foreach (Tca::grid()->getFacets() as $facet) {
             /** @var FacetInterface $facet */
@@ -66,5 +64,4 @@ class FacetController extends ActionController
     {
         return GeneralUtility::makeInstance(FacetSuggestionService::class);
     }
-
 }

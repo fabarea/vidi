@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Grid;
 
 /*
@@ -15,7 +16,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class GridAnalyserService
 {
-
     /**
      * Check relation for table.
      *
@@ -24,7 +24,6 @@ class GridAnalyserService
      */
     public function checkRelationForTable($tableName)
     {
-
         $relations = [];
         $table = Tca::table($tableName);
 
@@ -36,7 +35,6 @@ class GridAnalyserService
 EOF;
 
         foreach (Tca::grid($tableName)->getFields() as $fieldName => $configuration) {
-
             if ($table->hasField($fieldName)) {
                 if ($table->field($fieldName)->hasMany()) {
                     if ($table->field($fieldName)->hasRelationWithCommaSeparatedValues()) {
@@ -45,7 +43,6 @@ EOF;
                     } elseif ($table->field($fieldName)->hasRelationManyToMany()) {
                         $_relations = $this->checkRelationManyToMany($tableName, $fieldName);
                         $relations = array_merge($relations, $_relations);
-
                     } elseif ($table->field($fieldName)->hasRelationOneToMany()) {
                         $_relations = $this->checkRelationOf($tableName, $fieldName, 'one-to-many');
                         $relations = array_merge($relations, $_relations);
@@ -54,7 +51,6 @@ EOF;
                     }
                     $relations[] = '';
                 } elseif ($table->field($fieldName)->hasOne()) {
-
                     if ($table->field($fieldName)->hasRelationOneToOne()) {
                         $relations[] = sprintf('* one-to-one "%s"', $fieldName);
                     } elseif ($table->field($fieldName)->hasRelationManyToOne()) {
@@ -79,7 +75,6 @@ EOF;
      */
     protected function checkRelationManyToMany($tableName, $fieldName)
     {
-
         $output = [];
 
         $table = Tca::table($tableName);
@@ -113,7 +108,6 @@ EOF;
      */
     protected function checkRelationOf($tableName, $fieldName, $relationType)
     {
-
         $output = [];
 
         $table = Tca::table($tableName);

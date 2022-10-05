@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Domain\Validator;
 
 /*
@@ -15,7 +16,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class LanguageValidator
 {
-
     /**
      * Check whether the $language is valid.
      *
@@ -25,7 +25,6 @@ class LanguageValidator
      */
     public function validate($language)
     {
-
         if (!$this->getLanguageService()->languageExists((int)$language)) {
             throw new \Exception('The language "' . $language . '" does not exist', 1351605542);
         }
@@ -38,5 +37,4 @@ class LanguageValidator
     {
         return GeneralUtility::makeInstance(LanguageService::class);
     }
-
 }

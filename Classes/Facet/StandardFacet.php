@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Facet;
 
 /*
@@ -19,7 +20,6 @@ use TYPO3\CMS\Core\Localization\LanguageService;
  */
 class StandardFacet implements FacetInterface
 {
-
     /**
      * @var string
      */
@@ -95,7 +95,6 @@ class StandardFacet implements FacetInterface
      */
     public function getSuggestions(): array
     {
-
         $values = [];
         foreach ($this->suggestions as $key => $label) {
             $localizedLabel = $this->getLanguageService()->sL($label);
@@ -159,5 +158,4 @@ class StandardFacet implements FacetInterface
     {
         return $matcher;
     }
-
 }

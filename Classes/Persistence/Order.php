@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Persistence;
 
 /*
@@ -13,7 +14,6 @@ namespace Fab\Vidi\Persistence;
  */
 class Order
 {
-
     /**
      * The orderings
      *

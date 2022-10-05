@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Tca;
 
 /*
@@ -13,14 +14,13 @@ namespace Fab\Vidi\Tca;
  */
 interface TcaServiceInterface
 {
+    public const TYPE_TABLE = 'table';
 
-    const TYPE_TABLE = 'table';
+    public const TYPE_FIELD = 'field';
 
-    const TYPE_FIELD = 'field';
+    public const TYPE_GRID = 'grid';
 
-    const TYPE_GRID = 'grid';
+    public const TYPE_FORM = 'form';
 
-    const TYPE_FORM = 'form';
-
-    const TYPE_FACET = 'facet';
+    public const TYPE_FACET = 'facet';
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Module;
 
 /*
@@ -15,15 +16,13 @@ use TYPO3\CMS\Core\Type\Enumeration;
  */
 class ModuleName extends Enumeration
 {
+    public const WEB = 'web';
 
-    const WEB = 'web';
+    public const FILE = 'file';
 
-    const FILE = 'file';
+    public const USER = 'user';
 
-    const USER = 'user';
+    public const ADMIN = 'admin';
 
-    const ADMIN = 'admin';
-
-    const SYSTEM = 'system';
-
+    public const SYSTEM = 'system';
 }

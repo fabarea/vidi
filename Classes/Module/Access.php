@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Module;
 
 /*
@@ -15,8 +16,7 @@ use TYPO3\CMS\Core\Type\Enumeration;
  */
 class Access extends Enumeration
 {
+    public const USER = 'user,group';
 
-    const USER = 'user,group';
-
-    const ADMIN = 'admin';
+    public const ADMIN = 'admin';
 }

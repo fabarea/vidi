@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\View\System;
 
 /*
@@ -8,7 +9,6 @@ namespace Fab\Vidi\View\System;
  * LICENSE.md file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\View\AbstractComponentView;
 
@@ -18,7 +18,6 @@ use Fab\Vidi\View\AbstractComponentView;
  */
 class ButtonsSystem extends AbstractComponentView
 {
-
     /**
      * Rendering buttons in the grids given a Content object.
      *
@@ -29,5 +28,4 @@ class ButtonsSystem extends AbstractComponentView
     {
         return '';
     }
-
 }

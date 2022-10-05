@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Persistence;
 
 /*
@@ -17,13 +18,12 @@ use Fab\Vidi\Tca\Tca;
  */
 class OrderObjectFactory implements SingletonInterface
 {
-
     /**
      * Gets a singleton instance of this class.
      *
      * @return \Fab\Vidi\Persistence\OrderObjectFactory|object
      */
-    static public function getInstance()
+    public static function getInstance()
     {
         return GeneralUtility::makeInstance(\Fab\Vidi\Persistence\OrderObjectFactory::class);
     }
@@ -36,7 +36,6 @@ class OrderObjectFactory implements SingletonInterface
      */
     public function getOrder($dataType = '')
     {
-
         // Default ordering
         $order = Tca::table($dataType)->getDefaultOrderings();
 

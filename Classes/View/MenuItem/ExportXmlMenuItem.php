@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\View\MenuItem;
 
 /*
@@ -16,7 +17,6 @@ use Fab\Vidi\View\AbstractComponentView;
  */
 class ExportXmlMenuItem extends AbstractComponentView
 {
-
     /**
      * Renders an "xml export" item to be placed in the menu.
      * Only the admin is allowed to export for now as security is not handled.
@@ -26,11 +26,11 @@ class ExportXmlMenuItem extends AbstractComponentView
      */
     public function render()
     {
-        $result = sprintf('<li><a href="#" class="dropdown-item export-xml" data-format="xml">%s %s</a></li>',
+        $result = sprintf(
+            '<li><a href="#" class="dropdown-item export-xml" data-format="xml">%s %s</a></li>',
             $this->getIconFactory()->getIcon('mimetypes-text-html', Icon::SIZE_SMALL),
             $this->getLanguageService()->sL('LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:export-xml')
         );
         return $result;
     }
-
 }

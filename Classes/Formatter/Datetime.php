@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Formatter;
 
 /*
@@ -9,14 +10,12 @@ namespace Fab\Vidi\Formatter;
  */
 
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Format date + time that will be displayed in the Grid
  */
 class Datetime implements FormatterInterface, SingletonInterface
 {
-
     /**
      * Format a date
      *
@@ -28,8 +27,6 @@ class Datetime implements FormatterInterface, SingletonInterface
     {
         $result = '';
         if ($value > 0) {
-
-
             $timeStamp = '@' . $value;
             try {
                 $date = new \DateTime($timeStamp);
@@ -47,5 +44,4 @@ class Datetime implements FormatterInterface, SingletonInterface
         }
         return $result;
     }
-
 }

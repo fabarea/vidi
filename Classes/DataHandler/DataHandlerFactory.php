@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\DataHandler;
 
 /*
@@ -16,7 +17,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class DataHandlerFactory implements SingletonInterface
 {
-
     /**
      * @var string
      */
@@ -62,7 +62,6 @@ class DataHandlerFactory implements SingletonInterface
      */
     public function getDataHandler()
     {
-
         if (empty($this->dataType)) {
             throw new \Exception('Attribute $this->dataType can not be empty', 1410001035);
         }
@@ -82,5 +81,4 @@ class DataHandlerFactory implements SingletonInterface
         $dataHandler = GeneralUtility::makeInstance($className);
         return $dataHandler;
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\View\Grid;
 
 /*
@@ -25,7 +26,6 @@ use Fab\Vidi\View\AbstractComponentView;
  */
 class Row extends AbstractComponentView
 {
-
     /**
      * @var array
      */
@@ -56,28 +56,23 @@ class Row extends AbstractComponentView
      */
     public function render(Content $object = null, $rowIndex = 0)
     {
-
         // Initialize returned array
         $output = [];
 
         foreach (Tca::grid()->getFields() as $fieldNameAndPath => $configuration) {
-
             $value = ''; // default is empty at first.
 
             $this->computeVariables($object, $fieldNameAndPath);
 
             // Only compute the value if it is going to be shown in the Grid. Lost of time otherwise!
             if (in_array($fieldNameAndPath, $this->columns)) {
-
                 // Fetch value
                 if (Tca::grid()->hasRenderers($fieldNameAndPath)) {
-
                     $value = '';
                     $renderers = Tca::grid()->getRenderers($fieldNameAndPath);
 
                     // if is relation has one
                     foreach ($renderers as $rendererClassName => $rendererConfiguration) {
-
                         /** @var $rendererObject \Fab\Vidi\Grid\ColumnRendererInterface */
                         $rendererObject = GeneralUtility::makeInstance($rendererClassName);
                         $value .= $rendererObject
@@ -98,7 +93,6 @@ class Row extends AbstractComponentView
 
                 // Here, there is the chance to further "decorate" the value for inline editing, localization, ...
                 if ($this->willBeEnriched()) {
-
                     $localizedStructure = $this->initializeLocalizedStructure($value);
 
                     if ($this->isEditable()) {
@@ -137,11 +131,11 @@ class Row extends AbstractComponentView
      */
     protected function flattenStructure(array $localizedStructure)
     {
-
         // Flatten the structure.
         $value = '';
         foreach ($localizedStructure as $structure) {
-            $value .= sprintf('<div class="%s">%s</div>',
+            $value .= sprintf(
+                '<div class="%s">%s</div>',
                 $structure['status'] !== LocalizationStatus::LOCALIZED ? 'invisible' : '',
                 $structure['value']
             );
@@ -173,7 +167,6 @@ class Row extends AbstractComponentView
      */
     protected function initializeLocalizedStructure($value)
     {
-
         $localizedStructure[] = [
             'value' => empty($value) && $this->isEditable() ? $this->getEmptyValuePlaceholder() : $value,
             'status' => empty($value) ? LocalizationStatus::EMPTY_VALUE : LocalizationStatus::LOCALIZED,
@@ -182,12 +175,9 @@ class Row extends AbstractComponentView
         ];
 
         if ($this->isLocalized()) {
-
             foreach ($this->getLanguageService()->getLanguages() as $language) {
-
                 // Make sure the language is allowed for the current Backend User.
                 if ($this->isLanguageAllowedForBackendUser($language)) {
-
                     $resolvedObject = $this->getResolvedObject();
                     $fieldName = $this->getFieldName();
 
@@ -201,7 +191,8 @@ class Row extends AbstractComponentView
                             $localizedValue = $this->isEditable() ? $this->getEmptyValuePlaceholder() : '';
                         }
                     } else {
-                        $localizedValue = sprintf('<a href="%s" style="color: black">%s</a>',
+                        $localizedValue = sprintf(
+                            '<a href="%s" style="color: black">%s</a>',
                             $this->getLocalizedUri($language['uid']),
                             $this->getLabelService()->sL('LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:create_translation')
                         );
@@ -238,7 +229,8 @@ class Row extends AbstractComponentView
      */
     protected function getEmptyValuePlaceholder()
     {
-        return sprintf('<i>%s</i>',
+        return sprintf(
+            '<i>%s</i>',
             $this->getLabelService()->sL('LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:start_editing')
         );
     }
@@ -250,7 +242,6 @@ class Row extends AbstractComponentView
      */
     protected function willBeEnriched()
     {
-
         $willBeEnriched = false;
 
         if ($this->fieldExists()) {
@@ -296,13 +287,13 @@ class Row extends AbstractComponentView
      */
     protected function addEditableMarkup(array $localizedStructure)
     {
-
         $dataType = $this->getDataType();
         $fieldName = $this->getFieldName();
 
         foreach ($localizedStructure as $index => $structure) {
             if ($structure['status'] !== LocalizationStatus::NOT_YET_LOCALIZED) {
-                $localizedStructure[$index]['value'] = sprintf('<span class="%s" data-language="%s">%s</span>',
+                $localizedStructure[$index]['value'] = sprintf(
+                    '<span class="%s" data-language="%s">%s</span>',
                     Tca::table($dataType)->field($fieldName)->isTextArea() ? 'editable-textarea' : 'editable-textfield',
                     $structure['language'],
                     $structure['value']
@@ -320,10 +311,9 @@ class Row extends AbstractComponentView
      */
     protected function addLocalizationMarkup(array $localizedStructure)
     {
-
         foreach ($localizedStructure as $index => $structure) {
-
-            $localizedStructure[$index]['value'] = sprintf('<span>%s %s</span>',
+            $localizedStructure[$index]['value'] = sprintf(
+                '<span>%s %s</span>',
                 empty($structure['languageFlag']) ? '' : $this->getIconFactory()->getIcon('flags-' . $structure['languageFlag'], Icon::SIZE_SMALL),
                 $structure['value']
             );
@@ -339,16 +329,13 @@ class Row extends AbstractComponentView
      */
     protected function addSpriteIconMarkup(array $localizedStructure)
     {
-
         $object = $this->getObject();
 
         foreach ($localizedStructure as $index => $structure) {
-
             $recordData = [];
 
             $enablesMethods = array('Hidden', 'Deleted', 'StartTime', 'EndTime');
             foreach ($enablesMethods as $enableMethod) {
-
                 $methodName = 'get' . $enableMethod . 'Field';
 
                 // Fetch possible hidden filed.
@@ -359,7 +346,8 @@ class Row extends AbstractComponentView
             }
 
             // Get Enable Fields of the object to render the sprite with overlays.
-            $localizedStructure[$index]['value'] = sprintf('%s %s',
+            $localizedStructure[$index]['value'] = sprintf(
+                '%s %s',
                 $this->getIconFactory()->getIconForRecord($object->getDataType(), $recordData, Icon::SIZE_SMALL),
                 $structure['value']
             );
@@ -392,7 +380,6 @@ class Row extends AbstractComponentView
      */
     protected function getLocalizedUri($language)
     {
-
         // Transmit recursive selection parameter.
         $parameterPrefix = $this->getModuleLoader()->getParameterPrefix();
         $parameters = GeneralUtility::_GP($parameterPrefix);
@@ -423,7 +410,6 @@ class Row extends AbstractComponentView
      */
     protected function resolveValue(Content $object, $fieldNameAndPath)
     {
-
         // Get the first part of the field name and
         $fieldName = $this->getFieldPathResolver()->stripFieldName($fieldNameAndPath);
 
@@ -433,7 +419,6 @@ class Row extends AbstractComponentView
         if (is_array($value) && empty($value)) {
             $value = '';
         } elseif ($value instanceof Content) {
-
             $fieldNameOfForeignTable = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
 
             // true means the field name does not contains a path. "title" vs "metadata.title"
@@ -474,7 +459,6 @@ class Row extends AbstractComponentView
      */
     protected function isClean($string)
     {
-
         // @todo implement me!
         $result = true;
         return $result;
@@ -494,7 +478,6 @@ class Row extends AbstractComponentView
      */
     protected function processValue($value, Content $object, $fieldNameAndPath)
     {
-
         // Set default value if $field name correspond to the label of the table
         $fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath);
         if (Tca::table($object->getDataType())->getLabelField() === $fieldName && empty($value)) {
@@ -649,5 +632,4 @@ class Row extends AbstractComponentView
     {
         return GeneralUtility::makeInstance(LanguageService::class);
     }
-
 }

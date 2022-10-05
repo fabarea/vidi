@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Language;
 
 /*
@@ -15,9 +16,7 @@ use TYPO3\CMS\Core\Type\Enumeration;
  */
 class LocalizationStatus extends Enumeration
 {
-
-    const LOCALIZED = 'localized';
-    const NOT_YET_LOCALIZED = 'notYetLocalized';
-    const EMPTY_VALUE = 'emptyValue';
-
+    public const LOCALIZED = 'localized';
+    public const NOT_YET_LOCALIZED = 'notYetLocalized';
+    public const EMPTY_VALUE = 'emptyValue';
 }

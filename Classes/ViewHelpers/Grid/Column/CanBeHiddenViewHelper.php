@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Grid\Column;
 
 /*
@@ -33,5 +34,4 @@ class CanBeHiddenViewHelper extends AbstractViewHelper
     {
         return Tca::grid()->canBeHidden($this->arguments['name']);
     }
-
 }

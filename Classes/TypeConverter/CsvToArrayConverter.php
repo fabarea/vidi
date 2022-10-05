@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\TypeConverter;
 
 /*
@@ -17,7 +18,6 @@ use TYPO3\CMS\Extbase\Property\TypeConverter\AbstractTypeConverter;
  */
 class CsvToArrayConverter extends AbstractTypeConverter
 {
-
     /**
      * @var array<string>
      */
@@ -49,5 +49,4 @@ class CsvToArrayConverter extends AbstractTypeConverter
     {
         return GeneralUtility::trimExplode(',', $source, true);
     }
-
 }

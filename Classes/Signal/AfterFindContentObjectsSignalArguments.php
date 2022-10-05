@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Signal;
 
 /*
@@ -16,7 +17,6 @@ use Fab\Vidi\Persistence\Order;
  */
 class AfterFindContentObjectsSignalArguments
 {
-
     /**
      * @var string
      */
@@ -200,5 +200,4 @@ class AfterFindContentObjectsSignalArguments
     {
         return $this->offset;
     }
-
 }

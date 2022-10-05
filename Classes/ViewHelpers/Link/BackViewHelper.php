@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Link;
 
 /*
@@ -18,7 +19,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class BackViewHelper extends AbstractViewHelper
 {
-
     /**
      * Returns the "back" buttons to be placed in the doc header.
      *
@@ -26,10 +26,10 @@ class BackViewHelper extends AbstractViewHelper
      */
     public function render()
     {
-
         $result = '';
         if (GeneralUtility::_GET('returnUrl')) {
-            $result = sprintf('<a href="%s" class="btn btn-default btn-sm btn-return-top">%s</a>',
+            $result = sprintf(
+                '<a href="%s" class="btn btn-default btn-sm btn-return-top">%s</a>',
                 GeneralUtility::_GP('returnUrl'),
                 $this->getIconFactory()->getIcon('actions-close', Icon::SIZE_SMALL)
             );

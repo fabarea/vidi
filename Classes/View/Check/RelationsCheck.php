@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\View\Check;
 
 /*
@@ -16,7 +17,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class RelationsCheck extends AbstractComponentView
 {
-
     /**
      * @var array
      */
@@ -29,7 +29,6 @@ class RelationsCheck extends AbstractComponentView
      */
     public function render()
     {
-
         $result = '';
 
         // Check whether storage is configured or not.
@@ -119,15 +118,12 @@ EOF;
      */
     protected function isTcaValid()
     {
-
         $dataType = $this->getModuleLoader()->getDataType();
         $table = Tca::table($dataType);
 
         foreach (Tca::grid($dataType)->getFields() as $fieldName => $configuration) {
-
             if ($table->hasField($fieldName) && $table->field($fieldName)->hasMany()) {
                 if ($table->field($fieldName)->hasRelationManyToMany()) {
-
                     $foreignTable = $table->field($fieldName)->getForeignTable();
                     $manyToManyTable = $table->field($fieldName)->getManyToManyTable();
                     $foreignField = $table->field($fieldName)->getForeignField();
@@ -145,5 +141,4 @@ EOF;
 
         return empty($this->invalidFields);
     }
-
 }

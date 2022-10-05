@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\View;
 
 /*
@@ -13,12 +14,10 @@ namespace Fab\Vidi\View;
  */
 interface ViewComponentInterface
 {
-
     /**
      * Renders something to be printed out to the browser.
      *
      * @return string
      */
     public function render();
-
 }

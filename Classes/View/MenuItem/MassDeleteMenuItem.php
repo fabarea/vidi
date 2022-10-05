@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\View\MenuItem;
 
 /*
@@ -16,7 +17,6 @@ use Fab\Vidi\View\AbstractComponentView;
  */
 class MassDeleteMenuItem extends AbstractComponentView
 {
-
     /**
      * Renders a "mass delete" menu item to be placed in the grid menu.
      *
@@ -25,7 +25,8 @@ class MassDeleteMenuItem extends AbstractComponentView
      */
     public function render()
     {
-        return sprintf('<li><a href="%s" class="dropdown-item mass-delete" >%s %s</a>',
+        return sprintf(
+            '<li><a href="%s" class="dropdown-item mass-delete" >%s %s</a>',
             $this->getMassDeleteUri(),
             $this->getIconFactory()->getIcon('actions-edit-delete', Icon::SIZE_SMALL),
             $this->getLanguageService()->sL('LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:delete')
@@ -47,5 +48,4 @@ class MassDeleteMenuItem extends AbstractComponentView
         );
         return $this->getModuleLoader()->getModuleUrl($additionalParameters);
     }
-
 }

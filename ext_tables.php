@@ -18,13 +18,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 defined('TYPO3') or die();
 
 call_user_func(function () {
-
     // Check from Vidi configuration what default module should be loaded.
     // Make sure the class exists to avoid a Runtime Error
 
     // Add content main module before 'user'
     if (!isset($GLOBALS['TBE_MODULES']['content'])) {
-
         // Position module "content" after module "user" manually. No API is available for that, it seems...
         $modules = [];
         foreach ($GLOBALS['TBE_MODULES'] as $key => $val) {
@@ -67,11 +65,8 @@ call_user_func(function () {
 
     // Loop around the data types and register them to be displayed within a BE module.
     if ($configuration['data_types']) {
-
         $dataTypes = GeneralUtility::trimExplode(',', $configuration['data_types'], true);
         foreach ($dataTypes as $dataType) {
-
-
             /** @var ModuleLoader $moduleLoader */
             $moduleLoader = GeneralUtility::makeInstance(ModuleLoader::class, $dataType);
 
@@ -176,7 +171,8 @@ call_user_func(function () {
     /** @var IconRegistry $iconRegistry */
     $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
     foreach ($icons as $key => $icon) {
-        $iconRegistry->registerIcon('extensions-vidi-' . $key,
+        $iconRegistry->registerIcon(
+            'extensions-vidi-' . $key,
             BitmapIconProvider::class,
             [
                 'source' => $icon

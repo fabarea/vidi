@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Grid;
 
 /*
@@ -19,7 +20,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class RelationCountRenderer extends ColumnRendererAbstract
 {
-
     /**
      * Render a representation of the relation on the GUI.
      *
@@ -27,7 +27,6 @@ class RelationCountRenderer extends ColumnRendererAbstract
      */
     public function render()
     {
-
         $output = '';
         if ($this->isBackendMode()) {
             $output = $this->renderForBackend();
@@ -41,7 +40,6 @@ class RelationCountRenderer extends ColumnRendererAbstract
      */
     protected function renderForBackend()
     {
-
         $numberOfObjects = count($this->object[$this->fieldName]);
 
         if ($numberOfObjects > 1) {
@@ -62,7 +60,8 @@ class RelationCountRenderer extends ColumnRendererAbstract
         $search = json_encode(array(array($foreignField => $this->object->getUid())));
 
         $moduleTarget = empty($this->gridRendererConfiguration['targetModule']) ? '' : $this->gridRendererConfiguration['targetModule'];
-        return sprintf($template,
+        return sprintf(
+            $template,
             BackendUtility::getModuleUrl($moduleTarget),
             rawurlencode(BackendUtility::getModuleUrl($this->gridRendererConfiguration['sourceModule'])),
             rawurlencode($search),
@@ -83,5 +82,4 @@ class RelationCountRenderer extends ColumnRendererAbstract
     {
         return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
     }
-
 }

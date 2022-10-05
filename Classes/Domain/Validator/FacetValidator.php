@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Domain\Validator;
 
 /*
@@ -16,7 +17,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class FacetValidator extends AbstractValidator
 {
-
     /**
      * Check if $facet is valid. If it is not valid, throw an exception.
      *
@@ -25,7 +25,6 @@ class FacetValidator extends AbstractValidator
      */
     public function isValid($facet)
     {
-
         if (!Tca::grid()->hasFacet($facet)) {
             $message = sprintf('Facet "%s" is not allowed. Actually, it was not configured to be displayed in the grid.', $facet);
             $this->addError($message, 1380019719);

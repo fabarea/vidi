@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Result;
 
 /*
@@ -23,7 +24,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 abstract class AbstractToFormatViewHelper extends AbstractViewHelper
 {
-
     /**
      * Store fields of type "file".
      *
@@ -60,7 +60,6 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
      */
     protected function writeZipFile()
     {
-
         $zip = new \ZipArchive();
         $zip->open($this->zipFileNameAndPath, \ZipArchive::CREATE);
 
@@ -83,7 +82,6 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
      */
     protected function initializeEnvironment(array $objects)
     {
-
         /** @var Content $object */
         $object = reset($objects);
 
@@ -176,5 +174,4 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
     {
         return GeneralUtility::makeInstance(Rows::class);
     }
-
 }

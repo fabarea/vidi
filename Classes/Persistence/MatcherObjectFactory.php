@@ -24,13 +24,12 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
  */
 class MatcherObjectFactory implements SingletonInterface
 {
-
     /**
      * Gets a singleton instance of this class.
      *
      * @return $this
      */
-    static public function getInstance(): self
+    public static function getInstance(): self
     {
         return GeneralUtility::makeInstance(self::class);
     }
@@ -95,18 +94,14 @@ class MatcherObjectFactory implements SingletonInterface
         $tsConfig = $this->getBackendUser()->getTSConfig($tsConfigPath);
 
         if (is_array($tsConfig['properties']) && !empty($tsConfig['properties'])) {
-
             foreach ($tsConfig['properties'] as $constraint) {
-
                 if (preg_match('/(.+) (>=|>|<|<=|=|like) (.+)/is', $constraint, $matches) && count($matches) === 4) {
-
                     $operator = $matcher->getSupportedOperators()[strtolower(trim($matches[2]))];
                     $operand = trim($matches[1]);
                     $value = trim($matches[3]);
 
                     $matcher->$operator($operand, $value);
                 } elseif (preg_match('/(.+) (in) (.+)/is', $constraint, $matches) && count($matches) === 4) {
-
                     $operator = $matcher->getSupportedOperators()[trim($matches[2])];
                     $operand = trim($matches[1]);
                     $value = trim($matches[3]);
@@ -146,7 +141,6 @@ class MatcherObjectFactory implements SingletonInterface
      */
     protected function applyCriteriaFromDataTables(Matcher $matcher): Matcher
     {
-
         // Special case for Grid in the BE using jQuery DataTables plugin.
         // Retrieve a possible search term from GP.
         $query = GeneralUtility::_GP('search');
@@ -159,7 +153,6 @@ class MatcherObjectFactory implements SingletonInterface
         }
 
         if (strlen($query) > 0) {
-
             // Parse the json query coming from the Visual Search.
             $query = rawurldecode($query);
             $queryParts = json_decode($query, true);
@@ -230,9 +223,7 @@ class MatcherObjectFactory implements SingletonInterface
      */
     protected function emitPostProcessMatcherObjectSignal(Matcher $matcher): void
     {
-
         if (strlen($matcher->getDataType()) <= 0) {
-
             /** @var ModuleLoader $moduleLoader */
             $moduleLoader = GeneralUtility::makeInstance(ModuleLoader::class);
             $matcher->setDataType($moduleLoader->getDataType());

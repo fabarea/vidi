@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Behavior;
 
 /*
@@ -15,11 +16,9 @@ use TYPO3\CMS\Core\Type\Enumeration;
  */
 class SavingBehavior extends Enumeration
 {
+    public const REMOVE = 'remove';
 
-    const REMOVE = 'remove';
+    public const APPEND = 'append';
 
-    const APPEND = 'append';
-
-    const REPLACE = 'replace';
-
+    public const REPLACE = 'replace';
 }

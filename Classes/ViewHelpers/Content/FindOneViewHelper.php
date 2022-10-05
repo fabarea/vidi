@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Content;
 
 /*
@@ -7,7 +8,6 @@ namespace Fab\Vidi\ViewHelpers\Content;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
-use Fab\Vidi\Exception\NotExistingClassException;
 use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
 use Fab\Vidi\Persistence\Matcher;
 use Fab\Vidi\Resolver\FieldPathResolver;
@@ -22,7 +22,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class FindOneViewHelper extends AbstractViewHelper
 {
-
     /**
      * @return void
      */
@@ -59,7 +58,6 @@ class FindOneViewHelper extends AbstractViewHelper
      */
     public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
-
         // Fetch the object
         $matches = self::computeMatches($arguments);
         $matcher = self::getMatcher($arguments['type'], $matches);
@@ -85,7 +83,6 @@ class FindOneViewHelper extends AbstractViewHelper
      */
     protected static function computeMatches(array $arguments)
     {
-
         $matches = [];
 
         $argumentValue = self::getArgumentValue($arguments['argumentName']);
@@ -117,18 +114,15 @@ class FindOneViewHelper extends AbstractViewHelper
      */
     protected static function getMatcher($dataType, array $matches = [])
     {
-
         /** @var $matcher Matcher */
         $matcher = GeneralUtility::makeInstance(Matcher::class, [], $dataType);
 
         foreach ($matches as $fieldNameAndPath => $value) {
-
             // CSV values should be considered as "in" operator in Query, otherwise "equals".
             $explodedValues = GeneralUtility::trimExplode(',', $value, true);
 
             // The matching value contains a "1,2" as example
             if (count($explodedValues) > 1) {
-
                 $resolvedDataType = self::getFieldPathResolver()->getDataType($fieldNameAndPath, $dataType);
                 $resolvedFieldName = self::getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $dataType);
 
@@ -163,7 +157,6 @@ class FindOneViewHelper extends AbstractViewHelper
      */
     protected static function getArgumentValue($argumentName)
     {
-
         $value = ''; // default value
 
         // Merge parameters
@@ -182,5 +175,4 @@ class FindOneViewHelper extends AbstractViewHelper
 
         return (int)$value;
     }
-
 }

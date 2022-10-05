@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Language;
 
 /*
@@ -9,7 +10,6 @@ namespace Fab\Vidi\Language;
  */
 
 use Fab\Vidi\Service\DataService;
-use Fab\Vidi\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Model\Content;
@@ -20,7 +20,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class LanguageService implements SingletonInterface
 {
-
     /**
      * @var array
      */
@@ -62,7 +61,6 @@ class LanguageService implements SingletonInterface
      */
     public function getLocalizedContent(Content $object, $language)
     {
-
         // We want to cache data per Content object. Retrieve the Object hash.
         $objectHash = spl_object_hash($object);
 
@@ -72,7 +70,6 @@ class LanguageService implements SingletonInterface
         }
 
         if (empty($this->localizedRecordStorage[$objectHash][$language])) {
-
             $localizedRecord = $this->getDataService()->getRecord(
                 $object->getDataType(),
                 [
@@ -127,9 +124,7 @@ class LanguageService implements SingletonInterface
      */
     public function getDefaultFlag()
     {
-
         if ($this->defaultIcon === null) {
-
             $defaultFlag = ''; // default value
 
             $tsConfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getPagesTSconfig(0, 'mod.SHARED');
@@ -184,5 +179,4 @@ class LanguageService implements SingletonInterface
     {
         return GeneralUtility::makeInstance(DataService::class);
     }
-
 }

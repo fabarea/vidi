@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Controller;
 
 /*
@@ -20,7 +21,6 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
  */
 class UserPreferencesController extends ActionController
 {
-
     /**
      * @param string $key
      * @param string $value
@@ -29,7 +29,6 @@ class UserPreferencesController extends ActionController
      */
     public function saveAction($key, $value, $preferenceSignature): ResponseInterface
     {
-
         $dataType = $this->getModuleLoader()->getDataType();
 
         $key = $dataType . '_' . $this->getBackendUserIdentifier() . '_' . $key;

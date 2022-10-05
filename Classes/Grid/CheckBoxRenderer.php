@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Grid;
 
 /*
@@ -13,7 +14,6 @@ namespace Fab\Vidi\Grid;
  */
 class CheckBoxRenderer extends ColumnRendererAbstract
 {
-
     /**
      * Configure the "Check Box" Grid Renderer.
      */
@@ -35,7 +35,8 @@ class CheckBoxRenderer extends ColumnRendererAbstract
      */
     public function render()
     {
-        return sprintf('<input type="checkbox" class="checkbox-row" data-index="%s" data-uid="%s"/>',
+        return sprintf(
+            '<input type="checkbox" class="checkbox-row" data-index="%s" data-uid="%s"/>',
             $this->getRowIndex(),
             $this->getObject()->getUid()
         );

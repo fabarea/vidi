@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Tca;
 
 /*
@@ -15,29 +16,27 @@ use TYPO3\CMS\Core\Type\Enumeration;
  */
 class FieldType extends Enumeration
 {
+    public const TEXT = 'text';
 
-    const TEXT = 'text';
+    public const NUMBER = 'number';
 
-    const NUMBER = 'number';
+    public const EMAIL = 'email';
 
-    const EMAIL = 'email';
+    public const DATE = 'date';
 
-    const DATE = 'date';
+    public const DATETIME = 'datetime';
 
-    const DATETIME = 'datetime';
+    public const TEXTAREA = 'textarea';
 
-    const TEXTAREA = 'textarea';
+    public const SELECT = 'select';
 
-    const SELECT = 'select';
+    public const RADIO = 'radio';
 
-    const RADIO = 'radio';
+    public const CHECKBOX = 'check';
 
-    const CHECKBOX = 'check';
+    public const FILE = 'file';
 
-    const FILE = 'file';
+    public const MULTISELECT = 'multiselect';
 
-    const MULTISELECT = 'multiselect';
-
-    const TREE = 'tree';
-
+    public const TREE = 'tree';
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\View\Button;
 
 /*
@@ -16,7 +17,6 @@ use Fab\Vidi\View\AbstractComponentView;
  */
 class ToolButton extends AbstractComponentView
 {
-
     /**
      * Renders a dropdown menu for storage.
      *
@@ -44,5 +44,4 @@ class ToolButton extends AbstractComponentView
         }
         return $result;
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Persistence;
 
 /*
@@ -16,13 +17,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PagerObjectFactory implements SingletonInterface
 {
-
     /**
      * Gets a singleton instance of this class.
      *
      * @return \Fab\Vidi\Persistence\PagerObjectFactory|object
      */
-    static public function getInstance()
+    public static function getInstance()
     {
         return GeneralUtility::makeInstance(\Fab\Vidi\Persistence\PagerObjectFactory::class);
     }
@@ -34,7 +34,6 @@ class PagerObjectFactory implements SingletonInterface
      */
     public function getPager()
     {
-
         /** @var $pager \Fab\Vidi\Persistence\Pager */
         $pager = GeneralUtility::makeInstance(Pager::class);
 
@@ -60,5 +59,4 @@ class PagerObjectFactory implements SingletonInterface
 
         return $pager;
     }
-
 }

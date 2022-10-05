@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Persistence;
 
 /*
@@ -15,7 +16,6 @@ namespace Fab\Vidi\Persistence;
  */
 class Pager
 {
-
     /**
      * Total amount of entries
      *
@@ -121,9 +121,9 @@ class Pager
         if ($last == 1) {
             return null;
         }
-        $values = Array();
+        $values = array();
         for ($i = 1; $i <= $last; $i++) {
-            $values[] = Array('key' => $i, 'value' => $i);
+            $values[] = array('key' => $i, 'value' => $i);
         }
         return $values;
     }

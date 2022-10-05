@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Module;
 
 /*
@@ -47,7 +48,7 @@ class ModulePidService
      *
      * @return \Fab\Vidi\Module\ModulePidService|object
      */
-    static public function getInstance()
+    public static function getInstance()
     {
         return GeneralUtility::makeInstance(self::class);
     }
@@ -83,7 +84,6 @@ class ModulePidService
         if (GeneralUtility::_GP(Parameter::PID)) {
             $configuredPid = (int)GeneralUtility::_GP(Parameter::PID);
         } else {
-
             // Get pid from User TSConfig if any.
             $tsConfigPath = sprintf('tx_vidi.dataType.%s.storagePid', $this->dataType);
             $result = $this->getBackendUser()->getTSConfig($tsConfigPath);
@@ -187,8 +187,10 @@ class ModulePidService
 
         $page = $query->select('doktype')
             ->from('pages')
-            ->where('deleted = 0',
-                'uid = ' . $configuredPid)
+            ->where(
+                'deleted = 0',
+                'uid = ' . $configuredPid
+            )
             ->execute()
             ->fetch();
 
@@ -227,5 +229,4 @@ class ModulePidService
     {
         return GeneralUtility::makeInstance(ModuleLoader::class);
     }
-
 }

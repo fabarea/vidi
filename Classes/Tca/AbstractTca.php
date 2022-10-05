@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Tca;
 
 /*
@@ -15,7 +16,6 @@ use TYPO3\CMS\Core\Http\ApplicationType;
  */
 abstract class AbstractTca implements TcaServiceInterface
 {
-
     /**
      * Returns an instance of the current Backend User.
      *
@@ -45,5 +45,4 @@ abstract class AbstractTca implements TcaServiceInterface
     {
         return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\DataHandler;
 
 /*
@@ -17,7 +18,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class CoreDataHandler extends AbstractDataHandler
 {
-
     /**
      * @var array
      */
@@ -32,7 +32,6 @@ class CoreDataHandler extends AbstractDataHandler
      */
     public function processUpdate(Content $content)
     {
-
         $values = [];
 
         // Check the field to be updated exists
@@ -68,7 +67,6 @@ class CoreDataHandler extends AbstractDataHandler
      */
     public function processRemove(Content $content)
     {
-
         // Build command
         $cmd[$content->getDataType()][$content->getUid()]['delete'] = 1;
 
@@ -106,7 +104,6 @@ class CoreDataHandler extends AbstractDataHandler
      */
     public function processMove(Content $content, $target)
     {
-
         // Build command
         $cmd[$content->getDataType()][$content->getUid()]['move'] = $target;
 
@@ -130,7 +127,6 @@ class CoreDataHandler extends AbstractDataHandler
      */
     public function processLocalize(Content $content, $language)
     {
-
         $command[$content->getDataType()][$content->getUid()]['localize'] = $language;
 
         $dataHandler = $this->getDataHandler();
@@ -153,5 +149,4 @@ class CoreDataHandler extends AbstractDataHandler
         }
         return $this->dataHandler;
     }
-
 }

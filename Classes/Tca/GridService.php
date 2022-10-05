@@ -23,7 +23,6 @@ use Fab\Vidi\Facet\FacetInterface;
  */
 class GridService extends AbstractTca
 {
-
     /**
      * @var array
      */
@@ -65,7 +64,6 @@ class GridService extends AbstractTca
      */
     public function __construct($tableName)
     {
-
         $this->tableName = $tableName;
 
         if (empty($GLOBALS['TCA'][$this->tableName])) {
@@ -105,7 +103,6 @@ class GridService extends AbstractTca
      */
     public function getLabelKey($fieldNameAndPath): string
     {
-
         $field = $this->getField($fieldNameAndPath);
 
         // First option is to get the label from the Grid TCA.
@@ -147,7 +144,6 @@ class GridService extends AbstractTca
                 $label = $labelKey;
             }
         } else {
-
             // Important to notice the label can contains a path, e.g. metadata.categories and must be resolved.
             $dataType = $this->getFieldPathResolver()->getDataType($fieldNameAndPath, $this->tableName);
             $fieldName = $this->getFieldPathResolver()->stripFieldPath($fieldNameAndPath, $this->tableName);
@@ -198,12 +194,10 @@ class GridService extends AbstractTca
     {
         // Cache this operation since it can take some time.
         if ($this->fields === null) {
-
             // Fetch all available fields first.
             $fields = $this->getAllFields();
 
             if ($this->isBackendMode()) {
-
                 // Then remove the not allowed.
                 $fields = $this->filterByIncludedFields($fields);
                 $fields = $this->filterByBackendUser($fields);
@@ -224,7 +218,6 @@ class GridService extends AbstractTca
      */
     protected function filterByIncludedFields($fields): array
     {
-
         $filteredFields = $fields;
         $includedFields = $this->getIncludedFields();
         if (count($includedFields) > 0) {
@@ -264,7 +257,6 @@ class GridService extends AbstractTca
      */
     protected function filterByExcludedFields($fields): array
     {
-
         // Unset excluded fields.
         foreach ($this->getExcludedFields() as $excludedField) {
             if (isset($fields[$excludedField])) {
@@ -282,10 +274,8 @@ class GridService extends AbstractTca
      */
     public function getAllFields(): array
     {
-
         // Cache this operation since it can take some time.
         if ($this->allFields === null) {
-
             $fields = isset($this->tca['columns']) && is_array($this->tca['columns']) ? $this->tca['columns'] : [];
             $gridFieldNames = array_keys($fields);
 
@@ -302,7 +292,6 @@ class GridService extends AbstractTca
             $additionalFields = array_diff($tableFieldNames, $gridFieldNames);
 
             if (!empty($additionalFields)) {
-
                 // Pop out last element of the key
                 // Idea is to place new un-configured columns in between. By default, they will be hidden.
                 end($fields);
@@ -369,7 +358,6 @@ class GridService extends AbstractTca
             if (is_array($this->tca['facets'])) {
                 foreach ($this->tca['facets'] as $key => $facetNameOrArray) {
                     if (is_array($facetNameOrArray)) {
-
                         $name = $facetNameOrArray['name'] ?? '';
 
                         $label = isset($facetNameOrArray['label'])
@@ -558,7 +546,7 @@ class GridService extends AbstractTca
             $rendererObject = GeneralUtility::makeInstance($renderer);
 
             $result[$renderer] = array_merge($rendererObject->getConfiguration(), $configuration);
-            // TODO: throw alert message because this is not compatible anymore as of TYPO3 8.7.7
+        // TODO: throw alert message because this is not compatible anymore as of TYPO3 8.7.7
         } elseif ($renderer instanceof ColumnRendererInterface) {
             /** @var ColumnRendererInterface $renderer */
             $result[get_class($renderer)] = $renderer->getConfiguration();
@@ -646,7 +634,6 @@ class GridService extends AbstractTca
             $excludedFields = GeneralUtility::trimExplode(',', $this->tca['export']['excluded_fields'], true);
         }
         return $excludedFields;
-
     }
 
     /**
@@ -727,5 +714,4 @@ class GridService extends AbstractTca
     {
         return GeneralUtility::makeInstance(LanguageService::class);
     }
-
 }

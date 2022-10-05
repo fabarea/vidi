@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Service;
 
 /*
@@ -21,7 +22,6 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
  */
 class ContentService
 {
-
     /**
      * @var string
      */
@@ -61,7 +61,6 @@ class ContentService
      */
     public function findBy(Matcher $matcher, Order $order = null, $limit = null, $offset = null)
     {
-
         // Query the repository.
         $objects = ContentRepositoryFactory::getInstance($this->dataType)->findBy($matcher, $order, $limit, $offset);
         $signalResult = $this->emitAfterFindContentObjectsSignal($objects, $matcher, $order, $limit, $offset);
@@ -91,7 +90,6 @@ class ContentService
      */
     protected function emitAfterFindContentObjectsSignal($contentObjects, Matcher $matcher, Order $order = null, $limit = 0, $offset = 0)
     {
-
         /** @var AfterFindContentObjectsSignalArguments $signalArguments */
         $signalArguments = GeneralUtility::makeInstance(AfterFindContentObjectsSignalArguments::class);
         $signalArguments->setDataType($this->dataType)
@@ -141,5 +139,4 @@ class ContentService
     {
         return $this->numberOfObjects;
     }
-
 }

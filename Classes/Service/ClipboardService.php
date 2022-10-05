@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Service;
 
 /*
@@ -18,7 +19,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ClipboardService implements SingletonInterface
 {
-
     /**
      * Get the Matcher object of the clipboard.
      *

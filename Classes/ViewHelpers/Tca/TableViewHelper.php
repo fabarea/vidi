@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Tca;
 
 /*
@@ -16,7 +17,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class TableViewHelper extends AbstractViewHelper
 {
-
     /**
      * @return void
      */
@@ -52,5 +52,4 @@ class TableViewHelper extends AbstractViewHelper
 
         return $result;
     }
-
 }

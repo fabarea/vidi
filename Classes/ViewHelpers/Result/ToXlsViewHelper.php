@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Result;
 
 /*
@@ -17,19 +18,16 @@ use Fab\Vidi\Service\SpreadSheetService;
  */
 class ToXlsViewHelper extends AbstractToFormatViewHelper
 {
-
     /**
      * Render a XLS export request.
      *
      */
     public function render()
     {
-
         $objects = $this->templateVariableContainer->get('objects');
 
         // Make sure we have something to process...
         if (!empty($objects)) {
-
             // Initialization step.
             $this->initializeEnvironment($objects);
             $this->exportFileNameAndPath .= '.xls'; // add extension to the file.
@@ -39,7 +37,6 @@ class ToXlsViewHelper extends AbstractToFormatViewHelper
 
             // We must generate a zip archive since there are files included.
             if ($this->hasCollectedFiles()) {
-
                 $this->writeZipFile();
                 $this->sendZipHttpHeaders();
 
@@ -61,7 +58,6 @@ class ToXlsViewHelper extends AbstractToFormatViewHelper
      */
     protected function writeXlsFile(array $objects)
     {
-
         /** @var SpreadSheetService $spreadSheet */
         $spreadSheet = GeneralUtility::makeInstance(SpreadSheetService::class);
 
@@ -109,5 +105,4 @@ class ToXlsViewHelper extends AbstractToFormatViewHelper
         $response->withHeader('Content-Description', 'File Transfer');
         $response->withHeader('Content-Transfer-Encoding', 'binary');
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Grid;
 
 /*
@@ -17,7 +18,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class FacetsViewHelper extends AbstractViewHelper
 {
-
     /**
      * Returns the json serialization of the search fields.
      *
@@ -34,5 +34,4 @@ class FacetsViewHelper extends AbstractViewHelper
 
         return json_encode($facets);
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Grid;
 
 /*
@@ -18,7 +19,6 @@ use TYPO3\CMS\Core\Localization\LanguageService;
  */
 abstract class ColumnRendererAbstract implements ColumnRendererInterface
 {
-
     /**
      * The content object.
      *
@@ -174,7 +174,7 @@ abstract class ColumnRendererAbstract implements ColumnRendererInterface
      * @see http://www.php.net/manual/function.htmlentities.php
      * @api
      */
-    protected function secure($value , $keepQuotes = false, $encoding = 'UTF-8')
+    protected function secure($value, $keepQuotes = false, $encoding = 'UTF-8')
     {
         $flags = $keepQuotes ? ENT_NOQUOTES : ENT_COMPAT;
         return htmlspecialchars($value, $flags, $encoding);
@@ -205,5 +205,4 @@ abstract class ColumnRendererAbstract implements ColumnRendererInterface
     {
         return GeneralUtility::makeInstance(LanguageService::class);
     }
-
 }

@@ -22,7 +22,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class VidiCommandController extends Command
 {
-
     /**
      * Configure the command by defining the name, options and arguments
      */
@@ -30,11 +29,11 @@ class VidiCommandController extends Command
     {
         $this->setDescription('Check TCA configuration for relations used in grid.')
         ->addOption(
-        'table',
-        'c',
-        InputOption::VALUE_NONE,
-        'The table name. If not defined check for every table.'
-    );
+            'table',
+            'c',
+            InputOption::VALUE_NONE,
+            'The table name. If not defined check for every table.'
+        );
     }
 
     /**
@@ -54,10 +53,8 @@ class VidiCommandController extends Command
 
             $fields = Tca::grid($tableName)->getFields();
             if (!empty($fields)) {
-
                 $relations = $this->getGridAnalyserService()->checkRelationForTable($tableName);
                 if (!empty($relations)) {
-
                     $io->text('');
                     $io->text('--------------------------------------------------------------------');
                     $io->text('');

@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\View\Uri;
 
 /*
@@ -17,7 +18,6 @@ use Fab\Vidi\Utility\BackendUtility;
  */
 class EditUri extends AbstractComponentView
 {
-
     /**
      * Renders a "edit" button to be placed in the grid.
      *
@@ -48,5 +48,4 @@ class EditUri extends AbstractComponentView
             $object->getUid()
         );
     }
-
 }

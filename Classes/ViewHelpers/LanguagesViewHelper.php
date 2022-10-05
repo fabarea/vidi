@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers;
 
 /*
@@ -16,7 +17,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class LanguagesViewHelper extends AbstractViewHelper
 {
-
     /**
      * Returns an array of available languages.
      *
@@ -27,7 +27,6 @@ class LanguagesViewHelper extends AbstractViewHelper
         $languages[0] = $this->getLanguageService()->getDefaultFlag();
 
         foreach ($this->getLanguageService()->getLanguages() as $language) {
-
             $languages[$language['uid']] = $language['flag'];
         }
 

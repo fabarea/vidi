@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Tool;
 
 /*
@@ -17,7 +18,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ToolRegistry implements SingletonInterface
 {
-
     /**
      * @var array
      */
@@ -33,7 +33,7 @@ class ToolRegistry implements SingletonInterface
      *
      * @return \Fab\Vidi\Tool\ToolRegistry|object
      */
-    static public function getInstance()
+    public static function getInstance()
     {
         return GeneralUtility::makeInstance(\Fab\Vidi\Tool\ToolRegistry::class);
     }
@@ -83,7 +83,6 @@ class ToolRegistry implements SingletonInterface
     public function unRegister($dataType, $toolName)
     {
         if ($this->hasTools($dataType, $toolName)) {
-
             $toolPosition = array_search($toolName, $this->tools['*']);
             if ($toolPosition !== false) {
                 unset($this->tools['*'][$toolPosition]);
@@ -134,7 +133,6 @@ class ToolRegistry implements SingletonInterface
         $isAllowed = false;
 
         if ($this->hasTools($dataType, $toolName)) {
-
             $permission = $this->getOverriddenPermission($dataType, $toolName);
             if (!is_null($permission)) {
                 $isAllowed = $permission();
@@ -143,7 +141,6 @@ class ToolRegistry implements SingletonInterface
                 $toolName = GeneralUtility::makeInstance($toolName);
                 $isAllowed = $toolName->isShown();
             }
-
         }
         return $isAllowed;
     }
@@ -159,12 +156,10 @@ class ToolRegistry implements SingletonInterface
         $tools = [];
 
         foreach (array($dataType, '*') as $toolSource) {
-
             if (isset($this->tools[$toolSource])) {
                 $toolNames = $this->tools[$toolSource];
 
                 foreach ($toolNames as $toolName) {
-
                     /** @var ToolInterface $tool */
                     if ($this->isAllowed($dataType, $toolName)) {
                         $tools[] = GeneralUtility::makeInstance($toolName);
@@ -192,5 +187,4 @@ class ToolRegistry implements SingletonInterface
         }
         return $permission;
     }
-
 }

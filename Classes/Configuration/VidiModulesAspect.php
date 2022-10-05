@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Configuration;
 
 /*
@@ -17,7 +18,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class VidiModulesAspect implements TableConfigurationPostProcessingHookInterface
 {
-
     /**
      * Initialize and populate TBE_MODULES_EXT with default data.
      *
@@ -25,7 +25,6 @@ class VidiModulesAspect implements TableConfigurationPostProcessingHookInterface
      */
     public function processData()
     {
-
         /** @var ModuleLoader $moduleLoader */
         $moduleLoader = GeneralUtility::makeInstance(ModuleLoader::class);
 
@@ -34,7 +33,7 @@ class VidiModulesAspect implements TableConfigurationPostProcessingHookInterface
             ExtensionConfiguration::class
         )->get('vidi');
 
-        foreach (GeneralUtility::trimExplode(',', $configuration['data_types'],true) as $dataType) {
+        foreach (GeneralUtility::trimExplode(',', $configuration['data_types'], true) as $dataType) {
             if (!$moduleLoader->isRegistered($dataType)) {
                 $moduleLoader->setDataType($dataType)
                     #->isShown(false)
@@ -42,5 +41,4 @@ class VidiModulesAspect implements TableConfigurationPostProcessingHookInterface
             }
         }
     }
-
 }

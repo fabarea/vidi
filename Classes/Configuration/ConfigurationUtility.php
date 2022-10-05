@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Configuration;
 
 /*
@@ -17,7 +18,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ConfigurationUtility implements SingletonInterface
 {
-
     /**
      * @var string
      */
@@ -34,7 +34,7 @@ class ConfigurationUtility implements SingletonInterface
      * @return ConfigurationUtility|object
      * @throws \InvalidArgumentException
      */
-    static public function getInstance()
+    public static function getInstance()
     {
         return GeneralUtility::makeInstance(self::class);
     }

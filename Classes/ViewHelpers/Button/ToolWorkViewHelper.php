@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Button;
 
 /*
@@ -16,7 +17,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class ToolWorkViewHelper extends AbstractViewHelper
 {
-
     /**
      * @return void
      */
@@ -54,7 +54,8 @@ class ToolWorkViewHelper extends AbstractViewHelper
             $additionalParameters[$parameterPrefix]['arguments'] = $arguments;
         }
 
-        $result = sprintf('<a href="%s&returnUrl=%s" class="btn btn-default">%s</a>',
+        $result = sprintf(
+            '<a href="%s&returnUrl=%s" class="btn btn-default">%s</a>',
             $this->getModuleLoader()->getModuleUrl($additionalParameters),
             urlencode($GLOBALS['_SERVER']['REQUEST_URI']),
             $label

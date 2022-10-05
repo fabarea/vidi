@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers;
 
 /*
@@ -17,7 +18,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class ModulePreferencesViewHelper extends AbstractViewHelper
 {
-
     /**
      * @return void
      */
@@ -39,5 +39,4 @@ class ModulePreferencesViewHelper extends AbstractViewHelper
         $modulePreferences = GeneralUtility::makeInstance(ModulePreferences::class);
         return $modulePreferences->$getter();
     }
-
 }

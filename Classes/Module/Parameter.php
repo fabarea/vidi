@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\Module;
 
 /*
@@ -15,10 +16,9 @@ use TYPO3\CMS\Core\Type\Enumeration;
  */
 class Parameter extends Enumeration
 {
+    public const PID = 'id';
 
-    const PID = 'id';
+    public const SUBMODULE = 'vidiModuleCode';
 
-    const SUBMODULE = 'vidiModuleCode';
-
-    const MODULE = 'route';
+    public const MODULE = 'route';
 }

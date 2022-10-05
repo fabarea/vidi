@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers;
 
 /*
@@ -15,7 +16,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class PublicPathViewHelper extends AbstractViewHelper
 {
-
     /**
      * Returns the public path to Vidi extension.
      *

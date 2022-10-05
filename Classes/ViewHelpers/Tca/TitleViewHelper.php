@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\ViewHelpers\Tca;
 
 /*
@@ -17,7 +18,6 @@ use Fab\Vidi\Tca\Tca;
  */
 class TitleViewHelper extends AbstractViewHelper
 {
-
     /**
      * @return void
      */
@@ -38,5 +38,4 @@ class TitleViewHelper extends AbstractViewHelper
         $table = Tca::table($content->getDataType());
         return $content[$table->getLabelField()];
     }
-
 }

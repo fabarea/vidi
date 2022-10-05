@@ -1,4 +1,5 @@
 <?php
+
 namespace Fab\Vidi\DataHandler;
 
 /*
@@ -15,7 +16,6 @@ use Fab\Vidi\Domain\Model\Content;
  */
 interface DataHandlerInterface
 {
-
     /**
      * Process Content with action "update".
      *
@@ -65,5 +65,4 @@ interface DataHandlerInterface
      * @return array
      */
     public function getErrorMessages();
-
 }
