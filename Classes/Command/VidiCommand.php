@@ -20,7 +20,7 @@ use Fab\Vidi\Tca\Tca;
 /**
  * Command Controller which handles actions related to Vidi.
  */
-class VidiCommandController extends Command
+class VidiCommand extends Command
 {
     /**
      * Configure the command by defining the name, options and arguments
@@ -37,8 +37,6 @@ class VidiCommandController extends Command
     }
 
     /**
-     * Executes the command for removing the lock file
-     *
      * @param InputInterface $input
      * @param OutputInterface $output
      */
@@ -55,11 +53,7 @@ class VidiCommandController extends Command
             if (!empty($fields)) {
                 $relations = $this->getGridAnalyserService()->checkRelationForTable($tableName);
                 if (!empty($relations)) {
-                    $io->text('');
-                    $io->text('--------------------------------------------------------------------');
-                    $io->text('');
                     $io->text(sprintf('Relations for "%s"', $tableName));
-                    $io->text('');
                     $io->text(implode("\n", $relations));
                 }
             }
