@@ -105,7 +105,7 @@ class PageFacet implements FacetInterface
                 BackendUtility::deleteClause('pages', '')
             )
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
     }
 
     /**

@@ -130,7 +130,7 @@ class VidiDbBackend
 
         $rows = $this->getConnection()
             ->executeQuery($sql, $parameters, self::getTypes($parameters))
-            ->fetchAll();
+            ->fetchAllAssociative();
 
         return $this->getContentObjects($rows);
     }
