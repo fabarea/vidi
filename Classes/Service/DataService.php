@@ -18,34 +18,22 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class DataService implements SingletonInterface
 {
 
-    /**
-     * @param string $tableName
-     * @param array $demand
-     * @return array
-     */
     public function getRecord(string $tableName, array $demand = []): array
     {
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getQueryBuilder($tableName);
         $queryBuilder
             ->select('*')
             ->from($tableName);
 
         $this->addDemandConstraints($demand, $queryBuilder);
-        $record = $queryBuilder->execute()->fetch();
+        $record = $queryBuilder->execute()->fetchAssociative();
         return is_array($record)
             ? $record
             : [];
     }
 
-    /**
-     * @param string $tableName
-     * @param array $demand
-     * @return array
-     */
-    public function getRecords(string $tableName, array $demand = []): array
+    public function getRecords(string $tableName, array $demand = [], int $maxResult = 0, int $firstResult = 0): array
     {
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getQueryBuilder($tableName);
         $queryBuilder
             ->select('*')
@@ -53,32 +41,36 @@ class DataService implements SingletonInterface
 
         $this->addDemandConstraints($demand, $queryBuilder);
 
-        return $queryBuilder->execute()->fetchAll();
+        if ($maxResult) {
+            $queryBuilder->setMaxResults($maxResult);
+        }
+
+        if ($firstResult) {
+            $queryBuilder->setFirstResult($firstResult);
+        }
+
+        return $queryBuilder->execute()->fetchAllAssociative();
     }
 
-    /**
-     * @param string $tableName
-     * @param array $demand
-     * @return int
-     */
-    public function count(string $tableName, array $demand = []): int
+    public function count(string $tableName, array $demand = [], int $maxResult = 0, int $firstResult = 0): int
     {
-        /** @var QueryBuilder $queryBuilder */
         $queryBuilder = $this->getQueryBuilder($tableName);
-        $queryBuilder
-            ->count('*')
-            ->from($tableName);
 
-        $this->addDemandConstraints($demand, $queryBuilder);
+        // We have to count "manually" if we have a limit or offset.
+        if ($maxResult || $firstResult) {
+            $records = $this->getRecords($tableName, $demand, $maxResult, $firstResult);
+            $count = count($records);
+        } else {
+            $queryBuilder
+                ->count('*')
+                ->from($tableName);
 
-        return (int)$queryBuilder->execute()->fetchColumn(0);
+            $this->addDemandConstraints($demand, $queryBuilder);
+            $count = (int)$queryBuilder->execute()->fetchOne();
+        }
+        return $count;
     }
 
-    /**
-     * @param string $tableName
-     * @param array $values
-     * @return int
-     */
     public function insert(string $tableName, array $values): int
     {
         $connection = $this->getConnection($tableName);
@@ -89,12 +81,6 @@ class DataService implements SingletonInterface
         return (int)$connection->lastInsertId();
     }
 
-    /**
-     * @param string $tableName
-     * @param array $values
-     * @param array $identifiers
-     * @return void
-     */
     public function update(string $tableName, array $values, array $identifiers): void
     {
         $connection = $this->getConnection($tableName);
@@ -105,10 +91,6 @@ class DataService implements SingletonInterface
         );
     }
 
-    /**
-     * @param string $tableName
-     * @param array $identifiers
-     */
     public function delete(string $tableName, array $identifiers): void
     {
         $connection = $this->getConnection($tableName);
@@ -118,11 +100,6 @@ class DataService implements SingletonInterface
         );
     }
 
-    /**
-     * @param array $demand
-     * @param QueryBuilder $queryBuilder
-     * @return void
-     */
     protected function addDemandConstraints(array $demand, $queryBuilder): void
     {
         $expressions = [];
@@ -149,22 +126,14 @@ class DataService implements SingletonInterface
         }
     }
 
-    /**
-     * @param string $tableName
-     * @return object|Connection
-     */
-    protected function getConnection($tableName): Connection
+    protected function getConnection(string $tableName): Connection
     {
         /** @var ConnectionPool $connectionPool */
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
         return $connectionPool->getConnectionForTable($tableName);
     }
 
-    /**
-     * @param string $tableName
-     * @return object|QueryBuilder
-     */
-    protected function getQueryBuilder($tableName): QueryBuilder
+    protected function getQueryBuilder(string $tableName): QueryBuilder
     {
         /** @var ConnectionPool $connectionPool */
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
