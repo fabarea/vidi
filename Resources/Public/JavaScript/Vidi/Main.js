@@ -22,7 +22,7 @@ define([
 		'Fab/Vidi/Vidi/Grid',
 		'Fab/Vidi/Vidi/Visibility',
 		'Fab/Vidi/Vidi/Delete',
-		'Fab/Vidi/Vidi/EditInline',
+		// 'Fab/Vidi/Vidi/EditInline',
 		'Fab/Vidi/Vidi/Edit',
 		'Fab/Vidi/Vidi/Export',
 		'Fab/Vidi/Vidi/Clipboard',
@@ -30,7 +30,7 @@ define([
 		'Fab/Vidi/DataTables/dataTables.rowReordering',
 		'Fab/Vidi/DataTables/dataTables.bootstrap'
 	],
-	function($, Notification, Grid, Visibility, Delete, EditInline) {
+	function($, Notification, Grid, Visibility, Delete) {
 
 		'use strict';
 
@@ -39,13 +39,13 @@ define([
 		Vidi.Clipboard.attachHandler();
 		Visibility.attachHandler();
 		Delete.attachHandler();
-		EditInline.configure();
+		// EditInline.configure();
 
 		// Make sure the top checkbox is unchecked by default.
 		$('.checkbox-row-top').removeAttr('checked');
 
 		/**
-		 * Add handler when clicking the reload button.
+		 * Add handler when clicking the  reload button.
 		 */
 		$('.btn-reload').click(function(e) {
 			e.preventDefault();

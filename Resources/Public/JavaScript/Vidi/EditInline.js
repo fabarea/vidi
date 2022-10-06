@@ -15,6 +15,7 @@
 
 /**
  * Module: Fab/Vidi/Vidi/EditInline
+ * @deprecated. This module is not loaded anymore and can be removed if not restored
  */
 define([
 	'jquery',

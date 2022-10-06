@@ -233,35 +233,35 @@ define([
 					/**
 					 * Bind handler for editable content for input.
 					 */
-					Vidi.grid.$('.editable-textarea').editable(
-						Vidi.EditInline.getUrl(),
-						{
-							type: 'custom-textarea',
-							placeholder: '',
-							cancel: TYPO3.l10n.localize('cancel'),
-							submit: '<button type="submit" class="btn btn-default">' + TYPO3.l10n.localize('ok') + '</button>',
-							indicator: Vidi.EditInline.indicator,
-							data: Vidi.EditInline.getParameters,
-							submitdata: Vidi.EditInline.submitData,
-							callback: Vidi.EditInline.submitDataCallBack
-						}
-					);
+					// Vidi.grid.$('.editable-textarea').editable(
+					// 	Vidi.EditInline.getUrl(),
+					// 	{
+					// 		type: 'custom-textarea',
+					// 		placeholder: '',
+					// 		cancel: TYPO3.l10n.localize('cancel'),
+					// 		submit: '<button type="submit" class="btn btn-default">' + TYPO3.l10n.localize('ok') + '</button>',
+					// 		indicator: Vidi.EditInline.indicator,
+					// 		data: Vidi.EditInline.getParameters,
+					// 		submitdata: Vidi.EditInline.submitData,
+					// 		callback: Vidi.EditInline.submitDataCallBack
+					// 	}
+					// );
 
 					/**
 					 * Bind handler for editable content for input.
 					 */
-					Vidi.grid.$('.editable-textfield').editable(
-						Vidi.EditInline.getUrl(),
-						{
-							type: 'custom-textfield',
-							placeholder: '',
-							submit: '<button type="submit" class="btn btn-default">' + TYPO3.l10n.localize('ok') + '</button>',
-							indicator: Vidi.EditInline.indicator,
-							data: Vidi.EditInline.getParameters,
-							submitdata: Vidi.EditInline.submitData,
-							callback: Vidi.EditInline.submitDataCallBack
-						}
-					);
+					// Vidi.grid.$('.editable-textfield').editable(
+					// 	Vidi.EditInline.getUrl(),
+					// 	{
+					// 		type: 'custom-textfield',
+					// 		placeholder: '',
+					// 		submit: '<button type="submit" class="btn btn-default">' + TYPO3.l10n.localize('ok') + '</button>',
+					// 		indicator: Vidi.EditInline.indicator,
+					// 		data: Vidi.EditInline.getParameters,
+					// 		submitdata: Vidi.EditInline.submitData,
+					// 		callback: Vidi.EditInline.submitDataCallBack
+					// 	}
+					// );
 				}
 			};
 

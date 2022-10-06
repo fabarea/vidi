@@ -224,15 +224,15 @@ class Row extends AbstractComponentView
 
     /**
      * Returns a placeholder when the value is empty.
-     *
-     * @return string
      */
-    protected function getEmptyValuePlaceholder()
+    protected function getEmptyValuePlaceholder(): string
     {
-        return sprintf(
-            '<i>%s</i>',
-            $this->getLabelService()->sL('LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:start_editing')
-        );
+        // Deprecated code
+        #return sprintf(
+        #    '<i>%s</i>',
+        #    $this->getLabelService()->sL('LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:start_editing')
+        #);
+        return '';
     }
 
     /**

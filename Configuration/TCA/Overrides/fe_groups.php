@@ -52,11 +52,11 @@ $tca = [
                 'format' => 'Fab\Vidi\Formatter\Date',
                 'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:crdate',
             ],
-            'hidden' => [
-                'renderer' => 'Fab\Vidi\Grid\VisibilityRenderer',
-                'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:visibility_abbreviation',
-                'width' => '3%',
-            ],
+            #'hidden' => [
+            #    'renderer' => 'Fab\Vidi\Grid\VisibilityRenderer',
+            #    'label' => 'LLL:EXT:vidi/Resources/Private/Language/locallang.xlf:visibility_abbreviation',
+            #    'width' => '3%',
+            #],
             '__buttons' => [
                 'renderer' => ButtonGroupRenderer::class,
             ],
