@@ -1,3 +1,13 @@
+## 5.1.0 (2022-10-06)
+
+[TASK] Remove for now fault inline editing
+[TASK] Add services yaml file
+[TASK] Remove controller name from command
+[TASK] Rector
+[TASK] PSR-12 code formatting
+[FEATURE] Add possible limit and offset in data service
+[TASK] Migrate query builder fetchAll to fetchAllAssociative
+
 ## 5.0.6 (2022-09-05)
 
 [TASK] Avoid undefined key array
