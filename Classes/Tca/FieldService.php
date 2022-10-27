@@ -143,7 +143,7 @@ class FieldService extends AbstractTca
             $result = $configuration['foreign_table'];
         } elseif ($this->isGroup()) {
             $fieldParts = explode('.', $this->compositeField, 2);
-            $result = $fieldParts[1];
+            $result = $fieldParts[1] ?? null;
         }
         return $result;
     }
@@ -656,7 +656,7 @@ class FieldService extends AbstractTca
     public function hasMany()
     {
         $configuration = $this->getConfiguration();
-        return $this->hasRelation() && ($configuration['maxitems'] > 1 || isset($configuration['foreign_table_field']));
+        return $this->hasRelation() && ((isset($configuration['maxitems']) && $configuration['maxitems'] > 1) || isset($configuration['foreign_table_field']));
     }
 
     /**

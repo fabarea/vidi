@@ -93,7 +93,7 @@ class MatcherObjectFactory implements SingletonInterface
         $tsConfigPath = sprintf('tx_vidi.dataType.%s.constraints', $dataType);
         $tsConfig = $this->getBackendUser()->getTSConfig($tsConfigPath);
 
-        if (is_array($tsConfig['properties']) && !empty($tsConfig['properties'])) {
+        if (isset($tsConfig['properties']) && is_array($tsConfig['properties']) && !empty($tsConfig['properties'])) {
             foreach ($tsConfig['properties'] as $constraint) {
                 if (preg_match('/(.+) (>=|>|<|<=|=|like) (.+)/is', $constraint, $matches) && count($matches) === 4) {
                     $operator = $matcher->getSupportedOperators()[strtolower(trim($matches[2]))];
