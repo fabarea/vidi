@@ -911,7 +911,7 @@ class VidiDbBackend
         $tableName = $this->getTableName();
 
         $pageRepository = $this->getPageRepository();
-        if (is_object($GLOBALS['TSFE'])) {
+        if (isset($GLOBALS['TSFE']) && is_object($GLOBALS['TSFE'])) {
             $languageMode = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('language', 'legacyLanguageMode');
         #if ($this->isBackendUserLogged() && $this->getBackendUser()->workspace !== 0) {
             #    $pageRepository->versioningWorkspaceId = $this->getBackendUser()->workspace;
