@@ -544,12 +544,12 @@ class Row extends AbstractComponentView
      */
     protected function fieldExists()
     {
-        if ($this->variables['hasField'] === null) {
+        if (isset($this->variables['hasField']) && $this->variables['hasField'] === null) {
             $dataType = $this->getDataType();
             $fieldName = $this->getFieldName();
             $this->variables['hasField'] = Tca::table($dataType)->hasField($fieldName);
         }
-        return $this->variables['hasField'];
+        return $this->variables['hasField'] ?? null;
     }
 
     /**
