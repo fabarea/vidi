@@ -17,9 +17,18 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class DataService implements SingletonInterface
 {
-    public function getRecord(string $tableName, array $demand = []): array
+    public function getRecord(string $tableName, array $demand = [], array $restrictions = []): array
     {
         $queryBuilder = $this->getQueryBuilder($tableName);
+
+        // Possibly change default restrictions
+        if (!empty($restrictions)) {
+            $queryBuilder->getRestrictions()->removeAll();
+            foreach ($restrictions as $restriction) {
+                $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance($restriction));
+            }
+        }
+
         $queryBuilder
             ->select('*')
             ->from($tableName);
@@ -31,9 +40,18 @@ class DataService implements SingletonInterface
             : [];
     }
 
-    public function getRecords(string $tableName, array $demand = [], int $maxResult = 0, int $firstResult = 0): array
+    public function getRecords(string $tableName, array $demand = [], int $maxResult = 0, int $firstResult = 0, array $restrictions = []): array
     {
         $queryBuilder = $this->getQueryBuilder($tableName);
+
+        // Possibly change default restrictions
+        if (!empty($restrictions)) {
+            $queryBuilder->getRestrictions()->removeAll();
+            foreach ($restrictions as $restriction) {
+                $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance($restriction));
+            }
+        }
+
         $queryBuilder
             ->select('*')
             ->from($tableName);
