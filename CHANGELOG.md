@@ -1,3 +1,7 @@
+## 5.2.0 (2022-11-02)
+
+[TASK] Add possible restrictions in record service
+
 ## 5.1.0 (2022-10-06)
 
 [TASK] Remove for now fault inline editing
