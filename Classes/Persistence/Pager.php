@@ -113,7 +113,7 @@ class Pager
     }
 
     /**
-     * @return Array Items to display
+     * @return array Items to display
      */
     public function getDisplayItems()
     {
