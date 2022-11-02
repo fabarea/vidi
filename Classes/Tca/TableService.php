@@ -9,6 +9,7 @@ namespace Fab\Vidi\Tca;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use Fab\Vidi\Tool\AbstractTool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -320,7 +321,7 @@ class TableService extends AbstractTca
     {
         if ($this->isComposite($fieldName)) {
             $parts = explode('.', $fieldName);
-            list($strippedFieldPath, $possibleTableName) = $parts;
+            [$strippedFieldPath, $possibleTableName] = $parts;
             $hasField = isset($this->columnTca[$strippedFieldPath], $GLOBALS['TCA'][$possibleTableName]);
 
             // Continue checking that the $strippedFieldName is of type "group"
@@ -404,7 +405,7 @@ class TableService extends AbstractTca
     public function hasAccess()
     {
         $hasAccess = true;
-        if ($this->isBackendMode()) {
+        if (AbstractTool::isBackend()) {
             $hasAccess = $this->getBackendUser()->check('tables_modify', $this->tableName);
         }
         return $hasAccess;

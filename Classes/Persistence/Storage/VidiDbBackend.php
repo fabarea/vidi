@@ -8,6 +8,8 @@ namespace Fab\Vidi\Persistence\Storage;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+
+use Fab\Vidi\Tool\AbstractTool;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\AndInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\OrInterface;
@@ -28,7 +30,6 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
-use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Versioning\VersionState;
@@ -703,7 +704,7 @@ class VidiDbBackend
             $ignoreEnableFields = $querySettings->getIgnoreEnableFields();
             $enableFieldsToBeIgnored = $querySettings->getEnableFieldsToBeIgnored();
             $includeDeleted = $querySettings->getIncludeDeleted();
-            if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
+            if (AbstractTool::isFrontend()) {
                 $statement .= $this->getFrontendConstraintStatement($tableNameOrAlias, $ignoreEnableFields, $enableFieldsToBeIgnored, $includeDeleted);
             } else {
                 // 'BE' case
@@ -944,7 +945,7 @@ class VidiDbBackend
         }
 
         // Retrieve the original uid; Used for Workspaces!
-        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
+        if (AbstractTool::isBackend()) {
             $pageRepository->versionOL($tableName, $row, true, true);
         } else {
             \TYPO3\CMS\Backend\Utility\BackendUtility::workspaceOL($tableName, $row);
@@ -1046,7 +1047,7 @@ class VidiDbBackend
     protected function getPageRepository()
     {
         if (!$this->pageRepository instanceof PageRepository) {
-            if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend() && is_object($GLOBALS['TSFE'])) {
+            if (AbstractTool::isFrontend() && is_object($GLOBALS['TSFE'])) {
                 $this->pageRepository = $GLOBALS['TSFE']->sys_page;
             } else {
                 $this->pageRepository = GeneralUtility::makeInstance(PageRepository::class);

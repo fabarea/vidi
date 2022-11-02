@@ -8,6 +8,8 @@ namespace Fab\Vidi\Tca;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+
+use Fab\Vidi\Tool\AbstractTool;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -178,7 +180,7 @@ class FieldService extends AbstractTca
      */
     protected function substituteKnownMarkers($clause)
     {
-        if ($clause && $this->isFrontendMode()) {
+        if ($clause && AbstractTool::isFrontend()) {
             $searches = array(
                 '###CURRENT_PID###',
                 '###REC_FIELD_sys_language_uid###'
@@ -419,7 +421,7 @@ class FieldService extends AbstractTca
         if (!empty($configuration['itemsProcFunc'])) {
             $parts = explode('php:', $configuration['itemsProcFunc']);
             if (!empty($parts[1])) {
-                list($class, $method) = explode('->', $parts[1]);
+                [$class, $method] = explode('->', $parts[1]);
 
                 $parameters['items'] = [];
                 $object = GeneralUtility::makeInstance($class);
@@ -472,7 +474,7 @@ class FieldService extends AbstractTca
     public function hasAccess()
     {
         $hasAccess = true;
-        if ($this->isBackendMode()
+        if (AbstractTool::isBackend()
             && Tca::table($this->tableName)->hasAccess()
             && isset($this->tca['exclude'])
             && $this->tca['exclude']

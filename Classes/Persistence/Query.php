@@ -9,6 +9,7 @@ namespace Fab\Vidi\Persistence;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use Fab\Vidi\Tool\AbstractTool;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\QueryObjectModelFactory;
@@ -26,7 +27,6 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ComparisonInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use Fab\Vidi\Persistence\Storage\VidiDbBackend;
-use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidNumberOfConstraintsException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
@@ -168,7 +168,7 @@ class Query implements QueryInterface
         }
 
         // Apply possible settings to the query.
-        if ($this->isBackendMode()) {
+        if (AbstractTool::isBackend()) {
             /** @var BackendConfigurationManager $backendConfigurationManager */
             $backendConfigurationManager = GeneralUtility::makeInstance(BackendConfigurationManager::class);
             $configuration = $backendConfigurationManager->getTypoScriptSetup();
@@ -624,16 +624,6 @@ class Query implements QueryInterface
     public function getStatement()
     {
         return $this->statement;
-    }
-
-    /**
-     * Returns whether the current mode is Backend.
-     *
-     * @return bool
-     */
-    protected function isBackendMode()
-    {
-        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
     }
 
     /**

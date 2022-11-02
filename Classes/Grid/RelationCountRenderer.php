@@ -9,8 +9,8 @@ namespace Fab\Vidi\Grid;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use Fab\Vidi\Tool\AbstractTool;
 use Fab\Vidi\Utility\BackendUtility;
-use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Fab\Vidi\Tca\Tca;
@@ -28,7 +28,7 @@ class RelationCountRenderer extends ColumnRendererAbstract
     public function render()
     {
         $output = '';
-        if ($this->isBackendMode()) {
+        if (AbstractTool::isBackend()) {
             $output = $this->renderForBackend();
         }
 
@@ -71,15 +71,5 @@ class RelationCountRenderer extends ColumnRendererAbstract
             htmlspecialchars(LocalizationUtility::translate($label, '')),
             $this->getIconFactory()->getIcon('extensions-vidi-go', Icon::SIZE_SMALL)
         );
-    }
-
-    /**
-     * Returns whether the current mode is Frontend
-     *
-     * @return bool
-     */
-    protected function isBackendMode()
-    {
-        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
     }
 }

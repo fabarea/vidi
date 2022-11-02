@@ -9,7 +9,6 @@ namespace Fab\Vidi\Tca;
  * LICENSE.md file that was distributed with this source code.
  */
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Http\ApplicationType;
 
 /**
  * An abstract class to handle TCA.
@@ -24,25 +23,5 @@ abstract class AbstractTca implements TcaServiceInterface
     protected function getBackendUser()
     {
         return $GLOBALS['BE_USER'];
-    }
-
-    /**
-     * Returns whether the current mode is Backend.
-     *
-     * @return bool
-     */
-    protected function isBackendMode()
-    {
-        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
-    }
-
-    /**
-     * Returns whether the current mode is Frontend.
-     *
-     * @return bool
-     */
-    protected function isFrontendMode()
-    {
-        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
     }
 }

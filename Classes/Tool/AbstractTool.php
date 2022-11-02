@@ -8,8 +8,11 @@ namespace Fab\Vidi\Tool;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use Fab\Vidi\Module\ModuleLoader;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
@@ -53,5 +56,23 @@ abstract class AbstractTool implements ToolInterface
     protected function getModuleLoader()
     {
         return GeneralUtility::makeInstance(ModuleLoader::class);
+    }
+
+    /**
+     * Returns whether the current mode is Backend
+     */
+    public static function isBackend(): bool
+    {
+        return ($GLOBALS['TYPO3_REQUEST'] ?? null) instanceof ServerRequestInterface
+            && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
+    }
+
+    /**
+     * Returns whether the current mode is Frontend
+     */
+    public static function isFrontend(): bool
+    {
+        return ($GLOBALS['TYPO3_REQUEST'] ?? null) instanceof ServerRequestInterface
+            && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
     }
 }

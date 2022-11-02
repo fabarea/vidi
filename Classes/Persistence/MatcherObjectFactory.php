@@ -8,10 +8,11 @@ namespace Fab\Vidi\Persistence;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+
+use Fab\Vidi\Tool\AbstractTool;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use Fab\Vidi\Module\ModuleName;
 use Fab\Vidi\Resolver\FieldPathResolver;
-use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -53,7 +54,7 @@ class MatcherObjectFactory implements SingletonInterface
         $matcher = $this->applyCriteriaFromDataTables($matcher);
         $matcher = $this->applyCriteriaFromMatchesArgument($matcher, $matches);
 
-        if ($this->isBackendMode()) {
+        if (AbstractTool::isBackend()) {
             $matcher = $this->applyCriteriaFromUrl($matcher);
             $matcher = $this->applyCriteriaFromTSConfig($matcher);
         }
@@ -268,15 +269,5 @@ class MatcherObjectFactory implements SingletonInterface
     protected function getBackendUser(): BackendUserAuthentication
     {
         return $GLOBALS['BE_USER'];
-    }
-
-    /**
-     * Returns whether the current mode is Backend
-     *
-     * @return bool
-     */
-    protected function isBackendMode(): bool
-    {
-        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
     }
 }

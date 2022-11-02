@@ -10,11 +10,11 @@ namespace Fab\Vidi\Domain\Model;
  */
 use Fab\Vidi\Exception\NotExistingClassException;
 use Fab\Vidi\Tca\TableService;
+use Fab\Vidi\Tool\AbstractTool;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException;
 use Fab\Vidi\Domain\Repository\ContentRepository;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use Fab\Vidi\Tca\FieldType;
-use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException;
 use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
@@ -72,7 +72,7 @@ class Content implements \ArrayAccess
         $fields = array_merge($fields, $table->getFields());
 
         // Fetch excluded fields from the grid.
-        if ($this->isBackendMode()) {
+        if (AbstractTool::isBackend()) {
             $fields = $this->filterForConfiguration($fields);
             $fields = $this->filterForBackendUser($fields);
         }
@@ -452,16 +452,5 @@ class Content implements \ArrayAccess
     protected function getBackendUser()
     {
         return $GLOBALS['BE_USER'];
-    }
-
-    /**
-     * Returns whether the current mode is Backend
-     *
-     * @return bool
-     */
-    protected function isBackendMode()
-    {
-        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
-        ;
     }
 }

@@ -9,10 +9,10 @@ namespace Fab\Vidi\Grid;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use Fab\Vidi\Tool\AbstractTool;
 use Fab\Vidi\Utility\BackendUtility;
 use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Tca\Tca;
-use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Imaging\Icon;
 
 /**
@@ -27,7 +27,7 @@ class RelationRenderer extends ColumnRendererAbstract
      */
     public function render()
     {
-        if ($this->isBackendMode()) {
+        if (AbstractTool::isBackend()) {
             $output = $this->renderForBackend();
         } else {
             $output = $this->renderForFrontend();
@@ -155,15 +155,5 @@ class RelationRenderer extends ColumnRendererAbstract
         // Compute the label of the foreign table.
         $relationDataType = $table->field($fieldName)->relationDataType();
         return Tca::table($relationDataType)->getLabelField();
-    }
-
-    /**
-     * Returns whether the current mode is Frontend
-     *
-     * @return bool
-     */
-    protected function isBackendMode()
-    {
-        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
     }
 }

@@ -8,6 +8,8 @@ namespace Fab\Vidi\Domain\Repository;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+
+use Fab\Vidi\Tool\AbstractTool;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use Fab\Vidi\DataHandler\DataHandlerFactory;
 use Fab\Vidi\Domain\Validator\ContentValidator;
@@ -15,7 +17,6 @@ use Fab\Vidi\Domain\Validator\LanguageValidator;
 use Fab\Vidi\Persistence\ConstraintContainer;
 use Fab\Vidi\Resolver\FieldPathResolver;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException;
@@ -477,7 +478,7 @@ class ContentRepository implements RepositoryInterface
             $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
 
             // Default choice for the BE.
-            if ($this->isBackendMode()) {
+            if (AbstractTool::isBackend()) {
                 $querySettings->setIgnoreEnableFields(true);
             }
 
@@ -790,16 +791,6 @@ class ContentRepository implements RepositoryInterface
     protected function getDataHandlerFactory()
     {
         return GeneralUtility::makeInstance(DataHandlerFactory::class);
-    }
-
-    /**
-     * Returns whether the current mode is Backend
-     *
-     * @return bool
-     */
-    protected function isBackendMode(): bool
-    {
-        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
     }
 
     /**

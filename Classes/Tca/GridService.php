@@ -12,6 +12,7 @@ use Fab\Vidi\Resolver\FieldPathResolver;
 use Fab\Vidi\Grid\ColumnRendererInterface;
 use Fab\Vidi\Module\ConfigurablePart;
 use Fab\Vidi\Module\ModulePreferences;
+use Fab\Vidi\Tool\AbstractTool;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Exception\InvalidKeyInArrayException;
@@ -197,7 +198,7 @@ class GridService extends AbstractTca
             // Fetch all available fields first.
             $fields = $this->getAllFields();
 
-            if ($this->isBackendMode()) {
+            if (AbstractTool::isBackend()) {
                 // Then remove the not allowed.
                 $fields = $this->filterByIncludedFields($fields);
                 $fields = $this->filterByBackendUser($fields);
