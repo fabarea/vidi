@@ -1,3 +1,10 @@
+## 5.3.0 (2022-11-03)
+
+[BUGFIX] Return type in model content
+[TASK] Add support for PHP 8 when adding new row
+[BUGFIX] Fix issue for missing check of array keys on PHP 8
+[TASK] Streamline backend / frontend mode detection
+
 ## 5.2.0 (2022-11-02)
 
 [TASK] Add possible restrictions in record service
