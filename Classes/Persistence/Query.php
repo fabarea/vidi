@@ -9,6 +9,7 @@ namespace Fab\Vidi\Persistence;
  * LICENSE.md file that was distributed with this source code.
  */
 
+use Fab\Vidi\Utility\Typo3Mode;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\QueryObjectModelFactory;
@@ -626,14 +627,9 @@ class Query implements QueryInterface
         return $this->statement;
     }
 
-    /**
-     * Returns whether the current mode is Backend.
-     *
-     * @return bool
-     */
-    protected function isBackendMode()
+    protected function isBackendMode(): bool
     {
-        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
+        return Typo3Mode::isBackendMode();
     }
 
     /**

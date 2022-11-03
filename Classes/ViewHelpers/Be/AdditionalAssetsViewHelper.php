@@ -8,6 +8,8 @@ namespace Fab\Vidi\ViewHelpers\Be;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+
+use Fab\Vidi\Utility\Typo3Mode;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Core\Environment;
@@ -53,7 +55,7 @@ class AdditionalAssetsViewHelper extends AbstractBackendViewHelper
     {
         $uri = GeneralUtility::getFileAbsFileName($uri);
         $uri = substr($uri, strlen(Environment::getPublicPath() . '/'));
-        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend() && $uri !== false) {
+        if (Typo3Mode::isBackendMode() && $uri !== false) {
             $uri = '../' . $uri;
         }
         return $uri;

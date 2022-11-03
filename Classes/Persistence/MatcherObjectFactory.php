@@ -8,6 +8,8 @@ namespace Fab\Vidi\Persistence;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+
+use Fab\Vidi\Utility\Typo3Mode;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use Fab\Vidi\Module\ModuleName;
 use Fab\Vidi\Resolver\FieldPathResolver;
@@ -270,13 +272,8 @@ class MatcherObjectFactory implements SingletonInterface
         return $GLOBALS['BE_USER'];
     }
 
-    /**
-     * Returns whether the current mode is Backend
-     *
-     * @return bool
-     */
     protected function isBackendMode(): bool
     {
-        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
+        return Typo3Mode::isBackendMode();
     }
 }

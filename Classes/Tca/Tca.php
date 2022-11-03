@@ -10,6 +10,7 @@ namespace Fab\Vidi\Tca;
  */
 use Fab\Vidi\Exception\InvalidKeyInArrayException;
 use Fab\Vidi\Module\ModuleLoader;
+use Fab\Vidi\Utility\Typo3Mode;
 use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException;
 use TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException;
 use TYPO3\CMS\Core\Http\ApplicationType;
@@ -68,7 +69,7 @@ class Tca implements SingletonInterface, TcaServiceInterface
      */
     protected static function getService($dataType, $serviceType)
     {
-        if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend() && empty($dataType)) {
+        if (Typo3Mode::isBackendMode() && empty($dataType)) {
             /** @var ModuleLoader $moduleLoader */
             $moduleLoader = GeneralUtility::makeInstance(ModuleLoader::class);
             $dataType = $moduleLoader->getDataType();

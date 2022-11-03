@@ -8,6 +8,8 @@ namespace Fab\Vidi\Domain\Repository;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+
+use Fab\Vidi\Utility\Typo3Mode;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use Fab\Vidi\DataHandler\DataHandlerFactory;
 use Fab\Vidi\Domain\Validator\ContentValidator;
@@ -792,14 +794,9 @@ class ContentRepository implements RepositoryInterface
         return GeneralUtility::makeInstance(DataHandlerFactory::class);
     }
 
-    /**
-     * Returns whether the current mode is Backend
-     *
-     * @return bool
-     */
     protected function isBackendMode(): bool
     {
-        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
+        return Typo3Mode::isBackendMode();
     }
 
     /**

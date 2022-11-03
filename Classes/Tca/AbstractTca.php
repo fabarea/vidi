@@ -8,6 +8,9 @@ namespace Fab\Vidi\Tca;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+
+use Fab\Vidi\Utility\Typo3Mode;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Http\ApplicationType;
 
@@ -26,23 +29,13 @@ abstract class AbstractTca implements TcaServiceInterface
         return $GLOBALS['BE_USER'];
     }
 
-    /**
-     * Returns whether the current mode is Backend.
-     *
-     * @return bool
-     */
-    protected function isBackendMode()
+    protected function isBackendMode(): bool
     {
-        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
+        return Typo3Mode::isBackendMode();
     }
 
-    /**
-     * Returns whether the current mode is Frontend.
-     *
-     * @return bool
-     */
-    protected function isFrontendMode()
+    protected function isFrontendMode(): bool
     {
-        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
+        return Typo3Mode::isFrontendMode();
     }
 }
