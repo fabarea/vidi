@@ -10,6 +10,8 @@ namespace Fab\Vidi\Domain\Model;
  */
 use Fab\Vidi\Exception\NotExistingClassException;
 use Fab\Vidi\Tca\TableService;
+use Fab\Vidi\Utility\Typo3Mode;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedMethodException;
 use Fab\Vidi\Domain\Repository\ContentRepository;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
@@ -129,7 +131,7 @@ class Content implements \ArrayAccess
      * @param string $propertyName
      * @return bool
      */
-    protected function hasRelation($propertyName)
+    protected function hasRelation($propertyName): bool
     {
         $fieldName = Property::name($propertyName)->of($this)->toFieldName();
         return Tca::table($this->dataType)->field($fieldName)->hasRelation();
@@ -210,15 +212,12 @@ class Content implements \ArrayAccess
     /**
      * @return int
      */
-    public function getUid()
+    public function getUid(): ?int
     {
         return $this->uid;
     }
 
-    /**
-     * @return string
-     */
-    public function getDataType()
+    public function getDataType(): string
     {
         return $this->dataType;
     }
@@ -232,7 +231,7 @@ class Content implements \ArrayAccess
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         $offset = Field::name($offset)->of($this)->toPropertyName();
         return isset($this->$offset);
@@ -264,7 +263,7 @@ class Content implements \ArrayAccess
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): Content
     {
         $offset = Field::name($offset)->of($this)->toPropertyName();
         $setter = 'set' . ucfirst($offset);
@@ -292,7 +291,7 @@ class Content implements \ArrayAccess
      * @return array
      * @throws \InvalidArgumentException
      */
-    public function toArray()
+    public function toArray(): array
     {
         $result['uid'] = $this->uid;
         $propertiesAndValues = json_decode(json_encode($this), true);
@@ -312,7 +311,7 @@ class Content implements \ArrayAccess
      * @return array
      * @throws \Exception
      */
-    public function toValues($resolveRelations = true)
+    public function toValues($resolveRelations = true): array
     {
         $result['uid'] = $this->uid;
         $propertiesAndValues = json_decode(json_encode($this), true);
@@ -370,7 +369,7 @@ class Content implements \ArrayAccess
      *
      * @return array
      */
-    public function toProperties()
+    public function toProperties(): array
     {
         $result[] = 'uid';
         $propertiesAndValues = json_decode(json_encode($this), true);
@@ -386,7 +385,7 @@ class Content implements \ArrayAccess
      *
      * @return array
      */
-    public function toFields()
+    public function toFields(): array
     {
         $result[] = 'uid';
         $propertiesAndValues = json_decode(json_encode($this), true);
@@ -414,7 +413,7 @@ class Content implements \ArrayAccess
      * @return array
      * @throws \Exception
      */
-    protected function filterForBackendUser($fields)
+    protected function filterForBackendUser($fields): array
     {
         if (!$this->getBackendUser()->isAdmin()) {
             foreach ($fields as $key => $fieldName) {
@@ -432,7 +431,7 @@ class Content implements \ArrayAccess
      * @param $fields
      * @return array
      */
-    protected function filterForConfiguration($fields)
+    protected function filterForConfiguration($fields): array
     {
         $excludedFields = Tca::grid($this->dataType)->getExcludedFields();
         foreach ($fields as $key => $field) {
@@ -449,19 +448,13 @@ class Content implements \ArrayAccess
      *
      * @return BackendUserAuthentication
      */
-    protected function getBackendUser()
+    protected function getBackendUser(): BackendUserAuthentication
     {
         return $GLOBALS['BE_USER'];
     }
 
-    /**
-     * Returns whether the current mode is Backend
-     *
-     * @return bool
-     */
-    protected function isBackendMode()
+    protected function isBackendMode(): bool
     {
-        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
-        ;
+        return Typo3Mode::isBackendMode();
     }
 }
