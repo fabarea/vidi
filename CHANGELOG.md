@@ -1,3 +1,7 @@
+## 5.3.1 (2022-11-09)
+
+[BUGFIX] pagination styling
+
 ## 5.3.0 (2022-11-03)
 
 [BUGFIX] Return type in model content
