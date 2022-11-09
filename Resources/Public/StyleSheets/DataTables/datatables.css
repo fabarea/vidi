@@ -42,6 +42,10 @@ table.dataTable th:active {
     margin: 0;
 }
 
+.pagination a {
+  padding: .5rem .75rem;
+}
+
 @media (min-width: 767px) {
     .dataTables_paginate {
         float: right;
