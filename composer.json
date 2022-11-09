@@ -23,7 +23,7 @@
 			"extension-key": "vidi"
 		}
 	},
-	"require-dev": {
+	"suggest": {
 		"laravel/pint": "^1.2"
 	},
 	"require": {
