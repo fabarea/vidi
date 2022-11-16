@@ -246,7 +246,7 @@ class Content implements \ArrayAccess
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         $offset = Field::name($offset)->of($this)->toPropertyName();
         $getter = 'get' . ucfirst($offset);
@@ -263,12 +263,11 @@ class Content implements \ArrayAccess
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    public function offsetSet($offset, $value): Content
+    public function offsetSet($offset, $value): void
     {
         $offset = Field::name($offset)->of($this)->toPropertyName();
         $setter = 'set' . ucfirst($offset);
         $this->$setter($value);
-        return $this;
     }
 
     /**
@@ -279,7 +278,7 @@ class Content implements \ArrayAccess
      * @throws NotImplementedException
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         $message = 'Un-setting value for Array object is not supported';
         throw new NotImplementedException($message, 1376132306);
