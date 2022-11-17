@@ -1,3 +1,7 @@
+## 6.0.0 (2022-11-17)
+
+[BUGFIX] Correct interface signature for php >= 8.0
+
 ## 5.3.1 (2022-11-09)
 
 [BUGFIX] pagination styling
