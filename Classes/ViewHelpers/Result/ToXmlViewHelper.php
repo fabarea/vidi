@@ -119,7 +119,7 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper
         $response = $this->templateVariableContainer->get('response');
         $response->withHeader('Content-Type', 'application/xml');
         $response->withHeader('Content-Disposition', 'attachment; filename="' . basename($this->exportFileNameAndPath) . '"');
-        $response->withHeader('Content-Length', filesize($this->exportFileNameAndPath));
+        $response->withHeader('Content-Length', (string)filesize($this->exportFileNameAndPath));
         $response->withHeader('Content-Description', 'File Transfer');
     }
 }
