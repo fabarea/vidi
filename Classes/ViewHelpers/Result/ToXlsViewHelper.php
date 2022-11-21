@@ -101,7 +101,7 @@ class ToXlsViewHelper extends AbstractToFormatViewHelper
         $response->withHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
         $response->withHeader('Content-Type', 'application/vnd.ms-excel');
         $response->withHeader('Content-Disposition', 'attachment; filename="' . basename($this->exportFileNameAndPath) . '"');
-        $response->withHeader('Content-Length', filesize($this->exportFileNameAndPath));
+        $response->withHeader('Content-Length', (string)filesize($this->exportFileNameAndPath));
         $response->withHeader('Content-Description', 'File Transfer');
         $response->withHeader('Content-Transfer-Encoding', 'binary');
     }

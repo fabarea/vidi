@@ -162,7 +162,7 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
         $response->withHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
         $response->withHeader('Content-Type', 'application/zip');
         $response->withHeader('Content-Disposition', 'attachment; filename="' . basename($this->zipFileNameAndPath) . '"');
-        $response->withHeader('Content-Length', filesize($this->zipFileNameAndPath));
+        $response->withHeader('Content-Length', (string)filesize($this->zipFileNameAndPath));
         $response->withHeader('Content-Description', 'File Transfer');
         $response->withHeader('Content-Transfer-Encoding', 'binary');
     }
