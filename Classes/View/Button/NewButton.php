@@ -106,9 +106,8 @@ class NewButton extends AbstractComponentView
             $pid = 0;
         } else {
             // Get configuration from User TSConfig if any
-            $tsConfigPath = sprintf('tx_vidi.dataType.%s.storagePid', $this->getModuleLoader()->getDataType());
-            $tsConfig = $this->getBackendUser()->getTSConfig($tsConfigPath);
-            $pid = $tsConfig['value'] ?? null;
+            $tsConfig = $this->getBackendUser()->getTSConfig()['tx_vidi.']['dataType.'][$this->getModuleLoader()->getDataType().'.']['storagePid'];
+            $pid = $tsConfig ?? null;
 
             // Get pid from Module Loader
             if (null === $pid) {

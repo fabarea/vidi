@@ -85,11 +85,8 @@ class ModulePidService
             $configuredPid = (int)GeneralUtility::_GP(Parameter::PID);
         } else {
             // Get pid from User TSConfig if any.
-            $tsConfigPath = sprintf('tx_vidi.dataType.%s.storagePid', $this->dataType);
-            $result = $this->getBackendUser()->getTSConfig($tsConfigPath);
-            $configuredPid = isset($result['value'])
-                ? $configuredPid = (int)$result['value']
-                : $this->getModuleLoader()->getDefaultPid();
+            $result = $this->getBackendUser()->getTSConfig()['tx_vidi.']['dataType.'][$this->dataType.'.']['storagePid'];
+            $configuredPid = isset($result) ? (int)$result : $this->getModuleLoader()->getDefaultPid();
         }
 
         return $configuredPid;
