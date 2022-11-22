@@ -8,19 +8,19 @@ namespace Fab\Vidi\ViewHelpers\Result;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+
+use Psr\Http\Message\StreamFactoryInterface;
 use TYPO3\CMS\Core\Http\Response;
 use Fab\Vidi\View\Grid\Rows;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper for rendering a JSON response.
  */
-class ToJsonViewHelper extends AbstractViewHelper
+class ToJsonViewHelper extends AbstractResultViewHelper
 {
     /**
      * Render a Json response
-     *
      */
     public function render()
     {
@@ -34,8 +34,7 @@ class ToJsonViewHelper extends AbstractViewHelper
             'aaData' => $this->getRowsView()->render($objects, $columns),
         );
 
-        $this->setHttpHeaders();
-        print json_encode($output);
+        $this->sendRepsonse($this->getJsonResponse(json_encode($output)));
     }
 
     /**
@@ -51,14 +50,16 @@ class ToJsonViewHelper extends AbstractViewHelper
     }
 
     /**
-     * @return void
-     * @throws \InvalidArgumentException
+     * @return Response
      */
-    protected function setHttpHeaders()
+    protected function getJsonResponse(string $json)
     {
-        /** @var Response $response */
-        $response = $this->templateVariableContainer->get('response');
-        $response->withHeader('Content-Type', 'application/json');
+        $streamFactory = GeneralUtility::makeInstance(StreamFactoryInterface::class);
+
+        // @todo Implement file name generation from objects and timestamp
+        return $this->getResponse('download')
+            ->withHeader('Content-Type', 'application/json')
+            ->withBody($streamFactory->createStream($json));
     }
 
     /**

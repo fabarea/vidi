@@ -8,6 +8,9 @@ namespace Fab\Vidi\ViewHelpers\Result;
  * For the full copyright and license information, please read the
  * LICENSE.md file that was distributed with this source code.
  */
+
+use Psr\Http\Message\StreamFactoryInterface;
+use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Http\Response;
 use Fab\Vidi\Tca\FieldType;
 use Fab\Vidi\View\Grid\Rows;
@@ -17,12 +20,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Service\FileReferenceService;
 use Fab\Vidi\Tca\Tca;
-use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * Abstract View helper for rendering an Export request.
  */
-abstract class AbstractToFormatViewHelper extends AbstractViewHelper
+abstract class AbstractToFormatViewHelper extends AbstractResultViewHelper
 {
     /**
      * Store fields of type "file".
@@ -151,20 +153,11 @@ abstract class AbstractToFormatViewHelper extends AbstractViewHelper
     }
 
     /**
-     * @return void
+     * @return Response
      */
-    protected function sendZipHttpHeaders()
+    protected function getZipResponse()
     {
-        /** @var Response $response */
-        $response = $this->templateVariableContainer->get('response');
-        $response->withHeader('Pragma', 'public');
-        $response->withHeader('Expires', '0');
-        $response->withHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
-        $response->withHeader('Content-Type', 'application/zip');
-        $response->withHeader('Content-Disposition', 'attachment; filename="' . basename($this->zipFileNameAndPath) . '"');
-        $response->withHeader('Content-Length', (string)filesize($this->zipFileNameAndPath));
-        $response->withHeader('Content-Description', 'File Transfer');
-        $response->withHeader('Content-Transfer-Encoding', 'binary');
+        return $this->getFileResponse($this->zipFileNameAndPath)->withHeader('Content-Type', 'application/zip');
     }
 
     /**
