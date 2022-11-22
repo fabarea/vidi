@@ -359,6 +359,7 @@ class GridService extends AbstractTca
                 foreach ($this->tca['facets'] as $key => $facetNameOrArray) {
                     if (is_array($facetNameOrArray)) {
                         $name = $facetNameOrArray['name'] ?? '';
+                        $class = $facetNameOrArray['class'] ?? $key;
 
                         $label = isset($facetNameOrArray['label'])
                             ? $this->getLanguageService()->sL($facetNameOrArray['label'])
@@ -368,7 +369,7 @@ class GridService extends AbstractTca
                         $configuration = $facetNameOrArray['configuration'] ?? [];
 
                         /** @var FacetInterface $facetObject */
-                        $facetObject = GeneralUtility::makeInstance($key, $name, $label, $suggestions, $configuration);
+                        $facetObject = GeneralUtility::makeInstance($class, $name, $label, $suggestions, $configuration);
                         $this->facets[$facetObject->getName()] = $facetObject;
                     } else {
                         $this->facets[$facetNameOrArray] = $this->instantiateStandardFacet($facetNameOrArray);
