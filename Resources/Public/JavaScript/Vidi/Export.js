@@ -36,8 +36,7 @@ define([
 			parameters[Vidi.module.parameterPrefix + '[format]'] = format;
 			parameters[Vidi.module.parameterPrefix + '[matches][uid]'] = Vidi.Grid.getSelectedIdentifiers().join(',');
 
-			var url = Util.getUrl(parameters);
-			window.open(url);
+			document.location.href = Util.getUrl(parameters);
 		},
 
 		/**
@@ -52,8 +51,7 @@ define([
 			parameters['start'] = 0;
 			parameters['length'] = 0;
 
-			var url = Util.getUrl(parameters);
-			window.open(url);
+			document.location.href = Util.getUrl(parameters);
 		}
 	};
 
