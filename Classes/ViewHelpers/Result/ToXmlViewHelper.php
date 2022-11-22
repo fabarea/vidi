@@ -19,7 +19,6 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper
 {
     /**
      * Render an XML export.
-     *
      */
     public function render()
     {
@@ -37,15 +36,14 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper
             // We must generate a zip archive since there are files included.
             if ($this->hasCollectedFiles()) {
                 $this->writeZipFile();
-                $this->sendZipHttpHeaders();
-
-                readfile($this->zipFileNameAndPath);
+                $response = $this->getZipResponse();
             } else {
-                $this->sendXmlHttpHeaders();
-                readfile($this->exportFileNameAndPath);
+                $response = $this->getXmlResponse($this->exportFileNameAndPath);
             }
 
             GeneralUtility::rmdir($this->temporaryDirectory, true);
+
+            $this->sendRepsonse($response);
         }
     }
 
@@ -111,15 +109,10 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper
     }
 
     /**
-     * @return void
+     * @return Response
      */
-    protected function sendXmlHttpHeaders()
+    protected function getXmlResponse(string $fileNameAndPath)
     {
-        /** @var Response $response */
-        $response = $this->templateVariableContainer->get('response');
-        $response->withHeader('Content-Type', 'application/xml');
-        $response->withHeader('Content-Disposition', 'attachment; filename="' . basename($this->exportFileNameAndPath) . '"');
-        $response->withHeader('Content-Length', (string)filesize($this->exportFileNameAndPath));
-        $response->withHeader('Content-Description', 'File Transfer');
+        return $this->getFileResponse($fileNameAndPath)->withHeader('Content-Type', 'application/xml');
     }
 }

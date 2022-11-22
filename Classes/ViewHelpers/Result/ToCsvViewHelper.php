@@ -9,8 +9,11 @@ namespace Fab\Vidi\ViewHelpers\Result;
  * LICENSE.md file that was distributed with this source code.
  */
 use Fab\Vidi\Domain\Model\Content;
+use Psr\Http\Message\StreamFactoryInterface;
+use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 
 /**
  * View helper for rendering a CSV export request.
@@ -19,7 +22,6 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper
 {
     /**
      * Render a CSV export request.
-     *
      */
     public function render()
     {
@@ -37,15 +39,14 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper
             // We must generate a zip archive since there are files included.
             if ($this->hasCollectedFiles()) {
                 $this->writeZipFile();
-                $this->sendZipHttpHeaders();
-
-                readfile($this->zipFileNameAndPath);
+                $response = $this->getZipResponse();
             } else {
-                $this->sendCsvHttpHeaders();
-                readfile($this->exportFileNameAndPath);
+                $response = $this->getCsvResponse($this->exportFileNameAndPath);
             }
 
             GeneralUtility::rmdir($this->temporaryDirectory, true);
+
+            $this->sendRepsonse($response);
         }
     }
 
@@ -88,15 +89,10 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper
     }
 
     /**
-     * @return void
+     * @return Response
      */
-    protected function sendCsvHttpHeaders()
+    protected function getCsvResponse(string $fileNameAndPath)
     {
-        /** @var Response $response */
-        $response = $this->templateVariableContainer->get('response');
-        $response->withHeader('Content-Type', 'application/csv');
-        $response->withHeader('Content-Disposition', 'attachment; filename="' . basename($this->exportFileNameAndPath) . '"');
-        $response->withHeader('Content-Length', (string)filesize($this->exportFileNameAndPath));
-        $response->withHeader('Content-Description', 'File Transfer');
+        return $this->getFileResponse($fileNameAndPath)->withHeader('Content-Type', 'application/csv');
     }
 }
