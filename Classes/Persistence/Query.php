@@ -10,6 +10,7 @@ namespace Fab\Vidi\Persistence;
  */
 
 use Fab\Vidi\Utility\Typo3Mode;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\QueryObjectModelFactory;
@@ -27,7 +28,6 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ComparisonInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use Fab\Vidi\Persistence\Storage\VidiDbBackend;
-use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidNumberOfConstraintsException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
@@ -134,7 +134,7 @@ class Query implements QueryInterface
     public function __construct($type)
     {
         $this->type = $type;
-        $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManagerInterface::class);
+        $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $this->qomFactory = GeneralUtility::makeInstance(QueryObjectModelFactory::class);
     }
 
