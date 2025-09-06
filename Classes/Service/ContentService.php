@@ -15,7 +15,6 @@ use Fab\Vidi\Domain\Repository\ContentRepositoryFactory;
 use Fab\Vidi\Persistence\Matcher;
 use Fab\Vidi\Persistence\Order;
 use Fab\Vidi\Signal\AfterFindContentObjectsSignalArguments;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * File References service.
@@ -100,7 +99,7 @@ class ContentService
             ->setOffset($offset)
             ->setHasBeenProcessed(false);
 
-        $signalResult = $this->getSignalSlotDispatcher()->dispatch(ContentService::class, 'afterFindContentObjects', array($signalArguments));
+        #$signalResult = $this->getSignalSlotDispatcher()->dispatch(ContentService::class, 'afterFindContentObjects', array($signalArguments));
         return $signalResult[0];
     }
 
@@ -119,10 +118,10 @@ class ContentService
      *
      * @return Dispatcher|object
      */
-    protected function getSignalSlotDispatcher()
-    {
-        return GeneralUtility::makeInstance(Dispatcher::class);
-    }
+//    protected function getSignalSlotDispatcher()
+//    {
+//        return GeneralUtility::makeInstance(Dispatcher::class);
+//    }
 
     /**
      * @return Content[]

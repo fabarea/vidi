@@ -23,7 +23,7 @@ class ColumnsValidator extends AbstractValidator
      * @param mixed $columns
      * @return void
      */
-    public function isValid($columns)
+    public function isValid($columns): void
     {
         foreach ($columns as $columnName) {
             if (!Tca::grid()->hasField($columnName)) {

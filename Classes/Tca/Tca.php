@@ -18,7 +18,6 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Fab\Vidi\Domain\Model\Content;
 use Fab\Vidi\Exception\NotExistingClassException;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * A class to handle TCA ctrl.
@@ -79,7 +78,7 @@ class Tca implements SingletonInterface, TcaServiceInterface
             $className = sprintf('Fab\Vidi\Tca\%sService', ucfirst($serviceType));
 
             // Signal to pre-process the TCA of the given $dataType.
-            self::emitPreProcessTcaSignal($dataType, $serviceType);
+            #self::emitPreProcessTcaSignal($dataType, $serviceType);
 
             $instance = GeneralUtility::makeInstance($className, $dataType, $serviceType);
             self::$instances[$dataType][$serviceType] = $instance;
@@ -138,10 +137,10 @@ class Tca implements SingletonInterface, TcaServiceInterface
      * @throws InvalidSlotReturnException
      * @throws \InvalidArgumentException
      */
-    protected static function emitPreProcessTcaSignal($dataType, $serviceType)
-    {
-        self::getSignalSlotDispatcher()->dispatch(Tca::class, 'preProcessTca', array($dataType, $serviceType));
-    }
+//    protected static function emitPreProcessTcaSignal($dataType, $serviceType)
+//    {
+//        self::getSignalSlotDispatcher()->dispatch(Tca::class, 'preProcessTca', array($dataType, $serviceType));
+//    }
 
     /**
      * Get the SignalSlot dispatcher
@@ -149,8 +148,8 @@ class Tca implements SingletonInterface, TcaServiceInterface
      * @return Dispatcher
      * @throws \InvalidArgumentException
      */
-    protected static function getSignalSlotDispatcher()
-    {
-        return GeneralUtility::makeInstance(Dispatcher::class);
-    }
+//    protected static function getSignalSlotDispatcher()
+//    {
+//        return GeneralUtility::makeInstance(Dispatcher::class);
+//    }
 }

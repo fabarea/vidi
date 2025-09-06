@@ -19,7 +19,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use Fab\Vidi\Module\ModuleLoader;
 use Fab\Vidi\Tca\Tca;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Factory class related to Matcher object.
@@ -229,7 +228,7 @@ class MatcherObjectFactory implements SingletonInterface
             $matcher->setDataType($moduleLoader->getDataType());
         }
 
-        $this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\Controller\Backend\ContentController', 'postProcessMatcherObject', array($matcher, $matcher->getDataType()));
+        #$this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\Controller\Backend\ContentController', 'postProcessMatcherObject', array($matcher, $matcher->getDataType()));
     }
 
     /**
@@ -237,10 +236,10 @@ class MatcherObjectFactory implements SingletonInterface
      *
      * @return Dispatcher|object
      */
-    protected function getSignalSlotDispatcher()
-    {
-        return GeneralUtility::makeInstance(Dispatcher::class);
-    }
+//    protected function getSignalSlotDispatcher()
+//    {
+//        return GeneralUtility::makeInstance(Dispatcher::class);
+//    }
 
     /**
      * Get the Vidi Module Loader.

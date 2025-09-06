@@ -24,7 +24,7 @@ class ToolValidator extends AbstractValidator
      * @param string $tool
      * @return void
      */
-    public function isValid($tool)
+    public function isValid($tool): void
     {
         $dataType = $this->getModuleLoader()->getDataType();
         $isValid = ToolRegistry::getInstance()->isAllowed($dataType, $tool);

@@ -16,7 +16,6 @@ use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use Fab\Vidi\Persistence\ResultSetStorage;
 use Fab\Vidi\Resolver\FieldPathResolver;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Persistence\Matcher;
 use Fab\Vidi\Persistence\Order;
@@ -157,10 +156,10 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      * @param string $dataType
      * @param Order $order
      */
-    protected function emitPostProcessOrderObjectSignal($dataType, Order $order)
-    {
-        $this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessOrderObject', array($order, $dataType));
-    }
+//    protected function emitPostProcessOrderObjectSignal($dataType, Order $order)
+//    {
+//        $this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessOrderObject', array($order, $dataType));
+//    }
 
     /**
      * Signal that is called for post-processing a "matcher" object.
@@ -168,10 +167,10 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      * @param string $dataType
      * @param Matcher $matcher
      */
-    protected function emitPostProcessMatcherObjectSignal($dataType, Matcher $matcher)
-    {
-        $this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessMatcherObject', array($matcher, $dataType));
-    }
+//    protected function emitPostProcessMatcherObjectSignal($dataType, Matcher $matcher)
+//    {
+//        $this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessMatcherObject', array($matcher, $dataType));
+//    }
 
     /**
      * Signal that is called for post-processing a "limit".
@@ -179,10 +178,10 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      * @param string $dataType
      * @param int $limit
      */
-    protected function emitPostProcessLimitSignal($dataType, $limit)
-    {
-        $this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessLimit', array($limit, $dataType));
-    }
+//    protected function emitPostProcessLimitSignal($dataType, $limit)
+//    {
+//        $this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessLimit', array($limit, $dataType));
+//    }
 
     /**
      * Signal that is called for post-processing a "offset".
@@ -190,20 +189,20 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      * @param string $dataType
      * @param int $offset
      */
-    protected function emitPostProcessOffsetSignal($dataType, $offset)
-    {
-        $this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessLimit', array($offset, $dataType));
-    }
+//    protected function emitPostProcessOffsetSignal($dataType, $offset)
+//    {
+//        $this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessLimit', array($offset, $dataType));
+//    }
 
     /**
      * Get the SignalSlot dispatcher
      *
      * @return Dispatcher
      */
-    protected function getSignalSlotDispatcher()
-    {
-        return GeneralUtility::makeInstance(Dispatcher::class);
-    }
+//    protected function getSignalSlotDispatcher()
+//    {
+//        return GeneralUtility::makeInstance(Dispatcher::class);
+//    }
 
     /**
      * @param $ignoreEnableFields

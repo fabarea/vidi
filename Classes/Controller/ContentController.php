@@ -37,7 +37,6 @@ use Fab\Vidi\Persistence\OrderObjectFactory;
 use Fab\Vidi\Persistence\PagerObjectFactory;
 use Fab\Vidi\Signal\ProcessContentDataSignalArguments;
 use Fab\Vidi\Tca\Tca;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Controller which handles actions related to Vidi in the Backend.
@@ -724,7 +723,7 @@ class ContentController extends ActionController
             ->setSavingBehavior($savingBehavior)
             ->setLanguage($language);
 
-        $signalResult = $this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\Controller\Backend\ContentController', 'processContentData', array($signalArguments));
+        #$signalResult = $this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\Controller\Backend\ContentController', 'processContentData', array($signalArguments));
         return $signalResult[0];
     }
 
@@ -733,10 +732,10 @@ class ContentController extends ActionController
      *
      * @return Dispatcher
      */
-    protected function getSignalSlotDispatcher()
-    {
-        return GeneralUtility::makeInstance(Dispatcher::class);
-    }
+//    protected function getSignalSlotDispatcher()
+//    {
+//        return GeneralUtility::makeInstance(Dispatcher::class);
+//    }
 
     /**
      * Get the Clipboard service.

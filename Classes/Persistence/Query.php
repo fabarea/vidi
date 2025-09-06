@@ -197,11 +197,22 @@ class Query implements QueryInterface
     }
 
     /**
+     * Sets the type this query cares for.
+     *
+     * @param string $type
+     * @return void
+     */
+    public function setType($type): void
+    {
+        $this->type = $type;
+    }
+
+    /**
      * Sets the source to fetch the result from
      *
      * @param SourceInterface $source
      */
-    public function setSource(SourceInterface $source)
+    public function setSource(SourceInterface $source): void
     {
         $this->source = $source;
     }
@@ -226,7 +237,7 @@ class Query implements QueryInterface
      *
      * @return SourceInterface the node-tuple source; non-null
      */
-    public function getSource()
+    public function getSource(): SourceInterface
     {
         if ($this->source === null) {
             $this->source = $this->qomFactory->selector($this->getType());
@@ -240,7 +251,7 @@ class Query implements QueryInterface
      * @return QueryResultInterface|array The query result object or an array if $this->getQuerySettings()->getReturnRawQueryResult() is true
      * @api
      */
-    public function execute($returnRawQueryResult = false)
+    public function execute($returnRawQueryResult = false): QueryResultInterface|array
     {
         /** @var VidiDbBackend $backend */
         $backend = GeneralUtility::makeInstance(VidiDbBackend::class, $this);
@@ -259,7 +270,7 @@ class Query implements QueryInterface
      * @return QueryInterface
      * @api
      */
-    public function setOrderings(array $orderings)
+    public function setOrderings(array $orderings): QueryInterface
     {
         $this->orderings = $orderings;
         return $this;
@@ -376,26 +387,19 @@ class Query implements QueryInterface
     }
 
     /**
-     * Performs a logical conjunction of the given constraints. The method takes one or more contraints and concatenates them with a boolean AND.
-     * It also scepts a single array of constraints to be concatenated.
+     * Performs a logical conjunction of the given constraints. The method takes one or more constraints and concatenates them with a boolean AND.
      *
-     * @param mixed $constraint1 The first of multiple constraints or an array of constraints.
+     * @param ConstraintInterface ...$constraints One or more constraints.
      * @throws InvalidNumberOfConstraintsException
      * @return AndInterface
      * @api
      */
-    public function logicalAnd($constraint1)
+    public function logicalAnd(ConstraintInterface ...$constraints): AndInterface
     {
-        if (is_array($constraint1)) {
-            $resultingConstraint = array_shift($constraint1);
-            $constraints = $constraint1;
-        } else {
-            $constraints = func_get_args();
-            $resultingConstraint = array_shift($constraints);
+        if (count($constraints) === 0) {
+            throw new InvalidNumberOfConstraintsException('There must be at least one constraint given.', 1401289500);
         }
-        if ($resultingConstraint === null) {
-            throw new InvalidNumberOfConstraintsException('There must be at least one constraint or a non-empty array of constraints given.', 1401289500);
-        }
+        $resultingConstraint = array_shift($constraints);
         foreach ($constraints as $constraint) {
             $resultingConstraint = $this->qomFactory->_and($resultingConstraint, $constraint);
         }
@@ -403,25 +407,19 @@ class Query implements QueryInterface
     }
 
     /**
-     * Performs a logical disjunction of the two given constraints
+     * Performs a logical disjunction of the given constraints. The method takes one or more constraints and concatenates them with a boolean OR.
      *
-     * @param mixed $constraint1 The first of multiple constraints or an array of constraints.
+     * @param ConstraintInterface ...$constraints One or more constraints.
      * @throws InvalidNumberOfConstraintsException
      * @return OrInterface
      * @api
      */
-    public function logicalOr($constraint1)
+    public function logicalOr(ConstraintInterface ...$constraints): OrInterface
     {
-        if (is_array($constraint1)) {
-            $resultingConstraint = array_shift($constraint1);
-            $constraints = $constraint1;
-        } else {
-            $constraints = func_get_args();
-            $resultingConstraint = array_shift($constraints);
+        if (count($constraints) === 0) {
+            throw new InvalidNumberOfConstraintsException('There must be at least one constraint given.', 1401289501);
         }
-        if ($resultingConstraint === null) {
-            throw new InvalidNumberOfConstraintsException('There must be at least one constraint or a non-empty array of constraints given.', 1401289501);
-        }
+        $resultingConstraint = array_shift($constraints);
         foreach ($constraints as $constraint) {
             $resultingConstraint = $this->qomFactory->_or($resultingConstraint, $constraint);
         }
@@ -436,7 +434,7 @@ class Query implements QueryInterface
      * @return NotInterface
      * @api
      */
-    public function logicalNot(ConstraintInterface $constraint)
+    public function logicalNot(ConstraintInterface $constraint): NotInterface
     {
         return $this->qomFactory->not($constraint);
     }
@@ -450,7 +448,7 @@ class Query implements QueryInterface
      * @return ComparisonInterface
      * @api
      */
-    public function equals($propertyName, $operand, $caseSensitive = true)
+    public function equals($propertyName, $operand, $caseSensitive = true): ComparisonInterface
     {
         if (is_object($operand) || $caseSensitive) {
             $comparison = $this->qomFactory->comparison($this->qomFactory->propertyValue($propertyName, $this->getSelectorName()), QueryInterface::OPERATOR_EQUAL_TO, $operand);
@@ -469,7 +467,7 @@ class Query implements QueryInterface
      * @return ComparisonInterface
      * @api
      */
-    public function like($propertyName, $operand, $caseSensitive = true)
+    public function like($propertyName, $operand, $caseSensitive = true): ComparisonInterface
     {
         return $this->qomFactory->comparison($this->qomFactory->propertyValue($propertyName, $this->getSelectorName()), QueryInterface::OPERATOR_LIKE, $operand);
     }
@@ -483,7 +481,7 @@ class Query implements QueryInterface
      * @return ComparisonInterface
      * @api
      */
-    public function contains($propertyName, $operand)
+    public function contains($propertyName, $operand): ComparisonInterface
     {
         return $this->qomFactory->comparison($this->qomFactory->propertyValue($propertyName, $this->getSelectorName()), QueryInterface::OPERATOR_CONTAINS, $operand);
     }
@@ -498,7 +496,7 @@ class Query implements QueryInterface
      * @return ComparisonInterface
      * @api
      */
-    public function in($propertyName, $operand)
+    public function in($propertyName, $operand): ComparisonInterface
     {
         if (!is_array($operand) && !$operand instanceof \ArrayAccess && !$operand instanceof \Traversable) {
             throw new UnexpectedTypeException('The "in" operator must be given a mutlivalued operand (array, ArrayAccess, Traversable).', 1264678095);
@@ -514,7 +512,7 @@ class Query implements QueryInterface
      * @return ComparisonInterface
      * @api
      */
-    public function lessThan($propertyName, $operand)
+    public function lessThan($propertyName, $operand): ComparisonInterface
     {
         return $this->qomFactory->comparison($this->qomFactory->propertyValue($propertyName, $this->getSelectorName()), QueryInterface::OPERATOR_LESS_THAN, $operand);
     }
@@ -553,7 +551,7 @@ class Query implements QueryInterface
      * @return ComparisonInterface
      * @api
      */
-    public function greaterThanOrEqual($propertyName, $operand)
+    public function greaterThanOrEqual($propertyName, $operand): ComparisonInterface
     {
         return $this->qomFactory->comparison($this->qomFactory->propertyValue($propertyName, $this->getSelectorName()), QueryInterface::OPERATOR_GREATER_THAN_OR_EQUAL_TO, $operand);
     }
@@ -650,12 +648,12 @@ class Query implements QueryInterface
         return $this;
     }
 
-    public function setQuerySettings(QuerySettingsInterface $querySettings)
+    public function setQuerySettings(QuerySettingsInterface $querySettings): void
     {
         $this->typo3QuerySettings = $querySettings;
     }
 
-    public function getQuerySettings()
+    public function getQuerySettings(): QuerySettingsInterface
     {
         return $this->typo3QuerySettings;
     }

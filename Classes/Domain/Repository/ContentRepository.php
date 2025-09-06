@@ -31,7 +31,6 @@ use Fab\Vidi\Persistence\Order;
 use Fab\Vidi\Persistence\Query;
 use Fab\Vidi\Tca\Tca;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Repository for accessing Content
@@ -611,7 +610,7 @@ class ContentRepository implements RepositoryInterface
         }
 
         // Trigger signal for post processing the computed constraints object.
-        $constraints = $this->emitPostProcessConstraintsSignal($query, $constraints);
+        #$constraints = $this->emitPostProcessConstraintsSignal($query, $constraints);
 
         return $constraints;
     }
@@ -830,35 +829,35 @@ class ContentRepository implements RepositoryInterface
      * @param ConstraintInterface|null $constraints
      * @return ConstraintInterface|null $constraints
      */
-    protected function emitPostProcessConstraintsSignal(Query $query, $constraints): ?ConstraintInterface
-    {
-        /** @var ConstraintContainer $constraintContainer */
-        $constraintContainer = GeneralUtility::makeInstance(ConstraintContainer::class);
-        $result = $this->getSignalSlotDispatcher()->dispatch(
-            self::class,
-            'postProcessConstraintsObject',
-            [
-                $query,
-                $constraints,
-                $constraintContainer
-            ]
-        );
-
-        // Backward compatibility.
-        $processedConstraints = $result[1];
-
-        // New way to transmit the constraints.
-        if ($constraintContainer->getConstraint()) {
-            $processedConstraints = $constraintContainer->getConstraint();
-        }
-        return $processedConstraints;
-    }
-
-    /**
-     * @return Dispatcher
-     */
-    protected function getSignalSlotDispatcher(): Dispatcher
-    {
-        return GeneralUtility::makeInstance(Dispatcher::class);
-    }
+//    protected function emitPostProcessConstraintsSignal(Query $query, $constraints): ?ConstraintInterface
+//    {
+//        /** @var ConstraintContainer $constraintContainer */
+//        $constraintContainer = GeneralUtility::makeInstance(ConstraintContainer::class);
+//        $result = $this->getSignalSlotDispatcher()->dispatch(
+//            self::class,
+//            'postProcessConstraintsObject',
+//            [
+//                $query,
+//                $constraints,
+//                $constraintContainer
+//            ]
+//        );
+//
+//        // Backward compatibility.
+//        $processedConstraints = $result[1];
+//
+//        // New way to transmit the constraints.
+//        if ($constraintContainer->getConstraint()) {
+//            $processedConstraints = $constraintContainer->getConstraint();
+//        }
+//        return $processedConstraints;
+//    }
+//
+//    /**
+//     * @return Dispatcher
+//     */
+//    protected function getSignalSlotDispatcher(): Dispatcher
+//    {
+//        return GeneralUtility::makeInstance(Dispatcher::class);
+//    }
 }

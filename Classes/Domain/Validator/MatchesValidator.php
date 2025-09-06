@@ -23,7 +23,7 @@ class MatchesValidator extends AbstractValidator
      * @param mixed $matches
      * @return void
      */
-    public function isValid($matches)
+    public function isValid($matches): void
     {
         foreach ($matches as $fieldName => $value) {
             if (!Tca::table()->hasField($fieldName)) {
