@@ -20,6 +20,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use Fab\Vidi\Persistence\Matcher;
 use Fab\Vidi\Persistence\Order;
 use Fab\Vidi\Tca\Tca;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Abstract View helper for handling Content display mainly on the Frontend.
@@ -156,10 +157,11 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      * @param string $dataType
      * @param Order $order
      */
-//    protected function emitPostProcessOrderObjectSignal($dataType, Order $order)
-//    {
-//        $this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessOrderObject', array($order, $dataType));
-//    }
+    protected function emitPostProcessOrderObjectSignal($dataType, Order $order)
+    {
+        // For TYPO3 v12 compatibility - signals are deprecated, using empty method to prevent errors
+        // If you need event dispatching, implement PSR-14 events instead
+    }
 
     /**
      * Signal that is called for post-processing a "matcher" object.
@@ -167,10 +169,11 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      * @param string $dataType
      * @param Matcher $matcher
      */
-//    protected function emitPostProcessMatcherObjectSignal($dataType, Matcher $matcher)
-//    {
-//        $this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessMatcherObject', array($matcher, $dataType));
-//    }
+    protected function emitPostProcessMatcherObjectSignal($dataType, Matcher $matcher)
+    {
+        // For TYPO3 v12 compatibility - signals are deprecated, using empty method to prevent errors
+        // If you need event dispatching, implement PSR-14 events instead
+    }
 
     /**
      * Signal that is called for post-processing a "limit".
@@ -178,10 +181,11 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      * @param string $dataType
      * @param int $limit
      */
-//    protected function emitPostProcessLimitSignal($dataType, $limit)
-//    {
-//        $this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessLimit', array($limit, $dataType));
-//    }
+    protected function emitPostProcessLimitSignal($dataType, $limit)
+    {
+        // For TYPO3 v12 compatibility - signals are deprecated, using empty method to prevent errors
+        // If you need event dispatching, implement PSR-14 events instead
+    }
 
     /**
      * Signal that is called for post-processing a "offset".
@@ -189,20 +193,23 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      * @param string $dataType
      * @param int $offset
      */
-//    protected function emitPostProcessOffsetSignal($dataType, $offset)
-//    {
-//        $this->getSignalSlotDispatcher()->dispatch('Fab\Vidi\ViewHelper\Content\AbstractContentViewHelper', 'postProcessLimit', array($offset, $dataType));
-//    }
+    protected function emitPostProcessOffsetSignal($dataType, $offset)
+    {
+        // For TYPO3 v12 compatibility - signals are deprecated, using empty method to prevent errors
+        // If you need event dispatching, implement PSR-14 events instead
+    }
 
     /**
-     * Get the SignalSlot dispatcher
+     * Get the SignalSlot dispatcher (deprecated in TYPO3 v12)
      *
-     * @return Dispatcher
+     * @return EventDispatcherInterface|null
      */
-//    protected function getSignalSlotDispatcher()
-//    {
-//        return GeneralUtility::makeInstance(Dispatcher::class);
-//    }
+    protected function getSignalSlotDispatcher()
+    {
+        // For TYPO3 v12 compatibility - SignalSlot is deprecated
+        // Return null to prevent errors, implement PSR-14 events if needed
+        return null;
+    }
 
     /**
      * @param $ignoreEnableFields
