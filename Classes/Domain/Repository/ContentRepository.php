@@ -119,8 +119,7 @@ class ContentRepository implements RepositoryInterface
 
         // Assemble the final constraints or not.
         if ($matcherConstraint) {
-            $query->logicalAnd([$matcherConstraint, $constraint]);
-            $query->matching($query->logicalAnd([$matcherConstraint, $constraint]));
+            $query->matching($query->logicalAnd($matcherConstraint, $constraint));
         } else {
             $query->matching($constraint);
         }
@@ -155,8 +154,7 @@ class ContentRepository implements RepositoryInterface
 
         // Assemble the final constraints or not.
         if ($matcherConstraint) {
-            $query->logicalAnd([$matcherConstraint, $constraint]);
-            $query->matching($query->logicalAnd([$matcherConstraint, $constraint]));
+            $query->matching($query->logicalAnd($matcherConstraint, $constraint));
         } else {
             $query->matching($constraint);
         }
@@ -603,7 +601,7 @@ class ContentRepository implements RepositoryInterface
 
         if (count($collectedConstraints) > 1) {
             $logical = $matcher->getDefaultLogicalSeparator();
-            $constraints = $query->$logical($collectedConstraints);
+            $constraints = $query->$logical(...$collectedConstraints);
         } elseif (!empty($collectedConstraints)) {
             // true means there is one constraint only and should become the result
             $constraints = current($collectedConstraints);
@@ -645,7 +643,12 @@ class ContentRepository implements RepositoryInterface
                 }
             }
             $logical = $matcher->getLogicalSeparatorForSearchTerm();
-            $result = $query->$logical($constraints);
+            // Fix for TYPO3 v12 compatibility: only use logical operator if there are multiple constraints
+            if (count($constraints) > 1) {
+                $result = $query->$logical(...$constraints);
+            } elseif (count($constraints) === 1) {
+                $result = $constraints[0];
+            }
         }
 
         return $result;
@@ -736,7 +739,12 @@ class ContentRepository implements RepositoryInterface
                 ? $matcher->$getLogicalSeparator()
                 : $matcher->getDefaultLogicalSeparator();
 
-            $result = $query->$logical($constraints);
+            // Fix for TYPO3 v12 compatibility: only use logical operator if there are multiple constraints
+            if (count($constraints) > 1) {
+                $result = $query->$logical(...$constraints);
+            } elseif (count($constraints) === 1) {
+                $result = $constraints[0];
+            }
         }
 
         return $result;

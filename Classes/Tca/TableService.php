@@ -411,6 +411,95 @@ class TableService extends AbstractTca
     }
 
     /**
+     * Check if a field is a virtual/calculated field that exists in database but not in TCA.
+     *
+     * @param string $fieldName
+     * @return bool
+     */
+    protected function isVirtualField($fieldName)
+    {
+        $virtualFields = $this->getVirtualFieldsForTable($this->tableName);
+        return in_array($fieldName, $virtualFields, true);
+    }
+
+    /**
+     * Get virtual field configuration for fields that exist in database but don't have TCA entries.
+     *
+     * @param string $fieldName
+     * @return array
+     */
+    protected function getVirtualFieldConfiguration($fieldName)
+    {
+        $configuration = [
+            'config' => [
+                'type' => 'input',
+                'readOnly' => true,
+            ]
+        ];
+
+        // Special configuration for specific virtual fields
+        switch ($fieldName) {
+            case 'number_of_references':
+                $configuration['config']['type'] = 'input';
+                $configuration['config']['eval'] = 'int';
+                $configuration['label'] = 'Number of References';
+                break;
+            case 'usage_count':
+                $configuration['config']['type'] = 'input';
+                $configuration['config']['eval'] = 'int';
+                $configuration['label'] = 'Usage Count';
+                break;
+            case 'reference_count':
+                $configuration['config']['type'] = 'input';
+                $configuration['config']['eval'] = 'int';
+                $configuration['label'] = 'Reference Count';
+                break;
+            case 'extension':
+                $configuration['config']['type'] = 'input';
+                $configuration['config']['eval'] = 'trim';
+                $configuration['config']['max'] = 10;
+                $configuration['label'] = 'File Extension';
+                break;
+        }
+
+        return $configuration;
+    }
+
+    /**
+     * Get list of virtual fields for a specific table that exist in database but not in TCA.
+     *
+     * @param string $tableName
+     * @return array
+     */
+    protected function getVirtualFieldsForTable($tableName)
+    {
+        $virtualFields = [];
+
+        // Define virtual/calculated fields per table that exist in database
+        switch ($tableName) {
+            case 'sys_file':
+                $virtualFields = [
+                    'number_of_references',
+                    'usage_count',
+                    'reference_count',
+                    'extension'
+                ];
+                break;
+            case 'sys_file_metadata':
+                $virtualFields = [
+                    'file_size_formatted',
+                    'dimensions_formatted'
+                ];
+                break;
+            default:
+                // No virtual fields for other tables by default
+                break;
+        }
+
+        return $virtualFields;
+    }
+
+    /**
      * @param string $fieldName
      * @throws \Exception
      * @return FieldService
@@ -435,6 +524,9 @@ class TableService extends AbstractTca
         // True for system fields such as uid, pid that don't necessarily have a TCA.
         if (empty($this->columnTca[$fieldName]) && in_array($fieldName, Tca::getSystemFields())) {
             $this->columnTca[$fieldName] = [];
+        } elseif (empty($this->columnTca[$fieldName]) && $this->isVirtualField($fieldName)) {
+            // Handle virtual/calculated fields that don't have TCA entries but exist in database
+            $this->columnTca[$fieldName] = $this->getVirtualFieldConfiguration($fieldName);
         } elseif (empty($this->columnTca[$fieldName])) {
             $message = sprintf(
                 'Does the field really exist? No TCA entry found for field "%s" for table "%s"',
