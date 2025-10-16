@@ -382,8 +382,11 @@ class FieldService extends AbstractTca
         if (!empty($configuration['items']) && is_array($configuration['items'])) {
             foreach ($configuration['items'] as $item) {
                 if ($item[1] == $itemValue) {
+                    $label = null;
                     try {
-                        $label = LocalizationUtility::translate($item[0], '');
+                        if ($item[0] !== null && is_string($item[0])) {
+                            $label = LocalizationUtility::translate($item[0], 'vidi');
+                        }
                     } catch (\InvalidArgumentException $e) {
                     }
                     if (empty($label)) {
