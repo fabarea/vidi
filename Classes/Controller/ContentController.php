@@ -49,7 +49,7 @@ class ContentController extends ActionController
     /**
      * Initialize every action.
      */
-    public function initializeAction()
+    public function initializeAction():void
     {
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
         $pageRenderer->addInlineLanguageLabelFile('EXT:vidi/Resources/Private/Language/locallang.xlf');
