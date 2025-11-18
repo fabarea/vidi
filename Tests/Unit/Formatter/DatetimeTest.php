@@ -28,7 +28,7 @@ class DatetimeTest extends UnitTestCase
      */
     private $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         date_default_timezone_set('GMT');
         $this->subject = new Datetime();
@@ -36,7 +36,7 @@ class DatetimeTest extends UnitTestCase
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['hhmm'] = 'H:i';
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -44,7 +44,7 @@ class DatetimeTest extends UnitTestCase
     /**
      * @test
      */
-    public function canFormatDatetime()
+    public function canFormatDatetime(): void
     {
         $foo = $this->subject->format('1351880525');
         $this->assertEquals('02.11.2012 18:22', $foo);

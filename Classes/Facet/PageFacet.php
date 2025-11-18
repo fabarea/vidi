@@ -93,18 +93,13 @@ class PageFacet implements FacetInterface
         $query = $this->getQueryBuilder('pages');
         $query->getRestrictions()->removeAll();
         return $query->select('*')
-            ->from('pages')
-            ->where(
-                sprintf(
-                    'uid IN (SELECT DISTINCT(pid) FROM %s WHERE 1=1 %s)',
-                    $this->getModuleLoader()->getDataType(),
-                    BackendUtility::deleteClause(
-                        $this->getModuleLoader()->getDataType()
-                    )
-                ),
-                BackendUtility::deleteClause('pages', '')
+            ->from('pages')->where(sprintf(
+            'uid IN (SELECT DISTINCT(pid) FROM %s WHERE 1=1 %s)',
+            $this->getModuleLoader()->getDataType(),
+            BackendUtility::deleteClause(
+                $this->getModuleLoader()->getDataType()
             )
-            ->execute()
+        ), BackendUtility::deleteClause('pages', ''))->executeQuery()
             ->fetchAllAssociative();
     }
 

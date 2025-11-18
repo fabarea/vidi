@@ -40,7 +40,7 @@ class OrderObjectFactory implements SingletonInterface
         $order = Tca::table($dataType)->getDefaultOrderings();
 
         // Retrieve a possible id of the column from the request
-        $orderings = GeneralUtility::_GP('order');
+        $orderings = $GLOBALS['TYPO3_REQUEST']->getParsedBody()['order'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['order'] ?? null;
 
         if (is_array($orderings) && isset($orderings[0])) {
             $columnPosition = $orderings[0]['column'];

@@ -23,7 +23,7 @@ class FeatureContext extends MinkContext
     /**
      * @Given /^I wait "([^"]*)" seconds$/
      */
-    public function iWaitSeconds($seconds)
+    public function iWaitSeconds($seconds): void
     {
         sleep($seconds);
     }

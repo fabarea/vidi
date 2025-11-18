@@ -52,8 +52,8 @@ class NewButton extends AbstractComponentView
         $arguments['returnUrl'] = $this->getModuleLoader()->getModuleUrl();
 
         // Add possible id parameter
-        if (GeneralUtility::_GP(Parameter::PID)) {
-            $arguments['id'] = GeneralUtility::_GP(Parameter::PID);
+        if ($GLOBALS['TYPO3_REQUEST']->getParsedBody()[Parameter::PID] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()[Parameter::PID] ?? null) {
+            $arguments['id'] = $GLOBALS['TYPO3_REQUEST']->getParsedBody()[Parameter::PID] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()[Parameter::PID] ?? null;
         }
 
         $uri = BackendUtility::getModuleUrl(
@@ -100,8 +100,8 @@ class NewButton extends AbstractComponentView
      */
     protected function getStoragePid(): int
     {
-        if (GeneralUtility::_GP(Parameter::PID)) {
-            $pid = GeneralUtility::_GP(Parameter::PID);
+        if ($GLOBALS['TYPO3_REQUEST']->getParsedBody()[Parameter::PID] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()[Parameter::PID] ?? null) {
+            $pid = $GLOBALS['TYPO3_REQUEST']->getParsedBody()[Parameter::PID] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()[Parameter::PID] ?? null;
         } elseif ((int)Tca::table()->get('rootLevel') === 1) {
             $pid = 0;
         } else {

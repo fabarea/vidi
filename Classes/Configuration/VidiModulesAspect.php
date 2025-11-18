@@ -23,7 +23,7 @@ class VidiModulesAspect implements TableConfigurationPostProcessingHookInterface
      *
      * @return void
      */
-    public function processData()
+    public function processData(): void
     {
         /** @var ModuleLoader $moduleLoader */
         $moduleLoader = GeneralUtility::makeInstance(ModuleLoader::class);

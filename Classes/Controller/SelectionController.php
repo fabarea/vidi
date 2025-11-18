@@ -32,7 +32,7 @@ class SelectionController extends ActionController
 
         $selection->setOwner($this->getBackendUser()->user['uid']);
         $selectionRepository->add($selection);
-        $this->redirect('edit', 'Selection', 'vidi', array('dataType' => $selection->getDataType()));
+        return $this->redirect('edit', 'Selection', 'vidi', array('dataType' => $selection->getDataType()));
     }
 
     /**
@@ -53,7 +53,7 @@ class SelectionController extends ActionController
     {
         $selectionRepository = GeneralUtility::makeInstance(SelectionRepository::class);
         $selectionRepository->update($selection);
-        $this->redirect('show', 'Selection', 'vidi', array('selection' => $selection->getUid()));
+        return $this->redirect('show', 'Selection', 'vidi', array('selection' => $selection->getUid()));
     }
 
     /**

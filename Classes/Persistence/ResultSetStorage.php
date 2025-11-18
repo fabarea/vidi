@@ -39,7 +39,7 @@ class ResultSetStorage implements SingletonInterface
      * @param array $resultSet
      * @internal param array $resultSets
      */
-    public function set($querySignature, array $resultSet)
+    public function set($querySignature, array $resultSet): void
     {
         $this->resultSets[$querySignature] = $resultSet;
     }

@@ -150,7 +150,7 @@ class Query implements QueryInterface
      * @param QuerySettingsInterface $typo3QuerySettings The Query Settings
      * @return void
      */
-    public function setTypo3QuerySettings(QuerySettingsInterface $typo3QuerySettings)
+    public function setTypo3QuerySettings(QuerySettingsInterface $typo3QuerySettings): void
     {
         $this->typo3QuerySettings = $typo3QuerySettings;
     }
@@ -580,7 +580,7 @@ class Query implements QueryInterface
      */
     public function isEmpty($propertyName)
     {
-        throw new NotImplementedException(__METHOD__);
+        throw new NotImplementedException(__METHOD__, 8063512176);
     }
 
     /**

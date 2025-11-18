@@ -56,7 +56,7 @@ class ClipboardService implements SingletonInterface
      *
      * @param Matcher $matches
      */
-    public function save(Matcher $matches)
+    public function save(Matcher $matches): void
     {
         $this->getBackendUser()->pushModuleData($this->getDataKey(), $matches);
     }
@@ -66,7 +66,7 @@ class ClipboardService implements SingletonInterface
      *
      * @return void
      */
-    public function flush()
+    public function flush(): void
     {
         $this->getBackendUser()->pushModuleData($this->getDataKey(), null);
     }

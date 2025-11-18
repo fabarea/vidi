@@ -20,7 +20,7 @@ class ToolWorkViewHelper extends AbstractViewHelper
     /**
      * @return void
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('tool', 'string', '', true);
         $this->registerArgument('label', 'string', '', true);

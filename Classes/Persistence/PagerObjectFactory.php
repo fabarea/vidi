@@ -38,15 +38,15 @@ class PagerObjectFactory implements SingletonInterface
         $pager = GeneralUtility::makeInstance(Pager::class);
 
         // Set items per page
-        if (GeneralUtility::_GET('length') !== null) {
-            $limit = (int)GeneralUtility::_GET('length');
+        if (($GLOBALS['TYPO3_REQUEST']->getQueryParams()['length'] ?? null) !== null) {
+            $limit = (int)($GLOBALS['TYPO3_REQUEST']->getQueryParams()['length'] ?? null);
             $pager->setLimit($limit);
         }
 
         // Set offset
         $offset = 0;
-        if (GeneralUtility::_GET('start') !== null) {
-            $offset = (int)GeneralUtility::_GET('start');
+        if (($GLOBALS['TYPO3_REQUEST']->getQueryParams()['start'] ?? null) !== null) {
+            $offset = (int)($GLOBALS['TYPO3_REQUEST']->getQueryParams()['start'] ?? null);
         }
         $pager->setOffset($offset);
 

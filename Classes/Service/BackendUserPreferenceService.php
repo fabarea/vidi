@@ -48,7 +48,7 @@ class BackendUserPreferenceService
      * @param mixed $value
      * @return void
      */
-    public function set($key, $value)
+    public function set($key, $value): void
     {
         if ($this->getBackendUser()) {
             $this->getBackendUser()->uc[$key] = $value;

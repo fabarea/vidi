@@ -36,6 +36,9 @@ class LanguageFileGenerator implements SingletonInterface
 		</body>
 	</file>
 </xliff>';
+    public function __construct(private readonly \TYPO3\CMS\Core\Localization\LanguageServiceFactory $languageServiceFactory)
+    {
+    }
 
     /**
      * @param string $dataType
@@ -87,7 +90,7 @@ class LanguageFileGenerator implements SingletonInterface
         if ($locale === '') {
             $locale = 'en';
         }
-        $languageServiceFactory = GeneralUtility::makeInstance(LanguageServiceFactory::class);
+        $languageServiceFactory = $this->languageServiceFactory;
         return $languageServiceFactory->create($locale);
     }
 }

@@ -404,7 +404,7 @@ class ContentRepository implements RepositoryInterface
      * @return void
      * @api
      */
-    public function removeAll()
+    public function removeAll(): void
     {
         // TODO: Implement removeAll() method.
     }
@@ -510,7 +510,7 @@ class ContentRepository implements RepositoryInterface
      * @return void
      * @api
      */
-    public function setDefaultQuerySettings(QuerySettingsInterface $defaultQuerySettings)
+    public function setDefaultQuerySettings(QuerySettingsInterface $defaultQuerySettings): void
     {
         $this->defaultQuerySettings = $defaultQuerySettings;
     }

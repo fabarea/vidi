@@ -47,7 +47,7 @@ class ModuleLoaderTest extends AbstractFunctionalTestCase
         $this->fixture->register();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->fixture);
     }
@@ -56,7 +56,7 @@ class ModuleLoaderTest extends AbstractFunctionalTestCase
      * @test
      * @dataProvider attributeValueProvider
      */
-    public function attributeCanBeSet($attribute, $value)
+    public function attributeCanBeSet($attribute, $value): void
     {
         $setter = 'set' . ucfirst($attribute);
         $this->fixture->$setter($value);
@@ -78,7 +78,7 @@ class ModuleLoaderTest extends AbstractFunctionalTestCase
      * @test
      * @dataProvider attributeProvider
      */
-    public function testAttribute($attribute, $defaultValue)
+    public function testAttribute($attribute, $defaultValue): void
     {
         $this->assertAttributeEquals($defaultValue, $attribute, $this->fixture);
     }
@@ -98,7 +98,7 @@ class ModuleLoaderTest extends AbstractFunctionalTestCase
     /**
      * @test
      */
-    public function getModuleConfigurationReturnsArrayWithSomeKeys()
+    public function getModuleConfigurationReturnsArrayWithSomeKeys(): void
     {
         $moduleLoader = new ModuleLoader($this->dataType);
         $moduleLoader->register();
@@ -114,7 +114,7 @@ class ModuleLoaderTest extends AbstractFunctionalTestCase
     /**
      * @test
      */
-    public function getModuleConfigurationWithParameterDataTypeReturnsDataType()
+    public function getModuleConfigurationWithParameterDataTypeReturnsDataType(): void
     {
         $moduleLoader = new ModuleLoader($this->dataType);
         $moduleLoader->register();

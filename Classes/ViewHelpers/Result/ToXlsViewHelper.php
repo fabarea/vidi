@@ -21,7 +21,7 @@ class ToXlsViewHelper extends AbstractToFormatViewHelper
     /**
      * Render a XLS export request.
      */
-    public function render()
+    public function render(): void
     {
         $objects = $this->templateVariableContainer->get('objects');
 

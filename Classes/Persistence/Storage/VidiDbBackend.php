@@ -88,7 +88,7 @@ class VidiDbBackend
     /**
      * @param Query $query
      */
-    public function __construct(Query $query)
+    public function __construct(Query $query, private readonly \TYPO3\CMS\Core\Context\Context $context, private readonly \TYPO3\CMS\Core\Database\ConnectionPool $connectionPool)
     {
         $this->query = $query;
     }
@@ -168,9 +168,7 @@ class VidiDbBackend
 
             $sql = $this->buildQuery($statementParts);
             $count = $this
-                ->getConnection()
-                ->executeQuery($sql, $parameters, $types)
-                ->fetchColumn(0);
+                ->getConnection()->executeQuery($sql, $parameters, $types)->fetchOne(0);
         }
         return (int)$count;
     }
@@ -912,7 +910,7 @@ class VidiDbBackend
 
         $pageRepository = $this->getPageRepository();
         if (isset($GLOBALS['TSFE']) && is_object($GLOBALS['TSFE'])) {
-            $languageMode = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('language', 'legacyLanguageMode');
+            $languageMode = $this->context->getPropertyFromAspect('language', 'legacyLanguageMode');
         #if ($this->isBackendUserLogged() && $this->getBackendUser()->workspace !== 0) {
             #    $pageRepository->versioningWorkspaceId = $this->getBackendUser()->workspace;
         #}
@@ -935,13 +933,7 @@ class VidiDbBackend
                 $queryBuilder = $this->getQueryBuilder();
                 $row = $queryBuilder
                     ->select($tableName . '.*')
-                    ->from($tableName)
-                    ->andWhere(
-                        $tableName . '.uid=' . (int)$row[$GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField']],
-                        $tableName . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['languageField'] . ' = 0'
-                    )
-                    ->execute()
-                    ->fetch();
+                    ->from($tableName)->andWhere($tableName . '.uid=' . (int)$row[$GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField']], $tableName . '.' . $GLOBALS['TCA'][$tableName]['ctrl']['languageField'] . ' = 0')->executeQuery()->fetchAssociative();
             }
         }
 
@@ -1072,7 +1064,7 @@ class VidiDbBackend
     protected function getConnection(): Connection
     {
         /** @var ConnectionPool $connectionPool */
-        return GeneralUtility::makeInstance(ConnectionPool::class)
+        return $this->connectionPool
             ->getConnectionForTable($this->getTableName());
     }
 
@@ -1082,7 +1074,7 @@ class VidiDbBackend
     protected function getQueryBuilder(): QueryBuilder
     {
         /** @var ConnectionPool $connectionPool */
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $connectionPool = $this->connectionPool;
         return $connectionPool->getQueryBuilderForTable($this->getTableName());
     }
 

@@ -70,7 +70,7 @@ class ConfigurationUtility implements SingletonInterface
      * @param mixed $value
      * @return void
      */
-    public function set($key, $value)
+    public function set($key, $value): void
     {
         $this->configuration[$key] = $value;
     }

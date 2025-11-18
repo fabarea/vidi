@@ -15,14 +15,14 @@ class DateTest extends UnitTestCase
      */
     private $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         date_default_timezone_set('GMT');
         $this->subject = new Date();
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['ddmmyy'] = 'd.m.Y';
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -30,7 +30,7 @@ class DateTest extends UnitTestCase
     /**
      * @test
      */
-    public function canFormatDate()
+    public function canFormatDate(): void
     {
         $foo = $this->subject->format('1351880525');
         $this->assertEquals('02.11.2012', $foo);

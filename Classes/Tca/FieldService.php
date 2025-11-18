@@ -768,7 +768,7 @@ class FieldService extends AbstractTca
     /**
      * @param string $compositeField
      */
-    public function setCompositeField($compositeField)
+    public function setCompositeField($compositeField): void
     {
         $this->compositeField = $compositeField;
     }

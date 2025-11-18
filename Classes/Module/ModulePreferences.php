@@ -89,7 +89,7 @@ class ModulePreferences implements SingletonInterface
      * @param string $dataType
      * @return void
      */
-    public function load($dataType)
+    public function load($dataType): void
     {
         // Fetch preferences from different sources and overlay them
         $databasePreferences = $this->fetchPreferencesFromDatabase($dataType);
@@ -106,7 +106,7 @@ class ModulePreferences implements SingletonInterface
      * @param array $preferences
      * @return void
      */
-    public function save($preferences)
+    public function save($preferences): void
     {
         $configurableParts = ConfigurablePart::getParts();
 

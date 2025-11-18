@@ -20,7 +20,7 @@ class LabelViewHelper extends AbstractViewHelper
     /**
      * @return void
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('dataType', 'string', '', true);
         $this->registerArgument('fieldName', 'string', '', true);

@@ -15,7 +15,7 @@ abstract class AbstractServiceTest extends UnitTestCase
      */
     private $fixture;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -25,7 +25,6 @@ abstract class AbstractServiceTest extends UnitTestCase
                 'default_sortby' => 'ORDER BY username',
                 'tstamp' => 'tstamp',
                 'crdate' => 'crdate',
-                'cruser_id' => 'cruser_id',
                 'title' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:tx_foo',
                 'delete' => 'deleted',
                 'enablecolumns' => array(
@@ -45,16 +44,16 @@ abstract class AbstractServiceTest extends UnitTestCase
                         'type' => 'input',
                         'size' => '20',
                         'max' => '255',
-                        'eval' => 'nospace,lower,uniqueInPid,required'
+                        'eval' => 'nospace,lower,uniqueInPid',
+                        'required' => true
                     ),
                 ),
                 'password' => array(
                     'label' => 'LLL:EXT:foo/Resources/Private/Language/tx_foo.xlf:password',
                     'config' => array(
-                        'type' => 'input',
+                        'type' => 'password',
                         'size' => '10',
-                        'max' => '40',
-                        'eval' => 'nospace,required,password'
+                        'hashed' => false
                     ),
                 ),
                 'usergroup' => array(
@@ -248,7 +247,7 @@ abstract class AbstractServiceTest extends UnitTestCase
         */
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->fixture, $GLOBALS['TCA']);
     }

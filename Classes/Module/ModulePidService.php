@@ -38,7 +38,7 @@ class ModulePidService
     /**
      * ModulePidService constructor.
      */
-    public function __construct()
+    public function __construct(private readonly \TYPO3\CMS\Core\Database\ConnectionPool $connectionPool)
     {
         $this->dataType = $this->getModuleLoader()->getDataType();
     }
@@ -81,8 +81,8 @@ class ModulePidService
      */
     public function getConfiguredNewRecordPid(): int
     {
-        if (GeneralUtility::_GP(Parameter::PID)) {
-            $configuredPid = (int)GeneralUtility::_GP(Parameter::PID);
+        if ($GLOBALS['TYPO3_REQUEST']->getParsedBody()[Parameter::PID] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()[Parameter::PID] ?? null) {
+            $configuredPid = (int)($GLOBALS['TYPO3_REQUEST']->getParsedBody()[Parameter::PID] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()[Parameter::PID] ?? null);
         } else {
             // Get pid from User TSConfig if any.
             $result = $this->getBackendUser()->getTSConfig()['tx_vidi.']['dataType.'][$this->dataType.'.']['storagePid'];
@@ -183,13 +183,7 @@ class ModulePidService
         $query->getRestrictions()->removeAll(); // we are in BE context.
 
         $page = $query->select('doktype')
-            ->from('pages')
-            ->where(
-                'deleted = 0',
-                'uid = ' . $configuredPid
-            )
-            ->execute()
-            ->fetch();
+            ->from('pages')->where('deleted = 0', 'uid = ' . $configuredPid)->executeQuery()->fetchAssociative();
 
         return is_array($page)
             ? $page
@@ -203,7 +197,7 @@ class ModulePidService
     protected function getQueryBuilder($tableName): QueryBuilder
     {
         /** @var ConnectionPool $connectionPool */
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $connectionPool = $this->connectionPool;
         return $connectionPool->getQueryBuilderForTable($tableName);
     }
 

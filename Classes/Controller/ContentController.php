@@ -43,6 +43,9 @@ use Fab\Vidi\Tca\Tca;
  */
 class ContentController extends ActionController
 {
+    public function __construct(private readonly \Fab\Vidi\Domain\Repository\SelectionRepository $selectionRepository)
+    {
+    }
     /**
      * Initialize every action.
      */
@@ -83,10 +86,10 @@ class ContentController extends ActionController
      *
      * @param array $columns corresponds to columns to be rendered.
      * @param array $matches
-     * @Validate("Fab\Vidi\Domain\Validator\ColumnsValidator", param="columns")
-     * @Validate("Fab\Vidi\Domain\Validator\MatchesValidator", param="matches")
      * @return void
      */
+    #[Validate(['validator' => \Fab\Vidi\Domain\Validator\ColumnsValidator::class, 'param' => 'columns'])]
+    #[Validate(['validator' => \Fab\Vidi\Domain\Validator\MatchesValidator::class, 'param' => 'matches'])]
     public function listAction(array $columns = [], $matches = []): ResponseInterface
     {
         // Initialize some objects related to the query.
@@ -133,7 +136,7 @@ class ContentController extends ActionController
      * @param array $columns
      * @throws InvalidKeyInArrayException
      */
-    public function updateAction($fieldNameAndPath, array $content, array $matches = [], $savingBehavior = SavingBehavior::REPLACE, $language = 0, $columns = [])
+    public function updateAction($fieldNameAndPath, array $content, array $matches = [], $savingBehavior = SavingBehavior::REPLACE, $language = 0, $columns = []): \Psr\Http\Message\ResponseInterface
     {
         // Instantiate the Matcher object according different rules.
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
@@ -230,7 +233,7 @@ class ContentController extends ActionController
      * @param array $matches
      * @param int $previousIdentifier
      */
-    public function sortAction(array $matches = [], $previousIdentifier = null)
+    public function sortAction(array $matches = [], $previousIdentifier = null): \Psr\Http\Message\ResponseInterface
     {
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
 
@@ -385,7 +388,7 @@ class ContentController extends ActionController
      *
      * @param array $matches
      */
-    public function deleteAction(array $matches = [])
+    public function deleteAction(array $matches = []): \Psr\Http\Message\ResponseInterface
     {
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
 
@@ -446,7 +449,7 @@ class ContentController extends ActionController
      * @param string $target
      * @throws \Exception
      */
-    public function copyClipboardAction($target)
+    public function copyClipboardAction($target): \Psr\Http\Message\ResponseInterface
     {
         // Retrieve matcher object from clipboard.
         $matcher = $this->getClipboardService()->getMatcher();
@@ -481,7 +484,7 @@ class ContentController extends ActionController
         }
 
         // Flush Clipboard if told so.
-        if (GeneralUtility::_GP('flushClipboard')) {
+        if ($this->request->getParsedBody()['flushClipboard'] ?? $this->request->getQueryParams()['flushClipboard'] ?? null) {
             $this->getClipboardService()->flush();
         }
 
@@ -499,7 +502,7 @@ class ContentController extends ActionController
      * @param string $target
      * @param array $matches
      */
-    public function moveAction($target, array $matches = [])
+    public function moveAction($target, array $matches = []): \Psr\Http\Message\ResponseInterface
     {
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
 
@@ -543,7 +546,7 @@ class ContentController extends ActionController
      *
      * @param string $target
      */
-    public function moveClipboardAction($target)
+    public function moveClipboardAction($target): \Psr\Http\Message\ResponseInterface
     {
         // Retrieve matcher object from clipboard.
         $matcher = $this->getClipboardService()->getMatcher();
@@ -578,7 +581,7 @@ class ContentController extends ActionController
         }
 
         // Flush Clipboard if told so.
-        if (GeneralUtility::_GP('flushClipboard')) {
+        if ($this->request->getParsedBody()['flushClipboard'] ?? $this->request->getQueryParams()['flushClipboard'] ?? null) {
             $this->getClipboardService()->flush();
         }
 
@@ -598,7 +601,7 @@ class ContentController extends ActionController
      * @param int $language
      * @throws \Exception
      */
-    public function localizeAction($fieldNameAndPath, array $matches = [], $language = 0)
+    public function localizeAction($fieldNameAndPath, array $matches = [], $language = 0): \Psr\Http\Message\ResponseInterface
     {
         $matcher = MatcherObjectFactory::getInstance()->getMatcher($matches);
 
@@ -654,7 +657,9 @@ class ContentController extends ActionController
                 /** @var EditUri $uri */
                 $uriRenderer = GeneralUtility::makeInstance(EditUri::class);
                 $uri = $uriRenderer->render($localizedContent);
-                HttpUtility::redirect($uri);
+
+                $response = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Psr\Http\Message\ResponseFactoryInterface::class)->createResponse(\TYPO3\CMS\Core\Utility\HttpUtility::HTTP_STATUS_303)->withAddedHeader('location', $uri);
+                throw new \TYPO3\CMS\Core\Http\PropagateResponseException($response, 9221048242);
                 break; // no need to further continue
             }
 
@@ -763,10 +768,5 @@ class ContentController extends ActionController
     protected function getModuleLoader()
     {
         return GeneralUtility::makeInstance(ModuleLoader::class);
-    }
-
-    public function injectSelectionRepository(SelectionRepository $selectionRepository): void
-    {
-        $this->selectionRepository = $selectionRepository;
     }
 }

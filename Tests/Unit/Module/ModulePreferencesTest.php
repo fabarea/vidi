@@ -13,7 +13,7 @@ class ModulePreferencesTest extends UnitTestCase
     /**
      * @test
      */
-    public function instantiateMe()
+    public function instantiateMe(): void
     {
         $fixture = new ModulePreferences();
         $this->assertInstanceOf('Fab\Vidi\Module\ModulePreferences', $fixture);
