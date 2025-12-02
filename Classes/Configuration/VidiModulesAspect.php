@@ -10,13 +10,12 @@ namespace Fab\Vidi\Configuration;
  */
 use Fab\Vidi\Module\ModuleLoader;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\TableConfigurationPostProcessingHookInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Initialize Vidi modules
  */
-class VidiModulesAspect implements TableConfigurationPostProcessingHookInterface
+class VidiModulesAspect 
 {
     /**
      * Initialize and populate TBE_MODULES_EXT with default data.
