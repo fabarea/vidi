@@ -11,18 +11,17 @@ namespace Fab\Vidi\Configuration;
 use Fab\Vidi\Grid\ButtonGroupRenderer;
 use Fab\Vidi\Grid\CheckBoxRenderer;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\TableConfigurationPostProcessingHookInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Add a Grid TCA to each "data type" enabling to display a Vidi module in the BE.
  */
-class TcaGridAspect implements TableConfigurationPostProcessingHookInterface
+class TcaGridAspect 
 {
     /**
      * Scans each data type of the TCA and add a Grid TCA if missing.
-     *
+     * implements TableConfigurationPostProcessingHookInterface
      * @return array
      */
     public function processData()
