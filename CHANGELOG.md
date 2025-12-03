@@ -1,3 +1,19 @@
+## 7.0.0 (2025-12-03)
+
+Update typo3/cms-core version requirement
+fixup! [BUGFIX] fix errors
+[BUGFIX] fix errors
+[BUGFIX] fix errors corrections
+[TASK] Remove v11 legacy code
+Update composer.json
+[BUGFIX] Remove dependency to laravel/pint
+[BUGFIX] Stop export download to open a new backend window
+[BUGFIX] Fix export file download using a response object
+[BUGFIX] Fix value type for content length header
+[FEATURE] Introduce class property for facets
+[TASK] Remove unwanted dropdown menu markup
+[BUGFIX] Fix user TSConfig retrieval
+
 ## 6.0.0 (2022-11-17)
 
 [BUGFIX] Correct interface signature for php >= 8.0
