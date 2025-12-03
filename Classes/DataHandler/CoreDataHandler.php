@@ -88,7 +88,7 @@ class CoreDataHandler extends AbstractDataHandler
      * @param string $target
      * @return bool
      */
-    public function processCopy(Content $content, $target)
+    public function processCopy(Content $content, $target): void
     {
         // TODO: Implement processCopy() method.
     }

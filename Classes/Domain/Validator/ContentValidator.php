@@ -24,7 +24,7 @@ class ContentValidator
      * @throws \Exception
      * @return void
      */
-    public function validate(Content $content)
+    public function validate(Content $content): void
     {
         // Security check.
         if ($content->getUid() <= 0) {

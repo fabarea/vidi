@@ -22,7 +22,7 @@ class SpriteViewHelper extends AbstractViewHelper
     /**
      * @return void
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('name', 'string', 'the file to include', true);
     }

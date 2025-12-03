@@ -17,6 +17,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class DataService implements SingletonInterface
 {
+    public function __construct(private readonly \TYPO3\CMS\Core\Database\ConnectionPool $connectionPool)
+    {
+    }
     public function getRecord(string $tableName, array $demand = [], array $restrictions = []): array
     {
         $queryBuilder = $this->getQueryBuilder($tableName);
@@ -146,14 +149,14 @@ class DataService implements SingletonInterface
     protected function getConnection(string $tableName): Connection
     {
         /** @var ConnectionPool $connectionPool */
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $connectionPool = $this->connectionPool;
         return $connectionPool->getConnectionForTable($tableName);
     }
 
     protected function getQueryBuilder(string $tableName): QueryBuilder
     {
         /** @var ConnectionPool $connectionPool */
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $connectionPool = $this->connectionPool;
         return $connectionPool->getQueryBuilderForTable($tableName);
     }
 }

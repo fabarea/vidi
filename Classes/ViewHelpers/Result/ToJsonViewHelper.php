@@ -22,7 +22,7 @@ class ToJsonViewHelper extends AbstractResultViewHelper
     /**
      * Render a Json response
      */
-    public function render()
+    public function render(): void
     {
         $objects = $this->templateVariableContainer->get('objects');
         $columns = $this->templateVariableContainer->get('columns');
@@ -43,8 +43,8 @@ class ToJsonViewHelper extends AbstractResultViewHelper
     protected function getNextTransactionId()
     {
         $transaction = 0;
-        if (GeneralUtility::_GET('sEcho')) {
-            $transaction = (int)GeneralUtility::_GET('sEcho') + 1;
+        if ($GLOBALS['TYPO3_REQUEST']->getQueryParams()['sEcho'] ?? null) {
+            $transaction = (int)($GLOBALS['TYPO3_REQUEST']->getQueryParams()['sEcho'] ?? null) + 1;
         }
         return $transaction;
     }

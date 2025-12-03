@@ -44,7 +44,7 @@ class ContentTest extends AbstractFunctionalTestCase
         $this->fixture = new Content($this->dataType);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->fixture, $GLOBALS['TCA'][$this->dataType]);
     }
@@ -53,7 +53,7 @@ class ContentTest extends AbstractFunctionalTestCase
      * @test
      * @dataProvider fieldNameProvider
      */
-    public function fieldNameIsConvertedToPropertyName($fieldName, $propertyName)
+    public function fieldNameIsConvertedToPropertyName($fieldName, $propertyName): void
     {
         $data = array(
             $fieldName => 'foo data',
@@ -66,7 +66,7 @@ class ContentTest extends AbstractFunctionalTestCase
      * @test
      * @dataProvider fieldNameProvider
      */
-    public function accessValueOfArrayObjectReturnsFooDataAsString($fieldName)
+    public function accessValueOfArrayObjectReturnsFooDataAsString($fieldName): void
     {
         $data = array(
             $fieldName => 'foo data',
@@ -80,7 +80,7 @@ class ContentTest extends AbstractFunctionalTestCase
      * @test
      * @dataProvider fieldNameProvider
      */
-    public function getValueThroughGetterReturnsFooDataAsString($fieldName, $propertyName)
+    public function getValueThroughGetterReturnsFooDataAsString($fieldName, $propertyName): void
     {
         $data = array(
             $fieldName => 'foo data',
@@ -95,7 +95,7 @@ class ContentTest extends AbstractFunctionalTestCase
      * @test
      * @dataProvider fieldNameProvider
      */
-    public function toArrayMethodContainsGivenFieldName($fieldName)
+    public function toArrayMethodContainsGivenFieldName($fieldName): void
     {
         $data = array(
             $fieldName => 'foo data',
@@ -120,7 +120,7 @@ class ContentTest extends AbstractFunctionalTestCase
      * @test
      * @dataProvider propertyProvider
      */
-    public function testProperty($propertyName, $value)
+    public function testProperty($propertyName, $value): void
     {
         $setter = 'set' . ucfirst($propertyName);
         $getter = 'get' . ucfirst($propertyName);

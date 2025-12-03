@@ -28,7 +28,7 @@ class AdditionalAssetsViewHelper extends AbstractBackendViewHelper
      * @return void
      * @api
      */
-    public function render()
+    public function render(): void
     {
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
         /** @var ModuleLoader $moduleLoader */

@@ -335,7 +335,7 @@ class ModuleLoader
      */
     public function getSignature(): string
     {
-        $signature = GeneralUtility::_GP(Parameter::MODULE);
+        $signature = $GLOBALS['TYPO3_REQUEST']->getParsedBody()[Parameter::MODULE] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()[Parameter::MODULE] ?? null;
         $trimmedSignature = trim($signature, '/');
         return str_replace(['/', 'module_'], ['_', ''], $trimmedSignature);
     }
@@ -347,7 +347,7 @@ class ModuleLoader
      */
     public function getCurrentPid(): int
     {
-        return GeneralUtility::_GET(Parameter::PID) > 0 ? (int)GeneralUtility::_GET(Parameter::PID) : 0;
+        return ($GLOBALS['TYPO3_REQUEST']->getQueryParams()[Parameter::PID] ?? null) > 0 ? (int)($GLOBALS['TYPO3_REQUEST']->getQueryParams()[Parameter::PID] ?? null) : 0;
     }
 
     /**
@@ -361,8 +361,8 @@ class ModuleLoader
         $moduleCode = $this->getSignature();
 
         // And don't forget the pid!
-        if (GeneralUtility::_GET(Parameter::PID)) {
-            $additionalParameters[Parameter::PID] = GeneralUtility::_GET(Parameter::PID);
+        if ($GLOBALS['TYPO3_REQUEST']->getQueryParams()[Parameter::PID] ?? null) {
+            $additionalParameters[Parameter::PID] = $GLOBALS['TYPO3_REQUEST']->getQueryParams()[Parameter::PID] ?? null;
         }
 
         return BackendUtility::getModuleUrl($moduleCode, $additionalParameters);
@@ -1001,7 +1001,7 @@ class ModuleLoader
     public function hasPlugin($pluginName = ''): bool
     {
         $parameterPrefix = $this->getParameterPrefix();
-        $parameters = GeneralUtility::_GET($parameterPrefix);
+        $parameters = $GLOBALS['TYPO3_REQUEST']->getQueryParams()[$parameterPrefix] ?? null;
 
         $hasPlugin = !empty($parameters['plugins']) && is_array($parameters['plugins']);
         if ($hasPlugin && $pluginName) {

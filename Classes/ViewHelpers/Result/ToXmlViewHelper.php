@@ -20,7 +20,7 @@ class ToXmlViewHelper extends AbstractToFormatViewHelper
     /**
      * Render an XML export.
      */
-    public function render()
+    public function render(): void
     {
         $objects = $this->templateVariableContainer->get('objects');
 

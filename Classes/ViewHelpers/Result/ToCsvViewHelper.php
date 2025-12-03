@@ -23,7 +23,7 @@ class ToCsvViewHelper extends AbstractToFormatViewHelper
     /**
      * Render a CSV export request.
      */
-    public function render()
+    public function render(): void
     {
         $objects = $this->templateVariableContainer->get('objects');
 

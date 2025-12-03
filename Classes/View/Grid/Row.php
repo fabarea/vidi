@@ -382,7 +382,7 @@ class Row extends AbstractComponentView
     {
         // Transmit recursive selection parameter.
         $parameterPrefix = $this->getModuleLoader()->getParameterPrefix();
-        $parameters = GeneralUtility::_GP($parameterPrefix);
+        $parameters = $GLOBALS['TYPO3_REQUEST']->getParsedBody()[$parameterPrefix] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()[$parameterPrefix] ?? null;
 
         $additionalParameters = array(
             $this->getModuleLoader()->getParameterPrefix() => array(

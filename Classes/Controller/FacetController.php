@@ -27,9 +27,9 @@ class FacetController extends ActionController
      *
      * @param string $facet
      * @param string $searchTerm
-     * @Validate("Fab\Vidi\Domain\Validator\FacetValidator", param="facet")
      */
-    public function autoSuggestAction($facet, $searchTerm)
+    #[Validate(['validator' => \Fab\Vidi\Domain\Validator\FacetValidator::class, 'param' => 'facet'])]
+    public function autoSuggestAction($facet, $searchTerm): \Psr\Http\Message\ResponseInterface
     {
         $suggestions = $this->getFacetSuggestionService()->getSuggestions($facet);
 
@@ -43,7 +43,7 @@ class FacetController extends ActionController
      * Suggest values for all configured facets in the Grid.
      * Output a json list of key / values.
      */
-    public function autoSuggestsAction()
+    public function autoSuggestsAction(): \Psr\Http\Message\ResponseInterface
     {
         $suggestions = [];
         foreach (Tca::grid()->getFacets() as $facet) {

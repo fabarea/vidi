@@ -27,10 +27,10 @@ class BackViewHelper extends AbstractViewHelper
     public function render()
     {
         $result = '';
-        if (GeneralUtility::_GET('returnUrl')) {
+        if ($GLOBALS['TYPO3_REQUEST']->getQueryParams()['returnUrl'] ?? null) {
             $result = sprintf(
                 '<a href="%s" class="btn btn-default btn-sm btn-return-top">%s</a>',
-                GeneralUtility::_GP('returnUrl'),
+                $GLOBALS['TYPO3_REQUEST']->getParsedBody()['returnUrl'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['returnUrl'] ?? null,
                 $this->getIconFactory()->getIcon('actions-close', Icon::SIZE_SMALL)
             );
         }

@@ -22,7 +22,7 @@ class ComponentsViewHelper extends AbstractViewHelper
     /**
      * @return void
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('part', 'string', 'Template part', true);
     }

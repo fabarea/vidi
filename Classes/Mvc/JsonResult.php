@@ -42,7 +42,7 @@ class JsonResult
     /**
      * @return $this
      */
-    public function incrementNumberOfProcessedObjects()
+    public function incrementNumberOfProcessedObjects(): void
     {
         $this->numberOfProcessedObjects++;
     }

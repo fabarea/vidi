@@ -21,7 +21,7 @@ class ModuleLoaderViewHelper extends AbstractViewHelper
     /**
      * @return void
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('key', 'string', 'The module key', true);
     }

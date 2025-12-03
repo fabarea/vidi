@@ -44,8 +44,8 @@ class ToolController extends ActionController
      * @param string $tool
      * @param array $arguments
      * @return void
-     * @Extbase\Validate("Fab\Vidi\Domain\Validator\ToolValidator", param="tool")
      */
+    #[Extbase\Validate(['validator' => \Fab\Vidi\Domain\Validator\ToolValidator::class, 'param' => 'tool'])]
     public function workAction(string $tool, array $arguments = array()): ResponseInterface
     {
         /** @var ToolInterface $tool */

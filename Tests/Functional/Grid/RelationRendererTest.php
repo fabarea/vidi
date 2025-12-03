@@ -49,7 +49,7 @@ class RelationRendererTest extends AbstractFunctionalTestCase
         $this->fixture = new RelationRenderer();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->fixture, $GLOBALS['_GET']['M']);
     }
@@ -57,7 +57,7 @@ class RelationRendererTest extends AbstractFunctionalTestCase
     /**
      * @test
      */
-    public function renderAssetWithNoCategoryReturnsEmpty()
+    public function renderAssetWithNoCategoryReturnsEmpty(): void
     {
         $content = new Content($this->dataType);
         $this->markTestIncomplete(); # TCA must be faked

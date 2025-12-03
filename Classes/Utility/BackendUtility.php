@@ -67,8 +67,8 @@ class BackendUtility
         $expressionBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable($table)
             ->getExpressionBuilder();
-        $query = $expressionBuilder->andX();
-        $invQuery = $expressionBuilder->orX();
+        $query = $expressionBuilder->and();
+        $invQuery = $expressionBuilder->or();
 
         if (is_array($ctrl)) {
             if (is_array($ctrl['enablecolumns'])) {
@@ -81,25 +81,16 @@ class BackendUtility
                     $field = $table . '.' . $ctrl['enablecolumns']['starttime'];
                     $query->add($expressionBuilder->lte($field, (int)GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp')));
                     $invQuery->add(
-                        $expressionBuilder->andX(
-                            $expressionBuilder->neq($field, 0),
-                            $expressionBuilder->gt($field, (int)GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp'))
-                        )
+                        $expressionBuilder->and($expressionBuilder->neq($field, 0), $expressionBuilder->gt($field, (int)GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp')))
                     );
                 }
                 if ($ctrl['enablecolumns']['endtime'] ?? false) {
                     $field = $table . '.' . $ctrl['enablecolumns']['endtime'];
                     $query->add(
-                        $expressionBuilder->orX(
-                            $expressionBuilder->eq($field, 0),
-                            $expressionBuilder->gt($field, (int)GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp'))
-                        )
+                        $expressionBuilder->or($expressionBuilder->eq($field, 0), $expressionBuilder->gt($field, (int)GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp')))
                     );
                     $invQuery->add(
-                        $expressionBuilder->andX(
-                            $expressionBuilder->neq($field, 0),
-                            $expressionBuilder->lte($field, (int)GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp'))
-                        )
+                        $expressionBuilder->and($expressionBuilder->neq($field, 0), $expressionBuilder->lte($field, (int)GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp')))
                     );
                 }
             }

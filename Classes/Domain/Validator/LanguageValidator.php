@@ -23,7 +23,7 @@ class LanguageValidator
      * @throws \Exception
      * @return void
      */
-    public function validate($language)
+    public function validate($language): void
     {
         if (!$this->getLanguageService()->languageExists((int)$language)) {
             throw new \Exception('The language "' . $language . '" does not exist', 1351605542);

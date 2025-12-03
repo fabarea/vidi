@@ -24,7 +24,7 @@ class RequireJsViewHelper extends AbstractBackendViewHelper
      *
      * @return void
      */
-    public function render()
+    public function render(): void
     {
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
 

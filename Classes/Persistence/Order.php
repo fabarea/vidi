@@ -41,7 +41,7 @@ class Order
      * @param string $direction ASC / DESC
      * @return void
      */
-    public function addOrdering($order, $direction)
+    public function addOrdering($order, $direction): void
     {
         $this->orderings[$order] = $direction;
     }

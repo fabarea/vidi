@@ -67,7 +67,7 @@ class Pager
      *
      * @param int $count
      */
-    public function setCount($count)
+    public function setCount($count): void
     {
         $this->count = $count;
     }
@@ -87,7 +87,7 @@ class Pager
      *
      * @param int $page
      */
-    public function setPage($page)
+    public function setPage($page): void
     {
         $this->page = $page;
     }
@@ -107,7 +107,7 @@ class Pager
      *
      * @param int $limit
      */
-    public function setLimit($limit)
+    public function setLimit($limit): void
     {
         $this->limit = $limit;
     }
@@ -176,7 +176,7 @@ class Pager
     /**
      * @param int $offset
      */
-    public function setOffset($offset)
+    public function setOffset($offset): void
     {
         $this->offset = $offset;
     }

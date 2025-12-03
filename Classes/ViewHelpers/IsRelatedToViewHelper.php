@@ -21,7 +21,7 @@ class IsRelatedToViewHelper extends AbstractViewHelper
     /**
      * @return void
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('relatedContent', Content::class, 'The related content', true);
     }

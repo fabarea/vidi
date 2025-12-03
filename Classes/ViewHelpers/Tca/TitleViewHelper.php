@@ -21,7 +21,7 @@ class TitleViewHelper extends AbstractViewHelper
     /**
      * @return void
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('content', Content::class, '', true);
     }

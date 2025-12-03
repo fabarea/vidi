@@ -31,7 +31,7 @@ abstract class AbstractContentViewHelper extends AbstractViewHelper
      * @return void
      * @throws Exception
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('type', 'string', 'Corresponds to the type of data to be fetched. It will basically be a table name e.g. fe_users.', false, '');
         $this->registerArgument('matches', 'array', 'Key / value array to be used as filter. The key corresponds to a field name.', false, array());

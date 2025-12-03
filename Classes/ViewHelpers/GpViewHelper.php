@@ -21,7 +21,7 @@ class GpViewHelper extends AbstractViewHelper
     /**
      * @return void
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('argument', 'string', 'The argument name', true);
         $this->registerArgument('encode', 'bool', 'Whether to encode the URL.', false, true);
@@ -37,8 +37,8 @@ class GpViewHelper extends AbstractViewHelper
         $value = ''; // default value
 
         // Merge parameters
-        $parameters = GeneralUtility::_GET();
-        $post = GeneralUtility::_POST();
+        $parameters = $GLOBALS['TYPO3_REQUEST']->getQueryParams();
+        $post = $GLOBALS['TYPO3_REQUEST']->getParsedBody();
         ArrayUtility::mergeRecursiveWithOverrule($parameters, $post);
 
         // Traverse argument parts and retrieve value.

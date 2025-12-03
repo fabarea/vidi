@@ -72,7 +72,7 @@ class ClipboardController extends ActionController
         $contentService = $this->getContentService()->findBy($matcher);
 
         // count number of items and display it.
-        $this->view->assign('target', GeneralUtility::_GP('id'));
+        $this->view->assign('target', $this->request->getParsedBody()['id'] ?? $this->request->getQueryParams()['id'] ?? null);
         $this->view->assign('numberOfObjects', $contentService->getNumberOfObjects());
         $this->view->assign('objects', $contentService->getObjects());
         return $this->htmlResponse();

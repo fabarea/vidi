@@ -75,10 +75,10 @@ class MatcherObjectFactory implements SingletonInterface
      */
     protected function applyCriteriaFromUrl(Matcher $matcher): Matcher
     {
-        if (GeneralUtility::_GP('id')
+        if (($GLOBALS['TYPO3_REQUEST']->getParsedBody()['id'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['id'] ?? null)
             && !$this->getModuleLoader()->isPidIgnored()
             && $this->getModuleLoader()->getMainModule() !== ModuleName::FILE) {
-            $matcher->equals('pid', GeneralUtility::_GP('id'));
+            $matcher->equals('pid', $GLOBALS['TYPO3_REQUEST']->getParsedBody()['id'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['id'] ?? null);
         }
 
         return $matcher;
@@ -142,7 +142,7 @@ class MatcherObjectFactory implements SingletonInterface
     {
         // Special case for Grid in the BE using jQuery DataTables plugin.
         // Retrieve a possible search term from GP.
-        $query = GeneralUtility::_GP('search');
+        $query = $GLOBALS['TYPO3_REQUEST']->getParsedBody()['search'] ?? $GLOBALS['TYPO3_REQUEST']->getQueryParams()['search'] ?? null;
         if (is_array($query)) {
             if (!empty($query['value'])) {
                 $query = $query['value'];

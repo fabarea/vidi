@@ -27,7 +27,7 @@ class GridServiceTest extends AbstractServiceTest
      */
     private $fixture;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->fixture = $this->getMock('Fab\Vidi\Tca\GridService', array('getModulePreferences'), array('tx_foo', Tca::TYPE_GRID));
@@ -41,7 +41,7 @@ class GridServiceTest extends AbstractServiceTest
         $GLOBALS['BE_USER']->expects($this->any())->method('isAdmin')->will($this->returnValue(true));
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->fixture);
     }
@@ -59,7 +59,7 @@ class GridServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function getFieldNamesReturnsNotEmpty()
+    public function getFieldNamesReturnsNotEmpty(): void
     {
         $actual = $this->fixture->getFieldNames();
 
@@ -71,7 +71,7 @@ class GridServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function getColumnsReturnsAnNotEmptyArray()
+    public function getColumnsReturnsAnNotEmptyArray(): void
     {
         $actual = $this->fixture->getFields();
         $this->assertTrue(is_array($actual));
@@ -81,7 +81,7 @@ class GridServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function getFieldsReturnsGreaterThanNumberOfColumns()
+    public function getFieldsReturnsGreaterThanNumberOfColumns(): void
     {
         $actual = $this->fixture->getFields();
         $this->assertGreaterThanOrEqual(count($actual), count($GLOBALS['TCA']['tx_foo']['columns']));
@@ -90,7 +90,7 @@ class GridServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function additionalFieldsAreHiddenByDefault()
+    public function additionalFieldsAreHiddenByDefault(): void
     {
         $actual = $this->fixture->getFields();
         $this->assertFalse($actual['birthday']['visible']);
@@ -99,7 +99,7 @@ class GridServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function additionalFieldBirthDayIsFormattedAsDate()
+    public function additionalFieldBirthDayIsFormattedAsDate(): void
     {
         $actual = $this->fixture->getFields();
         $this->assertEquals('Fab\Vidi\Formatter\Date', $actual['birthday']['format']);
@@ -108,7 +108,7 @@ class GridServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function additionalFieldStartTimeIsFormattedAsDateTime()
+    public function additionalFieldStartTimeIsFormattedAsDateTime(): void
     {
         $actual = $this->fixture->getFields();
         $this->assertEquals('Fab\Vidi\Formatter\Datetime', $actual['starttime']['format']);
@@ -117,7 +117,7 @@ class GridServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function getConfigurationForColumnUsername()
+    public function getConfigurationForColumnUsername(): void
     {
         $actual = $this->fixture->getField('username');
         $this->assertTrue(is_array($actual));
@@ -127,7 +127,7 @@ class GridServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function additionalColumnFirstNameShouldNotBeVisible()
+    public function additionalColumnFirstNameShouldNotBeVisible(): void
     {
         $actual = $this->fixture->isVisible('first_name');
         $this->assertFalse($actual);
@@ -136,7 +136,7 @@ class GridServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function columnUsernameShouldBeSortableByDefault()
+    public function columnUsernameShouldBeSortableByDefault(): void
     {
         $this->assertTrue($this->fixture->isSortable('username'));
     }
@@ -144,7 +144,7 @@ class GridServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function columnNumberShouldBeNotSortableByDefault()
+    public function columnNumberShouldBeNotSortableByDefault(): void
     {
         $this->assertFalse($this->fixture->isSortable('usergroup'));
     }
@@ -152,7 +152,7 @@ class GridServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function getExcludedFieldsReturnsArray()
+    public function getExcludedFieldsReturnsArray(): void
     {
         $result = $this->fixture->getExcludedFields();
         $this->assertInternalType('array', $result);
@@ -161,7 +161,7 @@ class GridServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function getFieldsRemoveFieldMiddleNameFromResultSet()
+    public function getFieldsRemoveFieldMiddleNameFromResultSet(): void
     {
         $result = $this->fixture->getFields();
         $this->assertArrayNotHasKey('middle_name', $result);
@@ -170,7 +170,7 @@ class GridServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function columnUsernameShouldBeVisibleByDefault()
+    public function columnUsernameShouldBeVisibleByDefault(): void
     {
         $this->assertTrue($this->fixture->isVisible('username'));
     }
@@ -178,7 +178,7 @@ class GridServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function getConfigurationOfNotExistingColumnReturnsAnException()
+    public function getConfigurationOfNotExistingColumnReturnsAnException(): void
     {
         $expected = [];
         $this->assertEquals($expected, $this->fixture->getRenderers('bar'));
@@ -187,7 +187,7 @@ class GridServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function getFieldsAndCheckWhetherItsPositionReturnsTheCorrectFieldName()
+    public function getFieldsAndCheckWhetherItsPositionReturnsTheCorrectFieldName(): void
     {
         $fields = array_keys($this->fixture->getFields());
         for ($index = 0; $index < count($fields); $index++) {
@@ -199,7 +199,7 @@ class GridServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function canGetLabelKeyCodeForFakeFieldUserGroups()
+    public function canGetLabelKeyCodeForFakeFieldUserGroups(): void
     {
         $fieldName = 'usergroup';
         $this->assertEquals($GLOBALS['TCA']['tx_foo']['grid']['columns'][$fieldName]['label'], $this->fixture->getLabelKey($fieldName));

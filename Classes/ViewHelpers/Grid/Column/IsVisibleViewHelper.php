@@ -20,7 +20,7 @@ class IsVisibleViewHelper extends AbstractViewHelper
     /**
      * @return void
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('name', 'string', 'The column name', true);
     }

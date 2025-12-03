@@ -23,7 +23,7 @@ class FindViewHelper extends AbstractContentViewHelper
      * @return void
      * @throws Exception
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
 

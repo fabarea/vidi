@@ -52,7 +52,7 @@ class SpreadSheetService
     /**
      * @param array $row
      */
-    public function addRow($row)
+    public function addRow($row): void
     {
         $this->addToBuffer($this->generateRow($row));
     }

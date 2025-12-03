@@ -27,13 +27,13 @@ class FieldServiceTest extends AbstractServiceTest
      */
     private $fixture;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->fixture = new TableService('tx_foo');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->fixture);
     }
@@ -41,7 +41,7 @@ class FieldServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function fieldsIncludesATitleFieldInTableSysFile()
+    public function fieldsIncludesATitleFieldInTableSysFile(): void
     {
         $actual = $this->fixture->getFields();
         $this->assertTrue(is_array($actual));
@@ -51,7 +51,7 @@ class FieldServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function fieldTypeReturnsInputForFieldTitleInTableSysFile()
+    public function fieldTypeReturnsInputForFieldTitleInTableSysFile(): void
     {
         $field = $this->fixture->field('username');
         $actual = $field->getType();
@@ -61,7 +61,7 @@ class FieldServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function fieldNameMustBeRequiredByDefault()
+    public function fieldNameMustBeRequiredByDefault(): void
     {
         $field = $this->fixture->field('username');
         $this->assertTrue($field->isRequired());
@@ -70,7 +70,7 @@ class FieldServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function fieldFirstNameMustNotBeRequiredByDefault()
+    public function fieldFirstNameMustNotBeRequiredByDefault(): void
     {
         $field = $this->fixture->field('first_name');
         $this->assertFalse($field->isRequired());
@@ -79,7 +79,7 @@ class FieldServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function getTypeForFieldStarTimeReturnsDataTime()
+    public function getTypeForFieldStarTimeReturnsDataTime(): void
     {
         $fieldType = $this->fixture->field('starttime')->getType();
         $this->assertEquals(FieldType::DATETIME, $fieldType);
@@ -89,7 +89,7 @@ class FieldServiceTest extends AbstractServiceTest
      * @test
      * @dataProvider fieldProvider
      */
-    public function hasRelationReturnsFalseForFieldName($fieldName, $hasRelation, $hasRelationOneToMany, $hasRelationManyToMany)
+    public function hasRelationReturnsFalseForFieldName($fieldName, $hasRelation, $hasRelationOneToMany, $hasRelationManyToMany): void
     {
         $field = $this->fixture->field($fieldName);
         $this->assertEquals($hasRelation, $field->hasRelation());

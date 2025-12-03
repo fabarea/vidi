@@ -38,13 +38,13 @@ class TableServiceTest extends AbstractServiceTest
      */
     private $fixture;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->fixture = new TableService('tx_foo', Tca::TYPE_TABLE);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->fixture);
     }
@@ -52,7 +52,7 @@ class TableServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function getLabelReturnNameAsValue()
+    public function getLabelReturnNameAsValue(): void
     {
         $this->assertEquals('username', $this->fixture->getLabelField());
     }
@@ -60,7 +60,7 @@ class TableServiceTest extends AbstractServiceTest
     /**
      * @test
      */
-    public function getSearchableFieldsIsNotEmptyByDefaultForTableSysFile()
+    public function getSearchableFieldsIsNotEmptyByDefaultForTableSysFile(): void
     {
         $actual = $this->fixture->getSearchFields();
         $this->assertNotEmpty($actual);
