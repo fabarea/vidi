@@ -45,7 +45,7 @@ class CsvToArrayConverter extends AbstractTypeConverter
      * @throws FileDoesNotExistException
      * @api
      */
-    public function convertFrom($source, $targetType, array $convertedChildProperties = [], PropertyMappingConfigurationInterface $configuration = null)
+    public function convertFrom($source, $targetType, array $convertedChildProperties = [], ?PropertyMappingConfigurationInterface $configuration = null)
     {
         return GeneralUtility::trimExplode(',', $source, true);
     }

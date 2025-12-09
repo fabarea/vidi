@@ -319,7 +319,7 @@ class VidiDbBackend
      * @param array &$parameters The parameters that will replace the markers
      * @return void
      */
-    protected function parseConstraint(ConstraintInterface $constraint = null, SourceInterface $source, array &$statementParts, array &$parameters)
+    protected function parseConstraint(?ConstraintInterface $constraint, SourceInterface $source, array &$statementParts, array &$parameters)
     {
         if ($constraint instanceof AndInterface) {
             $statementParts['where'][] = '(';

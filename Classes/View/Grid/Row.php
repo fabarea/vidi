@@ -54,7 +54,7 @@ class Row extends AbstractComponentView
      * @return array
      * @throws \Exception
      */
-    public function render(Content $object = null, $rowIndex = 0)
+    public function render(?Content $object = null, $rowIndex = 0)
     {
         // Initialize returned array
         $output = [];
