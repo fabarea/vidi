@@ -103,7 +103,7 @@ class ContentRepository implements RepositoryInterface
      * @param Order|null $order
      * @return Content[]
      */
-    public function findDistinctValues($propertyName, Matcher $matcher = null, Order $order = null): array
+    public function findDistinctValues($propertyName, ?Matcher $matcher = null, ?Order $order = null): array
     {
         $query = $this->createQuery();
         $query->setDistinct($propertyName);
@@ -138,7 +138,7 @@ class ContentRepository implements RepositoryInterface
      * @param Matcher $matcher
      * @return int
      */
-    public function countDistinctValues($propertyName, Matcher $matcher = null): int
+    public function countDistinctValues($propertyName, ?Matcher $matcher = null): int
     {
         $query = $this->createQuery();
         $query->setDistinct($propertyName);
@@ -197,7 +197,7 @@ class ContentRepository implements RepositoryInterface
      * @param int $offset
      * @return Content[]
      */
-    public function findBy(Matcher $matcher, Order $order = null, $limit = null, $offset = null): array
+    public function findBy(Matcher $matcher, ?Order $order = null, $limit = null, $offset = null): array
     {
         $query = $this->createQuery();
 

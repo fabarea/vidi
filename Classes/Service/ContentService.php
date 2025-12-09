@@ -58,7 +58,7 @@ class ContentService
      * @param int $offset
      * @return $this
      */
-    public function findBy(Matcher $matcher, Order $order = null, $limit = null, $offset = null)
+    public function findBy(Matcher $matcher, ?Order $order = null, $limit = null, $offset = null)
     {
         // Query the repository.
         $objects = ContentRepositoryFactory::getInstance($this->dataType)->findBy($matcher, $order, $limit, $offset);
@@ -87,7 +87,7 @@ class ContentService
      * @param int $offset
      * @return AfterFindContentObjectsSignalArguments
      */
-    protected function emitAfterFindContentObjectsSignal($contentObjects, Matcher $matcher, Order $order = null, $limit = 0, $offset = 0)
+    protected function emitAfterFindContentObjectsSignal($contentObjects, Matcher $matcher, ?Order $order = null, $limit = 0, $offset = 0)
     {
         /** @var AfterFindContentObjectsSignalArguments $signalArguments */
         $signalArguments = GeneralUtility::makeInstance(AfterFindContentObjectsSignalArguments::class);

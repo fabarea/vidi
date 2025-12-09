@@ -24,7 +24,7 @@ class ButtonsSystem extends AbstractComponentView
      * @param Content $object
      * @return string
      */
-    public function render(Content $object = null)
+    public function render(?Content $object = null)
     {
         return '';
     }

@@ -25,7 +25,7 @@ class SelectionController extends ActionController
     /**
      * @param Selection $selection
      */
-    public function createAction(Selection $selection = null)
+    public function createAction(?Selection $selection = null)
     {
         $selectionRepository = GeneralUtility::makeInstance(SelectionRepository::class);
         $selection->setDataType($this->getModuleLoader()->getDataType());
