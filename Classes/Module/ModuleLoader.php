@@ -308,22 +308,6 @@ class ModuleLoader
             } else {
                 $moduleConfiguration['inheritNavigationComponentFromMainModule'] = true;
             }
-
-            ExtensionUtility::registerModule(
-                'Vidi',
-                $this->computeMainModule(),
-                $this->dataType . '_' . $this->moduleKey,
-                $this->position,
-                [
-                    ContentController::class => 'index, list, delete, update, edit, copy, move, localize, sort, copyClipboard, moveClipboard',
-                    ToolController::class => 'welcome, work',
-                    FacetController::class => 'autoSuggest, autoSuggests',
-                    SelectionController::class => 'edit, update, create, delete, list, show',
-                    UserPreferencesController::class => 'save',
-                    ClipboardController::class => 'save, flush, show',
-                ],
-                $moduleConfiguration
-            );
         }
         return $this;
     }
