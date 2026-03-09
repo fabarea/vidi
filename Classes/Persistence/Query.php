@@ -28,6 +28,8 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use Fab\Vidi\Persistence\Storage\VidiDbBackend;
 use TYPO3\CMS\Core\Http\ApplicationType;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\InvalidNumberOfConstraintsException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnexpectedTypeException;
@@ -254,7 +256,12 @@ class Query implements QueryInterface
     public function execute($returnRawQueryResult = false): QueryResultInterface|array
     {
         /** @var VidiDbBackend $backend */
-        $backend = GeneralUtility::makeInstance(VidiDbBackend::class, $this);
+            $backend = GeneralUtility::makeInstance(
+            VidiDbBackend::class,
+            $this,
+            GeneralUtility::makeInstance(Context::class),
+            GeneralUtility::makeInstance(ConnectionPool::class)
+        );
         return $backend->fetchResult();
     }
 
