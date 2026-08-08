@@ -35,6 +35,27 @@ Development version from Git:
 Flash news about latest development are also announced on http://twitter.com/fudriot
 
 
+Compatibility and Maintenance
+=============================
+
+This package is currently maintained for the following versions:
+
+.. list-table::
+   :header-rows: 1
+
+   * - TYPO3 Version
+     - Package Version
+     - Branch
+     - Maintained
+   * - TYPO3 12.4.x / 13.4.x
+     - 7.x
+     - release/7.0.x
+     - Yes
+   * - TYPO3 11.5.x
+     - 6.x
+     - release/6.0.x
+     - No
+
 Installation and requirement
 ============================
 

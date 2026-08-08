@@ -1,3 +1,11 @@
+## 7.1.0 (2026-08-08)
+
+[FEATURE] Compatibility v13
+[TASK] Allow typo3/cms-core ^12 || ^13
+[BUGFIX] Fix Query.php
+[BUGFIX] Fix warnings
+[DOCS] Update TYPO3 compatibility matrix
+
 ## 7.0.0 (2025-12-03)
 
 Update typo3/cms-core version requirement
