@@ -1,3 +1,7 @@
+## 7.1.1 (2026-11-07)
+
+FIX: Stop registering Vidi backend menu modules on TYPO3 13 (#229)
+
 ## 7.1.0 (2026-08-08)
 
 [FEATURE] Compatibility v13
