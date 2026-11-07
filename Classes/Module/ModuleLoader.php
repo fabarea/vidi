@@ -283,8 +283,6 @@ class ModuleLoader
         $internalModuleSignature = $this->getInternalModuleSignature();
         $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature] = $configuration;
 
-        // Backend menu entries are declared in Configuration/Backend/Modules.php.
-        // ExtensionUtility::registerModule() was removed in TYPO3 13.
         return $this;
     }
 
