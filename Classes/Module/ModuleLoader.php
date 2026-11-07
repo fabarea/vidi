@@ -19,15 +19,8 @@ use Fab\Vidi\View\MenuItem\ExportXmlMenuItem;
 use Fab\Vidi\View\MenuItem\ExportCsvMenuItem;
 use Fab\Vidi\View\MenuItem\DividerMenuItem;
 use Fab\Vidi\View\MenuItem\MassDeleteMenuItem;
-use Fab\Vidi\Controller\ContentController;
-use Fab\Vidi\Controller\ToolController;
-use Fab\Vidi\Controller\FacetController;
-use Fab\Vidi\Controller\SelectionController;
-use Fab\Vidi\Controller\UserPreferencesController;
-use Fab\Vidi\Controller\ClipboardController;
 use Fab\Vidi\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 use Fab\Vidi\Exception\InvalidKeyInArrayException;
 
 /**
@@ -290,41 +283,6 @@ class ModuleLoader
         $internalModuleSignature = $this->getInternalModuleSignature();
         $GLOBALS['TBE_MODULES_EXT']['vidi'][$internalModuleSignature] = $configuration;
 
-        // Core module registration.
-        // Register and displays module in the BE only if told, default is "true".
-        if ($this->isShown) {
-            $moduleConfiguration = [];
-            #$moduleConfiguration['routeTarget'] = \Fab\Vidi\Controller\ContentController::class . '::mainAction', // what to do here?
-            $moduleConfiguration['access'] = $this->getAccess();
-            $moduleConfiguration['labels'] = $this->getModuleLanguageFile();
-            $icon = $this->getIcon();
-            if ($icon) {
-                $moduleConfiguration['icon'] = $icon;
-            }
-
-            if ($this->showPageTree) {
-                $moduleConfiguration['navigationComponentId'] = 'TYPO3/CMS/Backend/PageTree/PageTreeElement';
-                $moduleConfiguration['inheritNavigationComponentFromMainModule'] = true;
-            } else {
-                $moduleConfiguration['inheritNavigationComponentFromMainModule'] = true;
-            }
-
-            ExtensionUtility::registerModule(
-                'Vidi',
-                $this->computeMainModule(),
-                $this->dataType . '_' . $this->moduleKey,
-                $this->position,
-                [
-                    ContentController::class => 'index, list, delete, update, edit, copy, move, localize, sort, copyClipboard, moveClipboard',
-                    ToolController::class => 'welcome, work',
-                    FacetController::class => 'autoSuggest, autoSuggests',
-                    SelectionController::class => 'edit, update, create, delete, list, show',
-                    UserPreferencesController::class => 'save',
-                    ClipboardController::class => 'save, flush, show',
-                ],
-                $moduleConfiguration
-            );
-        }
         return $this;
     }
 
